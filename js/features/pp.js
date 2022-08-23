@@ -1,8 +1,8 @@
 MAIN.pp = {
     gain() {
-        let l = Math.max(player.level-29,0)
-        let x = Decimal.pow(1.1,l).mul(l).mul(player.bestGrass.div(1e9).max(1).root(3))
+        let x = Decimal.pow(1.15,player.level)
 
+        x = x.mul(upgEffect('grass',5))
         x = x.mul(upgEffect('crystal',3))
         x = x.mul(upgEffect('plat',3))
         x = x.mul(upgEffect('perk',7))
@@ -25,7 +25,7 @@ RESET.pp = {
     req: _=>player.level>=30,
     reqDesc: _=>`Reach Level 30 to Prestige.`,
 
-    resetDesc: `Prestiging resets your grass, grass upgrades, level and perks for Prestige Points (PP).<br>Gain more PP based on your level and grass.`,
+    resetDesc: `Prestiging resets your grass, grass upgrades, level and perks for Prestige Points.`,
     resetGain: _=> `Gain <b>${tmp.ppGain.format(0)}</b> Prestige Points`,
 
     title: `Prestige`,
@@ -84,43 +84,43 @@ UPGS.pp = {
 
     ctn: [
         {
-            max: 1000,
+            max: Infinity,
 
             title: "Grass Value II",
-            desc: `Increase grass gain by <b class="green">+50%</b> per level. This effect is increased by <b class="green">50%</b> for every <b class="yellow">25</b> levels.`,
+            desc: `Increase grass gain by <b class="green">+50%</b> per level. This effect is increased by <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
         
             res: "pp",
             icon: ["Curr/Grass"],
                         
-            cost: i => Decimal.pow(1.25,i).mul(1).ceil(),
-            bulk: i => i.div(1).max(1).log(1.25).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.2,i).mul(5).ceil(),
+            bulk: i => i.div(5).max(1).log(1.2).floor().toNumber()+1,
         
             effect(i) {
-                let x = Decimal.pow(1.5,Math.floor(i/25)).mul(i/2+1)
+                let x = Decimal.pow(2,Math.floor(i/25)).mul(i/2+1)
         
                 return x
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 1000,
+            max: Infinity,
 
             title: "XP II",
-            desc: `Increase XP gain by <b class="green">+50%</b> per level. This effect is increased by <b class="green">50%</b> for every <b class="yellow">25</b> levels.`,
+            desc: `Increase XP gain by <b class="green">+50%</b> per level. This effect is increased by <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
         
             res: "pp",
             icon: ["Icons/XP"],
                         
-            cost: i => Decimal.pow(1.3,i).mul(3).ceil(),
-            bulk: i => i.div(3).max(1).log(1.3).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.2,i).mul(30).ceil(),
+            bulk: i => i.div(30).max(1).log(1.2).floor().toNumber()+1,
         
             effect(i) {
-                let x = Decimal.pow(1.5,Math.floor(i/25)).mul(i/2+1)
+                let x = Decimal.pow(2,Math.floor(i/25)).mul(i/2+1)
         
                 return x
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 1000,
+            max: Infinity,
 
             title: "TP",
             desc: `Increase Tier Points (TP) gain by <b class="green">1</b> per level. This effect is <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
@@ -128,8 +128,28 @@ UPGS.pp = {
             res: "pp",
             icon: ["Icons/TP"],
                         
-            cost: i => Decimal.pow(1.5,i).mul(50).ceil(),
-            bulk: i => i.div(50).max(1).log(1.5).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.2,i).mul(100).ceil(),
+            bulk: i => i.div(100).max(1).log(1.2).floor().toNumber()+1,
+        
+            effect(i) {
+                let x = Decimal.pow(2,Math.floor(i/25)).mul(i+1)
+        
+                return x
+            },
+            effDesc: x => format(x)+"x",
+        },{
+            max: Infinity,
+
+            unl: _=>player.cTimes>0,
+
+            title: "Crystal",
+            desc: `Increase Crystal gain by <b class="green">1</b> per level. This effect is <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
+
+            res: "pp",
+            icon: ["Curr/Crystal"],
+
+            cost: i => Decimal.pow(1.2,i).mul(1e9).ceil(),
+            bulk: i => i.div(1e9).max(1).log(1.2).floor().toNumber()+1,
         
             effect(i) {
                 let x = Decimal.pow(2,Math.floor(i/25)).mul(i+1)

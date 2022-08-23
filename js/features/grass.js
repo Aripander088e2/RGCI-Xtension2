@@ -109,7 +109,7 @@ function grassCanvas() {
     }
 }
 
-const BASE_COLORS = [null, "#00AF00", "#7FBF7F", "#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#00FFFF", "#0000FF", "#7F00FF", "#FF00FF"]
+const BASE_COLORS = ["#00AF00", "#7FBF7F", "#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#00FFFF", "#0000FF", "#7F00FF", "#FF00FF"]
 function grassColor(tier = 1) {
 	if (tier >= BASE_COLORS.length) return  hueBright((tier * 40) % 360, 0.25 + 0.5 * Math.sin(tier / 100))
 	return BASE_COLORS[tier]

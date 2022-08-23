@@ -179,9 +179,9 @@ function cannotSave() { return false }
 function save(){
     let str = btoa(JSON.stringify(player))
     if (cannotSave() || findNaN(str, true)) return
-    if (localStorage.getItem("gci_save") == '') wipe()
-    localStorage.setItem("gci_save",str)
-    tmp.prevSave = localStorage.getItem("gci_save")
+    if (localStorage.getItem("rgci_aarex") == '') wipe()
+    localStorage.setItem("rgci_aarex",str)
+    tmp.prevSave = localStorage.getItem("rgci_aarex")
     console.log("Game Saved")
 }
 
@@ -204,7 +204,7 @@ function exporty() {
     window.URL = window.URL || window.webkitURL;
     let a = document.createElement("a")
     a.href = window.URL.createObjectURL(file)
-    a.download = "GCI Save - "+new Date().toGMTString()+".txt"
+    a.download = "RGCI Aarex Balancing - "+new Date().toGMTString()+".txt"
     a.click()
 }
 
@@ -248,7 +248,7 @@ function importy() {
 }
 
 function loadGame(start=true, gotNaN=false) {
-    if (!gotNaN) tmp.prevSave = localStorage.getItem("gci_save")
+    if (!gotNaN) tmp.prevSave = localStorage.getItem("rgci_aarex")
     wipe()
     load(tmp.prevSave)
     resetTemp()

@@ -26,25 +26,25 @@ const UPGS = {
 
         ctn: [
             {
-                max: 1000,
+                max: Infinity,
 
                 title: "Grass Value",
-                desc: `Increase Grass gain by <b class="green">1</b> per level.<br>This effect is <b class="green">doubled</b> every <b class="yellow">25</b> levels.`,
+                desc: `Increase Grass gain by <b class="green">0.5</b> per level.<br>This effect is <b class="green">doubled</b> every <b class="yellow">25</b> levels.`,
 
                 res: "grass",
                 icon: ['Curr/Grass'],
                 
-                cost: i => Decimal.pow(1.2,i).mul(10).ceil(),
-                bulk: i => i.div(10).max(1).log(1.2).floor().toNumber()+1,
+                cost: i => Decimal.pow(1.15,i).mul(10).ceil(),
+                bulk: i => i.div(10).max(1).log(1.15).floor().toNumber()+1,
 
                 effect(i) {
-                    let x = Decimal.pow(2,Math.floor(i/25)).mul(i+1)
+                    let x = Decimal.pow(2,Math.floor(i/25)).mul(i/2+1)
 
                     return x
                 },
                 effDesc: x => x.format()+"x",
             },{
-                max: 1000,
+                max: 250,
 
                 title: "More Grass",
                 desc: `Increase grass cap by <b class="green">1</b> per level.`,
@@ -52,8 +52,8 @@ const UPGS = {
                 res: "grass",
                 icon: ['Icons/MoreGrass'],
                 
-                cost: i => Decimal.pow(1.4,i).mul(25).ceil(),
-                bulk: i => i.div(25).max(1).log(1.4).floor().toNumber()+1,
+                cost: i => Decimal.pow(1.15,i).mul(25).ceil(),
+                bulk: i => i.div(25).max(1).log(1.15).floor().toNumber()+1,
 
                 effect(i) {
                     let x = i
@@ -62,25 +62,25 @@ const UPGS = {
                 },
                 effDesc: x => "+"+format(x,0),
             },{
-                max: 250,
+                max: 50,
 
                 title: "Grow Speed",
-                desc: `Increase grass grow speed by <b class="green">10%</b> per level.`,
+                desc: `Increase grass grow speed by <b class="green">20%</b> per level.`,
 
                 res: "grass",
                 icon: ['Icons/Speed'],
                 
-                cost: i => Decimal.pow(1.75,i).mul(100).ceil(),
-                bulk: i => i.div(100).max(1).log(1.75).floor().toNumber()+1,
+                cost: i => Decimal.pow(1.15,i).mul(5).ceil(),
+                bulk: i => i.div(5).max(1).log(1.15).floor().toNumber()+1,
 
                 effect(i) {
-                    let x = i/10+1
+                    let x = i/5+1
 
                     return x
                 },
                 effDesc: x => format(x)+"x",
             },{
-                max: 1000,
+                max: Infinity,
 
                 title: "XP",
                 desc: `Increase experience (XP) gained by <b class="green">1</b> per level.<br>This effect is <b class="green">doubled</b> every <b class="yellow">25</b> levels.`,
@@ -88,8 +88,8 @@ const UPGS = {
                 res: "grass",
                 icon: ['Icons/XP'],
                 
-                cost: i => Decimal.pow(1.3,i).mul(1e3).ceil(),
-                bulk: i => i.div(1e3).max(1).log(1.3).floor().toNumber()+1,
+                cost: i => Decimal.pow(1.15,i).mul(100).ceil(),
+                bulk: i => i.div(100).max(1).log(1.15).floor().toNumber()+1,
 
                 effect(i) {
                     let x = Decimal.pow(2,Math.floor(i/25)).mul(i+1)
@@ -106,8 +106,8 @@ const UPGS = {
                 res: "grass",
                 icon: ['Icons/Range'],
                 
-                cost: i => Decimal.pow(2,i).mul(1e4).ceil(),
-                bulk: i => i.div(1e4).max(1).log(2).floor().toNumber()+1,
+                cost: i => Decimal.pow(15,i).mul(200).ceil(),
+                bulk: i => i.div(200).max(1).log(15).floor().toNumber()+1,
 
                 effect(i) {
                     let x = i*10
@@ -115,6 +115,26 @@ const UPGS = {
                     return x
                 },
                 effDesc: x => "+"+format(x,0),
+            },{
+                max: Infinity,
+
+                unl: _=>player.pTimes>0,
+
+                title: "PP",
+                desc: `Increase prestige points (PP) gained by <b class="green">+50%</b> per level.<br>This effect is <b class="green">doubled</b> every <b class="yellow">25</b> levels.`,
+
+                res: "grass",
+                icon: ['Curr/Prestige'],
+                
+                cost: i => Decimal.pow(1.25,i).mul(3e10).ceil(),
+                bulk: i => i.div(3e10).max(1).log(1.25).floor().toNumber()+1,
+
+                effect(i) {
+                    let x = Decimal.pow(2,Math.floor(i/25)).mul(i/2+1)
+
+                    return x
+                },
+                effDesc: x => x.format()+"x",
             },
         ],
     },
@@ -130,12 +150,12 @@ const UPGS = {
 
         ctn: [
             {
-                max: 50,
+                max: 200,
 
                 costOnce: true,
 
                 title: "Value Perk",
-                desc: `Increase Grass gain by <b class="green">20%</b> per level multiplied by experience level.`,
+                desc: `Increase Grass gain by <b class="green">25%</b> per level, multiplied by experience level.`,
 
                 res: "perk",
                 icon: ['Curr/Grass'],
@@ -144,7 +164,7 @@ const UPGS = {
                 bulk: i => i,
 
                 effect(i) {
-                    let x = Decimal.mul(player.level*i,0.2).add(1)
+                    let x = Decimal.mul(player.level*i,0.25).add(1)
 
                     return x
                 },
@@ -184,18 +204,18 @@ const UPGS = {
                 bulk: i => i,
 
                 effect(i) {
-                    let x = 1+i*0.25
+                    let x = 1+i/4
 
                     return x
                 },
                 effDesc: x => format(x)+"x",
             },{
-                max: 50,
+                max: 200,
 
                 costOnce: true,
 
                 title: "XP Perk",
-                desc: `Increase XP gain by <b class="green">20%</b> per level multiplied by experience level.`,
+                desc: `Increase XP gain by <b class="green">50%</b> per level.`,
 
                 res: "perk",
                 icon: ['Icons/XP'],
@@ -204,9 +224,7 @@ const UPGS = {
                 bulk: i => i,
 
                 effect(i) {
-                    // if (player.decel) return 1
-
-                    let x = Decimal.mul(player.level*i,0.2).add(1)
+                    let x = Decimal.mul(i,0.5).add(1)
 
                     return x
                 },
@@ -222,8 +240,8 @@ const UPGS = {
                 res: "perk",
                 icon: ['Icons/Range'],
                 
-                cost: i => 1,
-                bulk: i => i,
+                cost: i => 3,
+                bulk: i => Math.floor(i / 3),
 
                 effect(i) {
                     let x = i*10
@@ -366,7 +384,7 @@ const UPGS = {
                 effDesc: x => format(x)+"x",
             },{
                 unl: _=>player.pTimes>0,
-                max: 3,
+                max: 5,
 
                 title: "Autocut Amount",
                 desc: `Increases auto cut amount by <b class="green">1</b>.`,
@@ -395,7 +413,7 @@ const UPGS = {
                 cost: i => E(1e3),
                 bulk: i => 1,
             },{
-                unl: _=>player.pTimes>0,
+                unl: _=>player.cTimes>0,
 
                 title: "Perk Save P",
                 desc: `Keep perks on Prestige.`,
@@ -403,7 +421,7 @@ const UPGS = {
                 res: "pp",
                 icon: ['Curr/Perks','Icons/Automation'],
                             
-                cost: i => E(1e4),
+                cost: i => E(1e10),
                 bulk: i => 1,
             },{
                 unl: _=>player.cTimes>0,
@@ -555,41 +573,41 @@ const UPGS = {
                 },
                 effDesc: x => format(tmp.autocut)+" seconds",
             },{
-                max: 100,
+                max: 20,
 
                 costOnce: true,
 
-                title: "Plat XP",
-                desc: `Increase XP gain by <b class="green">+20%</b> per level.`,
+                title: "Starter XP",
+                desc: `Increase XP gain by <b class="green">+50%</b> per level.`,
 
                 res: "plat",
                 icon: ['Icons/XP'],
                 
-                cost: i => 10,
-                bulk: i => Math.floor(i/10),
+                cost: i => 3,
+                bulk: i => Math.floor(i/3),
 
                 effect(i) {
-                    let x = E(i*0.2+1)
+                    let x = E(i/2+1)
 
                     return x
                 },
                 effDesc: x => format(x)+"x",
             },{
-                max: 100,
+                max: 20,
 
                 costOnce: true,
 
-                title: "Plat Grass",
-                desc: `Increase grass gain by <b class="green">+20%</b> per level.`,
+                title: "Starter Grass",
+                desc: `Increase grass gain by <b class="green">+50%</b> per level.`,
 
                 res: "plat",
                 icon: ['Curr/Grass'],
                 
-                cost: i => 10,
-                bulk: i => Math.floor(i/10),
+                cost: i => 3,
+                bulk: i => Math.floor(i/3),
 
                 effect(i) {
-                    let x = E(i*0.2+1)
+                    let x = E(i/2+1)
 
                     return x
                 },

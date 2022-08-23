@@ -10,7 +10,7 @@ function loop() {
 
 const MAIN = {
     grassGain() {
-        let x = Decimal.mul(5,upgEffect('grass',0)).mul(tmp.tier.mult)
+        let x = upgEffect('grass',0).mul(tmp.tier.mult)
 
         x = x.mul(upgEffect('perk',0))
         x = x.mul(upgEffect('pp',0))
@@ -47,7 +47,7 @@ const MAIN = {
         return x
     },
     xpGain() {
-        let x = Decimal.mul(3,upgEffect('grass',3)).mul(tmp.tier.mult)
+        let x = upgEffect('grass',3).mul(tmp.tier.mult)
 
         x = x.mul(upgEffect('perk',3))
         x = x.mul(upgEffect('pp',1))
@@ -102,21 +102,13 @@ const MAIN = {
     autoCut: _=>5-upgEffect('auto',0,0)-upgEffect('plat',0,0),
     level: {
         req(i) {
-            i = E(i).scale(700,2,0).scale(tmp.level.scale1,2,0)
-
-            if (inChal(0) || inChal(7)) i = i.mul(3)
-            
-            let x = Decimal.pow(2.7,i.pow(0.75)).mul(50)
-
+            let x = Decimal.pow(1.4,i).mul(50)
             return x.ceil()
         },
         bulk(i) {
             let x = i.div(50)
             if (x.lt(1)) return 0
-            x = x.log(2.7).root(0.75)
-
-            if (inChal(0) || inChal(7)) x = x.div(3)
-
+            x = x.log(1.4)
             return Math.floor(x.scale(tmp.level.scale1,2,0,true).scale(700,2,0,true).toNumber()+1)
         },
         cur(i) {
@@ -130,14 +122,14 @@ const MAIN = {
     },
     tier: {
         req(i) {
-            let x = Decimal.pow(3,i**1.2).mul(100)
+            let x = Decimal.pow(4,i**1.25).mul(500)
 
             return x.ceil()
         },
         bulk(i) {
-            let x = i.div(100)
+            let x = i.div(500)
             if (x.lt(1)) return 0
-            x = x.log(3).root(1.2)
+            x = x.log(4).root(1.25)
 
             return Math.floor(x.toNumber()+1)
         },
@@ -145,10 +137,7 @@ const MAIN = {
             return i > 0 ? this.req(i-1) : E(0) 
         },
         mult(i) {
-            let base = 2 + upgEffect('crystal',5,0) + (tmp.chargeEff[5]||0)
-            let x = Decimal.pow(base,i)
-
-            return x
+            return Decimal.pow(2.5, i)
         },
     },
     checkCutting() {
@@ -235,7 +224,7 @@ tmp_update.push(_=>{
     tmp.platGain = 1
     if (player.grasshop >= 4) tmp.platGain += getGHEffect(3)
 
-    tmp.platChance = 0.005
+    tmp.platChance = 0.001
     if (player.grasshop >= 6) tmp.platChance *= 2
 })
 

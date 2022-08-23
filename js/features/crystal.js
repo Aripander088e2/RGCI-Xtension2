@@ -1,8 +1,8 @@
 MAIN.crystal = {
     gain() {
-        let l = player.tier+1
-        let x = Decimal.pow(1.1,l).mul(l).mul(player.bestPP.div(1e7).max(1).root(3))
+        let x = E(2).pow(player.tier+1)
 
+        x = x.mul(upgEffect('crystal',3))
         x = x.mul(upgEffect('plat',4))
         x = x.mul(upgEffect('perk',8))
 
@@ -21,17 +21,18 @@ MAIN.crystal = {
 RESET.crystal = {
     unl: _=>player.pTimes>0 && !player.decel,
 
-    req: _=>player.level>=100,
-    reqDesc: _=>`Reach Level 100 to Crystallize.`,
+    req: _=>player.level>=90,
+    reqDesc: _=>`Reach Level 90 to Crystallize.`,
 
-    resetDesc: `Crystallizing resets everything prestige as well except Platinum for Crystals.<br>Gain more Crystals based on your tier and PP.`,
-    resetGain: _=> `Gain <b>${tmp.crystalGain.format(0)}</b> Crystals`,
+    resetDesc: `Crystallizing resets everything that prestige does, as well as Tier and Prestige.`,
+    resetGain: _=> ``, //`Gain <b>${tmp.crystalGain.format(0)}</b> Crystals`,
 
     title: `Crystallize`,
-    resetBtn: `Crystallize`,
+    resetBtn: `Coming soon...`,
     hotkey: `C`,
 
     reset(force=false) {
+        return
         if (this.req()||force) {
             if (!force) {
                 player.crystal = player.crystal.add(tmp.crystalGain)
@@ -76,16 +77,16 @@ UPGS.crystal = {
             max: 1000,
 
             title: "Grass Value III",
-            desc: `Increase grass gain by <b class="green">+50%</b> per level. This effect is increased by <b class="green">50%</b> for every <b class="yellow">25</b> levels.`,
+            desc: `Increase grass gain by <b class="green">1</b> per level. This effect is increased by <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
         
             res: "crystal",
             icon: ["Curr/Grass"],
                         
-            cost: i => Decimal.pow(1.2,i).mul(4).ceil(),
-            bulk: i => i.div(4).max(1).log(1.2).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.25,i).mul(20).ceil(),
+            bulk: i => i.div(20).max(1).log(1.25).floor().toNumber()+1,
         
             effect(i) {
-                let x = Decimal.pow(1.5,Math.floor(i/25)).mul(i/2+1)
+                let x = Decimal.pow(2,Math.floor(i/25)).mul(i/2+1)
         
                 return x
             },
@@ -94,16 +95,16 @@ UPGS.crystal = {
             max: 1000,
 
             title: "XP III",
-            desc: `Increase XP gain by <b class="green">+50%</b> per level. This effect is increased by <b class="green">50%</b> for every <b class="yellow">25</b> levels.`,
+            desc: `Increase XP gain by <b class="green">1</b> per level. This effect is increased by <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
         
             res: "crystal",
             icon: ["Icons/XP"],
                         
-            cost: i => Decimal.pow(1.25,i).mul(5).ceil(),
-            bulk: i => i.div(5).max(1).log(1.25).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.25,i).mul(50).ceil(),
+            bulk: i => i.div(50).max(1).log(1.25).floor().toNumber()+1,
         
             effect(i) {
-                let x = Decimal.pow(1.5,Math.floor(i/25)).mul(i/2+1)
+                let x = Decimal.pow(2,Math.floor(i/25)).mul(i/2+1)
         
                 return x
             },
@@ -117,8 +118,8 @@ UPGS.crystal = {
             res: "crystal",
             icon: ["Icons/TP"],
                         
-            cost: i => Decimal.pow(1.3,i).mul(6).ceil(),
-            bulk: i => i.div(6).max(1).log(1.3).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.25,i).mul(100).ceil(),
+            bulk: i => i.div(100).max(1).log(1.25).floor().toNumber()+1,
         
             effect(i) {
                 let x = Decimal.pow(2,Math.floor(i/25)).mul(i+1)
@@ -130,13 +131,13 @@ UPGS.crystal = {
             max: 1000,
 
             title: "PP",
-            desc: `Increase PP gain by <b class="green">+25%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
-        
+            desc: `Increase PP gain by <b class="green">1</b> per level. This effect is increased by <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
+
             res: "crystal",
             icon: ["Curr/Prestige"],
-                        
-            cost: i => Decimal.pow(1.5,i).mul(11).ceil(),
-            bulk: i => i.div(11).max(1).log(1.5).floor().toNumber()+1,
+
+            cost: i => Decimal.pow(1.25,i).mul(200).ceil(),
+            bulk: i => i.div(200).max(1).log(1.25).floor().toNumber()+1,
         
             effect(i) {
                 let x = Decimal.pow(1.25,Math.floor(i/25)).mul(i/4+1)
@@ -162,25 +163,7 @@ UPGS.crystal = {
                 return x
             },
             effDesc: x => "+"+format(x,0),
-        },{
-            max: 8,
-
-            title: "Tier Base",
-            desc: `Increase multiplier's base from Tier by <b class="green">1</b> per level. Starting base is <b class="green">2</b>.`,
-        
-            res: "crystal",
-            icon: ["Icons/TP","Icons/Plus"],
-                        
-            cost: i => Decimal.pow(10,i**1.25).mul(100).ceil(),
-            bulk: i => i.div(100).max(1).log(10).root(1.25).floor().toNumber()+1,
-        
-            effect(i) {
-                let x = i
-        
-                return x
-            },
-            effDesc: x => "+"+format(x,0),
-        },
+        }
     ],
 }
 
