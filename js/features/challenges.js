@@ -5,9 +5,27 @@ const CHALS = [
         max: 20,
         id: 'pp',
 
+        title: `Grassless`,
+        desc: `You cannot buy any grass upgrades.`,
+        reward: `Grass gain is <b class='green'>doubled</b> each completion.`,
+
+        goal: i=>100+10*i,
+        bulk: i=>Math.floor((i-100)/10+1),
+
+        goalDesc: x=>"Level "+format(x,0),
+        goalAmt: _=>player.level,
+
+        eff: i=>Decimal.pow(2,i),
+        effDesc: x=>format(x,0)+"x",
+    },{
+        unl: _=>true,
+
+        max: 20,
+        id: 'pp',
+
         title: `Less Level`,
-        desc: `The Level requirement is expensive.`,
-        reward: `XP gain is increased by <b class="green">100%</b> every completions.`,
+        desc: `Grass Upgrade's "XP" does nothing.`,
+        reward: `XP gain is <b class='green'>doubled</b> each completion.`,
 
         goal: i=>30+10*i,
         bulk: i=>Math.floor((i-30)/10+1),
@@ -16,25 +34,7 @@ const CHALS = [
         goalAmt: _=>player.level,
 
         eff: i=>Decimal.pow(2,i),
-        effDesc: x=>format(x)+"x",
-    },{
-        unl: _=>true,
-
-        max: 20,
-        id: 'pp',
-
-        title: `Grassless`,
-        desc: `You cannot buy any grass upgrades.`,
-        reward: `Grass gain is increased by <b class="green">100%</b> every completions.`,
-
-        goal: i=>100+10*i,
-        bulk: i=>Math.floor((i-100)/10+1),
-
-        goalDesc: x=>"Level "+format(x,0),
-        goalAmt: _=>player.level,
-
-        eff: i=>Decimal.pow(2,i),
-        effDesc: x=>format(x)+"x",
+        effDesc: x=>format(x,0)+"x",
     },{
         unl: _=>true,
 
@@ -42,26 +42,8 @@ const CHALS = [
         id: 'crystal',
 
         title: `No Tiers`,
-        desc: `You cannot tier up.`,
-        reward: `TP gain is increased by <b class="green">100%</b> every completions.`,
-
-        goal: i=>100+10*i,
-        bulk: i=>Math.floor((i-100)/10+1),
-
-        goalDesc: x=>"Level "+format(x,0),
-        goalAmt: _=>player.level,
-
-        eff: i=>Decimal.pow(2,i),
-        effDesc: x=>format(x)+"x",
-    },{
-        unl: _=>true,
-
-        max: 10,
-        id: 'crystal',
-
-        title: `Reduced Resources`,
-        desc: `^0.5 to Grass, XP & PP gain.`,
-        reward: `Grass effect's exponent is increased by <b class="green">+2%</b> per completion.`,
+        desc: `You can't tier up.`,
+        reward: `TP gain is <b class='green'>doubled</b> each completion.`,
 
         goal: i=>50+20*i,
         bulk: i=>Math.floor((i-50)/20+1),
@@ -69,8 +51,26 @@ const CHALS = [
         goalDesc: x=>"Level "+format(x,0),
         goalAmt: _=>player.level,
 
-        eff: i=>i/50+1,
-        effDesc: x=>"^"+format(x),
+        eff: i=>Decimal.pow(2,i),
+        effDesc: x=>format(x,0)+"x",
+    },{
+        unl: _=>true,
+
+        max: 10,
+        id: 'crystal',
+
+        title: `Perkless`,
+        desc: `You cannot buy Perks.`,
+        reward: `Perk gain is increased by <b class="green">+1</b> per completion.`,
+
+        goal: i=>7+i,
+        bulk: i=>i-6,
+
+        goalDesc: x=>"Tier "+format(x,0),
+        goalAmt: _=>player.tier,
+
+        eff: i=>i+1,
+        effDesc: x=>format(x,0)+"x",
     },{
         unl: _=>true,
 
@@ -78,8 +78,8 @@ const CHALS = [
         id: 'crystal',
 
         title: `Prestigeless`,
-        desc: `You cannot buy any Prestige Upgrades.`,
-        reward: `PP gain is increased by <b class="green">100%</b> every completions.`,
+        desc: `You cannot buy Prestige Upgrades.`,
+        reward: `PP gain is doubled each completion.`,
 
         goal: i=>7+i,
         bulk: i=>i-6,
@@ -88,62 +88,26 @@ const CHALS = [
         goalAmt: _=>player.tier,
 
         eff: i=>Decimal.pow(2,i),
-        effDesc: x=>format(x)+"x",
+        effDesc: x=>format(x,0)+"x",
     },{
-        unl: _=>player.sTimes > 0,
+        unl: _=>true,
 
         max: 10,
-        id: 'steel',
+        id: 'crystal',
 
-        title: `Reduced Resources II`,
-        desc: `^0.5 to Grass, XP, TP, PP & Crystal gain.`,
-        reward: `Steel gain is increased by <b class="green">50%</b> every completions.`,
+        title: `Unefficient`,
+        desc: `You cannot buy Grass and Prestige Upgrades.`,
+        reward: `Platinum gain is increased by <b class="green">+1</b> per completion.`,
 
-        goal: i=>100+i*20,
-        bulk: i=>Math.floor((i-100)/20+1),
-
-        goalDesc: x=>"Level "+format(x,0),
-        goalAmt: _=>player.level,
-
-        eff: i=>Decimal.pow(1.5,i),
-        effDesc: x=>format(x)+"x",
-    },{
-        unl: _=>player.sTimes > 0,
-
-        max: 10,
-        id: 'steel',
-
-        title: `Crystalless`,
-        desc: `You cannot buy any Crystal Upgrades.`,
-        reward: `Crystal gain is increased by <b class="green">100%</b> every completions.`,
-
-        goal: i=>20+i,
-        bulk: i=>i-19,
+        goal: i=>7+i,
+        bulk: i=>i-6,
 
         goalDesc: x=>"Tier "+format(x,0),
         goalAmt: _=>player.tier,
 
-        eff: i=>Decimal.pow(2,i),
-        effDesc: x=>format(x)+"x",
-    },{
-        unl: _=>hasUpgrade('factory',2),
-
-        max: 10,
-        id: 'steel',
-
-        title: `Challengerism`,
-        desc: `You are trapped in Prestige & Crystal Challenges (except Reduced Resources).`,
-        reward: `Charge rate is increased by <b class="green">10x</b> every completions.`,
-
-        goal: i=>40+i*10,
-        bulk: i=>Math.floor((i-40)/10+1),
-
-        goalDesc: x=>"Level "+format(x,0),
-        goalAmt: _=>player.level,
-
-        eff: i=>Decimal.pow(10,i),
-        effDesc: x=>format(x)+"x",
-    },
+        eff: i=>i+1,
+        effDesc: x=>format(x,0)+"x",
+    }
 ]
 
 const chalSGoal = (_=>{
@@ -223,6 +187,7 @@ el.update.chal = _=>{
 
                 let unl2 = c.unl()
 
+                tmp.el["chal_div_"+i].setDisplay(unl2)
                 if (unl2) {
                     let l = player.chal.comp[i]||0
                     let completed = l >= c.max

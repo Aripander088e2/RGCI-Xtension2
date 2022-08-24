@@ -4,6 +4,8 @@ function calc(dt) {
     tmp.spawn_time += dt
     tmp.autocutTime += dt
     player.time += dt
+    player.pTime += dt
+    player.cTime += dt
     player.sTime += dt
 
     if (tmp.spawn_time >= tmp.grassSpawn) {

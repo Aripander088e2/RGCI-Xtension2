@@ -132,3 +132,8 @@ function hueBright(hue, brightness) {
 
 	return `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`
 }
+
+function toggleLowGrass() {
+	if (!player.options.lowGrass && !confirm("This option is for you if you have lag issues on Grass Field. On enabling, your grass amount is capped at 250. Are you sure?")) return
+	player.options.lowGrass = !player.options.lowGrass
+}

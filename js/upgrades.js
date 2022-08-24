@@ -16,7 +16,7 @@ const UPGS = {
     grass: {
         unl: _=> !player.decel,
 
-        cannotBuy: _=>inChal(1) || inChal(7),
+        cannotBuy: _=>inChal(0) || inChal(5),
 
         autoUnl: _=>hasUpgrade('auto',3),
 
@@ -82,6 +82,8 @@ const UPGS = {
             },{
                 max: Infinity,
 
+                unl: _=>!inChal(1),
+
                 title: "XP",
                 desc: `Increase experience (XP) gained by <b class="green">1</b> per level.<br>This effect is <b class="green">doubled</b> every <b class="yellow">25</b> levels.`,
 
@@ -131,7 +133,7 @@ const UPGS = {
 
                 effect(i) {
                     let x = Decimal.pow(2,Math.floor(i/25)).mul(i/2+1)
-
+                    x = x.pow(upgEffect('crystal', 6))
                     return x
                 },
                 effDesc: x => x.format()+"x",
@@ -140,6 +142,8 @@ const UPGS = {
     },
     perk: {
         title: "Perk Upgrades",
+
+        cannotBuy: _=>inChal(3),
 
         req: _=>player.level >= 1 || player.pTimes > 0,
         reqDesc: _=>`Reach Level 1 to unlock.`,
@@ -258,7 +262,7 @@ const UPGS = {
                 desc: `Increase the grass grow amount by <b class="green">1</b>.`,
 
                 res: "perk",
-                icon: ['Icons/MoreGrass'],
+                icon: ['Icons/MoreGrass', "Icons/StarSpeed"],
                 
                 cost: i => 10,
                 bulk: i => Math.floor(i/10),
@@ -270,14 +274,14 @@ const UPGS = {
                 },
                 effDesc: x => "+"+format(x,0),
             },{
-                max: 10,
+                max: 200,
 
                 unl: _=>player.cTimes>0,
 
                 costOnce: true,
 
                 title: "TP Perk",
-                desc: `Increase TP gain by <b class="green">5%</b> per level multiplied by experience level.`,
+                desc: `Increase TP gain by <b class="green">50%</b> per level.`,
 
                 res: "perk",
                 icon: ['Icons/TP'],
@@ -286,7 +290,7 @@ const UPGS = {
                 bulk: i => i,
 
                 effect(i) {
-                    let x = Decimal.mul(player.level*i,0.05).add(1)
+                    let x = E(i/2+1)
 
                     return x
                 },
@@ -304,8 +308,8 @@ const UPGS = {
                 res: "perk",
                 icon: ['Curr/Prestige'],
                 
-                cost: i => 2,
-                bulk: i => Math.floor(i/2),
+                cost: i => 5,
+                bulk: i => Math.floor(i/5),
 
                 effect(i) {
                     let x = Decimal.mul(i,0.2).add(1)
@@ -326,8 +330,8 @@ const UPGS = {
                 res: "perk",
                 icon: ['Curr/Crystal'],
                 
-                cost: i => 4,
-                bulk: i => Math.floor(i/4),
+                cost: i => 5,
+                bulk: i => Math.floor(i/5),
 
                 effect(i) {
                     let x = Decimal.mul(i,0.2).add(1)
@@ -449,7 +453,7 @@ const UPGS = {
                 unl: _=>player.cTimes>0,
 
                 title: "Perk Save C",
-                desc: `Keep perks on Crystallize.`,
+                desc: `Keep perks on Crystalize.`,
             
                 res: "crystal",
                 icon: ['Curr/Perks','Icons/Automation'],
@@ -498,7 +502,7 @@ const UPGS = {
                 desc: `Passively generate <b class="green">1%</b> of PP you would earn on prestige per second.`,
             
                 res: "pp",
-                icon: ['Curr/Prestige','Icons/Automation'],
+                icon: ['Curr/Prestige','Icons/Plus'],
                             
                 cost: i => Decimal.pow(2,i).mul(1e40).ceil(),
                 bulk: i => i.div(1e40).max(1).log(2).floor().toNumber()+1,
@@ -514,10 +518,10 @@ const UPGS = {
                 max: 10,
 
                 title: "Crystal Generation",
-                desc: `Passively generate <b class="green">1%</b> of crystal you would earn on crystallize per second.`,
+                desc: `Passively generate <b class="green">1%</b> of crystal you would earn on crystalize per second.`,
             
                 res: "pp",
-                icon: ['Curr/Crystal','Icons/Automation'],
+                icon: ['Curr/Crystal','Icons/Plus'],
                             
                 cost: i => Decimal.pow(2,i).mul(1e42).ceil(),
                 bulk: i => i.div(1e42).max(1).log(2).floor().toNumber()+1,
@@ -613,45 +617,67 @@ const UPGS = {
                 },
                 effDesc: x => format(x)+"x",
             },{
-                max: 100,
+                max: 50,
+
+                unl: _=>player.cTimes>0,
+
+                costOnce: true,
+
+                title: "Plat TP",
+                desc: `Increase TP gain by <b class="green">+50%</b> per level.`,
+
+                res: "plat",
+                icon: ['Icons/TP'],
+                
+                cost: i => 20,
+                bulk: i => Math.floor(i/20),
+
+                effect(i) {
+                    let x = E(i/2+1)
+
+                    return x
+                },
+                effDesc: x => format(x)+"x",
+            },{
+                max: 50,
 
                 unl: _=>player.cTimes>0,
 
                 costOnce: true,
 
                 title: "Plat PP",
-                desc: `Increase PP gain by <b class="green">+20%</b> per level.`,
+                desc: `Increase PP gain by <b class="green">+50%</b> per level.`,
 
                 res: "plat",
                 icon: ['Curr/Prestige'],
                 
-                cost: i => 100,
-                bulk: i => Math.floor(i/100),
+                cost: i => 50,
+                bulk: i => Math.floor(i/20),
 
                 effect(i) {
-                    let x = E(i*0.2+1)
+                    let x = E(i/2+1)
 
                     return x
                 },
                 effDesc: x => format(x)+"x",
             },{
-                max: 100,
+                max: 50,
 
                 unl: _=>player.cTimes>0,
 
                 costOnce: true,
 
                 title: "Plat Crystal",
-                desc: `Increase Crystal gain by <b class="green">+20%</b> per level.`,
+                desc: `Increase Crystal gain by <b class="green">+50%</b> per level.`,
 
                 res: "plat",
                 icon: ['Curr/Crystal'],
                 
-                cost: i => 100,
-                bulk: i => Math.floor(i/100),
+                cost: i => 50,
+                bulk: i => Math.floor(i/20),
 
                 effect(i) {
-                    let x = E(i*0.2+1)
+                    let x = E(i/2+1)
 
                     return x
                 },
@@ -777,46 +803,46 @@ function buyUpgrade(id,x) {
     }
 }
 
-function buyMaxUpgrade(id,x,auto=false) {
-    let tu = tmp.upgs[id]
+function buyNextUpgrade(id,x) {
+	buyMaxUpgrade(id, x, false, true)
+}
 
-    if (tu.cannotBuy) return
+function buyMaxUpgrade(id,x,auto,next) {
+	let tu = tmp.upgs[id]
+	if (tu.cannotBuy) return
 
-    let upg = UPGS[id].ctn[x]
-    let resDis = upg.res
-    let res = tmp.upg_res[resDis]
+	let upg = UPGS[id].ctn[x]
+	let upgData = player.upgs[id]
+	let resDis = upg.res
+	let res = tmp.upg_res[resDis]
+	let costOnce = upg.costOnce
+	let numInc = isResNumber.includes(resDis)
 
-    if (!auto || (tu.unlLength > 0 && Decimal.gte(res,tu.unlLength))) {
-        let numInc = isResNumber.includes(resDis)
+	if (E(tu.cost[x]).gt(res)) return
+	if (auto) res = numInc ? Math.max(res / tu.unlLength, tu.cost[x]) : res.div(tu.unlLength).max(tu.cost[x])
 
-        let costOnce = upg.costOnce
-        
-        let res2 = res
-        if (auto) res = numInc ? Math.ceil(res / tu.unlLength) : res.div(tu.unlLength).ceil()
-        let amt = player.upgs[id]
-        let amt2 = amt[x]||0
+	let amt = upgData[x] || 0
+	if (amt >= tu.max[x]) return
 
-        if (amt2 < tu.max[x]) if (Decimal.gte(res2,tu.cost[x])) {
-            if (auto) res = numInc ? Math.max(res,tu.cost[x]*1.01) : res.max(tu.cost[x]*1.01)
-            let bulk = auto ? upg.bulk(res) : tu.bulk[x]
+	let bulk = auto ? upg.bulk(res) : tu.bulk[x]
+	if (costOnce) bulk += amt
+	if (next) bulk = Math.min(bulk, Math.ceil((amt + 1) / 25) * 25)
+	bulk = Math.floor(bulk)
+	if (amt >= bulk) return
 
-            if (costOnce ? true : bulk > amt2) {
-                let [p,q] = UPG_RES[resDis][1]()
-                let cost = costOnce ? tu.cost[x]*(Math.min(amt2+bulk,tu.max[x])-amt2) : upg.cost(bulk-1)
+	let [p,q] = UPG_RES[resDis][1]()
+	let cost = costOnce ? tu.cost[x] * (bulk - amt) : upg.cost(bulk-1)
 
-                amt[x] = Math.min(amt[x] ? costOnce ? amt[x]+bulk : Math.max(amt[x],bulk) : bulk,tu.max[x])
-                if (resDis == 'perk') {
-                    player.spentPerk += cost
-                    tmp.perkUnspent = Math.max(player.maxPerk-player.spentPerk,0)
-                }
-                else if (!tu.noSpend) p[q] = numInc ? Math.max(p[q]-cost,0) : p[q].sub(cost).max(0)
+	upgData[x] = Math.min(bulk, tu.max[x])
+	if (resDis == 'perk') {
+		player.spentPerk += cost
+		tmp.perkUnspent = Math.max(player.maxPerk-player.spentPerk,0)
+	} else if (!tu.noSpend) {
+		p[q] = numInc ? Math.max(p[q]-cost, 0) : p[q].sub(cost).max(0)
+	}
 
-                updateUpgResource(resDis)
-
-                updateUpgTemp(id)
-            }
-        }
-    }
+	updateUpgResource(resDis)
+	updateUpgTemp(id)
 }
 
 function switchAutoUpg(id) {
@@ -874,8 +900,9 @@ function setupUpgradesHTML(id) {
             <div id="upg_desc_${id}"></div>
             <div style="position: absolute; bottom: 0; width: 100%;">
                 <button onclick="tmp.upg_ch.${id} = -1">Cancel</button>
-                <button onclick="buyUpgrade('${id}',tmp.upg_ch.${id})">Buy 1</button>
-                <button onclick="buyMaxUpgrade('${id}',tmp.upg_ch.${id})">Buy Max</button>
+                <button id="upg_buy_${id}" onclick="buyUpgrade('${id}',tmp.upg_ch.${id})">Buy 1</button>
+                <button id="upg_buy_next_${id}" onclick="buyNextUpgrade('${id}',tmp.upg_ch.${id})">Buy Next</button>
+                <button id="upg_buy_max_${id}" onclick="buyMaxUpgrade('${id}',tmp.upg_ch.${id})">Buy Max</button>
             </div>
         </div>
         <div id="upg_req_div_${id}" class="upg_desc ${id}">
@@ -902,6 +929,7 @@ function setupUpgradesHTML(id) {
             html += `
                 <div id="upg_ctn_${id}${x}_cost" class="upg_cost"></div>
                 <div id="upg_ctn_${id}${x}_amt" class="upg_amt">argh</div>
+                <div id="upg_ctn_${id}${x}_max" class="upg_max">Maxed!</div>
             </div>
             `
         }
@@ -935,7 +963,7 @@ function updateUpgradesHTML(id) {
                 let dis = UPG_RES[upg.res][0]
 
                 let h = `
-                [#${ch}] <h2>${upg.title}</h2><br>
+                [#${ch+1}] <h2>${upg.title}</h2><br>
                 Level <b class="yellow">${format(amt,0)}${tu.max[ch] < Infinity ? ` / ${format(tu.max[ch],0)}` : ""}</b><br>
                 ${upg.desc}
                 `
@@ -944,15 +972,19 @@ function updateUpgradesHTML(id) {
 
                 if (amt < tu.max[ch]) {
                     let cost2 = upg.costOnce?Decimal.mul(tu.cost[ch],25):upg.cost((Math.floor(amt/25)+1)*25-1)//upg.cost(amt+25)
-                    
+
+                    if (tu.max[ch] >= 25) h += `<br><span class="${Decimal.gte(tmp.upg_res[upg.res],cost2)?"green":"red"}">Cost to next 25: ${format(cost2,0)} ${dis}</span>`
                     h += `
-                    <br><span class="${Decimal.gte(tmp.upg_res[upg.res],cost2)?"green":"red"}">Cost to next 25: ${format(cost2,0)} ${dis}</span>
                     <br><span class="${Decimal.gte(tmp.upg_res[upg.res],tu.cost[ch])?"green":"red"}">Cost: ${format(tu.cost[ch],0)} ${dis}</span>
                     <br>You have ${format(res,0)} ${dis}
                     `
-                }
+                } else h += "<br><b class='lavender'>Maxed!</b>"
 
                 tmp.el["upg_desc_"+id].setHTML(h)
+                tmp.el["upg_buy_"+id].setClasses({ locked: Decimal.lt(tmp.upg_res[upg.res],tu.cost[ch]) })
+                tmp.el["upg_buy_next_"+id].setClasses({ locked: Decimal.lt(tmp.upg_res[upg.res],tu.cost[ch]) })
+                tmp.el["upg_buy_max_"+id].setClasses({ locked: Decimal.lt(tmp.upg_res[upg.res],tu.cost[ch]) })
+                tmp.el["upg_buy_next_"+id].setDisplay(tu.max[ch] >= 25)
             }
 
             if (ch < 0) {
@@ -974,12 +1006,11 @@ function updateUpgradesHTML(id) {
                     tmp.el[div_id].changeStyle("width",height+"px")
                     tmp.el[div_id].changeStyle("height",height+"px")
 
-                    tmp.el[div_id+"_cost"].setTxt(amt < tu.max[x] ? format(tu.cost[x],0,6)+" "+UPG_RES[upg.res][0] : "Maxed")
+                    tmp.el[div_id+"_cost"].setTxt(amt < tu.max[x] ? format(tu.cost[x],0,6)+" "+UPG_RES[upg.res][0] : "")
                     tmp.el[div_id+"_cost"].setClasses({upg_cost: true, locked: Decimal.lt(res,tu.cost[x]) && amt < tu.max[x]})
-                    //tmp.el[div_id+"_cost"].changeStyle("font-size",(tmp.el[div_id+"_cost"].el.offsetHeight-4)+"px")
 
-                    tmp.el[div_id+"_amt"].setTxt(format(amt,0))
-                    //tmp.el[div_id+"_amt"].changeStyle("font-size",(tmp.el[div_id+"_amt"].el.offsetHeight-4)+"px")
+                    tmp.el[div_id+"_amt"].setTxt(amt < tu.max[x] ? format(amt,0) : "")
+                    tmp.el[div_id+"_max"].setDisplay(amt >= tu.max[x])
                 }
             }
         } else if (upgs.reqDesc) tmp.el["upg_req_desc_"+id].setHTML(upgs.reqDesc())
@@ -1041,8 +1072,9 @@ el.update.upgs = _=>{
 
 	if (mapID == 'opt') {
 		tmp.el.hideUpgOption.setTxt(player.options.hideUpgOption?"ON":"OFF")
-		tmp.el.pTimes.setTxt(player.pTimes ? "You have done " + player.pTimes + " Prestige resets." : "")
-		tmp.el.cTimes.setTxt(player.cTimes ? "You have done " + player.cTimes + " Crystalize resets." : "")
-		tmp.el.sTimes.setTxt(player.sTimes ? "You have done " + player.sTimes + " Steelie resets." : "")
+		tmp.el.grassCap.setTxt(player.options.lowGrass?250:"Unlimited")
+		tmp.el.pTimes.setHTML(player.pTimes ? "You have done " + player.pTimes + " <b style='color: #5BFAFF'>Prestige</b> resets.<br>Time: " + formatTime(player.pTime) : "")
+		tmp.el.cTimes.setHTML(player.cTimes ? "You have done " + player.cTimes + " <b style='color: #FF84F6'>Crystalize</b> resets.<br>Time: " + formatTime(player.cTime) : "")
+		tmp.el.sTimes.setHTML(player.sTimes ? "You have done " + player.sTimes + " <b style='color: #c5c5c5'>Steelie</b> resets.<br>Time: " + formatTime(player.sTime) : "")
 	}
 }

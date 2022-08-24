@@ -4,16 +4,12 @@ MAIN.pp = {
 
         x = x.mul(upgEffect('grass',5))
         x = x.mul(upgEffect('crystal',3))
-        x = x.mul(upgEffect('plat',3))
+        x = x.mul(upgEffect('plat',5))
         x = x.mul(upgEffect('perk',7))
 
         x = x.mul(chalEff(4))
 
         x = x.mul(tmp.chargeEff[0]||6)
-
-        x = x.pow(upgEffect('plat',6))
-
-        if (inChal(3) || inChal(5)) x = x.root(2)
 
         return x.floor()
     },
@@ -46,6 +42,7 @@ RESET.pp = {
     },
 
     doReset(order="p") {
+        player.pTime = 0
         player.grass = E(0)
         player.bestGrass = E(0)
         player.xp = E(0)
@@ -72,7 +69,7 @@ UPGS.pp = {
 
     title: "Prestige Upgrades",
 
-    cannotBuy: _=>inChal(4) || inChal(7),
+    cannotBuy: _=>inChal(4) || inChal(5),
 
     autoUnl: _=>hasUpgrade('auto',5),
     noSpend: _=>hasUpgrade('auto',9),
@@ -128,8 +125,8 @@ UPGS.pp = {
             res: "pp",
             icon: ["Icons/TP"],
                         
-            cost: i => Decimal.pow(1.2,i).mul(100).ceil(),
-            bulk: i => i.div(100).max(1).log(1.2).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.2,i**1.25).mul(100).ceil(),
+            bulk: i => i.div(100).max(1).log(1.2).root(1.25).floor().toNumber()+1,
         
             effect(i) {
                 let x = Decimal.pow(2,Math.floor(i/25)).mul(i+1)
@@ -143,16 +140,16 @@ UPGS.pp = {
             unl: _=>player.cTimes>0,
 
             title: "Crystal",
-            desc: `Increase Crystal gain by <b class="green">1</b> per level. This effect is <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
+            desc: `Increase Crystal gain by <b class="green">20%</b> compounding per level.`,
 
             res: "pp",
             icon: ["Curr/Crystal"],
 
-            cost: i => Decimal.pow(1.2,i).mul(1e9).ceil(),
-            bulk: i => i.div(1e9).max(1).log(1.2).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.2,i**1.25).mul(1e9).ceil(),
+            bulk: i => i.div(1e9).max(1).log(1.2).root(1.25).floor().toNumber()+1,
         
             effect(i) {
-                let x = Decimal.pow(2,Math.floor(i/25)).mul(i+1)
+                let x = Decimal.pow(1.2,i)
         
                 return x
             },

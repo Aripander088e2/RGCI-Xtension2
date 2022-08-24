@@ -34,21 +34,30 @@
 </head>
 <body onload="loadGame()">
     <input id="copy" style="position: absolute; top: 0; left: 0; user-select: all; visibility: hidden;">
-    <div id="fog"></div>
+	<div id="loading">
+		<span id="loading_text">Loading...</span>
+	</div>
+    <div id="fog" style="display: none"></div>
     <div id="app">
         <div class="table_space">
             <div id="grass_div" style="margin: 10px;">
                 <div class="table_between">
-                    <img src="images/grass.png">
+                    <img id="grass" src="images/grass.png">
                     <div>
                         <span id="grassAmt"></span> <span id="grassGain"></span>
                     </div>
                 </div>
             </div>
         </div><div class="table_space">
-            <div id="level" style="margin: 10px;"></div>
-            <div id="tier" style="margin: 10px;"></div>
-        </div>
+			<div id="level" style="margin: 10px;">
+				<div id="level_top_bar"></div>
+				<div id="level_top_info"></div>
+			</div>
+			<div id="tier" style="margin: 10px;">
+				<div id="tier_top_bar"></div>
+				<div id="tier_top_info"></div>
+			</div>
+		</div>
         <div id="loc"></div>
         <div id="main_app">
             <div id="map_div_g" class="table_center">
@@ -86,14 +95,15 @@
                 </div>
             </div><div id="map_div_opt">
                 <div style="width: 100%; height: 50%;">
-					<button onclick="if (confirm('Are you sure you want to wipe your save?')) {wipe(true)}">Hard Reset</button>
 					<button onclick="save()">Save</button>
 					<button onclick="importy()">Import</button>
 					<button onclick="export_copy()">Export to clipboard</button>
 					<button onclick="exporty()">Export</button>
+					<button onclick="if (confirm('Are you sure you want to wipe your save?')) {wipe(true)}">Hard Reset</button><br>
 					<button onclick="window.open('https://discord.gg/Ekp8FsSwzR')">Join Discord Server</button><br>
-					<button onclick="hideUpgOption()">Hide upgrades which is maxed/purchased: <span id="hideUpgOption">OFF</span></button><br><br>
-					Really Grass Cutting Incremental - Aarex's Balancing β1 - Made by MrRedShark77<br>
+					<button onclick="hideUpgOption()">Hide maxed upgrades: <span id="hideUpgOption">OFF</span></button>
+					<button onclick="toggleLowGrass()">Grass cap: <span id="grassCap">Unlimited</span></button><br><br>
+					Really Grass Cutting Incremental - Thunderized Balance β1.1 - By TehAarex<br>
 					The game inspired by <a href="https://www.roblox.com/games/9292879820">Grass Cutting Incremental</a><br>
 					<b class="red">Warning! Recommended size is 1920x1080! You may change zoom!</b><br><br>
 					Endgame: Level 90

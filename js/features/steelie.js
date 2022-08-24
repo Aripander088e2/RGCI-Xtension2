@@ -5,7 +5,7 @@ MAIN.steel = {
 
         if (hasUpgrade('factory',0)) x = x.mul(tmp.foundryEff)
 
-        x = x.mul(upgEffect('foundry',0)).mul(upgEffect('foundry',1)).mul(upgEffect('foundry',2)).mul(upgEffect('plat',5)).mul(chalEff(5))
+        x = x.mul(upgEffect('foundry',0)).mul(upgEffect('foundry',1)).mul(upgEffect('foundry',2))
 
         x = x.mul(tmp.chargeEff[0]||1)
 
@@ -23,7 +23,7 @@ MAIN.steel = {
         gain() {
             let x = E(upgEffect('factory',2)).mul(getGHEffect(9)).mul(upgEffect('factory',3)).mul(upgEffect('factory',4))
 
-            x = x.mul(upgEffect('gen',2)).mul(upgEffect('gen',3)).mul(chalEff(7))
+            x = x.mul(upgEffect('gen',2)).mul(upgEffect('gen',3))
 
             x = x.mul(upgEffect('aGrass',0))
 

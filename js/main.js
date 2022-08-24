@@ -17,7 +17,7 @@ const MAIN = {
         x = x.mul(upgEffect('crystal',0))
         x = x.mul(upgEffect('plat',2))
 
-        x = x.mul(chalEff(1))
+        x = x.mul(chalEff(0))
 
         if (player.grasshop >= 1) {
             x = x.mul(5).mul(getGHEffect(0))
@@ -29,13 +29,11 @@ const MAIN = {
 
         if (x.lt(1)) return x
 
-        x = x.pow(chalEff(3))
-        if (inChal(3) || inChal(5)) x = x.root(2)
-
         return x
     },
     grassCap() {
         let x = 10+upgEffect('grass',1,0)+upgEffect('perk',1,0)
+        if (player.options.lowGrass) x = Math.min(x, 250)
 
         return x
     },
@@ -47,14 +45,15 @@ const MAIN = {
         return x
     },
     xpGain() {
-        let x = upgEffect('grass',3).mul(tmp.tier.mult)
+        let x = E(tmp.tier.mult)
 
+        x = x.mul(upgEffect('grass',3))
         x = x.mul(upgEffect('perk',3))
         x = x.mul(upgEffect('pp',1))
         x = x.mul(upgEffect('crystal',1))
         x = x.mul(upgEffect('plat',1))
 
-        x = x.mul(chalEff(0))
+        x = x.mul(chalEff(1))
 
         x = x.mul(tmp.chargeEff[1]||1)
 
@@ -68,16 +67,15 @@ const MAIN = {
 
         if (x.lt(1)) return x
 
-        if (inChal(3) || inChal(5)) x = x.root(2)
-
         return x
     },
     tpGain() {
-        if (inChal(2) || inChal(7)) return E(0)
+        if (inChal(2)) return E(0)
 
         let x = upgEffect('pp',2)
 
         x = x.mul(upgEffect('crystal',2))
+        x = x.mul(upgEffect('plat',3))
         x = x.mul(upgEffect('perk',6))
 
         x = x.mul(chalEff(2))
@@ -94,8 +92,6 @@ const MAIN = {
 
         if (player.grasshop >= 7) x = x.pow(1.25)
 
-        if (inChal(5)) x = x.root(2)
-
         return x
     },
     rangeCut: _=>50+upgEffect('grass',4,0)+upgEffect('perk',4,0),
@@ -109,7 +105,7 @@ const MAIN = {
             let x = i.div(50)
             if (x.lt(1)) return 0
             x = x.log(1.4)
-            return Math.floor(x.scale(tmp.level.scale1,2,0,true).scale(700,2,0,true).toNumber()+1)
+            return Math.floor(x)
         },
         cur(i) {
             return i > 0 ? this.req(i-1) : E(0) 
@@ -117,19 +113,21 @@ const MAIN = {
         perk() {
             let x = player.level
 
+            x *= chalEff(3)
+
             return x
         },
     },
     tier: {
         req(i) {
-            let x = Decimal.pow(4,i**1.25).mul(500)
+            let x = Decimal.pow(4,i).mul(500)
 
-            return x.ceil()
+            return x
         },
         bulk(i) {
             let x = i.div(500)
             if (x.lt(1)) return 0
-            x = x.log(4).root(1.25)
+            x = x.log(4)
 
             return Math.floor(x.toNumber()+1)
         },
@@ -137,7 +135,7 @@ const MAIN = {
             return i > 0 ? this.req(i-1) : E(0) 
         },
         mult(i) {
-            return Decimal.pow(2.5, i)
+            return Decimal.pow(upgEffect('crystal', 5), i)
         },
     },
     checkCutting() {
@@ -158,10 +156,14 @@ el.update.main = _=>{
 
     let tier_unl = player.pTimes > 0
 
-    tmp.el.level.setHTML(`Level <b class="cyan">${format(player.level,0)}</b> (${formatPercent(tmp.level.percent)})`)
+    tmp.el.level_top_bar.changeStyle("width",tmp.level.percent*100+"%")
+    tmp.el.level_top_info.setHTML(`Level <b class="cyan">${format(player.level,0)}</b> (${formatPercent(tmp.level.percent)})`)
 
     tmp.el.tier.setDisplay(tier_unl)
-    if (tier_unl) tmp.el.tier.setHTML(`Tier <b class="yellow">${format(player.tier,0)}</b> (${formatPercent(tmp.tier.percent)})`)
+    if (tier_unl) {
+        tmp.el.tier_top_bar.changeStyle("width",tmp.tier.percent*100+"%")
+        tmp.el.tier_top_info.setHTML(`Tier <b class="yellow">${format(player.tier,0)}</b> (${formatPercent(tmp.tier.percent)})`)
+    }
 
     if (mapID == 'g') {
         tmp.el.level_amt.setTxt(format(player.level,0))
@@ -222,6 +224,7 @@ tmp_update.push(_=>{
     tmp.tier.mult = MAIN.tier.mult(t)
 
     tmp.platGain = 1
+    tmp.platGain += chalEff(5)
     if (player.grasshop >= 4) tmp.platGain += getGHEffect(3)
 
     tmp.platChance = 0.001

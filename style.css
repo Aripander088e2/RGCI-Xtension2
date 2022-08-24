@@ -94,6 +94,22 @@ button:not(.locked):hover {
 	pointer-events: none;
 }
 
+#loading {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background: black;
+	z-index: 1
+}
+
+#loading_text {
+	position: absolute;
+	left: 0;
+	width: 100%;
+	top: 50%;
+	font-size: 36px
+}
+
 #main_app {
     position: absolute;
     top: 50%;
@@ -172,7 +188,7 @@ button:not(.locked):hover {
     position: relative;
     width: 400px;
     border: solid 2px black;
-    background-color: #2968b1;
+    background-color: #143357;
     height: 35px;
     font-size: 25px;
     padding: 0 10px;
@@ -182,7 +198,7 @@ button:not(.locked):hover {
     position: relative;
     width: 400px;
     border: solid 2px black;
-    background-color: #afb129;
+    background-color: #575614;
     height: 35px;
     font-size: 25px;
     padding: 0 10px;
@@ -209,17 +225,23 @@ button:not(.locked):hover {
 }
 
 #tier_div > div,
-#level_div > div {
+#tier > div,
+#level_div > div,
+#level > div {
     position: absolute;
+	width: 100%;
+	left: 0
 }
 
-#level_bar {
+#level_bar,
+#level_top_bar {
     height: 100%;
     background-color: #2968b1;
     transition: width 0.2s;
 }
 
-#tier_bar {
+#tier_bar,
+#tier_top_bar {
     height: 100%;
     background-color: #b1a829;
     transition: width 0.2s;
@@ -408,6 +430,11 @@ button:not(.locked):hover {
     color: lime;
 }
 
+.lavender,
+.upg_max {
+    color: #bf7fff;
+}
+
 .reset_div {
     position: relative;
     width: calc(100% - 24px);
@@ -516,6 +543,6 @@ button:not(.locked):hover {
     height: 100%;
     pointer-events: none;
     background-color: #001c3b;
-    opacity: 0.25;
+    opacity: 0.5;
     z-index: 1;
 }

@@ -24,7 +24,7 @@ MAIN.gh = {
             effDesc: x=> "+"+format(x,0),
         },{
             r: 5,
-            desc: `Keep Crystallize challenges on Grasshop.`,
+            desc: `Keep Crystalize challenges on Grasshop.`,
         },{
             r: 6,
             desc: `Platinum Chance <b class="green">2x</b>. Unlock perk autobuyer upgrade.`,
