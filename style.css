@@ -333,6 +333,13 @@ button:not(.locked):hover {
     background-color: #242697;
 }
 
+.reset_div.ap,
+.reset_req.ap,
+.upg_desc.ap,
+.upgs_div.ap {
+    background-color: #FF4E4E;
+}
+
 .upgs_ctn {
     height: calc(100% - 84px);
     width: calc(100% - 24px);

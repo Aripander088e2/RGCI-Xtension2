@@ -111,12 +111,16 @@ function getPlayerData() {
 
         decel: false,
         aGrass: E(0),
+        aBestGrass: E(0),
         aRes: {
             level: 0,
             xp: E(0),
             tier: 0,
             tp: E(0),
         },
+        ap: E(0),
+        aTimes: 0,
+        aTime: 0,
 
         time: 0,
         ver: 1
