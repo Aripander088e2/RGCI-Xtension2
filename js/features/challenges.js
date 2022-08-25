@@ -2,15 +2,15 @@ const CHALS = [
     {
         unl: _=>true,
 
-        max: 20,
+        max: 15,
         id: 'pp',
 
         title: `Grassless`,
         desc: `You cannot buy any grass upgrades.`,
         reward: `Grass gain is <b class='green'>doubled</b> each completion.`,
 
-        goal: i=>100+10*i,
-        bulk: i=>Math.floor((i-100)/10+1),
+        goal: i=>60+10*i,
+        bulk: i=>Math.floor((i-60)/10+1),
 
         goalDesc: x=>"Level "+format(x,0),
         goalAmt: _=>player.level,
@@ -20,15 +20,15 @@ const CHALS = [
     },{
         unl: _=>true,
 
-        max: 20,
+        max: 15,
         id: 'pp',
 
         title: `Less Level`,
-        desc: `Grass Upgrade's "XP" does nothing.`,
+        desc: `Prestige Upgrade's "XP II" does nothing`,
         reward: `XP gain is <b class='green'>doubled</b> each completion.`,
 
-        goal: i=>30+10*i,
-        bulk: i=>Math.floor((i-30)/10+1),
+        goal: i=>80+10*i,
+        bulk: i=>Math.floor((i-80)/10+1),
 
         goalDesc: x=>"Level "+format(x,0),
         goalAmt: _=>player.level,
@@ -38,39 +38,39 @@ const CHALS = [
     },{
         unl: _=>true,
 
-        max: 20,
+        max: 5,
         id: 'crystal',
 
         title: `No Tiers`,
         desc: `You can't tier up.`,
-        reward: `TP gain is <b class='green'>doubled</b> each completion.`,
+        reward: `TP gain is increased by <b class='green'>+30%</b> each completion.`,
 
-        goal: i=>50+20*i,
-        bulk: i=>Math.floor((i-50)/20+1),
+        goal: i=>70+20*i,
+        bulk: i=>Math.floor((i-70)/20+1),
 
         goalDesc: x=>"Level "+format(x,0),
         goalAmt: _=>player.level,
 
-        eff: i=>Decimal.pow(2,i),
-        effDesc: x=>format(x,0)+"x",
+        eff: i=>Decimal.pow(1.5,i),
+        effDesc: x=>format(x,1)+"x",
     },{
         unl: _=>true,
 
-        max: 10,
+        max: 6,
         id: 'crystal',
 
         title: `Perkless`,
         desc: `You cannot buy Perks.`,
-        reward: `Perk gain is increased by <b class="green">+1</b> per completion.`,
+        reward: `Perk gain is increased by <b class="green">+0.5</b> per completion.`,
 
-        goal: i=>7+i,
-        bulk: i=>i-6,
+        goal: i=>7+i*2,
+        bulk: i=>Math.floor((i-7)/2+1),
 
         goalDesc: x=>"Tier "+format(x,0),
         goalAmt: _=>player.tier,
 
-        eff: i=>i+1,
-        effDesc: x=>format(x,0)+"x",
+        eff: i=>i/2+1,
+        effDesc: x=>format(x,1)+"x",
     },{
         unl: _=>true,
 
@@ -79,10 +79,10 @@ const CHALS = [
 
         title: `Prestigeless`,
         desc: `You cannot buy Prestige Upgrades.`,
-        reward: `PP gain is doubled each completion.`,
+        reward: `PP gain is <b class="green">doubled</b> each completion.`,
 
-        goal: i=>7+i,
-        bulk: i=>i-6,
+        goal: i=>2+i,
+        bulk: i=>i-1,
 
         goalDesc: x=>"Tier "+format(x,0),
         goalAmt: _=>player.tier,
@@ -92,15 +92,15 @@ const CHALS = [
     },{
         unl: _=>true,
 
-        max: 10,
+        max: 5,
         id: 'crystal',
 
         title: `Unefficient`,
         desc: `You cannot buy Grass and Prestige Upgrades.`,
         reward: `Platinum gain is increased by <b class="green">+1</b> per completion.`,
 
-        goal: i=>7+i,
-        bulk: i=>i-6,
+        goal: i=>4+i,
+        bulk: i=>i-3,
 
         goalDesc: x=>"Tier "+format(x,0),
         goalAmt: _=>player.tier,

@@ -21,7 +21,7 @@ MAIN.steel = {
     },
     charger: {
         gain() {
-            let x = E(upgEffect('factory',2)).mul(getGHEffect(9)).mul(upgEffect('factory',3)).mul(upgEffect('factory',4))
+            let x = E(upgEffect('factory',2)).mul(upgEffect('factory',3)).mul(upgEffect('factory',4))
 
             x = x.mul(upgEffect('gen',2)).mul(upgEffect('gen',3))
 
@@ -148,17 +148,17 @@ MAIN.steel = {
 }
 
 RESET.steel = {
-    unl: _=>player.grasshop>=10,
+    unl: _=>player.grasshop>=8,
 
-    req: _=>player.level>=400,
-    reqDesc: _=>`Reach Level 400.`,
+    req: _=>player.level>=230,
+    reqDesc: _=>`Reach Level 230.`,
 
     resetDesc: `Reset everything grasshop does, but it benefits from the milestones for grasshop.<br>Gain more Steels based on grasshop and Crystal.`,
-    resetGain: _=> `Gain <b>${tmp.steelGain.format(0)}</b> Steel`,
+    resetGain: _=> ``, //`Gain <b>${tmp.steelGain.format(0)}</b> Steel`,
 
     title: `Steelie`,
-    resetBtn: `Steelie!`,
-    hotkey: `S`,
+    resetBtn: `Coming soon!`, //`Steelie!`,
+    //hotkey: `S`,
 
     reset(force=false) {
         if (this.req()||force) {
@@ -444,55 +444,51 @@ UPGS.assembler = {
 
     ctn: [
         {
-            title: "Limitless Grass Upgrades",
-            desc: `<b class="green">Grass Value</b> will no longer have maximum limit.`,
+            title: "Grass Upgrades EL",
+            desc: `Prestige Upgrades no longer spend Grass.`,
         
             res: "steel",
-            icon: ["Curr/Grass","Icons/Automation2"],
-                        
-            cost: i => E(1e15),
-            bulk: i => 1,
-        },{
-            title: "Limitless Grass Upgrades II",
-            desc: `<b class="green">XP</b> will no longer have maximum limit.`,
-        
-            res: "steel",
-            icon: ["Curr/Grass","Icons/Automation2"],
-                        
-            cost: i => E(1e18),
-            bulk: i => 1,
-        },{
-            title: "Limitless Prestige Upgrades",
-            desc: `Prestige Upgrades will no longer have maximum limit.`,
-        
-            res: "steel",
-            icon: ["Curr/Prestige","Icons/Automation2"],
+            icon: ["Curr/Prestige","Icons/Infinite"],
                         
             cost: i => E(1e26),
             bulk: i => 1,
         },{
-            unl: _=>player.aTimes>0,
-
-            title: "Limitless Crystal Upgrades",
-            desc: `<b class="green">Tier Base</b> will no longer have maximum limit.`,
+            title: "Prestige Upgrades EL",
+            desc: `Prestige Upgrades no longer spend PP.`,
         
             res: "steel",
-            icon: ["Curr/Crystal","Icons/Automation2"],
+            icon: ["Curr/Prestige","Icons/Infinite"],
                         
-            cost: i => E(1e45),
+            cost: i => E(1e26),
             bulk: i => 1,
         },{
-            unl: _=>player.aTimes>0,
-
-            title: "Limitless Crystal Upgrades II",
-            desc: `<b class="green">Grass Value III, XP III, TP II & PP</b> will no longer have maximum limit.`,
+            title: "Crystal Upgrades EL",
+            desc: `Crystalize Upgrades no longer spend Crystals.`,
         
             res: "steel",
-            icon: ["Curr/Crystal","Icons/Automation2"],
-                        
-            cost: i => E(1e50),
+            icon: ["Curr/Crystal","Icons/Infinite"],
+
+            cost: i => E(1e26),
             bulk: i => 1,
-        },
+        }/*,{
+            title: "Perk Autobuy",
+            desc: `You can now automatically buy Perk Upgrades.`,
+
+            res: "steel",
+            icon: ['Curr/Perks','Icons/Automation'],
+
+            cost: i => E(1e26),
+            bulk: i => 1,
+        },{
+            title: "Perk Save G",
+            desc: `Keep perks on Grasshop and Steelie.`,
+
+            res: "steel",
+            icon: ['Curr/Perks','Icons/Automation'],
+
+            cost: i => E(1e26),
+            bulk: i => 1,
+        }*/
     ],
 }
 
@@ -505,10 +501,6 @@ tmp_update.push(_=>{
     tmp.chargeGain = ms.charger.gain()
 
     tmp.chargeOoM = 0
-    if (player.grasshop >= 18) tmp.chargeOoM++
-    if (player.grasshop >= 20) tmp.chargeOoM++
-    if (player.grasshop >= 24) tmp.chargeOoM += getGHEffect(12,0)
-
     tmp.chargeOoMMul = Decimal.pow(10,tmp.chargeOoM)
 
     for (let x = 0; x < ms.charger.effs.length; x++) {

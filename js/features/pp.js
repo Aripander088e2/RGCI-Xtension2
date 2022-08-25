@@ -3,7 +3,6 @@ MAIN.pp = {
         let x = Decimal.pow(1.15,player.level)
 
         x = x.mul(upgEffect('grass',5))
-        x = x.mul(upgEffect('crystal',3))
         x = x.mul(upgEffect('plat',5))
         x = x.mul(upgEffect('perk',7))
 
@@ -48,7 +47,9 @@ RESET.pp = {
         player.xp = E(0)
         player.level = 0
 
-        let keep_perk = order == "p" && hasUpgrade('auto',4) || order == "c" && hasUpgrade('auto',7) || order == "gh" && player.grasshop >= 10
+        let keep_perk = (order == "p" && hasUpgrade('auto',5)) ||
+			(order == "c" && hasUpgrade('auto',6)) ||
+			(order == "gh" && false)
 
         if (!keep_perk) {
             player.maxPerk = 0
@@ -72,7 +73,7 @@ UPGS.pp = {
     cannotBuy: _=>inChal(4) || inChal(5),
 
     autoUnl: _=>hasUpgrade('auto',5),
-    noSpend: _=>hasUpgrade('auto',9),
+    noSpend: _=>hasUpgrade('assembler',1),
 
     req: _=>player.pTimes > 0,
     reqDesc: _=>`Prestige once to unlock.`,
@@ -109,10 +110,10 @@ UPGS.pp = {
                         
             cost: i => Decimal.pow(1.2,i).mul(30).ceil(),
             bulk: i => i.div(30).max(1).log(1.2).floor().toNumber()+1,
-        
+
             effect(i) {
                 let x = Decimal.pow(2,Math.floor(i/25)).mul(i/2+1)
-        
+                if (inChal(1)) x = E(1)
                 return x
             },
             effDesc: x => format(x)+"x",
@@ -120,8 +121,8 @@ UPGS.pp = {
             max: Infinity,
 
             title: "TP",
-            desc: `Increase Tier Points (TP) gain by <b class="green">1</b> per level. This effect is <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
-        
+            desc: `Increase Tier Points (TP) gain by <b class="green">25%</b> compounding per level.`,
+
             res: "pp",
             icon: ["Icons/TP"],
                         
@@ -129,7 +130,7 @@ UPGS.pp = {
             bulk: i => i.div(100).max(1).log(1.2).root(1.25).floor().toNumber()+1,
         
             effect(i) {
-                let x = Decimal.pow(2,Math.floor(i/25)).mul(i+1)
+                let x = Decimal.pow(1.2,i)
         
                 return x
             },
@@ -140,17 +141,17 @@ UPGS.pp = {
             unl: _=>player.cTimes>0,
 
             title: "Crystal",
-            desc: `Increase Crystal gain by <b class="green">20%</b> compounding per level.`,
+            desc: `Increase Crystal gain by <b class="green">+50%</b> per level. This effect is increased by <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
 
             res: "pp",
             icon: ["Curr/Crystal"],
 
             cost: i => Decimal.pow(1.2,i**1.25).mul(1e9).ceil(),
             bulk: i => i.div(1e9).max(1).log(1.2).root(1.25).floor().toNumber()+1,
-        
+
             effect(i) {
-                let x = Decimal.pow(1.2,i)
-        
+                let x = Decimal.pow(2,Math.floor(i/25)).mul(i/2+1)
+                if (inChal(1)) x = E(1)
                 return x
             },
             effDesc: x => format(x)+"x",
@@ -165,7 +166,7 @@ MAIN.ap = {
         let l = Math.max(player.level-29,0)
         let x = Decimal.pow(1.1,l).mul(l).mul(player.aBestGrass.div(1e18).max(1).root(3))
 
-        x = x.mul(upgEffect('plat',8))
+        x = x.mul(upgEffect('plat',6))
         x = x.mul(tmp.chargeEff[8]||0)
 
         return x.floor()
@@ -337,7 +338,7 @@ UPGS.ap = {
 
 tmp_update.push(_=>{
     tmp.ppGain = MAIN.pp.gain()
-    tmp.ppGainP = (upgEffect('auto',11,0)+upgEffect('gen',0,0))*upgEffect('factory',1,1)
+    tmp.ppGainP = (upgEffect('auto',8,0)+upgEffect('gen',0,0))*upgEffect('factory',1,1)
 
     tmp.apGain = MAIN.ap.gain()
 })

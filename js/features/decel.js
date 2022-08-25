@@ -52,7 +52,7 @@ UPGS.aGrass = {
 
     title: "Anti-Grass Upgrades",
 
-    autoUnl: _=>hasUpgrade('auto',14),
+    autoUnl: _=>false,//hasUpgrade('auto',14),
 
     ctn: [
         {

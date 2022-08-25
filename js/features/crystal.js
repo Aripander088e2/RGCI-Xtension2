@@ -1,10 +1,11 @@
 MAIN.crystal = {
     gain() {
-        let x = E(2).pow(player.tier+1)
+        let x = E(2).pow(player.tier)
 
         x = x.mul(upgEffect('pp',3))
         x = x.mul(upgEffect('plat',5))
         x = x.mul(upgEffect('perk',8))
+        if (player.grasshop >= 2) x = x.mul(2)
         x = x.mul(tmp.chargeEff[0]||7)
 
         return x.floor()
@@ -18,15 +19,13 @@ RESET.crystal = {
     reqDesc: _=>`Reach Level 90 to Crystalize.`,
 
     resetDesc: `Crystalizing resets everything that prestige does, as well as Tier and Prestige.`,
-    resetGain: _=> ``, //`Gain <b>${tmp.crystalGain.format(0)}</b> Crystals`,
+    resetGain: _=>`Gain <b>${tmp.crystalGain.format(0)}</b> Crystals`,
 
     title: `Crystalize`,
-    resetBtn: `Coming soon!`, //`Crystalize`,
+    resetBtn: `Crystalize`,
     hotkey: `C`,
 
     reset(force=false) {
-		return //coming soon
-
         if (this.req()||force) {
             if (!force) {
                 player.crystal = player.crystal.add(tmp.crystalGain)
@@ -62,8 +61,8 @@ UPGS.crystal = {
 
     underDesc: _=>`You have ${format(player.crystal,0)} Crystal`+(tmp.crystalGainP > 0 ? " <span class='smallAmt'>"+formatGain(player.crystal,tmp.crystalGain.mul(tmp.crystalGainP))+"</span>" : ""),
 
-    autoUnl: _=>hasUpgrade('auto',8),
-    noSpend: _=>hasUpgrade('auto',10),
+    autoUnl: _=>hasUpgrade('auto',7),
+    noSpend: _=>hasUpgrade('assembler',2),
 
     ctn: [
         {
@@ -91,8 +90,8 @@ UPGS.crystal = {
             res: "crystal",
             icon: ["Icons/XP"],
                         
-            cost: i => Decimal.pow(2,i).mul(50).ceil(),
-            bulk: i => i.div(50).max(1).log(2).floor().toNumber()+1,
+            cost: i => Decimal.pow(2,i).mul(30).ceil(),
+            bulk: i => i.div(30).max(1).log(2).floor().toNumber()+1,
         
             effect(i) {
                 return i+1
@@ -107,8 +106,8 @@ UPGS.crystal = {
             res: "crystal",
             icon: ["Icons/TP"],
                         
-            cost: i => Decimal.pow(2,i).mul(100).ceil(),
-            bulk: i => i.div(100).max(1).log(2).floor().toNumber()+1,
+            cost: i => Decimal.pow(2,i).mul(1e3).ceil(),
+            bulk: i => i.div(1e3).max(1).log(2).floor().toNumber()+1,
         
             effect(i) {
                 return E(1.25).pow(i)
@@ -117,19 +116,39 @@ UPGS.crystal = {
         },{
             max: Infinity,
 
-            title: "PP",
-            desc: `Increase PP gain by <b class="green">1</b> per level.`,
-
+            title: "Tiered Boost",
+            desc: `Tiers are more effective. (<b class='green'>+0.1x</b> multiplier per Tier)`,
+        
             res: "crystal",
-            icon: ["Curr/Prestige"],
+            icon: ["Icons/TP", "Icons/StarSpeed"],
 
-            cost: i => Decimal.pow(2,i).mul(200).ceil(),
-            bulk: i => i.div(200).max(1).log(2).floor().toNumber()+1,
+            cost: i => Decimal.pow(10,i/2.5).mul(100).ceil(),
+            bulk: i => i.div(100).max(1).log(10).mul(2.5).floor().toNumber()+1,
         
             effect(i) {
-                return i+1
+                let x = i/10+2.25
+        
+                return x
             },
-            effDesc: x => format(x)+"x",
+            effDesc: x => format(x,2)+"x per Tier ("+format(E(MAIN.tier.base()).pow(player.tier),0)+"x -> "+format(E(MAIN.tier.base()+.1).pow(player.tier),0)+"x)",
+        },{
+            max: 60,
+
+            title: "Prestiged Synergy",
+            desc: `Grass Upgrade's "PP" is <b class='green'>+0.033x</b> more effective.`,
+        
+            res: "crystal",
+            icon: ["Curr/Prestige", "Icons/StarSpeed"],
+
+            cost: i => Decimal.pow(10,i/2).mul(50).ceil(),
+            bulk: i => i.div(50).max(1).log(10).mul(2).floor().toNumber()+1,
+        
+            effect(i) {
+                let x = i/30+1
+        
+                return x
+            },
+            effDesc: x => format(x,1)+"x effective",
         },{
             max: 2,
 
@@ -148,47 +167,11 @@ UPGS.crystal = {
                 return x
             },
             effDesc: x => "+"+format(x,0),
-        },{
-            max: Infinity,
-
-            title: "Tiered Boost",
-            desc: `Increase TP's multiplier base by 0.25.`,
-        
-            res: "crystal",
-            icon: ["Icons/TP", "Icons/StarSpeed"],
-
-            cost: i => Decimal.pow(2,i).mul(300).ceil(),
-            bulk: i => i.div(300).max(1).log(2).floor().toNumber()+1,
-        
-            effect(i) {
-                let x = i/4+2.25
-        
-                return x
-            },
-            effDesc: x => format(x,2)+"x per Tier",
-        },{
-            max: 10,
-
-            title: "Prestiged Synergy",
-            desc: `Grass Upgrade's "PP" is more effective.`,
-        
-            res: "crystal",
-            icon: ["Curr/Prestige", "Icons/StarSpeed"],
-
-            cost: i => Decimal.pow(4,i).mul(1e4).ceil(),
-            bulk: i => i.div(1e4).max(1).log(4).floor().toNumber()+1,
-        
-            effect(i) {
-                let x = i/10+1
-        
-                return x
-            },
-            effDesc: x => format(x,1)+"x effective",
         }
     ],
 }
 
 tmp_update.push(_=>{
     tmp.crystalGain = MAIN.crystal.gain()
-    tmp.crystalGainP = (upgEffect('auto',12,0)+upgEffect('gen',1,0))*upgEffect('factory',1,1)
+    tmp.crystalGainP = (upgEffect('auto',9,0)+upgEffect('gen',1,0))*upgEffect('factory',1,1)
 })

@@ -1,59 +1,36 @@
 MAIN.gh = {
-    req: _=> Math.ceil(300+E(player.grasshop).scale(20,2,0).toNumber()*10),
+    req: _=> player.grasshop >= 8 ? 160 + player.grasshop * 10 : 200 + player.grasshop * 3,
 
     milestone: [
         {
             r: 1,
-            desc: `Gain <b class="green">5x</b> more grass. Grass gain is increased by <b class="green">50%</b> every grasshop. Unlock more automation upgrades.`,
-            effect: _=>Decimal.pow(1.5,player.grasshop),
-            effDesc: x=> format(x)+"x",
+            desc: `Gain <b class="green">4x</b> more TP. Unlock new automation upgrades.`,
         },{
             r: 2,
-            desc: `Gain <b class="green">5x</b> more XP. XP gain is increased by <b class="green">50%</b> every grasshop.`,
-            effect: _=>Decimal.pow(1.5,player.grasshop),
-            effDesc: x=> format(x)+"x",
+            desc: `Gain <b class="green">2x</b> more Crystals.`,
         },{
             r: 3,
-            desc: `Gain <b class="green">5x</b> more TP. TP gain is increased by <b class="green">50%</b> every grasshop. Keep Prestige challenges on Grasshop.`,
-            effect: _=>Decimal.pow(1.5,player.grasshop),
-            effDesc: x=> format(x)+"x",
+            desc: `Platinum worth <b class="green">+1</b> per grasshop. (starting at 2)`,
+            effect: _=>Math.max(0,player.grasshop-2),
+            effDesc: x=> "+"+format(x,0),
         },{
             r: 4,
-            desc: `Platinum worth <b class="green">+1</b> per grasshop (start at 3). Unlock more automation upgrades.`,
+            desc: `Perk worth <b class="green">+1x</b> per grasshop. (starting at 3)`,
             effect: _=>Math.max(0,player.grasshop-3),
             effDesc: x=> "+"+format(x,0),
         },{
             r: 5,
-            desc: `Keep Crystalize challenges on Grasshop.`,
+            desc: `<b class="green">+0.1x</b> to Tier multiplier base.`,
         },{
             r: 6,
-            desc: `Platinum Chance <b class="green">2x</b>. Unlock perk autobuyer upgrade.`,
+            desc: `Platinum is <b class="green">2x</b> more common.`,
         },{
             r: 7,
-            desc: `Tier multiplier's exponent is increased by <b class="green">25%</b>.`,
+            desc: `Gain <b class="green">2x</b> more XP.`,
         },{
-            r: 10,
-            desc: `Unlock Steelie reset. Grasshop does not reset perks.`,
-        },{
-            r: 14,
-            desc: `Unlock two more generator upgrades related to charge.`,
-        },{
-            r: 15,
-            desc: `Charge rate is increased by <b class="green">25%</b> every grasshop.`,
-            effect: _=>Decimal.pow(1.25,player.grasshop),
-            effDesc: x=> format(x)+"x",
-        },{
-            r: 18,
-            desc: `Charger charge bonuses increase <b class="green">1</b> OoM (order of magnitude) sooner.`,
-        },{
-            r: 20,
-            desc: `Charger charge bonuses increase another <b class="green">1</b> OoM sooner. Grasshop animation will no longer play.`,
-        },{
-            r: 24,
-            desc: `Charger charge bonuses increase another <b class="green">1</b> OoM sooner per grasshop starting at 24.`,
-            effect: _=>Math.max(player.grasshop-23,0),
-            effDesc: x=> "+"+format(x,0)+" later",
-        },
+            r: 8,
+            desc: `Unlock Steelie reset. [soon!]`,
+        }
     ],
 }
 
@@ -104,8 +81,6 @@ RESET.gh = {
         player.bestCrystal = E(0)
 
         let keep = []
-        if (player.grasshop >= 3) keep.push(0,1)
-        if (player.grasshop >= 4) keep.push(2,3,4)
         for (let i = 0; i < 5; i++) if (!keep.includes(i)) player.chal.comp[i] = 0
 
         resetUpgrades('crystal')
