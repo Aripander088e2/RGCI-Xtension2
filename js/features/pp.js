@@ -141,16 +141,16 @@ UPGS.pp = {
             unl: _=>player.cTimes>0,
 
             title: "Crystal",
-            desc: `Increase Crystal gain by <b class="green">+50%</b> per level. This effect is increased by <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
+            desc: `Increase Crystal gain by <b class="green">+50%</b> per level. This effect is increased by <b class="green">+25%</b> for every <b class="yellow">25</b> levels.`,
 
             res: "pp",
             icon: ["Curr/Crystal"],
 
-            cost: i => Decimal.pow(1.2,i**1.25).mul(1e9).ceil(),
-            bulk: i => i.div(1e9).max(1).log(1.2).root(1.25).floor().toNumber()+1,
+            cost: i => Decimal.pow(2,i).mul(1e9).ceil(),
+            bulk: i => i.div(1e9).max(1).log(2).floor().toNumber()+1,
 
             effect(i) {
-                let x = Decimal.pow(2,Math.floor(i/25)).mul(i/2+1)
+                let x = Decimal.pow(1.25,Math.floor(i/25)).mul(i/2+1)
                 if (inChal(1)) x = E(1)
                 return x
             },
@@ -168,6 +168,8 @@ MAIN.ap = {
 
         x = x.mul(upgEffect('plat',6))
         x = x.mul(tmp.chargeEff[8]||0)
+
+        x = x.mul(upgEffect('oil',3))
 
         return x.floor()
     },
@@ -200,6 +202,7 @@ RESET.ap = {
     },
 
     doReset(order="a") {
+        player.aTime = 0
         player.aGrass = E(0)
         player.aBestGrass = E(0)
         player.xp = E(0)
@@ -222,6 +225,8 @@ UPGS.ap = {
     reqDesc: _=>`Anonymity once to unlock.`,
 
     underDesc: _=>`You have ${format(player.ap,0)} Anonymity Points`,
+
+    autoUnl: _=>hasUpgrade('auto',15),
 
     ctn: [
         {
@@ -323,8 +328,8 @@ UPGS.ap = {
             res: "ap",
             icon: ['Icons/XP','Icons/Plus'],
             
-            cost: i => Decimal.pow(3,i**1.25).mul(1e5).ceil(),
-            bulk: i => i.div(1e5).max(1).log(3).root(1.25).floor().toNumber()+1,
+            cost: i => Decimal.pow(3,i**1.2).mul(1e5).ceil(),
+            bulk: i => i.div(1e5).max(1).log(3).root(1.2).floor().toNumber()+1,
 
             effect(i) {
                 let x = i

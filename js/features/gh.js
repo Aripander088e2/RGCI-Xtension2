@@ -1,5 +1,5 @@
 MAIN.gh = {
-    req: _=> player.grasshop >= 8 ? 160 + player.grasshop * 10 : 200 + player.grasshop * 3,
+    req: _=> player.grasshop >= 10 ? 160 + player.grasshop * 10 : 200 + player.grasshop * 5,
 
     milestone: [
         {
@@ -10,14 +10,14 @@ MAIN.gh = {
             desc: `Gain <b class="green">2x</b> more Crystals.`,
         },{
             r: 3,
-            desc: `Platinum worth <b class="green">+1</b> per grasshop. (starting at 2)`,
-            effect: _=>Math.max(0,player.grasshop-2),
-            effDesc: x=> "+"+format(x,0),
+            desc: `Platinum worth <b class="green">+0.5</b> per grasshop. (starting at 2)`,
+            effect: _=>Math.max(0,(player.grasshop-2)/5),
+            effDesc: x=> "+"+format(x,1),
         },{
             r: 4,
-            desc: `Perk worth <b class="green">+1x</b> per grasshop. (starting at 3)`,
-            effect: _=>Math.max(0,player.grasshop-3),
-            effDesc: x=> "+"+format(x,0),
+            desc: `Perk worth <b class="green">+0.1</b> per grasshop. (starting at 3)`,
+            effect: _=>Math.max(0,(player.grasshop-2)/10),
+            effDesc: x=> "+"+format(x,1),
         },{
             r: 5,
             desc: `<b class="green">+0.1x</b> to Tier multiplier base.`,
@@ -25,10 +25,10 @@ MAIN.gh = {
             r: 6,
             desc: `Platinum is <b class="green">2x</b> more common.`,
         },{
-            r: 7,
+            r: 8,
             desc: `Gain <b class="green">2x</b> more XP.`,
         },{
-            r: 8,
+            r: 10,
             desc: `Unlock Steelie reset. [soon!]`,
         }
     ],

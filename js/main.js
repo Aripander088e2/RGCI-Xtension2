@@ -20,8 +20,8 @@ const MAIN = {
         x = x.mul(chalEff(0))
 
         x = x.mul(upgEffect('aGrass',3))
-
         x = x.mul(upgEffect('ap',0))
+        x = x.mul(upgEffect('oil',0))
 
         if (player.decel) x = x.div(1e15)
 
@@ -59,6 +59,7 @@ const MAIN = {
 
         x = x.mul(upgEffect('aGrass',4))
         x = x.mul(upgEffect('ap',2))
+        x = x.mul(upgEffect('oil',1))
 
         if (player.decel) x = x.div(1e16)
 
@@ -82,6 +83,7 @@ const MAIN = {
         x = x.mul(tmp.chargeEff[3]||1)
 
         x = x.mul(upgEffect('ap',3))
+        x = x.mul(upgEffect('oil',2))
 
         if (player.decel) x = x.div(1e16)
 
@@ -241,6 +243,9 @@ window.addEventListener('keydown', function(event) {
 			break;
 		case "a":
 			RESET.ap.reset();
+			break;
+		case "l":
+			RESET.oil.reset();
 			break;
 	}
 }, false);

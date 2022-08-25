@@ -27,8 +27,8 @@ const CHALS = [
         desc: `Prestige Upgrade's "XP II" does nothing`,
         reward: `XP gain is <b class='green'>doubled</b> each completion.`,
 
-        goal: i=>80+10*i,
-        bulk: i=>Math.floor((i-80)/10+1),
+        goal: i=>80+15*i,
+        bulk: i=>Math.floor((i-80)/15+1),
 
         goalDesc: x=>"Level "+format(x,0),
         goalAmt: _=>player.level,
@@ -38,12 +38,12 @@ const CHALS = [
     },{
         unl: _=>true,
 
-        max: 5,
+        max: 10,
         id: 'crystal',
 
         title: `No Tiers`,
         desc: `You can't tier up.`,
-        reward: `TP gain is increased by <b class='green'>+30%</b> each completion.`,
+        reward: `TP gain is increased by <b class='green'>+25%</b> each completion.`,
 
         goal: i=>70+20*i,
         bulk: i=>Math.floor((i-70)/20+1),
@@ -51,7 +51,7 @@ const CHALS = [
         goalDesc: x=>"Level "+format(x,0),
         goalAmt: _=>player.level,
 
-        eff: i=>Decimal.pow(1.5,i),
+        eff: i=>Decimal.pow(1.25,i),
         effDesc: x=>format(x,1)+"x",
     },{
         unl: _=>true,
@@ -81,8 +81,8 @@ const CHALS = [
         desc: `You cannot buy Prestige Upgrades.`,
         reward: `PP gain is <b class="green">doubled</b> each completion.`,
 
-        goal: i=>2+i,
-        bulk: i=>i-1,
+        goal: i=>2+i*2,
+        bulk: i=>Math.floor(i/2),
 
         goalDesc: x=>"Tier "+format(x,0),
         goalAmt: _=>player.tier,
@@ -99,14 +99,14 @@ const CHALS = [
         desc: `You cannot buy Grass and Prestige Upgrades.`,
         reward: `Platinum gain is increased by <b class="green">+1</b> per completion.`,
 
-        goal: i=>4+i,
-        bulk: i=>i-3,
+        goal: i=>4+i*3,
+        bulk: i=>Math.floor((i-4)/3+1),
 
         goalDesc: x=>"Tier "+format(x,0),
         goalAmt: _=>player.tier,
 
         eff: i=>i+1,
-        effDesc: x=>format(x,0)+"x",
+        effDesc: x=>format(x,1)+"x",
     }
 ]
 

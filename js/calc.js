@@ -8,6 +8,7 @@ function calc(dt) {
     player.cTime += dt
     player.sTime += dt
     player.aTime += dt
+    player.lTime += dt
 
     if (tmp.spawn_time >= tmp.grassSpawn) {
         while (tmp.spawn_time >= tmp.grassSpawn) {
@@ -40,6 +41,8 @@ function calc(dt) {
     player.bestCharge = player.bestCharge.max(player.chargeRate)
 
     player.aBestGrass = player.aBestGrass.max(player.aGrass)
+    player.bestAP = player.bestAP.max(player.ap)
+    player.bestOil = player.bestOil.max(player.oil)
 
     if (player.level >= 200 && !player.chalUnl) player.chalUnl = true
 
