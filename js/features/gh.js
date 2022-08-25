@@ -38,8 +38,8 @@ const GH_MIL_LEN = MAIN.gh.milestone.length
 
 RESET.gh = {
     unl: _=>player.cTimes>0,
-    req: _=>player.level>=300,
-    reqDesc: _=>`Reach Level 300.`,
+    req: _=>player.level>=200,
+    reqDesc: _=>`Reach Level 200.`,
 
     resetDesc: `Grasshopping resets everything crystalize does as well as crystals, crystal upgrades, challenges.`,
     resetGain: _=> `Reach Level <b>${format(tmp.gh_req,0)}</b> to Grasshop`,
