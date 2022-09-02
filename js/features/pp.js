@@ -136,7 +136,7 @@ UPGS.pp = {
             },
             effDesc: x => format(x)+"x",
         },{
-            max: Infinity,
+            max: 100,
 
             unl: _=>player.cTimes>0,
 
