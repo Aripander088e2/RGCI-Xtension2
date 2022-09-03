@@ -3,12 +3,11 @@ MAIN.pp = {
         let x = Decimal.pow(1.15,player.level)
 
         x = x.mul(upgEffect('grass',5))
-        x = x.mul(upgEffect('plat',5))
-        x = x.mul(upgEffect('perk',7))
-
+        x = x.mul(upgEffect('plat',3))
+        x = x.mul(upgEffect('perk',6))
         x = x.mul(chalEff(4))
-
-        x = x.mul(tmp.chargeEff[0]||6)
+        x = x.mul(tmp.chargeEff[3]||1)
+        x = x.mul(devMult)
 
         return x.floor()
     },
@@ -49,7 +48,7 @@ RESET.pp = {
 
         let keep_perk = (order == "p" && hasUpgrade('auto',5)) ||
 			(order == "c" && hasUpgrade('auto',6)) ||
-			(order == "gh" && false)
+			(order == "gh" && hasUpgrade('assembler',4))
 
         if (!keep_perk) {
             player.maxPerk = 0
@@ -164,11 +163,9 @@ UPGS.pp = {
 MAIN.ap = {
     gain() {
         let l = Math.max(player.level-29,0)
-        let x = Decimal.pow(1.1,l).mul(l).mul(player.aBestGrass.div(1e18).max(1).root(3))
+        let x = Decimal.pow(1.15,l)
 
-        x = x.mul(upgEffect('plat',6))
-        x = x.mul(tmp.chargeEff[8]||0)
-
+        x = x.mul(upgEffect('plat',7))
         x = x.mul(upgEffect('oil',3))
 
         return x.floor()
@@ -181,7 +178,7 @@ RESET.ap = {
     req: _=>player.level>=30,
     reqDesc: _=>`Reach Level 30 to Anonymity.`,
 
-    resetDesc: `Anonymity resets your anti-grass, anti-grass upgrades, level for Anonymity Points (AP).<br>Gain more AP based on your level and anti-grass.`,
+    resetDesc: `Anonymity resets your anti-grass, anti-grass upgrades, level for Anonymity Points (AP).`,
     resetGain: _=> `Gain <b>${tmp.apGain.format(0)}</b> Anonymity Points`,
 
     title: `Anonymity`,
@@ -224,16 +221,16 @@ UPGS.ap = {
     req: _=>player.aTimes > 0,
     reqDesc: _=>`Anonymity once to unlock.`,
 
-    underDesc: _=>`You have ${format(player.ap,0)} Anonymity Points`,
+    underDesc: _=>`You have ${format(player.ap,0)} Anonymity Points.`,
 
     autoUnl: _=>hasUpgrade('auto',15),
 
     ctn: [
         {
-            max: 1000,
+            max: Infinity,
 
             title: "AP Value",
-            desc: `Increase grass gain by <b class="green">+25%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
+            desc: `Increase grass gain by <b class="green">+25%</b> per level.`,
         
             res: "ap",
             icon: ["Curr/Grass"],
@@ -242,16 +239,14 @@ UPGS.ap = {
             bulk: i => i.div(2).max(1).log(1.2).floor().toNumber()+1,
         
             effect(i) {
-                let x = Decimal.pow(1.25,Math.floor(i/25)).mul(i/4+1)
-        
-                return x
+                return E(i/2+1)
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 1000,
+            max: Infinity,
 
             title: "AP Charge",
-            desc: `Increase charge rate by <b class="green">+10%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
+            desc: `Increase charge rate by <b class="green">+50%</b> per level.`,
         
             res: "ap",
             icon: ['Curr/Charge'],
@@ -260,84 +255,60 @@ UPGS.ap = {
             bulk: i => i.div(3).max(1).log(1.2).floor().toNumber()+1,
 
             effect(i) {
-                let x = Decimal.pow(1.25,Math.floor(i/25)).mul(i/10+1)
-
-                return x
+                return E(i/2+1)
             },
             effDesc: x => x.format()+"x",
         },{
-            max: 1000,
+            max: Infinity,
 
             title: "AP XP",
-            desc: `Increase XP gain by <b class="green">+25%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
+            desc: `Increase XP gain by <b class="green">+25%</b> per level.`,
         
             res: "ap",
             icon: ['Icons/XP'],
             
-            cost: i => Decimal.pow(1.25,i).mul(5).ceil(),
-            bulk: i => i.div(5).max(1).log(1.25).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.2,i).mul(5).ceil(),
+            bulk: i => i.div(5).max(1).log(1.2).floor().toNumber()+1,
 
             effect(i) {
-                let x = Decimal.pow(1.25,Math.floor(i/25)).mul(i/4+1)
+                let x = Decimal.pow(1.2,Math.floor(i/25)).mul(i/4+1)
 
                 return x
             },
             effDesc: x => x.format()+"x",
         },{
-            max: 1000,
+            max: Infinity,
 
             title: "AP TP",
-            desc: `Increase TP gain by <b class="green">+50%</b> per level. This effect is increased by <b class="green">50%</b> for every <b class="yellow">25</b> levels.`,
+            desc: `Increase TP gain by <b class="green">+10%</b> per level.`,
         
             res: "ap",
             icon: ['Icons/TP'],
             
-            cost: i => Decimal.pow(1.35,i).mul(10).ceil(),
-            bulk: i => i.div(10).max(1).log(1.35).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.5,i).mul(10).ceil(),
+            bulk: i => i.div(10).max(1).log(1.5).floor().toNumber()+1,
 
             effect(i) {
-                let x = Decimal.pow(1.5,Math.floor(i/25)).mul(i/2+1)
-
-                return x
+                return E(i/10+1)
             },
             effDesc: x => x.format()+"x",
         },{
             max: 50,
 
             title: "AP More Grass",
-            desc: `Increase grass cap by <b class="green">10</b> per level.`,
+            desc: `Increase grass cap by <b class="green">+10</b> per level.`,
         
             res: "ap",
             icon: ['Icons/MoreGrass'],
             
-            cost: i => Decimal.pow(1.25,i).mul(50).ceil(),
-            bulk: i => i.div(50).max(1).log(1.25).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.2,i).mul(50).ceil(),
+            bulk: i => i.div(50).max(1).log(1.2).floor().toNumber()+1,
 
             effect(i) {
-                let x = i*10
-
-                return x
+                return i*10
             },
             effDesc: x => "+"+format(x,0),
-        },{
-            max: 50,
-
-            title: "Scaled Level II",
-            desc: `Level scales another <b class="green">+1</b> later per level (before multiplication).`,
-
-            res: "ap",
-            icon: ['Icons/XP','Icons/Plus'],
-            
-            cost: i => Decimal.pow(3,i**1.2).mul(1e5).ceil(),
-            bulk: i => i.div(1e5).max(1).log(3).root(1.2).floor().toNumber()+1,
-
-            effect(i) {
-                let x = i
-
-                return x
-            },
-            effDesc: x => "+"+format(x,0)+" later",
-        },
+        }
     ],
 }
 

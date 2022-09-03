@@ -21,7 +21,7 @@ function calc(dt) {
     if (tmp.autocutTime >= tmp.autocut && tmp.grasses.length > 0 && hasUpgrade('auto',0)) {
         while (tmp.autocutTime >= tmp.autocut) {
             tmp.autocutTime -= tmp.autocut
-            for (let i=0;i<tmp.autocutAmt;i++) removeGrass(randint(0, tmp.grasses.length-1),true)
+            for (let i = 0; i < tmp.autocutAmt; i++) removeGrass(randint(0, tmp.grasses.length-1),true)
         }
         tmp.autocutTime = 0
     }

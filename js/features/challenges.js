@@ -2,7 +2,7 @@ const CHALS = [
     {
         unl: _=>true,
 
-        max: 15,
+        max: 10,
         id: 'pp',
 
         title: `Grassless`,
@@ -20,7 +20,7 @@ const CHALS = [
     },{
         unl: _=>true,
 
-        max: 15,
+        max: 10,
         id: 'pp',
 
         title: `Less Level`,
@@ -74,7 +74,7 @@ const CHALS = [
     },{
         unl: _=>true,
 
-        max: 10,
+        max: 6,
         id: 'crystal',
 
         title: `Prestigeless`,
@@ -98,6 +98,60 @@ const CHALS = [
         title: `Unefficient`,
         desc: `You cannot buy Grass and Prestige Upgrades.`,
         reward: `Platinum gain is increased by <b class="green">+1</b> per completion.`,
+
+        goal: i=>4+i*3,
+        bulk: i=>Math.floor((i-4)/3+1),
+
+        goalDesc: x=>"Tier "+format(x,0),
+        goalAmt: _=>player.tier,
+
+        eff: i=>i+1,
+        effDesc: x=>format(x,1)+"x",
+    },{
+        unl: _=>player.sTimes>=1,
+
+        max: 5,
+        id: 'steel',
+
+        title: `Clear Crystal`,
+        desc: `You can't buy Crystalize Upgrades.`,
+        reward: `Gain more Steel.`,
+
+        goal: i=>16+i*3,
+        bulk: i=>Math.floor((i-16)/3+1),
+
+        goalDesc: x=>"Tier "+format(x,0),
+        goalAmt: _=>player.tier,
+
+        eff: i=>i+1,
+        effDesc: x=>format(x,1)+"x",
+    },{
+        unl: _=>hasUpgrade('factory',2),
+
+        max: 5,
+        id: 'steel',
+
+        title: `Empower`,
+        desc: `???`,
+        reward: `Gain more Charge Rate.`,
+
+        goal: i=>4+i*3,
+        bulk: i=>Math.floor((i-4)/3+1),
+
+        goalDesc: x=>"Tier "+format(x,0),
+        goalAmt: _=>player.tier,
+
+        eff: i=>i+1,
+        effDesc: x=>format(x,1)+"x",
+    },{
+        unl: _=>player.lTimes>=1,
+
+        max: 5,
+        id: 'steel',
+
+        title: `Powerhouse`,
+        desc: `???`,
+        reward: `Gain more Oil`,
 
         goal: i=>4+i*3,
         bulk: i=>Math.floor((i-4)/3+1),

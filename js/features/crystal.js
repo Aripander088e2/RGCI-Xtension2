@@ -6,7 +6,7 @@ MAIN.crystal = {
         x = x.mul(upgEffect('plat',5))
         x = x.mul(upgEffect('perk',8))
         if (player.grasshop >= 2) x = x.mul(2)
-        x = x.mul(tmp.chargeEff[0]||7)
+        x = x.mul(tmp.chargeEff[1]||1)
 
         return x.floor()
     },
@@ -114,7 +114,7 @@ UPGS.crystal = {
             },
             effDesc: x => format(x)+"x",
         },{
-            max: Infinity,
+            max: 10,
 
             title: "Tiered Boost",
             desc: `Tiers are more effective. (<b class='green'>+0.1x</b> multiplier per Tier)`,
@@ -132,7 +132,7 @@ UPGS.crystal = {
             },
             effDesc: x => format(x,2)+"x per Tier ("+format(E(MAIN.tier.base()).pow(player.tier),0)+"x -> "+format(E(MAIN.tier.base()+.1).pow(player.tier),0)+"x)",
         },{
-            max: 60,
+            max: 18,
 
             title: "Prestiged Synergy",
             desc: `Grass Upgrade's "PP" is <b class='green'>+0.033x</b> more effective.`,
@@ -172,14 +172,12 @@ UPGS.crystal = {
 }
 
 // Liquefy, Oil
-
 MAIN.oil = {
     gain() {
         let l = player.tier
-        let x = Decimal.pow(1.1,l).mul(l).mul(player.bestAP.div(1e12).max(1).root(3))
+        let x = Decimal.pow(1.5,l)
 
-        x = x.mul(tmp.chargeEff[9]||0)
-        x = x.mul(upgEffect('plat',9))
+        x = x.mul(upgEffect('plat',8))
 
         return x.floor()
     },
@@ -188,10 +186,10 @@ MAIN.oil = {
 RESET.oil = {
     unl: _=> player.decel && player.aTimes > 0,
 
-    req: _=>player.level>=100,
-    reqDesc: _=>`Reach Level 100 to Liquefy.`,
+    req: _=>player.level>=90,
+    reqDesc: _=>`Reach Level 90 to Liquefy.`,
 
-    resetDesc: `Liquefy resets everything Anonymity as well as your AP, Anonymity upgrades & tier for Oil.<br>Gain more Oil based on your tier and AP.`,
+    resetDesc: `Liquefy resets everything Anonymity as well as your AP, Anonymity upgrades & tier for Oil.`,
     resetGain: _=> `Gain <b>${tmp.oilGain.format(0)}</b> Oil`,
 
     title: `Liquefy`,

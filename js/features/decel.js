@@ -5,8 +5,7 @@ RESET.decel = {
     reqDesc: _=>"",
 
     resetDesc: `<span style="font-size: 14px;">Decelerating will temporarily slow down time and reduce the effectiveness of everything significantly until you press the Accelerate button.
-    <br>During this time you will not be able to earn regular grass, Instead you earn anti-grass which is spent in Anti-grass upgrades panel which takes the place of regular Grass Upgrades panel.
-    These upgrades affect the normal realm.<br>However, and level scales instantly.
+    <br>During this time you will not be able to earn regular grass, Instead you earn anti-grass which is spent in Anti-Grass Upgrades panel which takes the place of regular Grass Upgrades panel.
     </span>`,
     resetGain: _=> `Decelerating will force a Steelie.`,
 
@@ -51,14 +50,15 @@ UPGS.aGrass = {
     unl: _=> player.decel,
 
     title: "Anti-Grass Upgrades",
+    underDesc: _=>`These upgrades affect the Normal Realm.`,
 
-    autoUnl: _=>false,//hasUpgrade('auto',14),
+    autoUnl: _=>false,
 
-    noSpend: _=>hasUpgrade('auto',16),
+    noSpend: _=>false,
 
     ctn: [
         {
-            max: 1000,
+            max: Infinity,
 
             title: "Anti-Grass Charge",
             desc: `Increase charge rate by <b class="green">+10%</b> per level.<br>This effect is increased by <b class="green">25%</b> every <b class="yellow">25</b> levels.`,
@@ -76,7 +76,7 @@ UPGS.aGrass = {
             },
             effDesc: x => x.format()+"x",
         },{
-            max: 250,
+            max: 20,
 
             title: "Anti-Grass Grow Speed",
             desc: `Increase grass grow speed by <b class="green">10%</b> per level.`,
@@ -94,7 +94,7 @@ UPGS.aGrass = {
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 1000,
+            max: Infinity,
 
             title: "Anti-Grass Steel",
             desc: `Increase steel gain by <b class="green">+10%</b> per level.<br>This effect is increased by <b class="green">10%</b> every <b class="yellow">25</b> levels.`,
@@ -112,10 +112,10 @@ UPGS.aGrass = {
             },
             effDesc: x => x.format()+"x",
         },{
-            max: 1000,
+            max: Infinity,
 
             title: "Anti-Grass Value",
-            desc: `Increase grass gain by <b class="green">+50%</b> per level.<br>This effect is increased by <b class="green">50%</b> every <b class="yellow">25</b> levels.`,
+            desc: `Increase grass gain by <b class="green">+25%</b> per level.<br>This effect is increased by <b class="green">25%</b> every <b class="yellow">25</b> levels.`,
 
             res: "aGrass",
             icon: ['Curr/Grass'],
@@ -124,22 +124,22 @@ UPGS.aGrass = {
             bulk: i => i.div(1e6).max(1).log(1.2).floor().toNumber()+1,
 
             effect(i) {
-                let x = Decimal.pow(1.5,Math.floor(i/25)).mul(i/2+1)
+                let x = Decimal.pow(1.25,Math.floor(i/25)).mul(i/4+1)
 
                 return x
             },
             effDesc: x => x.format()+"x",
         },{
-            max: 1000,
+            max: Infinity,
 
             title: "Anti-Grass XP",
-            desc: `Increase XP gain by <b class="green">+50%</b> per level.<br>This effect is increased by <b class="green">50%</b> every <b class="yellow">25</b> levels.`,
+            desc: `Increase XP gain by <b class="green">+10%</b> per level.<br>This effect is increased by <b class="green">10%</b> every <b class="yellow">25</b> levels.`,
 
             res: "aGrass",
             icon: ['Icons/XP'],
             
-            cost: i => Decimal.pow(1.2,i).mul(1e7).ceil(),
-            bulk: i => i.div(1e7).max(1).log(1.2).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.2,i).mul(1e4).ceil(),
+            bulk: i => i.div(1e4).max(1).log(1.2).floor().toNumber()+1,
 
             effect(i) {
                 let x = Decimal.pow(1.5,Math.floor(i/25)).mul(i/2+1)
@@ -147,24 +147,6 @@ UPGS.aGrass = {
                 return x
             },
             effDesc: x => x.format()+"x",
-        },{
-            max: 50,
-
-            title: "Scaled Level",
-            desc: `Level scales <b class="green">+1</b> later per level (before multiplication).`,
-
-            res: "aGrass",
-            icon: ['Icons/XP','Icons/Plus'],
-            
-            cost: i => Decimal.pow(3,i**1.4).mul(1e12).ceil(),
-            bulk: i => i.div(1e12).max(1).log(3).root(1.4).floor().toNumber()+1,
-
-            effect(i) {
-                let x = i
-
-                return x
-            },
-            effDesc: x => "+"+format(x,0)+" later",
-        },
+        }
     ],
 }

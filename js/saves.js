@@ -155,6 +155,10 @@ function loadPlayer(load) {
 		load.tier = 0
 		delete load.upgs.pp[2]
 	}
+	if (load.ver < 1.01 && player.grasshop > 15) {
+		player.grasshop = 15
+		RESET.gh.doReset()
+	}
 
     const DATA = getPlayerData()
     player = deepNaN(load, DATA)

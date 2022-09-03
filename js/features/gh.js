@@ -10,12 +10,12 @@ MAIN.gh = {
             desc: `Gain <b class="green">2x</b> more Crystals.`,
         },{
             r: 3,
-            desc: `Platinum worth <b class="green">+0.5</b> per grasshop. (starting at 2)`,
+            desc: `Platinum worth <b class="green">+0.5</b> per Grasshop. (starting at 2)`,
             effect: _=>Math.max(0,(player.grasshop-2)/5),
             effDesc: x=> "+"+format(x,1),
         },{
             r: 4,
-            desc: `Perk worth <b class="green">+0.1</b> per grasshop. (starting at 3)`,
+            desc: `Perk worth <b class="green">+0.1</b> per Grasshop. (starting at 3)`,
             effect: _=>Math.max(0,(player.grasshop-2)/10),
             effDesc: x=> "+"+format(x,1),
         },{
@@ -29,7 +29,26 @@ MAIN.gh = {
             desc: `Gain <b class="green">2x</b> more XP.`,
         },{
             r: 10,
-            desc: `Unlock Steelie reset. [soon!]`,
+            desc: `Unlock Steelie reset.`,
+        },{
+            r: 11,
+            desc: `Gain <b class="green">2x</b> more Steel per Grasshop. (starting at 11)`,
+            effect: _=>E(2).pow(Math.max(0,player.grasshop-10)),
+            effDesc: x=> format(x,0)+"x",
+        },{
+            unl: _=>hasUpgrade('factory',2),
+
+            r: 18,
+            desc: `Gain <b class="green">2x</b> more Charge per Grasshop. (starting at 18)`,
+            effect: _=>E(2).pow(Math.max(0,player.grasshop-17)),
+            effDesc: x=> format(x,0)+"x",
+        },{
+            unl: _=>hasUpgrade('factory',2),
+
+            r: 25,
+            desc: `Charge rate bonuses start 10x earlier per 3 Grasshops. (starting at 25)`,
+            effect: _=>E(10).pow(Math.max(0,Math.floor((player.grasshop-25)/3+1))),
+            effDesc: x=> format(x,0)+"x",
         }
     ],
 }
@@ -52,12 +71,6 @@ RESET.gh = {
         if ((this.req()&&player.level>=tmp.gh_req)||force) {
             if (force) {
                 this.doReset()
-            } else if (player.grasshop >= 20) {
-                player.grasshop++
-
-                updateTemp()
-        
-                this.doReset()
             } else if (!tmp.ghRunning) {
                 tmp.ghRunning = true
                 document.body.style.animation = "implode 2s 1"
@@ -79,9 +92,10 @@ RESET.gh = {
     doReset(order="gh") {
         player.crystal = E(0)
         player.bestCrystal = E(0)
+        player.chargeRate = E(0)
 
-        let keep = []
-        for (let i = 0; i < 5; i++) if (!keep.includes(i)) player.chal.comp[i] = 0
+        for (let i = 0; i < 2; i++) player.chal.comp[i] = Math.min(upgEffect('assembler', 5), player.chal.comp[i])
+        for (let i = 2; i < 6; i++) player.chal.comp[i] = Math.min(upgEffect('assembler', 6), player.chal.comp[i])
 
         resetUpgrades('crystal')
 

@@ -8,6 +8,7 @@ function loop() {
     date = Date.now();
 }
 
+let devMult = 1
 const MAIN = {
     grassGain() {
         let x = upgEffect('grass',0).mul(tmp.tier.mult)
@@ -16,15 +17,14 @@ const MAIN = {
         x = x.mul(upgEffect('pp',0))
         x = x.mul(upgEffect('crystal',0))
         x = x.mul(upgEffect('plat',2))
-
-        x = x.mul(chalEff(0))
-
         x = x.mul(upgEffect('aGrass',3))
         x = x.mul(upgEffect('ap',0))
         x = x.mul(upgEffect('oil',0))
+        x = x.mul(chalEff(0))
+        x = x.mul(tmp.chargeEff[5]||1)
+        if (player.decel) x = x.div(1e6)
 
-        if (player.decel) x = x.div(1e15)
-
+        x = x.mul(devMult)
         if (x.lt(1)) return x
 
         return x
@@ -50,19 +50,15 @@ const MAIN = {
         x = x.mul(upgEffect('pp',1))
         x = x.mul(upgEffect('crystal',1))
         x = x.mul(upgEffect('plat',1))
-
-        x = x.mul(chalEff(1))
-
-        if (player.grasshop >= 7) x = x.mul(2)
-
-        x = x.mul(tmp.chargeEff[1]||1)
-
         x = x.mul(upgEffect('aGrass',4))
         x = x.mul(upgEffect('ap',2))
         x = x.mul(upgEffect('oil',1))
+        x = x.mul(chalEff(1))
+        if (player.grasshop >= 7) x = x.mul(2)
+        x = x.mul(tmp.chargeEff[2]||1)
+        if (player.decel) x = x.div(1e6)
 
-        if (player.decel) x = x.div(1e16)
-
+        x = x.mul(devMult)
         if (x.lt(1)) return x
 
         return x
@@ -73,26 +69,25 @@ const MAIN = {
         let x = upgEffect('pp',2)
 
         x = x.mul(upgEffect('crystal',2))
-        x = x.mul(upgEffect('plat',3))
-        x = x.mul(upgEffect('perk',6))
-
-        x = x.mul(chalEff(2))
-
-        if (player.grasshop >= 1) x = x.mul(4)
-
-        x = x.mul(tmp.chargeEff[3]||1)
-
+        x = x.mul(upgEffect('plat',4))
+        x = x.mul(upgEffect('perk',7))
         x = x.mul(upgEffect('ap',3))
         x = x.mul(upgEffect('oil',2))
-
-        if (player.decel) x = x.div(1e16)
+        if (player.grasshop >= 1) x = x.mul(4)
+        x = x.mul(chalEff(2))
+        x = x.mul(tmp.chargeEff[4]||1)
+        if (player.decel) x = x.div(1e4)
 
         if (x.lt(1)) return x
 
         return x
     },
     rangeCut: _=>50+upgEffect('grass',4,0)+upgEffect('perk',4,0),
-    autoCut: _=>5-upgEffect('auto',0,0)-upgEffect('plat',0,0),
+    autoCut() {
+		let interval = 5-upgEffect('auto',0,0)-upgEffect('plat',0,0)
+		if (player.decel) interval *= 10
+		return interval
+	},
     level: {
         req(i) {
             let x = Decimal.pow(1.4,i).mul(50)
@@ -109,7 +104,7 @@ const MAIN = {
         },
         perk() {
             let x = chalEff(3)
-            if (player.grasshop >= 4) x += getGHEffect(1,0)
+            if (player.grasshop >= 4) x += getGHEffect(3, 0)
 
             return x * player.level
         },
@@ -131,7 +126,7 @@ const MAIN = {
             return i > 0 ? this.req(i-1) : E(0) 
         },
         base() {
-			let x = upgEffect('crystal', 3)
+			let x = upgEffect('crystal',3)
 			if (player.grasshop >= 5) x += 0.1
 			return x
         },
@@ -224,7 +219,7 @@ tmp_update.push(_=>{
 
     tmp.platGain = 1
     tmp.platGain += chalEff(5)
-    if (player.grasshop >= 3) tmp.platGain += getGHEffect(0,0)
+    if (player.grasshop >= 3) tmp.platGain += getGHEffect(2, 0)
 })
 
 window.addEventListener('keydown', function(event) {

@@ -149,7 +149,7 @@ const UPGS = {
 
         underDesc: _=>`You have ${format(tmp.perkUnspent,0)} Perk`,
 
-        autoUnl: _=>false,//hasUpgrade('auto',13),
+        autoUnl: _=>hasUpgrade('assembler',3),
 
         ctn: [
             {
@@ -457,7 +457,7 @@ const UPGS = {
                 res: "crystal",
                 icon: ['Curr/Crystal','Icons/Automation'],
                             
-                cost: i => E(1e12),
+                cost: i => E(1e10),
                 bulk: i => 1,
             },{
                 unl: _=>player.grasshop>=1,
@@ -470,8 +470,8 @@ const UPGS = {
                 res: "pp",
                 icon: ['Curr/Prestige','Icons/Plus'],
                             
-                cost: i => Decimal.pow(10,i).mul(1e25),
-                bulk: i => i.div(1e25).max(1).log(10).floor().toNumber()+1,
+                cost: i => Decimal.pow(3,i).mul(1e25),
+                bulk: i => i.div(1e25).max(1).log(3).floor().toNumber()+1,
                 effect(i) {
                     let x = i/1e3
             
@@ -489,8 +489,8 @@ const UPGS = {
                 res: "crystal",
                 icon: ['Curr/Crystal','Icons/Plus'],
                             
-                cost: i => Decimal.pow(2,i).mul(1e15).ceil(),
-                bulk: i => i.div(1e15).max(1).log(2).floor().toNumber()+1,
+                cost: i => Decimal.pow(2,i).mul(1e12).ceil(),
+                bulk: i => i.div(1e12).max(1).log(2).floor().toNumber()+1,
                 effect(i) {
                     let x = i/1e3
             
@@ -498,7 +498,7 @@ const UPGS = {
                 },
                 effDesc: x => "+"+formatPercent(x,1)+"/s",
             },{
-                unl: _=>player.aTimes>0,
+                unl: _=>player.lTimes>0,
 
                 title: "Anti-Grass Upgrades Autobuy",
                 desc: `You can now automatically buy Anti-Grass Upgrades.`,
@@ -519,18 +519,7 @@ const UPGS = {
                             
                 cost: i => E(100),
                 bulk: i => 1,
-            },{
-                unl: _=>player.lTimes>0,
-
-                title: "Anti-Grass Upgrades EL",
-                desc: `Anti-Grass Upgrades no longer spend AP.`,
-            
-                res: "oil",
-                icon: ['Curr/Grass','Icons/Infinite'],
-                            
-                cost: i => E(1000),
-                bulk: i => 1,
-            },
+            }
         ],
     },
     plat: {
@@ -678,16 +667,16 @@ const UPGS = {
                 costOnce: true,
 
                 title: "Plat Steel",
-                desc: `Increase steel gain by <b class="green">+10%</b> per level.`,
+                desc: `Increase steel gain by <b class="green">+50%</b> per level.`,
 
                 res: "plat",
                 icon: ['Curr/Steel2'],
                 
-                cost: i => 1000,
-                bulk: i => Math.floor(i/1000),
+                cost: i => 200,
+                bulk: i => Math.floor(i/200),
 
                 effect(i) {
-                    let x = E(i*0.1+1)
+                    let x = E(i/2+1)
 
                     return x
                 },
@@ -1020,7 +1009,10 @@ el.update.upgs = _=>{
         updateUpgradesHTML('perk')
         updateUpgradesHTML('plat')
     }
-    if (mapID == 'auto') updateUpgradesHTML('auto')
+	if (mapID == 'auto') {
+		updateUpgradesHTML('auto')
+		updateUpgradesHTML('assembler')
+	}
     if (mapID == 'pc') {
         updateUpgradesHTML('pp')
         updateUpgradesHTML('crystal')
@@ -1033,7 +1025,6 @@ el.update.upgs = _=>{
         updateUpgradesHTML('foundry')
         updateUpgradesHTML('gen')
     }
-    if (mapID == 'as') updateUpgradesHTML('assembler')
 
 	if (mapID == 'opt') {
 		tmp.el.hideUpgOption.setTxt(player.options.hideUpgOption?"ON":"OFF")
