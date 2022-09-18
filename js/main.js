@@ -55,8 +55,8 @@ const MAIN = {
         x = x.mul(upgEffect('oil',1))
         x = x.mul(chalEff(1))
         if (player.grasshop >= 7) x = x.mul(2)
-        x = x.mul(tmp.chargeEff[2]||1)
         if (player.decel) x = x.div(1e6)
+        x = x.mul(tmp.chargeEff[4]||1)
 
         x = x.mul(devMult)
         if (x.lt(1)) return x
@@ -75,7 +75,7 @@ const MAIN = {
         x = x.mul(upgEffect('oil',2))
         if (player.grasshop >= 1) x = x.mul(4)
         x = x.mul(chalEff(2))
-        x = x.mul(tmp.chargeEff[4]||1)
+        x = x.mul(tmp.chargeEff[2]||1)
         if (player.decel) x = x.div(1e4)
 
         if (x.lt(1)) return x
