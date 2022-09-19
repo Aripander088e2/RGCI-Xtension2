@@ -54,6 +54,8 @@ RESET.crystal = {
 UPGS.crystal = {
     title: "Crystal Upgrades",
 
+    cannotBuy: _=>inChal(6) || inChal(8),
+
     unl: _=>player.pTimes > 0 && !player.decel,
 
     req: _=>player.cTimes > 0,
@@ -132,7 +134,7 @@ UPGS.crystal = {
             },
             effDesc: x => format(x,2)+"x per Tier ("+format(E(MAIN.tier.base()).pow(player.tier),0)+"x -> "+format(E(MAIN.tier.base()+.1).pow(player.tier),0)+"x)",
         },{
-            max: 18,
+            max: 30,
 
             title: "Prestiged Synergy",
             desc: `Grass Upgrade's "PP" is <b class='green'>+0.033x</b> more effective.`,
@@ -175,9 +177,9 @@ UPGS.crystal = {
 MAIN.oil = {
     gain() {
         let l = player.tier
-        let x = Decimal.pow(1.5,l)
+        let x = Decimal.pow(3,l)
 
-        x = x.mul(upgEffect('plat',8))
+        x = x.mul(upgEffect('plat',9))
 
         return x.floor()
     },
@@ -234,109 +236,87 @@ UPGS.oil = {
 
     ctn: [
         {
-            max: 1000,
+            max: Infinity,
 
             title: "Oily Grass Value",
-            desc: `Increase grass gain by <b class="green">+25%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
+            desc: `Increase grass gain by <b class="green">+10%</b> compounding per level.`,
         
             res: "oil",
             icon: ["Curr/Grass"],
                         
-            cost: i => Decimal.pow(1.2,i).mul(2).ceil(),
-            bulk: i => i.div(2).max(1).log(1.2).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.2,i).mul(50).ceil(),
+            bulk: i => i.div(50).max(1).log(1.2).floor().toNumber()+1,
         
             effect(i) {
-                let x = Decimal.pow(1.25,Math.floor(i/25)).mul(i/4+1)
+                let x = Decimal.pow(1.1,i)
         
                 return x
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 1000,
+            max: 15,
 
-            title: "Oily XP",
-            desc: `Increase XP gain by <b class="green">+25%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
+            title: "Anti-XP II",
+            desc: `Levels scale <span class="green">+0.05x</span> slower in Anti-Realm.`,
         
             res: "oil",
-            icon: ['Icons/XP'],
+            icon: ['Icons/XP', 'Icons/StarSpeed'],
             
-            cost: i => Decimal.pow(1.25,i).mul(3).ceil(),
-            bulk: i => i.div(3).max(1).log(1.25).floor().toNumber()+1,
+            cost: i => Decimal.pow(5,i).mul(100).ceil(),
+            bulk: i => i.div(100).max(1).log(5).floor().toNumber()+1,
 
             effect(i) {
-                let x = Decimal.pow(1.25,Math.floor(i/25)).mul(i/4+1)
-
-                return x
+                return i/20
             },
-            effDesc: x => x.format()+"x",
+            effDesc: x => "+"+format(x)+"x",
         },{
-            max: 1000,
+            max: Infinity,
 
             title: "Oily TP",
-            desc: `Increase TP gain by <b class="green">+50%</b> per level. This effect is increased by <b class="green">50%</b> for every <b class="yellow">25</b> levels.`,
+            desc: `Increase TP gain by <b class="green">15%</b> compounding per level.`,
         
             res: "oil",
             icon: ['Icons/TP'],
             
-            cost: i => Decimal.pow(1.3,i).mul(5).ceil(),
-            bulk: i => i.div(5).max(1).log(1.3).floor().toNumber()+1,
+            cost: i => Decimal.pow(2,i).mul(10).ceil(),
+            bulk: i => i.div(10).max(1).log(2).floor().toNumber()+1,
 
             effect(i) {
-                let x = Decimal.pow(1.5,Math.floor(i/25)).mul(i/2+1)
-
-                return x
+                return E(1.15).pow(i)
             },
             effDesc: x => x.format()+"x",
         },{
-            max: 1000,
+            max: Infinity,
 
             title: "Oily AP",
-            desc: `Increase AP gain by <b class="green">+25%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
+            desc: `Increase AP gain by <b class="green">+1x</b> per level. This effect is increased by <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
         
             res: "oil",
             icon: ['Curr/Anonymity'],
             
-            cost: i => Decimal.pow(1.4,i).mul(10).ceil(),
-            bulk: i => i.div(10).max(1).log(1.4).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.2,i).mul(10).ceil(),
+            bulk: i => i.div(10).max(1).log(1.2).floor().toNumber()+1,
 
             effect(i) {
-                let x = Decimal.pow(1.25,Math.floor(i/25)).mul(i/4+1)
+                let x = Decimal.pow(2,Math.floor(i/25)).mul(i+1)
 
                 return x
             },
             effDesc: x => x.format()+"x",
         },{
-            max: 10,
-
-            title: "Oily Platinum",
-            desc: `Increase Platinum gain by <b class="green">50%</b> every level.`,
-        
-            res: "oil",
-            icon: ['Curr/Platinum'],
-            
-            cost: i => Decimal.pow(10,i).mul(1e3).ceil(),
-            bulk: i => i.div(1e3).max(1).log(10).floor().toNumber()+1,
-
-            effect(i) {
-                let x = 1.5**i
-
-                return x
-            },
-            effDesc: x => format(x)+"x",
-        },{
-            max: 1000,
+            max: Infinity,
 
             title: "Oily Steel",
-            desc: `Increase steel gain by <b class="green">+25%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
+            desc: `Steel gain is <b class="green">doubled</b> per level.`,
         
             res: "oil",
             icon: ['Curr/Steel2'],
             
-            cost: i => Decimal.pow(1.25,i).mul(1e4).ceil(),
-            bulk: i => i.div(1e4).max(1).log(1.25).floor().toNumber()+1,
+            cost: i => Decimal.pow(5,i).mul(100).ceil(),
+            bulk: i => i.div(100).max(1).log(5).floor().toNumber()+1,
 
             effect(i) {
-                let x = Decimal.pow(1.25,Math.floor(i/25)).mul(i/4+1)
+                let x = Decimal.pow(2,i)
 
                 return x
             },
@@ -350,4 +330,5 @@ tmp_update.push(_=>{
     tmp.crystalGainP = (upgEffect('auto',9,0)+upgEffect('gen',1,0))*upgEffect('factory',1,1)
 
     tmp.oilGain = MAIN.oil.gain()
+    tmp.oilGainP = 0 //upgEffect('auto',11,0)
 })

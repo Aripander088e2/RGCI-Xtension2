@@ -7,7 +7,6 @@ MAIN.pp = {
         x = x.mul(upgEffect('perk',6))
         x = x.mul(chalEff(4))
         x = x.mul(tmp.chargeEff[3]||1)
-        x = x.mul(devMult)
 
         return x.floor()
     },
@@ -69,7 +68,7 @@ UPGS.pp = {
 
     title: "Prestige Upgrades",
 
-    cannotBuy: _=>inChal(4) || inChal(5),
+    cannotBuy: _=>inChal(4) || inChal(5) || inChal(8),
 
     autoUnl: _=>hasUpgrade('auto',5),
     noSpend: _=>hasUpgrade('assembler',1),
@@ -117,7 +116,7 @@ UPGS.pp = {
             },
             effDesc: x => format(x)+"x",
         },{
-            max: Infinity,
+            max: 135,
 
             title: "TP",
             desc: `Increase Tier Points (TP) gain by <b class="green">25%</b> compounding per level.`,
@@ -135,12 +134,12 @@ UPGS.pp = {
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 100,
+            max: 300,
 
             unl: _=>player.cTimes>0,
 
             title: "Crystal",
-            desc: `Increase Crystal gain by <b class="green">+50%</b> per level. This effect is increased by <b class="green">+25%</b> for every <b class="yellow">25</b> levels.`,
+            desc: `Increase Crystal gain by <b class="green">+50%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
 
             res: "pp",
             icon: ["Curr/Crystal"],
@@ -150,7 +149,6 @@ UPGS.pp = {
 
             effect(i) {
                 let x = Decimal.pow(1.25,Math.floor(i/25)).mul(i/2+1)
-                if (inChal(1)) x = E(1)
                 return x
             },
             effDesc: x => format(x)+"x",
@@ -162,11 +160,13 @@ UPGS.pp = {
 
 MAIN.ap = {
     gain() {
-        let l = Math.max(player.level-29,0)
-        let x = Decimal.pow(1.15,l)
+        let x = Decimal.pow(1.15,player.level)
 
-        x = x.mul(upgEffect('plat',7))
+        x = x.mul(tmp.chargeEff[6]||1)
+        x = x.mul(upgEffect('aGrass',5))
+        x = x.mul(upgEffect('plat',8))
         x = x.mul(upgEffect('oil',3))
+
 
         return x.floor()
     },
@@ -234,9 +234,9 @@ UPGS.ap = {
         
             res: "ap",
             icon: ["Curr/Grass"],
-                        
-            cost: i => Decimal.pow(1.2,i).mul(2).ceil(),
-            bulk: i => i.div(2).max(1).log(1.2).floor().toNumber()+1,
+
+            cost: i => Decimal.pow(1.2,i).mul(25).ceil(),
+            bulk: i => i.div(25).max(1).log(1.2).floor().toNumber()+1,
         
             effect(i) {
                 return E(i/2+1)
@@ -251,47 +251,45 @@ UPGS.ap = {
             res: "ap",
             icon: ['Curr/Charge'],
             
-            cost: i => Decimal.pow(1.2,i).mul(3).ceil(),
-            bulk: i => i.div(3).max(1).log(1.2).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.2,i).mul(20).ceil(),
+            bulk: i => i.div(20).max(1).log(1.2).floor().toNumber()+1,
 
             effect(i) {
                 return E(i/2+1)
             },
             effDesc: x => x.format()+"x",
         },{
-            max: Infinity,
+            max: 10,
 
-            title: "AP XP",
-            desc: `Increase XP gain by <b class="green">+25%</b> per level.`,
+            title: "Anti-XP",
+            desc: `Levels scale <span class="green">+0.05x</span> slower in Anti-Realm.`,
         
             res: "ap",
-            icon: ['Icons/XP'],
+            icon: ['Icons/XP', 'Icons/StarSpeed'],
             
-            cost: i => Decimal.pow(1.2,i).mul(5).ceil(),
-            bulk: i => i.div(5).max(1).log(1.2).floor().toNumber()+1,
+            cost: i => Decimal.pow(15,i**1.25).mul(100).ceil(),
+            bulk: i => i.div(100).max(1).log(15).root(1.25).floor().toNumber()+1,
 
             effect(i) {
-                let x = Decimal.pow(1.2,Math.floor(i/25)).mul(i/4+1)
-
-                return x
+                return i/20+1
             },
-            effDesc: x => x.format()+"x",
+            effDesc: x => format(x,2)+"x",
         },{
-            max: Infinity,
+            max: 10,
 
-            title: "AP TP",
-            desc: `Increase TP gain by <b class="green">+10%</b> per level.`,
+            title: "Anti-TP",
+            desc: `Increase Tier multiplier by <span class="green">+0.1x</span> in Anti-Realm.`,
         
             res: "ap",
-            icon: ['Icons/TP'],
+            icon: ['Icons/TP', 'Icons/StarSpeed'],
             
-            cost: i => Decimal.pow(1.5,i).mul(10).ceil(),
-            bulk: i => i.div(10).max(1).log(1.5).floor().toNumber()+1,
+            cost: i => Decimal.pow(10,i).mul(150).ceil(),
+            bulk: i => i.div(150).max(1).log(10).floor().toNumber()+1,
 
             effect(i) {
-                return E(i/10+1)
+                return i/10+2
             },
-            effDesc: x => x.format()+"x",
+            effDesc: x => format(x,2)+"x",
         },{
             max: 50,
 
@@ -301,8 +299,8 @@ UPGS.ap = {
             res: "ap",
             icon: ['Icons/MoreGrass'],
             
-            cost: i => Decimal.pow(1.2,i).mul(50).ceil(),
-            bulk: i => i.div(50).max(1).log(1.2).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.2,i).mul(1e3).ceil(),
+            bulk: i => i.div(1e3).max(1).log(1.2).floor().toNumber()+1,
 
             effect(i) {
                 return i*10
@@ -317,4 +315,5 @@ tmp_update.push(_=>{
     tmp.ppGainP = (upgEffect('auto',8,0)+upgEffect('gen',0,0))*upgEffect('factory',1,1)
 
     tmp.apGain = MAIN.ap.gain()
+    tmp.apGainP = 0 //upgEffect('auto',11,0)
 })

@@ -18,7 +18,7 @@ const UPGS = {
     grass: {
         unl: _=> !player.decel,
 
-        cannotBuy: _=>inChal(0) || inChal(5),
+        cannotBuy: _=>inChal(0) || inChal(5) || inChal(8),
 
         autoUnl: _=>hasUpgrade('auto',3),
         noSpend: _=>hasUpgrade('assembler',0),
@@ -153,7 +153,7 @@ const UPGS = {
 
         ctn: [
             {
-                max: 200,
+                max: 100,
 
                 costOnce: true,
 
@@ -213,7 +213,7 @@ const UPGS = {
                 },
                 effDesc: x => format(x)+"x",
             },{
-                max: 200,
+                max: 100,
 
                 costOnce: true,
 
@@ -435,7 +435,7 @@ const UPGS = {
                 res: "crystal",
                 icon: ['Curr/Prestige','Icons/Automation'],
                             
-                cost: i => E(1e3),
+                cost: i => E(1e8),
                 bulk: i => 1,
             },{
                 unl: _=>player.grasshop>=1,
@@ -446,7 +446,7 @@ const UPGS = {
                 res: "crystal",
                 icon: ['Curr/Perks','Icons/Automation'],
                             
-                cost: i => E(1e9),
+                cost: i => E(1e11),
                 bulk: i => 1,
             },{
                 unl: _=>player.grasshop>=1,
@@ -457,7 +457,7 @@ const UPGS = {
                 res: "crystal",
                 icon: ['Curr/Crystal','Icons/Automation'],
                             
-                cost: i => E(1e10),
+                cost: i => E(1e15),
                 bulk: i => 1,
             },{
                 unl: _=>player.grasshop>=1,
@@ -489,8 +489,8 @@ const UPGS = {
                 res: "crystal",
                 icon: ['Curr/Crystal','Icons/Plus'],
                             
-                cost: i => Decimal.pow(2,i).mul(1e12).ceil(),
-                bulk: i => i.div(1e12).max(1).log(2).floor().toNumber()+1,
+                cost: i => Decimal.pow(3,i).mul(1e12).ceil(),
+                bulk: i => i.div(1e12).max(1).log(3).floor().toNumber()+1,
                 effect(i) {
                     let x = i/1e3
             
@@ -498,18 +498,35 @@ const UPGS = {
                 },
                 effDesc: x => "+"+formatPercent(x,1)+"/s",
             },{
+                unl: _=>player.aTimes>0,
+                max: 4,
+
+                title: "Anti-Autocut",
+                desc: `Auto-cutting speed is <b class="green">+0.5x</b> faster in Anti-Realm.`,
+            
+                res: "ap",
+                icon: ['Curr/AntiGrass','Icons/Automation'],
+                            
+                cost: i => Decimal.pow(3,i).mul(20).ceil(),
+                bulk: i => i.div(20).max(1).log(3).floor().toNumber()+1,
+            
+                effect(i) {
+                    return i/2+1
+                },
+                effDesc: x => format(x)+"x",
+            },{
                 unl: _=>player.lTimes>0,
 
                 title: "Anti-Grass Upgrades Autobuy",
                 desc: `You can now automatically buy Anti-Grass Upgrades.`,
             
                 res: "ap",
-                icon: ['Curr/Grass','Icons/Automation'],
+                icon: ['Curr/AntiGrass','Icons/Automation'],
                             
                 cost: i => E(100),
                 bulk: i => 1,
             },{
-                unl: _=>player.lTimes>0,
+                unl: _=>false, //future
 
                 title: "Anonymity Upgrades Autobuy",
                 desc: `You can now automatically buy Anonymity Upgrades.`,
@@ -519,6 +536,55 @@ const UPGS = {
                             
                 cost: i => E(100),
                 bulk: i => 1,
+            },{
+                unl: _=>false, //future
+
+                title: "Oil Upgrades Autobuy",
+                desc: `You can now automatically buy Oil Upgrades.`,
+            
+                res: "oil",
+                icon: ['Curr/Oil','Icons/Automation'],
+                            
+                cost: i => E(100),
+                bulk: i => 1,
+            },{
+                unl: _=>false, //future
+
+                max: 10,
+
+                title: "Anonymity Generation",
+                desc: `Passively generate <b class="green">+0.1%</b> of crystal you would earn on anonymity per second.`,
+            
+                res: "ap",
+                icon: ['Curr/Anonymity','Icons/Plus'],
+                            
+                cost: i => Decimal.pow(3,i).mul(1e12).ceil(),
+                bulk: i => i.div(1e12).max(1).log(3).floor().toNumber()+1,
+                effect(i) {
+                    let x = i/1e3
+            
+                    return x
+                },
+                effDesc: x => "+"+formatPercent(x,1)+"/s",
+            },{
+                unl: _=>false, //future
+
+                max: 10,
+
+                title: "Oil Generation",
+                desc: `Passively generate <b class="green">+0.1%</b> of oil you would earn on liquefy per second.`,
+            
+                res: "oil",
+                icon: ['Curr/Oil','Icons/Plus'],
+                            
+                cost: i => Decimal.pow(3,i).mul(1e12).ceil(),
+                bulk: i => i.div(1e12).max(1).log(3).floor().toNumber()+1,
+                effect(i) {
+                    let x = i/1e3
+            
+                    return x
+                },
+                effDesc: x => "+"+formatPercent(x,1)+"/s",
             }
         ],
     },
@@ -667,7 +733,7 @@ const UPGS = {
                 costOnce: true,
 
                 title: "Plat Steel",
-                desc: `Increase steel gain by <b class="green">+50%</b> per level.`,
+                desc: `Increase steel gain by <b class="green">+20%</b> per level.`,
 
                 res: "plat",
                 icon: ['Curr/Steel2'],
@@ -676,7 +742,29 @@ const UPGS = {
                 bulk: i => Math.floor(i/200),
 
                 effect(i) {
-                    let x = E(i/2+1)
+                    let x = E(i/5+1)
+
+                    return x
+                },
+                effDesc: x => format(x)+"x",
+            },{
+                max: 100,
+
+                unl: _=>hasUpgrade('factory',2),
+
+                costOnce: true,
+
+                title: "Plat Charge",
+                desc: `Increase charge rate by <b class="green">+20%</b> per level.`,
+
+                res: "plat",
+                icon: ['Curr/Charge'],
+                
+                cost: i => 1e3,
+                bulk: i => Math.floor(i/1e3),
+
+                effect(i) {
+                    let x = E(i/5+1)
 
                     return x
                 },
@@ -694,8 +782,8 @@ const UPGS = {
                 res: "plat",
                 icon: ['Curr/Anonymity'],
                 
-                cost: i => 10000,
-                bulk: i => Math.floor(i/10000),
+                cost: i => 500,
+                bulk: i => Math.floor(i/500),
 
                 effect(i) {
                     let x = E(i*0.2+1)
@@ -704,23 +792,23 @@ const UPGS = {
                 },
                 effDesc: x => format(x)+"x",
             },{
-                max: 100,
+                max: 20,
 
                 unl: _=>player.lTimes>0,
 
                 costOnce: true,
 
                 title: "Platinum Oil",
-                desc: `Increase Oil gain by <b class="green">+20%</b> per level.`,
+                desc: `Increase Oil gain by <b class="green">+50%</b> per level.`,
 
                 res: "plat",
                 icon: ['Curr/Oil'],
                 
-                cost: i => 25000,
-                bulk: i => Math.floor(i/25000),
+                cost: i => 3e3,
+                bulk: i => Math.floor(i/3e3),
 
                 effect(i) {
-                    let x = E(i*0.2+1)
+                    let x = E(i/5+1)
 
                     return x
                 },
@@ -823,7 +911,9 @@ function updateUpgTemp(id) {
         tu.cost[x] = upg.cost(amt)
         tu.bulk[x] = Decimal.gte(res,UPGS_SCOST[id][x])?Math.min(upg.bulk(res),tu.max[x]):0
 
-        if (upg.effect) tu.eff[x] = upg.effect(amt)
+        if (upg.effect) {
+			tu.eff[x] = upg.effect(amt)
+		}
     }
     if (upgs.cannotBuy) tu.cannotBuy = upgs.cannotBuy()
     if (upgs.noSpend) tu.noSpend = upgs.noSpend()

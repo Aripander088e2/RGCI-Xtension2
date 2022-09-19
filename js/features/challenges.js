@@ -43,15 +43,15 @@ const CHALS = [
 
         title: `No Tiers`,
         desc: `You can't tier up.`,
-        reward: `TP gain is increased by <b class='green'>+25%</b> each completion.`,
+        reward: `TP gain is increased by <b class='green'>doubled</b> each completion.`,
 
-        goal: i=>70+20*i,
+        goal: i=>Math.ceil(70+20*i),
         bulk: i=>Math.floor((i-70)/20+1),
 
         goalDesc: x=>"Level "+format(x,0),
         goalAmt: _=>player.level,
 
-        eff: i=>Decimal.pow(1.25,i),
+        eff: i=>Decimal.pow(2,i),
         effDesc: x=>format(x,1)+"x",
     },{
         unl: _=>true,
@@ -74,7 +74,7 @@ const CHALS = [
     },{
         unl: _=>true,
 
-        max: 6,
+        max: 10,
         id: 'crystal',
 
         title: `Prestigeless`,
@@ -92,15 +92,15 @@ const CHALS = [
     },{
         unl: _=>true,
 
-        max: 5,
+        max: 10,
         id: 'crystal',
 
         title: `Unefficient`,
         desc: `You cannot buy Grass and Prestige Upgrades.`,
         reward: `Platinum gain is increased by <b class="green">+1</b> per completion.`,
 
-        goal: i=>4+i*3,
-        bulk: i=>Math.floor((i-4)/3+1),
+        goal: i=>4+i*2,
+        bulk: i=>Math.floor((i-4)/2+1),
 
         goalDesc: x=>"Tier "+format(x,0),
         goalAmt: _=>player.tier,
@@ -123,7 +123,7 @@ const CHALS = [
         goalDesc: x=>"Tier "+format(x,0),
         goalAmt: _=>player.tier,
 
-        eff: i=>i+1,
+        eff: i=>Decimal.pow(2,i),
         effDesc: x=>format(x,1)+"x",
     },{
         unl: _=>hasUpgrade('factory',2),
@@ -132,16 +132,16 @@ const CHALS = [
         id: 'steel',
 
         title: `Empower`,
-        desc: `???`,
+        desc: `Non-Steelie Challenge Rewards do nothing.`,
         reward: `Gain more Charge Rate.`,
 
-        goal: i=>4+i*3,
-        bulk: i=>Math.floor((i-4)/3+1),
+        goal: i=>25+i*3,
+        bulk: i=>Math.floor((i-25)/3+1),
 
         goalDesc: x=>"Tier "+format(x,0),
         goalAmt: _=>player.tier,
 
-        eff: i=>i+1,
+        eff: i=>Decimal.pow(3,i),
         effDesc: x=>format(x,1)+"x",
     },{
         unl: _=>player.lTimes>=1,
@@ -150,16 +150,16 @@ const CHALS = [
         id: 'steel',
 
         title: `Powerhouse`,
-        desc: `???`,
-        reward: `Gain more Oil`,
+        desc: `You can't buy Grass, Prestige, and Crystal Upgrades.`,
+        reward: `Gain more Oil.`,
 
-        goal: i=>4+i*3,
-        bulk: i=>Math.floor((i-4)/3+1),
+        goal: i=>11+i*2,
+        bulk: i=>Math.floor((i-11)/2+1),
 
         goalDesc: x=>"Tier "+format(x,0),
         goalAmt: _=>player.tier,
 
-        eff: i=>i+1,
+        eff: i=>Decimal.pow(3,i),
         effDesc: x=>format(x,1)+"x",
     }
 ]
@@ -191,7 +191,7 @@ tmp_update.push(_=>{
     for (let i in CHALS) {
         let c = player.chal.comp[i]||0
         tmp.chal.goal[i] = CHALS[i].goal(c)
-        tmp.chal.eff[i] = CHALS[i].eff(c)
+        tmp.chal.eff[i] = CHALS[i].eff(inChal(7) && CHALS[i].id != "steel" ? 0 : c)
     }
     if (!inChal(-1)) {
         let p = player.chal.progress

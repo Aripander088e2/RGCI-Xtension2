@@ -22,7 +22,7 @@ const MAIN = {
         x = x.mul(upgEffect('oil',0))
         x = x.mul(chalEff(0))
         x = x.mul(tmp.chargeEff[5]||1)
-        if (player.decel) x = x.div(1e6)
+        if (player.decel) x = x.div(1e4)
 
         x = x.mul(devMult)
         if (x.lt(1)) return x
@@ -51,12 +51,10 @@ const MAIN = {
         x = x.mul(upgEffect('crystal',1))
         x = x.mul(upgEffect('plat',1))
         x = x.mul(upgEffect('aGrass',4))
-        x = x.mul(upgEffect('ap',2))
-        x = x.mul(upgEffect('oil',1))
         x = x.mul(chalEff(1))
         if (player.grasshop >= 7) x = x.mul(2)
-        if (player.decel) x = x.div(1e6)
         x = x.mul(tmp.chargeEff[4]||1)
+        if (player.decel) x = x.div(1e7)
 
         x = x.mul(devMult)
         if (x.lt(1)) return x
@@ -71,7 +69,6 @@ const MAIN = {
         x = x.mul(upgEffect('crystal',2))
         x = x.mul(upgEffect('plat',4))
         x = x.mul(upgEffect('perk',7))
-        x = x.mul(upgEffect('ap',3))
         x = x.mul(upgEffect('oil',2))
         if (player.grasshop >= 1) x = x.mul(4)
         x = x.mul(chalEff(2))
@@ -85,11 +82,12 @@ const MAIN = {
     rangeCut: _=>50+upgEffect('grass',4,0)+upgEffect('perk',4,0),
     autoCut() {
 		let interval = 5-upgEffect('auto',0,0)-upgEffect('plat',0,0)
-		if (player.decel) interval *= 10
+		if (player.decel) interval *= 10 / upgEffect('auto', 10)
 		return interval
 	},
     level: {
         req(i) {
+            if (player.decel) i /= upgEffect('ap',2,1)+upgEffect('oil',1,0)
             let x = Decimal.pow(1.4,i).mul(50)
             return x.ceil()
         },
@@ -97,6 +95,7 @@ const MAIN = {
             let x = i.div(50)
             if (x.lt(1)) return 0
             x = x.log(1.4).toNumber()
+            if (player.decel) x *= upgEffect('ap',2,1)+upgEffect('oil',1,0)
             return Math.floor(x)+1
         },
         cur(i) {
@@ -127,6 +126,7 @@ const MAIN = {
         },
         base() {
 			let x = upgEffect('crystal',3)
+			if (player.decel) x = upgEffect('ap',3)
 			if (player.grasshop >= 5) x += 0.1
 			return x
         },

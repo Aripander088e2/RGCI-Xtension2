@@ -15,8 +15,8 @@ MAIN.gh = {
             effDesc: x=> "+"+format(x,1),
         },{
             r: 4,
-            desc: `Perk worth <b class="green">+0.1</b> per Grasshop. (starting at 3)`,
-            effect: _=>Math.max(0,(player.grasshop-2)/10),
+            desc: `Perk worth <b class="green">+0.1</b> per Grasshop. (starting at 3 and ending at 10)`,
+            effect: _=>Math.max(0,(Math.min(player.grasshop,10)-2)/10),
             effDesc: x=> "+"+format(x,1),
         },{
             r: 5,
@@ -32,24 +32,31 @@ MAIN.gh = {
             desc: `Unlock Steelie reset.`,
         },{
             r: 11,
-            desc: `Gain <b class="green">2x</b> more Steel per Grasshop. (starting at 11)`,
-            effect: _=>E(2).pow(Math.max(0,player.grasshop-10)),
+            desc: `Gain <b class="green">2x</b> more Steel per Grasshop. (starting at 11 and ending at 18)`,
+            effect: _=>E(2).pow(Math.max(0,Math.min(player.grasshop,18)-10)),
             effDesc: x=> format(x,0)+"x",
         },{
             unl: _=>hasUpgrade('factory',2),
 
             r: 18,
-            desc: `Gain <b class="green">2x</b> more Charge per Grasshop. (starting at 18)`,
-            effect: _=>E(2).pow(Math.max(0,player.grasshop-17)),
+            desc: `Gain <b class="green">+50%</b> more Charge per Grasshop. (starting at 18)`,
+            effect: _=>E(1.5).pow(Math.max(0,player.grasshop-17)),
             effDesc: x=> format(x,0)+"x",
         },{
             unl: _=>hasUpgrade('factory',2),
 
-            r: 25,
-            desc: `Charge rate bonuses start 10x earlier per 3 Grasshops. (starting at 25)`,
-            effect: _=>E(10).pow(Math.max(0,Math.floor((player.grasshop-25)/3+1))),
-            effDesc: x=> format(x,0)+"x",
-        }
+            r: 20,
+            desc: `Charge rate bonuses start 10x earlier per 3 Grasshops. (starting at 20)`,
+            effect: _=>Math.max(0,Math.floor((player.grasshop-20)/3+1)),
+            effDesc: x=> format(E(10).pow(x),0)+"x",
+        },{
+            unl: _=>hasUpgrade('factory',2),
+
+            r: 35,
+            desc: `Charge rate bonuses start 10x earlier per 4 Grasshops. (starting at 35)`,
+            effect: _=>Math.max(0,Math.floor((player.grasshop-35)/4+1)),
+            effDesc: x=> format(E(10).pow(x),0)+"x",
+        },
     ],
 }
 
@@ -94,8 +101,10 @@ RESET.gh = {
         player.bestCrystal = E(0)
         player.chargeRate = E(0)
 
-        for (let i = 0; i < 2; i++) player.chal.comp[i] = Math.min(upgEffect('assembler', 5), player.chal.comp[i])
-        for (let i = 2; i < 6; i++) player.chal.comp[i] = Math.min(upgEffect('assembler', 6), player.chal.comp[i])
+        if (!hasUpgrade('assembler', 7) || order !== "gh") {
+            for (let i = 0; i < 2; i++) player.chal.comp[i] = Math.min(upgEffect('assembler', 5), player.chal.comp[i])
+            for (let i = 2; i < 6; i++) player.chal.comp[i] = Math.min(upgEffect('assembler', 6), player.chal.comp[i])
+        }
 
         resetUpgrades('crystal')
 
