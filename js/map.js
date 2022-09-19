@@ -12,9 +12,9 @@ window.addEventListener('keydown', e=>{
 const MAP = [
     [null,null,null,null,null,null,null],
     [null,null,null,null,null,null,null],
-    [null,null,null,'opt',null,null,null],
+    [null,null,null,'opt',null,'rl',null],
     [null,null,'auto','g','pc','gh','fd'],
-    [null,null,null,'p','chal',null,'as'],
+    [null,null,null,'p','chal','dc',null],
     [null,null,null,null,null,null,null],
     [null,null,null,null,null,null,null],
 ]
@@ -28,7 +28,8 @@ const MAP_UNLS = {
 	chal: _ => player.cTimes > 0,
 	gh: _ => player.cTimes > 0,
 	fd: _ => player.sTimes > 0,
-	as: _ => player.sTimes > 0
+	dc: _ => hasUpgrade("factory", 4),
+	rl: _ => hasUpgrade("factory", 5),
 }
 
 const MAP_LOCS = {
@@ -40,7 +41,8 @@ const MAP_LOCS = {
 	chal: "Challenges",
 	gh: "Prestige",
 	fd: "Factory",
-	as: "Factory"
+	dc: "Factory",
+	rl: "Rocket Launch Pad"
 }
 
 const MAP_IDS = (_=>{
@@ -116,9 +118,17 @@ const go_to_locs = [
 		map: [4, 3],
 		unl: _ => player.pTimes > 0,
 	}, {
+		name: "Challenges",
+		map: [4, 4],
+		unl: _ => true,
+	}, {
 		name: "Foundry",
 		map: [6, 3],
 		unl: _ => player.sTimes > 0,
+	}, {
+		name: "Rocket",
+		map: [5, 2],
+		unl: _ => hasUpgrade("factory", 5),
 	}, {
 		name: "Settings",
 		map: [3, 2],

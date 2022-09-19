@@ -10,9 +10,11 @@ const UPG_RES = {
     aGrass: ["Anti-Grass",_=>[player,"aGrass"],'AntiGrassBase'],
     ap: ["AP",_=>[player,"ap"],'AnonymityBase'],
     oil: ["Oil",_=>[player,"oil"],'LiquefyBase'],
+    rf: ["Rocket Fuel",_=>[player.rocket,"amount"],'RocketBase'],
+    momentum: ["Momentum",_=>[player,"momentum"],'RocketBase'],
 }
 
-const isResNumber = ['perk','plat']
+const isResNumber = ['perk','plat','rf','momentum']
 
 const UPGS = {
     grass: {
@@ -813,6 +815,28 @@ const UPGS = {
                     return x
                 },
                 effDesc: x => format(x)+"x",
+            },{
+                max: 25,
+
+                unl: _=>player.rocket.part>0,
+
+                costOnce: true,
+
+                title: "Plat-Exponential XP",
+                desc: `Increase XP multiplier's exponent by <b class="green">+1%</b> per level, but only in normal realm.`,
+
+                res: "plat",
+                icon: ['Icons/XP','Icons/Exponent'],
+                
+                cost: i => 1e6,
+                bulk: i => Math.floor(i/1e6),
+
+                effect(i) {
+                    let x = i*0.01+1
+
+                    return x
+                },
+                effDesc: x => "^"+format(x),
             },
         ],
     },
@@ -1013,7 +1037,6 @@ function updateUpgradesHTML(id) {
 
                 if (amt < tu.max[ch]) {
                     let cost2 = upg.costOnce?Decimal.mul(tu.cost[ch],25-amt%25):upg.cost((Math.floor(amt/25)+1)*25-1)//upg.cost(amt+25)
-
                     if (tu.max[ch] >= 25) h += `<br><span class="${Decimal.gte(tmp.upg_res[upg.res],cost2)?"green":"red"}">Cost to next 25: ${format(cost2,0)} ${dis}</span>`
                     h += `
                     <br><span class="${Decimal.gte(tmp.upg_res[upg.res],tu.cost[ch])?"green":"red"}">Cost: ${format(tu.cost[ch],0)} ${dis}</span>
@@ -1114,6 +1137,10 @@ el.update.upgs = _=>{
     if (mapID == 'fd') {
         updateUpgradesHTML('foundry')
         updateUpgradesHTML('gen')
+    }
+    if (mapID == 'rl') {
+        updateUpgradesHTML('rocket')
+        updateUpgradesHTML('momentum')
     }
 
 	if (mapID == 'opt') {

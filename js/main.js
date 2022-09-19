@@ -18,14 +18,15 @@ const MAIN = {
         x = x.mul(upgEffect('crystal',0))
         x = x.mul(upgEffect('plat',2))
         x = x.mul(upgEffect('aGrass',3))
-        x = x.mul(upgEffect('ap',0))
-        x = x.mul(upgEffect('oil',0))
         x = x.mul(chalEff(0))
         x = x.mul(tmp.chargeEff[5]||1)
-        if (player.decel) x = x.div(1e4)
 
-        x = x.mul(devMult)
-        if (x.lt(1)) return x
+        if (player.decel) x = x.div(1e4)
+        x = x.mul(upgEffect('ap',0))
+        x = x.mul(upgEffect('oil',0))
+
+        x = x.mul(upgEffect('rocket',0))
+        x = x.mul(upgEffect('momentum',0))
 
         return x
     },
@@ -40,6 +41,7 @@ const MAIN = {
         x /= upgEffect('grass',2,1)
         x /= upgEffect('perk',2,1)
         x /= upgEffect('aGrass',1,1)
+        x /= upgEffect('momentum',1)
         return x
     },
     xpGain() {
@@ -50,15 +52,20 @@ const MAIN = {
         x = x.mul(upgEffect('pp',1))
         x = x.mul(upgEffect('crystal',1))
         x = x.mul(upgEffect('plat',1))
-        x = x.mul(upgEffect('aGrass',4))
         x = x.mul(chalEff(1))
+
         if (player.grasshop >= 7) x = x.mul(2)
         x = x.mul(tmp.chargeEff[4]||1)
+
         if (player.decel) x = x.div(1e7)
+        x = x.mul(upgEffect('aGrass',4))
+        x = x.mul(upgEffect('ap',2))
+        x = x.mul(upgEffect('oil',1))
 
-        x = x.mul(devMult)
+        x = x.mul(upgEffect('rocket',1))
+        x = x.mul(upgEffect('momentum',2))
+
         if (x.lt(1)) return x
-
         return x
     },
     tpGain() {
@@ -69,13 +76,16 @@ const MAIN = {
         x = x.mul(upgEffect('crystal',2))
         x = x.mul(upgEffect('plat',4))
         x = x.mul(upgEffect('perk',7))
-        x = x.mul(upgEffect('oil',2))
-        if (player.grasshop >= 1) x = x.mul(4)
         x = x.mul(chalEff(2))
-        x = x.mul(tmp.chargeEff[2]||1)
-        if (player.decel) x = x.div(1e4)
 
-        if (x.lt(1)) return x
+        if (player.grasshop >= 1) x = x.mul(4)
+        x = x.mul(tmp.chargeEff[2]||1)
+
+        if (player.decel) x = x.div(1e4)
+        x = x.mul(upgEffect('oil',2))
+
+        x = x.mul(upgEffect('rocket',2))
+        x = x.mul(upgEffect('momentum',3))
 
         return x
     },
@@ -89,11 +99,13 @@ const MAIN = {
         req(i) {
             if (player.decel) i /= upgEffect('ap',2,1)+upgEffect('oil',1,0)
             let x = Decimal.pow(1.4,i).mul(50)
+
             return x.ceil()
         },
         bulk(i) {
             let x = i.div(50)
             if (x.lt(1)) return 0
+
             x = x.log(1.4).toNumber()
             if (player.decel) x *= upgEffect('ap',2,1)+upgEffect('oil',1,0)
             return Math.floor(x)+1

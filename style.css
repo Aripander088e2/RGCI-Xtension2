@@ -347,6 +347,21 @@ button:not(.locked):hover {
     background-color: #2b2b2b;
 }
 
+.upg_desc.rocket,
+.upgs_div.rocket {
+    background-color: #2D5B62;
+}
+
+.reset_div.rocket_part,
+.reset_req.rocket_part {
+    background-color: #4F4836;
+}
+
+.upg_desc.momentum,
+.upgs_div.momentum {
+    background-color: #AA7C00;
+}
+
 .upgs_ctn {
     height: calc(100% - 84px);
     width: calc(100% - 24px);
@@ -447,6 +462,18 @@ button:not(.locked):hover {
 .lavender,
 .upg_max {
     color: #bf7fff;
+}
+
+.lightgray {
+    color: lightgray;
+}
+
+.lightblue {
+    color: lightblue;
+}
+
+.black {
+    color: #222;
 }
 
 .reset_div {
