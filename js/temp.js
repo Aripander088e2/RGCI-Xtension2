@@ -23,8 +23,8 @@ function resetTemp() {
         upg_ch: {},
 
         chal: {
-            bulk: 0,
-            amt: 0,
+            bulk: [],
+            amt: [],
             goal: [],
             eff: [],
         },
@@ -36,6 +36,8 @@ function resetTemp() {
 
         ghRunning: false,
         ghEffect: [],
+
+        el: tmp.el
     }
 
     for (let x in UPG_RES) tmp.upg_res[x] = E(0)
@@ -53,6 +55,6 @@ function resetTemp() {
 }
 
 function updateTemp() {
-    tmp.oilRigBase = (player.upgs.factory[7]||0)/100
+	tmp.realmSrc = player.decel ? player.aRes : player
     for (let x = 0; x < tmp_update.length; x++) tmp_update[x]()
 }

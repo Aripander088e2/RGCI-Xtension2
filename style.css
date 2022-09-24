@@ -1,18 +1,17 @@
 @font-face {
-    font-family: Roboto;
-    src: url(RobotoMono-VariableFont_wght.ttf);
+    font-family: Inconsolata;
+    src: url(Inconsolata-VariableFont_wdth,wght.ttf);
+	size-adjust: 120%;
 }
 
 * {
-	font-family: Roboto;
+	font-family: Inconsolata;
     table-align: center;
 	text-align: center;
 
-    text-shadow: #000 0px 0px 3px, #000 0px 0px 3px, #000 0px 0px 3px, 
-    #000 0px 0px 3px, #000 0px 0px 3px, #000 0px 0px 3px, 
-    #000 0px 0px 3px, #000 0px 0px 3px, #000 0px 0px 3px, 
+    text-shadow: #000 0px 0px 1px, #000 0px 0px 1px, #000 0px 0px 1px, 
+    #000 0px 0px 2px, #000 0px 0px 2px, #000 0px 0px 2px, 
     #000 0px 0px 3px, #000 0px 0px 3px, #000 0px 0px 3px;
-    -webkit-font-smoothing: antialiased;
 }
 
 body {
@@ -47,8 +46,8 @@ h3 {
 button {
     margin: 2px;
     font-size: 20px;
-    border: solid 3px black;
-    background-color: lightgray;
+    border: solid 3px #0003;
+    background-color: #dddd;
     color: white;
     cursor: pointer;
     padding: 4px 10px;
@@ -56,7 +55,8 @@ button {
 
 button.locked {
     cursor: default;
-    background-color: gray;
+    color: #fff3;
+    background-color: #111;
 }
 
 button:not(.locked):hover {
@@ -146,7 +146,7 @@ button:not(.locked):hover {
 #grass_div {
     position: relative;
     width: 550px;
-    border: solid 2px black;
+    border: solid 2px #0003;
     background-color: #29b146;
     height: 45px;
     padding: 0 10px;
@@ -165,7 +165,7 @@ button:not(.locked):hover {
 #grass_div > div > img {
     width: 60px;
     height: 60px;
-    border: solid 2px black;
+    border: solid 2px #0003;
     border-radius: 50%;
     background-color: #73ff91;
 }
@@ -180,14 +180,14 @@ button:not(.locked):hover {
 #grass_canvas {
     width: calc(100% - 4px);
     height: calc(100% - 64px);
-    border: solid 2px black;
+    border: solid 2px #0003;
     background-color: #186834;
 }
 
 #level {
     position: relative;
     width: 400px;
-    border: solid 2px black;
+    border: solid 2px #0003;
     background-color: #143357;
     height: 35px;
     font-size: 25px;
@@ -197,7 +197,7 @@ button:not(.locked):hover {
 #tier {
     position: relative;
     width: 400px;
-    border: solid 2px black;
+    border: solid 2px #0003;
     background-color: #575614;
     height: 35px;
     font-size: 25px;
@@ -207,7 +207,7 @@ button:not(.locked):hover {
 #level_div {
     position: relative;
     width: calc(100% - 34px);
-    border: solid 2px black;
+    border: solid 2px #0003;
     background-color: #143357;
     font-size: 25px;
     height: 85px;
@@ -217,7 +217,7 @@ button:not(.locked):hover {
 #tier_div {
     position: relative;
     width: calc(100% - 34px);
-    border: solid 2px black;
+    border: solid 2px #0003;
     background-color: #575614;
     font-size: 25px;
     height: 108px;
@@ -256,7 +256,7 @@ button:not(.locked):hover {
     position: relative;
     width: calc(100% - 24px);
     margin-top: 5px;
-    border: solid 2px black;
+    border: solid 2px #0003;
     background-color: #29b146;
     height: 45px;
     padding: 0 10px;
@@ -280,7 +280,7 @@ button:not(.locked):hover {
     position: relative;
     width: calc(100% - 24px);
     height: calc(100% - 24px);
-    border: solid 2px black;
+    border: solid 2px #0003;
     background-color: #c5c5c5;
     margin: 10px;
 }
@@ -305,6 +305,8 @@ button:not(.locked):hover {
 
 .upg_desc.auto,
 .upgs_div.auto,
+.upg_desc.aAuto,
+.upgs_div.aAuto,
 .upg_desc.assembler,
 .upgs_div.assembler {
     background-color: #811919;
@@ -349,24 +351,29 @@ button:not(.locked):hover {
 
 .upg_desc.rocket,
 .upgs_div.rocket {
-    background-color: #2D5B62;
+    background-color: #ccc;
 }
 
 .reset_div.rocket_part,
 .reset_req.rocket_part {
-    background-color: #4F4836;
+    background-color: #9C8E7C;
 }
 
 .upg_desc.momentum,
 .upgs_div.momentum {
-    background-color: #AA7C00;
+    background-color: #FFE626;
+}
+
+.reset_div.gal,
+.reset_req.gal {
+    background-color: #bf00ff;
 }
 
 .upgs_ctn {
     height: calc(100% - 84px);
     width: calc(100% - 24px);
 
-    border: solid 2px black;
+    border: solid 2px #0003;
     background-color: #272727;
     margin: 0 10px;
 
@@ -394,12 +401,12 @@ button:not(.locked):hover {
 .upg_ctn {
     flex-shrink: 0;
     position: relative;
-    margin: 2px;
+    margin: 1px;
     cursor: pointer;
 }
 
 .upg_ctn:hover > img {
-    transform: translateX(-50%) scale(1.06);
+    transform: translateX(-50%) scale(1.06)
 }
 
 .upg_ctn > img {
@@ -415,12 +422,22 @@ button:not(.locked):hover {
     pointer-events: none;
 }
 
+.upg_tier {
+    position: absolute;
+    top: 10%;
+    width: 100%;
+    font-size: 2vw;
+    font-weight: bold;
+    color: white;
+    pointer-events: none;
+}
+
 .upg_cost {
     position: absolute;
-    bottom: 0%;
+    bottom: 1vw;
     left: 50%;
     width: 100%;
-    font-size: 1.1vw;
+    font-size: 1vw;
     transform: translateX(-50%);
     color: lime;
     pointer-events: none;
@@ -428,12 +445,25 @@ button:not(.locked):hover {
 
 .upg_amt {
     position: absolute;
-    top: 0%;
+    top: 0.7vw;
     left: 50%;
     width: 100%;
     font-size: 1.3vw;
+    font-weight: bold;
     transform: translateX(-50%);
     color: yellow;
+    pointer-events: none;
+}
+
+.upg_max {
+    position: absolute;
+    top: calc(50% - 1.5vw);
+    left: 50%;
+    width: 100%;
+    font-size: 2vw;
+    font-weight: bold;
+    transform: translateX(-50%);
+    color: #ff7fff;
     pointer-events: none;
 }
 
@@ -459,9 +489,9 @@ button:not(.locked):hover {
     color: lime;
 }
 
-.lavender,
+.pink,
 .upg_max {
-    color: #bf7fff;
+    color: #ff7fff;
 }
 
 .lightgray {
@@ -480,7 +510,7 @@ button:not(.locked):hover {
     position: relative;
     width: calc(100% - 24px);
     height: calc(100% - 24px);
-    border: solid 2px black;
+    border: solid 2px #0003;
     background-color: #c5c5c5;
     margin: 10px;
 }
@@ -513,7 +543,7 @@ button:not(.locked):hover {
     height: 240px;
     padding: 5px;
     margin: 5px;
-    border: solid 2px black;
+    border: solid 2px #0003;
     background-color: #c5c5c5;
     font-size: 16px;
     cursor: pointer;
@@ -529,7 +559,7 @@ button:not(.locked):hover {
     position: relative;
     width: calc(100% - 44px);
     height: calc(100% - 44px);
-    border: solid 2px black;
+    border: solid 2px #0003;
     background-color: #c5c5c5;
     margin: 10px;
     padding: 10px;
@@ -539,7 +569,7 @@ button:not(.locked):hover {
     position: absolute;
     width: calc(100% - 25px);
     height: calc(100% - 57px);
-    border: solid 2px black;
+    border: solid 2px #0003;
     background-color: #272727;
     overflow-y: auto;
     margin-top: 5px;
@@ -548,7 +578,7 @@ button:not(.locked):hover {
 .milestone_ctns > div {
     width: calc(100% - 14px);
     padding: 5px;
-    border: solid 2px black;
+    border: solid 2px #0003;
     background-color: #c5c5c5;
     font-size: 16px;
 }
@@ -564,7 +594,7 @@ button:not(.locked):hover {
 #charge_mil {
     width: calc(100% - 24px);
     height: calc(100% - 84px);
-    border: solid 2px black;
+    border: solid 2px #0003;
     background-color: #272727;
     overflow-y: auto;
     margin: 0 10px;

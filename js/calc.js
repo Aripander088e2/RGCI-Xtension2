@@ -7,8 +7,8 @@ function calc(dt) {
     player.pTime += dt
     player.cTime += dt
     player.sTime += dt
-    player.aTime += dt
-    player.lTime += dt
+    player.aRes.aTime += dt
+    player.aRes.lTime += dt
 
     if (tmp.spawn_time >= tmp.grassSpawn) {
         while (tmp.spawn_time >= tmp.grassSpawn) {
@@ -33,10 +33,8 @@ function calc(dt) {
     if (tmp.ppGainP > 0 && player.level >= 30 && !decel) player.pp = player.pp.add(tmp.ppGain.mul(dt*tmp.ppGainP))
     if (tmp.crystalGainP > 0 && player.level >= 100 && !decel) player.crystal = player.crystal.add(tmp.crystalGain.mul(dt*tmp.crystalGainP))
 
-    if (hasUpgrade('factory',7)) {
-        player.ap = player.ap.add(player.bestAP2.mul(dt*tmp.oilRigBase))
-        player.oil = player.oil.add(player.bestOil2.mul(dt*tmp.oilRigBase))
-    }
+    if (tmp.apGainP > 0 && player.aRes.level >= 30) player.aRes.ap = player.aRes.ap.add(tmp.apGain.mul(dt*tmp.apGainP))
+    if (tmp.oilGainP > 0 && player.aRes.level >= 100) player.aRes.oil = player.aRes.oil.add(tmp.oilGain.mul(dt*tmp.oilGainP))
 
     if (hasUpgrade('factory',2)) player.chargeRate = player.chargeRate.add(tmp.chargeGain.mul(dt))
 
@@ -45,16 +43,19 @@ function calc(dt) {
     player.bestCrystal = player.bestCrystal.max(player.crystal)
     player.bestCharge = player.bestCharge.max(player.chargeRate)
 
-    player.aBestGrass = player.aBestGrass.max(player.aGrass)
-    player.bestAP = player.bestAP.max(player.ap)
-    player.bestOil = player.bestOil.max(player.oil)
+    player.aRes.bestGrass = player.aRes.bestGrass.max(player.aRes.grass)
+    player.aRes.bestAP = player.aRes.bestAP.max(player.aRes.ap)
+    player.aRes.bestOil = player.aRes.bestOil.max(player.aRes.oil)
 
-    if (player.level >= 200 && !player.chalUnl) player.chalUnl = true
+	if (hasUpgrades("perk")) player.chal.c4 = false
+    if (hasUpgrade("assembler", 8)) {
+		player.chal.time = (player.chal.time || 0) + dt / upgEffect("assembler", 8)
+		for (var i = 0; i < 6; i++) player.chal.comp[i] = Math.min(player.chal.comp[i] + Math.floor(player.chal.time), CHALS[i].max)
+		player.chal.time -= Math.floor(player.chal.time)
+	}
+    for (var i in CHALS) if (inChalCond(i) && tmp.chal.bulk[i] > (player.chal.comp[i] || 0)) player.chal.comp[i] = tmp.chal.bulk[i]
 
-    if (!inChal(-1)) {
-        let p = player.chal.progress
-        player.chal.comp[p] = Math.min(Math.max(player.chal.comp[p]||0,tmp.chal.bulk),CHALS[p].max)
-    }
+	if (galUnlocked()) galTick(dt)
 
     MAIN.checkCutting()
 }

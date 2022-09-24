@@ -10,7 +10,7 @@ function createGrass() {
         tmp.grasses.push({
             x: Math.random(),
             y: Math.random(),
-            pl: Math.random()<tmp.platChance&&player.tier>=3,
+            pl: Math.random() < tmp.platChance && (player.tier>=3 || player.cTimes > 0),
             tier: player.tier
         })
     }
@@ -22,11 +22,9 @@ function removeGrass(i,auto=false) {
     let y = E(1)
     if (auto) y = y.mul(tmp.autocutBonus)
 
-    if (player.decel) player.aGrass = player.aGrass.add(tmp.grassGain.mul(y))
-    else player.grass = player.grass.add(tmp.grassGain.mul(y))
-    player.xp = player.xp.add(tmp.XPGain.mul(y))
-    if (player.pTimes > 0) player.tp = player.tp.add(tmp.TPGain.mul(y))
-
+    tmp.realmSrc.grass = tmp.realmSrc.grass.add(tmp.grassGain.mul(y))
+    tmp.realmSrc.xp = tmp.realmSrc.xp.add(tmp.xpGain.mul(y))
+    if (player.pTimes > 0) tmp.realmSrc.tp = tmp.realmSrc.tp.add(tmp.tpGain.mul(y))
     if (tmp.grasses[i].pl) player.plat += tmp.platGain
 
     tmp.grasses.splice(i, 1)
@@ -58,7 +56,7 @@ function drawGrass() {
         grass_ctx.fillRect(range_pos.x,range_pos.y,tmp.rangeCut,tmp.rangeCut)
     }
 
-    grass_ctx.strokeStyle = "black"
+    grass_ctx.strokeStyle = "#0003"
 
     for (let i = 0; i < gs.length; i++) {
         let g = gs[i]

@@ -7,6 +7,7 @@ const CHALS = [
 
         title: `Grassless`,
         desc: `You cannot buy any grass upgrades.`,
+        cond: _=>!hasUpgrades("grass"),
         reward: `Grass gain is <b class='green'>doubled</b> each completion.`,
 
         goal: i=>60+10*i,
@@ -25,6 +26,7 @@ const CHALS = [
 
         title: `Less Level`,
         desc: `Prestige Upgrade's "XP II" does nothing`,
+        cond: _=>!hasUpgrade("pp",1),
         reward: `XP gain is <b class='green'>doubled</b> each completion.`,
 
         goal: i=>80+15*i,
@@ -43,6 +45,7 @@ const CHALS = [
 
         title: `No Tiers`,
         desc: `You can't tier up.`,
+        cond: _=>player.tier==0,
         reward: `TP gain is increased by <b class='green'>doubled</b> each completion.`,
 
         goal: i=>Math.ceil(70+20*i),
@@ -56,15 +59,16 @@ const CHALS = [
     },{
         unl: _=>true,
 
-        max: 6,
+        max: 4,
         id: 'crystal',
 
         title: `Perkless`,
         desc: `You cannot buy Perks.`,
+        cond: _=>player.chal.c4,
         reward: `Perk gain is increased by <b class="green">+0.5</b> per completion.`,
 
-        goal: i=>7+i*2,
-        bulk: i=>Math.floor((i-7)/2+1),
+        goal: i=>7+i*4,
+        bulk: i=>Math.floor((i-7)/4+1),
 
         goalDesc: x=>"Tier "+format(x,0),
         goalAmt: _=>player.tier,
@@ -79,6 +83,7 @@ const CHALS = [
 
         title: `Prestigeless`,
         desc: `You cannot buy Prestige Upgrades.`,
+        cond: _=>!hasUpgrades("pp"),
         reward: `PP gain is <b class="green">doubled</b> each completion.`,
 
         goal: i=>2+i*2,
@@ -97,6 +102,7 @@ const CHALS = [
 
         title: `Unefficient`,
         desc: `You cannot buy Grass and Prestige Upgrades.`,
+        cond: _=>!hasUpgrades("grass")&&!hasUpgrades("pp"),
         reward: `Platinum gain is increased by <b class="green">+1</b> per completion.`,
 
         goal: i=>4+i*2,
@@ -110,15 +116,16 @@ const CHALS = [
     },{
         unl: _=>player.sTimes>=1,
 
-        max: 5,
+        max: 10,
         id: 'steel',
 
         title: `Clear Crystal`,
         desc: `You can't buy Crystalize Upgrades.`,
+        cond: _=>!hasUpgrades("crystal"),
         reward: `Gain more Steel.`,
 
-        goal: i=>16+i*3,
-        bulk: i=>Math.floor((i-16)/3+1),
+        goal: i=>16+i*2,
+        bulk: i=>Math.floor((i-16)/2+1),
 
         goalDesc: x=>"Tier "+format(x,0),
         goalAmt: _=>player.tier,
@@ -128,29 +135,31 @@ const CHALS = [
     },{
         unl: _=>hasUpgrade('factory',2),
 
-        max: 5,
+        max: 8,
         id: 'steel',
 
         title: `Empower`,
         desc: `Non-Steelie Challenge Rewards do nothing.`,
+        cond: _=>false,
         reward: `Gain more Charge Rate.`,
 
-        goal: i=>25+i*3,
-        bulk: i=>Math.floor((i-25)/3+1),
+        goal: i=>25+i*2,
+        bulk: i=>Math.floor((i-25)/2+1),
 
         goalDesc: x=>"Tier "+format(x,0),
         goalAmt: _=>player.tier,
 
-        eff: i=>Decimal.pow(3,i),
+        eff: i=>Decimal.pow(5,i),
         effDesc: x=>format(x,1)+"x",
     },{
-        unl: _=>player.lTimes>=1,
+        unl: _=>player.aRes.lTimes>=1,
 
         max: 5,
         id: 'steel',
 
         title: `Powerhouse`,
         desc: `You can't buy Grass, Prestige, and Crystal Upgrades.`,
+        cond: _=>!hasUpgrades("grass")&&!hasUpgrades("pp")&&!hasUpgrades("crystal"),
         reward: `Gain more Oil.`,
 
         goal: i=>11+i*2,
@@ -172,34 +181,38 @@ const chalSGoal = (_=>{
 
 function inChal(x) {
     let p = player.chal.progress
-    return p == x
+    return p[x]
+}
+
+function inChalCond(x) {
+    return inChal(x) || CHALS[x].cond()
 }
 
 function enterChal(x) {
-    if (player.chal.progress != x) {
-        if (x == -1) RESET[CHALS[player.chal.progress].id].reset(true)
+	if (player.decel) return
 
-        player.chal.progress = x
+	if (player.chal.progress[x]) delete player.chal.progress[x]
+	else if (hasUpgrade('assembler', 9)) player.chal.progress[x] = true
+	else player.chal.progress = { [x]: true }
 
-        if (x > -1) RESET[CHALS[x].id].reset(true)
-    } else enterChal(-1)
+	if (player.chal.progress[x]) RESET[CHALS[x].id].reset(true)
 }
 
 function chalEff(x,def=E(1)) { return tmp.chal.eff[x] || def }
 
 tmp_update.push(_=>{
-    for (let i in CHALS) {
-        let c = player.chal.comp[i]||0
-        tmp.chal.goal[i] = CHALS[i].goal(c)
-        tmp.chal.eff[i] = CHALS[i].eff(inChal(7) && CHALS[i].id != "steel" ? 0 : c)
-    }
-    if (!inChal(-1)) {
-        let p = player.chal.progress
-        let c = CHALS[p]
-        let a = c.goalAmt()
-        tmp.chal.amt = a
-        tmp.chal.bulk = a >= chalSGoal[p] ? Math.min(c.bulk(a),c.max) : 0
-    }
+	for (let i in CHALS) {
+		let c = player.chal.comp[i] || 0
+		tmp.chal.goal[i] = CHALS[i].goal(c)
+		tmp.chal.eff[i] = CHALS[i].eff(inChal(7) && CHALS[i].id != "steel" ? 0 : c)
+
+		if (inChalCond(i)) {
+			let c = CHALS[i]
+			let a = c.goalAmt()
+			tmp.chal.amt[i] = a
+			tmp.chal.bulk[i] = a >= chalSGoal[i] ? Math.min(c.bulk(a), c.max) : 0
+		}
+	}
 })
 
 el.setup.chal = _=>{
@@ -219,7 +232,7 @@ el.setup.chal = _=>{
 
             <div style="position:absolute; bottom:7px; width:100%;">
                 Status: <b class="red" id="chal_pro_${i}">Inactive</b><br>
-                <b class="red" id="chal_goal_${i}">Goal: ???</b>
+                <b class="white" id="chal_goal_${i}">Goal: ???</b>
             </div>
         </div>
         `
@@ -229,34 +242,39 @@ el.setup.chal = _=>{
 }
 
 el.update.chal = _=>{
-    if (mapID == 'chal') {
-        let unl = !getPlayerData.chalUnl
+	if (player.decel) player.chal.progress = {}
 
-        tmp.el.chal_unl.setDisplay(!unl && player.cTimes > 0)
-        tmp.el.chal_div.setDisplay(unl && player.cTimes > 0)
+	if (mapID == 'chal') {
+		let unl = player.cTimes > 0
 
-        if (unl) {
-            for (let i in CHALS) {
-                let c = CHALS[i]
+		tmp.el.chal_unl.setDisplay(!unl)
+		tmp.el.chal_div.setDisplay(unl)
 
-                let unl2 = c.unl()
+		if (unl) {
+			tmp.el.chal_top.setHTML(player.decel ? "You can't enter a Challenge while in Anti-Realm!" : `
+				Click any challenge to start! Click again to exit.<br>
+				You can complete Challenges without entering if you satisfy a condition.
+			`)
+			tmp.el.chal_auto.setDisplay(hasUpgrade("assembler", 8))
+			tmp.el.chal_auto.setTxt("Auto-completing in " + format((1 - player.chal.time) * upgEffect("assembler", 8), 1) + "s")
 
-                tmp.el['chal_div_'+i].setDisplay(unl2)
+			for (let i in CHALS) {
+				let c = CHALS[i]
+				let unl2 = c.unl()
+				tmp.el['chal_div_'+i].setDisplay(unl2)
 
-                if (unl2) {
-                    let l = player.chal.comp[i]||0
-                    let completed = l >= c.max
-                    let a = inChal(-1) ? 0 : tmp.chal.amt
+				if (unl2) {
+					let l = player.chal.comp[i]||0
+					let completed = l >= c.max
 
-                    tmp.el["chal_comp_"+i].setTxt(format(l,0) + " / " + format(c.max,0))
-                    tmp.el["chal_eff_"+i].setHTML(c.effDesc(tmp.chal.eff[i]))
-                    tmp.el["chal_pro_"+i].setTxt(completed ? "Completed" : inChal(i) ? "Progress" : "Inactive")
-                    tmp.el["chal_pro_"+i].setClasses({[completed ? "green" : inChal(i) ? "yellow" : "red"]: true})
+					tmp.el["chal_comp_"+i].setTxt(format(l,0) + " / " + format(c.max,0))
+					tmp.el["chal_eff_"+i].setHTML(c.effDesc(tmp.chal.eff[i]))
+					tmp.el["chal_pro_"+i].setTxt(completed ? "Completed" : inChal(i) ? "Progress" : inChalCond(i) ? "Active" : "Inactive")
+					tmp.el["chal_pro_"+i].setClasses({[completed ? "pink" : inChal(i) ? "yellow" : inChalCond(i) ? "green" : "red"]: true})
 
-                    tmp.el["chal_goal_"+i].setTxt("Goal: "+c.goalDesc(tmp.chal.goal[i]))
-                    tmp.el["chal_goal_"+i].setClasses({[inChal(i) && a >= tmp.chal.goal[i] ? "green" : "red"]: true})
-                }
-            }
-        }
-    }
+					tmp.el["chal_goal_"+i].setTxt("Goal: "+c.goalDesc(tmp.chal.goal[i]))
+				}
+			}
+		}
+	}
 }

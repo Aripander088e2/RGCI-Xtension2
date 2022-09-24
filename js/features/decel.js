@@ -14,27 +14,8 @@ RESET.decel = {
 
     reset(force=false) {
         if (true) {
-            let aa = player.aRes
-
-            if (player.decel) {
-                aa.level = player.level
-                aa.tier = player.tier
-                aa.xp = player.xp
-                aa.tp = player.tp
-            }
-
             player.decel = !player.decel
-
-            updateTemp()
-
             RESET.steel.reset(true)
-
-            if (player.decel) {
-                player.level = aa.level
-                player.tier = aa.tier
-                player.xp = aa.xp
-                player.tp = aa.tp
-            }
         }
     },
 }
@@ -52,7 +33,7 @@ UPGS.aGrass = {
     title: "Anti-Grass Upgrades",
     underDesc: _=>`These upgrades affect the Normal Realm.`,
 
-    autoUnl: _=>hasUpgrade('auto', 11),
+    autoUnl: _=>hasUpgrade('aAuto', 1),
 
     noSpend: _=>false,
 
@@ -61,7 +42,7 @@ UPGS.aGrass = {
             max: Infinity,
 
             title: "Anti-Grass Charge",
-            desc: `Increase charge rate by <b class="green">+10%</b> per level.<br>This effect is increased by <b class="green">25%</b> every <b class="yellow">25</b> levels.`,
+            desc: `Increase charge rate by <b class="green">+10%</b> per level.<br>This effect is increased by <b class="green">50%</b> every <b class="yellow">25</b> levels.`,
 
             res: "aGrass",
             icon: ['Curr/Charge'],
@@ -70,7 +51,7 @@ UPGS.aGrass = {
             bulk: i => i.div(10).max(1).log(1.2).floor().toNumber()+1,
 
             effect(i) {
-                let x = Decimal.pow(1.25,Math.floor(i/25)).mul(i/10+1)
+                let x = Decimal.pow(1.5,Math.floor(i/25)).mul(i/10+1)
 
                 return x
             },
@@ -148,7 +129,7 @@ UPGS.aGrass = {
             },
             effDesc: x => x.format()+"x",
         },{
-            unl: _ => player.aTimes > 0,
+            unl: _ => player.aRes.aTimes > 0,
 
             max: Infinity,
 
@@ -163,10 +144,145 @@ UPGS.aGrass = {
 
             effect(i) {
                 let x = Decimal.pow(2,Math.floor(i/25)).mul(i/10+1)
+                x = x.pow(tmp.chargeEff[4]||1)
 
                 return x
             },
             effDesc: x => x.format()+"x",
+        },{
+            max: 10,
+
+            max: Infinity,
+            tier: 2,
+
+            title: "Range II",
+            desc: `Increase grass cut range by <b class="green">+10</b> per level.`,
+
+            res: "grass",
+            icon: ['Icons/Range'],
+
+            cost: i => Decimal.pow(15,i).mul(200).ceil(),
+            bulk: i => i.div(200).max(1).log(15).floor().toNumber()+1,
+
+            effect(i) {
+                return i*10
+            },
+            effDesc: x => "+"+format(x,0),
         }
     ],
+}
+
+UPGS.aAuto = {
+	title: "Anti-Anti-Automation Upgrades",
+
+	unl: _=>player.decel,
+
+	ctn: [
+		{
+			unl: _=>player.aRes.aTimes>0,
+			max: 4,
+
+			title: "Anti-Autocut",
+			desc: `Auto-cutting speed is <b class="green">+0.5x</b> faster in Anti-Realm.`,
+		
+			res: "ap",
+			icon: ['Curr/AntiGrass','Icons/Automation'],
+						
+			cost: i => Decimal.pow(3,i).mul(20).ceil(),
+			bulk: i => i.div(20).max(1).log(3).floor().toNumber()+1,
+		
+			effect(i) {
+				return i/2+1
+			},
+			effDesc: x => format(x)+"x",
+		},{
+			unl: _=>player.aRes.lTimes>0,
+
+			title: "Anti-Grass Upgrades Autobuy",
+			desc: `You can now automatically buy Anti-Grass Upgrades.`,
+		
+			res: "oil",
+			icon: ['Curr/AntiGrass','Icons/Automation'],
+						
+			cost: i => E(100),
+			bulk: i => 1,
+		},{
+			unl: _=>false, //Galactic
+
+			title: "Anonymity Upgrades Autobuy",
+			desc: `You can now automatically buy Anonymity Upgrades.`,
+		
+			res: "rf",
+			icon: ['Curr/Anonymity','Icons/Automation'],
+						
+			cost: i => E(100),
+			bulk: i => 1,
+		},{
+			unl: _=>player.rocket.part>0,
+
+			title: "Oil Upgrades Autobuy",
+			desc: `You can now automatically buy Oil Upgrades.`,
+		
+			res: "rf",
+			icon: ['Curr/Oil','Icons/Automation'],
+						
+			cost: i => E(100),
+			bulk: i => 1,
+		},{
+			unl: _=>false, //Galactic
+
+			max: 10,
+
+			title: "Anonymity Generation",
+			desc: `Passively generate <b class="green">+0.1%</b> of crystal you would earn on anonymity per second.`,
+		
+			res: "ap",
+			icon: ['Curr/Anonymity','Icons/Plus'],
+						
+			cost: i => Decimal.pow(3,i).mul(1e12).ceil(),
+			bulk: i => i.div(1e12).max(1).log(3).floor().toNumber()+1,
+			effect(i) {
+				let x = i/1e3
+		
+				return x
+			},
+			effDesc: x => "+"+formatPercent(x,1)+"/s",
+		},{
+			unl: _=>player.rocket.part>0,
+
+			max: 10,
+
+			title: "Oil Generation",
+			desc: `Passively generate <b class="green">+0.1%</b> of oil you would earn on liquefy per second.`,
+		
+			res: "oil",
+			icon: ['Curr/Oil','Icons/Plus'],
+						
+			cost: i => Decimal.pow(3,i).mul(1e12).ceil(),
+			bulk: i => i.div(1e12).max(1).log(3).floor().toNumber()+1,
+			effect(i) {
+				let x = i/1e3
+		
+				return x
+			},
+			effDesc: x => "+"+formatPercent(x,1)+"/s",
+		}
+	],
+}
+
+function resetAntiRealm() {
+	player.aRes.grass = E(0)
+	player.aRes.bestGrass = E(0)
+	player.aRes.xp = E(0)
+	player.aRes.level = 0
+	player.aRes.tp = E(0)
+	player.aRes.tier = 0
+	player.aRes.ap = E(0)
+	player.aRes.bestAP = E(0)
+	player.aRes.oil = E(0)
+	player.aRes.bestOil = E(0)
+
+	resetUpgrades('aGrass')
+	resetUpgrades('ap')
+	resetUpgrades('oil')
 }

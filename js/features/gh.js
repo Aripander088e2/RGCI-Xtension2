@@ -32,15 +32,15 @@ MAIN.gh = {
             desc: `Unlock Steelie reset.`,
         },{
             r: 11,
-            desc: `Gain <b class="green">2x</b> more Steel per Grasshop. (starting at 11 and ending at 18)`,
-            effect: _=>E(2).pow(Math.max(0,Math.min(player.grasshop,18)-10)),
+            desc: `Gain <b class="green">2x</b> more Steel per Grasshop. (starting at 11)`,
+            effect: _=>E(2).pow(Math.max(0,player.grasshop-10)),
             effDesc: x=> format(x,0)+"x",
         },{
             unl: _=>hasUpgrade('factory',2),
 
-            r: 18,
-            desc: `Gain <b class="green">+50%</b> more Charge per Grasshop. (starting at 18)`,
-            effect: _=>E(1.5).pow(Math.max(0,player.grasshop-17)),
+            r: 19,
+            desc: `Gain <b class="green">2x</b> more Charge per Grasshop. (starting at 19)`,
+            effect: _=>E(2).pow(Math.max(0,player.grasshop-18)),
             effDesc: x=> format(x,0)+"x",
         },{
             unl: _=>hasUpgrade('factory',2),
@@ -64,8 +64,8 @@ const GH_MIL_LEN = MAIN.gh.milestone.length
 
 RESET.gh = {
     unl: _=>player.cTimes>0,
-    req: _=>player.level>=200,
-    reqDesc: _=>`Reach Level 200.`,
+    req: _=>!player.decel && player.level>=200,
+    reqDesc: _=>player.decel ? `You can't Grasshop in Anti-Realm!` : `Reach Level 200.`,
 
     resetDesc: `Grasshopping resets everything crystalize does as well as crystals, crystal upgrades, challenges.`,
     resetGain: _=> `Reach Level <b>${format(tmp.gh_req,0)}</b> to Grasshop`,
@@ -76,7 +76,7 @@ RESET.gh = {
 
     reset(force=false) {
         if ((this.req()&&player.level>=tmp.gh_req)||force) {
-            if (force) {
+            if (force || galUnlocked()) {
                 this.doReset()
             } else if (!tmp.ghRunning) {
                 tmp.ghRunning = true
@@ -101,9 +101,11 @@ RESET.gh = {
         player.bestCrystal = E(0)
         player.chargeRate = E(0)
 
+            console.log(order, "resetting")
         if (!hasUpgrade('assembler', 7) || order !== "gh") {
-            for (let i = 0; i < 2; i++) player.chal.comp[i] = Math.min(upgEffect('assembler', 5), player.chal.comp[i])
-            for (let i = 2; i < 6; i++) player.chal.comp[i] = Math.min(upgEffect('assembler', 6), player.chal.comp[i])
+            tmp.chal.bulk = []
+            for (let i = 0; i < 2; i++) player.chal.comp[i] = Math.min(upgEffect('assembler', 5, 0), player.chal.comp[i])
+            for (let i = 2; i < 6; i++) player.chal.comp[i] = Math.min(upgEffect('assembler', 6, 0), player.chal.comp[i])
         }
 
         resetUpgrades('crystal')
@@ -157,7 +159,7 @@ el.update.ghMilestone = _=>{
         tmp.el.milestone_div_gh.setDisplay(unl)
 
         if (unl) {
-            unl = player.grasshop>0
+            unl = player.grasshop>0 || galUnlocked()
 
             tmp.el.gh_mil_req.setDisplay(!unl)
             tmp.el.gh_mil_ctns.setDisplay(unl)

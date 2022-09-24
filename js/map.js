@@ -1,5 +1,5 @@
 var mapID = 'g'
-var mapPos = [3,3]
+var mapPos = [1,1]
 var mapLoc = "Grass Field"
 
 window.addEventListener('keydown', e=>{
@@ -10,13 +10,9 @@ window.addEventListener('keydown', e=>{
 })
 
 const MAP = [
-    [null,null,null,null,null,null,null],
-    [null,null,null,null,null,null,null],
-    [null,null,null,'opt',null,'rl',null],
-    [null,null,'auto','g','pc','gh','fd'],
-    [null,null,null,'p','chal','dc',null],
-    [null,null,null,null,null,null,null],
-    [null,null,null,null,null,null,null],
+    [null,  'opt', null, 'fd','rl'],
+    ['p',   'g',  'pc',  'gh','gal'],
+    ['auto', null,'chal','dc', null],
 ]
 
 const MAP_UNLS = {
@@ -25,11 +21,12 @@ const MAP_UNLS = {
 	auto: _ => true,
 	p: _ => true,
 	pc: _ => true,
-	chal: _ => player.cTimes > 0,
+	chal: _ => player.pTimes > 0,
 	gh: _ => player.cTimes > 0,
-	fd: _ => player.sTimes > 0,
+	fd: _ => hasUpgrade("factory", 0),
 	dc: _ => hasUpgrade("factory", 4),
-	rl: _ => hasUpgrade("factory", 5),
+	rl: _ => hasUpgrade("factory", 5) || galUnlocked(),
+	gal: _ => player.rocket.part > 0 || galUnlocked(),
 }
 
 const MAP_LOCS = {
@@ -41,8 +38,9 @@ const MAP_LOCS = {
 	chal: "Challenges",
 	gh: "Prestige",
 	fd: "Factory",
-	dc: "Factory",
-	rl: "Rocket Launch Pad"
+	dc: "Challenges",
+	rl: "Rocket Launch Pad",
+	gal: "Prestige",
 }
 
 const MAP_IDS = (_=>{
@@ -103,35 +101,31 @@ let go_to = false
 const go_to_locs = [
 	{
 		name: "Field",
-		map: [3, 3],
+		map: [1, 1],
 		unl: _ => true,
 	}, {
 		name: "Upgrades",
-		map: [3, 4],
+		map: [0, 1],
 		unl: _ => true,
 	}, {
 		name: "Automation",
-		map: [2, 3],
-		unl: _ => true,
+		map: [0, 2],
+		unl: _ => player.cTimes > 0,
 	}, {
 		name: "Prestige",
-		map: [4, 3],
+		map: [2, 1],
 		unl: _ => player.pTimes > 0,
 	}, {
 		name: "Challenges",
-		map: [4, 4],
-		unl: _ => true,
+		map: [2, 2],
+		unl: _ => player.grasshop > 0,
 	}, {
 		name: "Foundry",
-		map: [6, 3],
-		unl: _ => player.sTimes > 0,
-	}, {
-		name: "Rocket",
-		map: [5, 2],
-		unl: _ => hasUpgrade("factory", 5),
+		map: [3, 0],
+		unl: _ => hasUpgrade("factory", 0)
 	}, {
 		name: "Settings",
-		map: [3, 2],
+		map: [1, 0],
 		unl: _ => true,
 	}
 ]

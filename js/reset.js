@@ -61,4 +61,7 @@ el.update.reset = _=> {
     if (mapID == 'rl') {
         updateResetHTML('rocket_part')
     }
+    if (mapID == 'gal') {
+        updateResetHTML('gal')
+    }
 }

@@ -16,7 +16,7 @@ const ROCKET = {
             let c = Decimal.pow(RF_COST_POW, b).sub(Decimal.pow(RF_COST_POW, rf)).div(RF_COST_POW-1).mul(tmp.rf_base_mult)
 
             player.chargeRate = player.chargeRate.sub(Decimal.mul(c,1e36)).max(0)
-            player.oil = player.oil.sub(Decimal.mul(c,1e9)).max(0)
+            player.aRes.oil = player.aRes.oil.sub(Decimal.mul(c,1e9)).max(0)
 
             updateRocketTemp()
         }
@@ -26,18 +26,18 @@ const ROCKET = {
 UPGS.rocket = {
     title: "Rocket Fuel Upgrade",
 
-    unl: _=>hasUpgrade("factory",5),
+    unl: _=>true,
 
     underDesc: _=>`You have ${format(player.rocket.amount,0)} Rocket Fuel`,
 
     ctn: [
         {
-            max: 1000,
+            max: 150,
 
             costOnce: true,
 
             title: "Rocket Fueled Grass",
-            desc: `Increase grass gain by <b class="green">+10%</b> per level.`,
+            desc: `Increase grass gain by <b class="green">+5%</b> per level.`,
 
             res: "rf",
             icon: ['Curr/Grass'],
@@ -46,18 +46,18 @@ UPGS.rocket = {
             bulk: i => i,
 
             effect(i) {
-                let x = E(i*0.1+1)
+                let x = E(i*0.05+1)
 
                 return x
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 1000,
+            max: 150,
 
             costOnce: true,
 
             title: "Rocket Fueled Levels",
-            desc: `Increase XP gain by <b class="green">+10%</b> per level.`,
+            desc: `Increase XP gain by <b class="green">+5%</b> per level.`,
 
             res: "rf",
             icon: ['Icons/XP'],
@@ -66,18 +66,18 @@ UPGS.rocket = {
             bulk: i => i,
 
             effect(i) {
-                let x = E(i*0.1+1)
+                let x = E(i*0.05+1)
 
                 return x
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 1000,
+            max: 150,
 
             costOnce: true,
 
             title: "Rocket Fueled Tiers",
-            desc: `Increase TP gain by <b class="green">+10%</b> per level.`,
+            desc: `Increase TP gain by <b class="green">+5%</b> per level.`,
 
             res: "rf",
             icon: ['Icons/TP'],
@@ -86,18 +86,18 @@ UPGS.rocket = {
             bulk: i => i,
 
             effect(i) {
-                let x = E(i*0.1+1)
+                let x = E(i*0.05+1)
 
                 return x
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 1000,
+            max: 150,
 
             costOnce: true,
 
             title: "Rocket Fueled Prestiges",
-            desc: `Increase PP gain by <b class="green">+10%</b> per level.`,
+            desc: `Increase PP gain by <b class="green">+5%</b> per level.`,
 
             res: "rf",
             icon: ['Curr/Prestige'],
@@ -106,18 +106,18 @@ UPGS.rocket = {
             bulk: i => i,
 
             effect(i) {
-                let x = E(i*0.1+1)
+                let x = E(i*0.05+1)
 
                 return x
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 1000,
+            max: 150,
 
             costOnce: true,
 
             title: "Rocket Fueled Crystallize",
-            desc: `Increase crystal gain by <b class="green">+10%</b> per level.`,
+            desc: `Increase crystal gain by <b class="green">+5%</b> per level.`,
 
             res: "rf",
             icon: ['Curr/Crystal'],
@@ -126,18 +126,18 @@ UPGS.rocket = {
             bulk: i => i,
 
             effect(i) {
-                let x = E(i*0.1+1)
+                let x = E(i*0.05+1)
 
                 return x
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 1000,
+            max: 150,
 
             costOnce: true,
 
             title: "Rocket Fueled Foundry",
-            desc: `Increase steel gain by <b class="green">+10%</b> per level.`,
+            desc: `Increase steel gain by <b class="green">+5%</b> per level.`,
 
             res: "rf",
             icon: ['Curr/Steel2'],
@@ -146,18 +146,18 @@ UPGS.rocket = {
             bulk: i => i,
 
             effect(i) {
-                let x = E(i*0.1+1)
+                let x = E(i*0.05+1)
 
                 return x
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 1000,
+            max: 150,
 
             costOnce: true,
 
             title: "Rocket Fueled Charge",
-            desc: `Increase charge rate by <b class="green">+10%</b> per level.`,
+            desc: `Increase charge rate by <b class="green">+5%</b> per level.`,
 
             res: "rf",
             icon: ['Icons/Charge'],
@@ -166,18 +166,18 @@ UPGS.rocket = {
             bulk: i => i,
 
             effect(i) {
-                let x = E(i*0.1+1)
+                let x = E(i*0.05+1)
 
                 return x
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 1000,
+            max: 150,
 
             costOnce: true,
 
             title: "Rocket Fueled Anonymity",
-            desc: `Increase AP gain by <b class="green">+10%</b> per level.`,
+            desc: `Increase AP gain by <b class="green">+5%</b> per level.`,
 
             res: "rf",
             icon: ['Curr/Anonymity'],
@@ -186,18 +186,18 @@ UPGS.rocket = {
             bulk: i => i,
 
             effect(i) {
-                let x = E(i*0.1+1)
+                let x = E(i*0.05+1)
 
                 return x
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 1000,
+            max: 150,
 
             costOnce: true,
 
             title: "Rocket Fueled Pumpjacks",
-            desc: `Increase oil gain by <b class="green">+10%</b> per level.`,
+            desc: `Increase oil gain by <b class="green">+5%</b> per level.`,
 
             res: "rf",
             icon: ['Curr/Oil'],
@@ -206,7 +206,7 @@ UPGS.rocket = {
             bulk: i => i,
 
             effect(i) {
-                let x = E(i*0.1+1)
+                let x = E(i*0.05+1)
 
                 return x
             },
@@ -221,7 +221,7 @@ RESET.rocket_part = {
     req: _=>true,
     reqDesc: _=>``,
 
-    resetDesc: `<span style="font-size: 14px">Reset everything liquefy does as well as oil, oil upgrades, steel and total rocket fuel.
+    resetDesc: `<span style="font-size: 14px">Reset everything grasshop does as well as steel, foundry, charge upgrades, anti-realm, and total rocket fuel.
     You will create a rocket part, earn one momentum, and reset the cost to make rocket fuel.
     You keep rocket fuel and rocket fuel upgrades.</span>`,
     resetGain: _=> `
@@ -241,7 +241,7 @@ RESET.rocket_part = {
         if (player.steel.gte(tmp.rp_req[0])&&player.rocket.total_fp >= tmp.rp_req[1]||force) {
             if (!force) {
                 player.rocket.part++
-                player.momentum++
+                player.rocket.momentum++
             }
 
             updateTemp()
@@ -252,17 +252,15 @@ RESET.rocket_part = {
 
     doReset(order="rp") {
         player.rocket.total_fp = 0
-        player.oil = E(0)
-        player.bestOil = E(0)
         player.steel = E(0)
         player.chargeRate = E(0)
-        player.aRes.level = 0
-        player.aRes.tier = 0
-        player.aRes.xp = E(0)
-        player.aRes.tp = E(0)
-        resetUpgrades('oil')
-        RESET.oil.doReset(order)
-        RESET.steel.doReset(order)
+        delete player.upgs.gen[2]
+        delete player.upgs.gen[3]
+
+        resetUpgrades('foundry')
+        resetAntiRealm()
+
+        RESET.gh.doReset(order)
     },
 }
 
@@ -460,9 +458,11 @@ UPGS.momentum = {
 
 el.update.rocket = _=>{
     if (mapID == "rl") {
+        tmp.el.refinery_div.setDisplay(hasUpgrade('factory', 5))
+
         for (let i = 0; i < 2; i++) {
             let rc = tmp.el["rf_cost"+i]
-            let res = [player.chargeRate,player.oil][i]
+            let res = [player.chargeRate,player.aRes.oil][i]
             let cost = tmp.rf_cost[i]
 
             rc.setTxt(res.format(0)+" / "+cost.format(0))
@@ -482,7 +482,7 @@ function updateRocketTemp() {
     tmp.rf_cost = [b.mul(1e36),b.mul(1e9)]
 
     let bulk = 0
-    if (player.chargeRate.gte(tmp.rf_cost[0]) && player.oil.gte(tmp.rf_cost[1])) bulk = Math.min(ROCKET.bulk(player.chargeRate,rf,1e36),ROCKET.bulk(player.oil,rf,1e9))
+    if (player.chargeRate.gte(tmp.rf_cost[0]) && player.aRes.oil.gte(tmp.rf_cost[1])) bulk = Math.min(ROCKET.bulk(player.chargeRate,rf,1e36),ROCKET.bulk(player.aRes.oil,rf,1e9))
     tmp.rf_bulk = bulk
 }
 

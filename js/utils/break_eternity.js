@@ -3264,3 +3264,29 @@
   return Decimal;
 
 }));
+
+//EXTENSION
+const EINF = Decimal.dInf
+function E(x){return new Decimal(x)};
+
+Decimal.prototype.clone = function() {
+	return this
+}
+Decimal.prototype.modular=Decimal.prototype.mod=function (other){
+	other=E(other);
+	if (other.eq(0)) return E(0);
+	if (this.sign*other.sign==-1) return this.abs().mod(other.abs()).neg();
+	if (this.sign==-1) return this.abs().mod(other.abs());
+	return this.sub(this.div(other).floor().mul(other));
+}
+Decimal.prototype.softcap = function (start, power, mode) {
+	var x = this.clone()
+	if (x.gte(start)) {
+		if ([0, "pow"].includes(mode)) x = x.div(start).pow(power).mul(start)
+		if ([1, "mul"].includes(mode)) x = x.sub(start).div(power).add(start)
+		if ([2, "exp"].includes(mode)) x = expMult(x.div(start), power).mul(start)
+	}
+	return x
+}
+Decimal.prototype.format = function (acc=2, max=9) { return format(this.clone(), acc, max) }
+Decimal.prototype.formatGain = function (gain, mass=false) { return formatGain(this.clone(), gain, mass) }

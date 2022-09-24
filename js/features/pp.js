@@ -7,7 +7,8 @@ MAIN.pp = {
         x = x.mul(upgEffect('perk',6))
         x = x.mul(chalEff(4))
 
-        x = x.mul(tmp.chargeEff[3]||1)
+        x = x.mul(E(tmp.chargeEff[1]||1).pow(player.tier))
+
         x = x.mul(upgEffect('rocket',3))
         x = x.mul(upgEffect('momentum',4))
 
@@ -48,7 +49,7 @@ RESET.pp = {
         player.xp = E(0)
         player.level = 0
 
-        let keep_perk = (order == "p" && hasUpgrade('auto',5)) ||
+        let keep_perk = (order == "p" && hasUpgrade('auto',4)) ||
 			(order == "c" && hasUpgrade('auto',6)) ||
 			(order == "gh" && hasUpgrade('assembler',4))
 
@@ -86,6 +87,7 @@ UPGS.pp = {
             max: Infinity,
 
             title: "Grass Value II",
+            tier: 2,
             desc: `Increase grass gain by <b class="green">+50%</b> per level. This effect is increased by <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
         
             res: "pp",
@@ -104,6 +106,7 @@ UPGS.pp = {
             max: Infinity,
 
             title: "XP II",
+            tier: 2,
             desc: `Increase XP gain by <b class="green">+50%</b> per level. This effect is increased by <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
         
             res: "pp",
@@ -119,7 +122,7 @@ UPGS.pp = {
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 135,
+            max: 125,
 
             title: "TP",
             desc: `Increase Tier Points (TP) gain by <b class="green">25%</b> compounding per level.`,
@@ -137,11 +140,12 @@ UPGS.pp = {
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 300,
+            max: 1000,
 
             unl: _=>player.cTimes>0,
 
             title: "Crystal",
+            tier: 2,
             desc: `Increase Crystal gain by <b class="green">+50%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
 
             res: "pp",
@@ -163,9 +167,8 @@ UPGS.pp = {
 
 MAIN.ap = {
     gain() {
-        let x = Decimal.pow(1.15,player.level)
+        let x = Decimal.pow(1.15,player.aRes.level)
 
-        x = x.mul(tmp.chargeEff[6]||1)
         x = x.mul(upgEffect('aGrass',5))
         x = x.mul(upgEffect('plat',8))
         x = x.mul(upgEffect('oil',3))
@@ -180,10 +183,10 @@ MAIN.ap = {
 RESET.ap = {
     unl: _=> player.decel,
 
-    req: _=>player.level>=30,
+    req: _=>player.aRes.level>=30,
     reqDesc: _=>`Reach Level 30 to Anonymity.`,
 
-    resetDesc: `Anonymity resets your anti-grass, anti-grass upgrades, level for Anonymity Points (AP).`,
+    resetDesc: `Anonymity resets your anti-grass, anti-grass upgrades, level, and charge for Anonymity Points (AP).`,
     resetGain: _=> `Gain <b>${tmp.apGain.format(0)}</b> Anonymity Points`,
 
     title: `Anonymity`,
@@ -193,10 +196,8 @@ RESET.ap = {
     reset(force=false) {
         if (this.req()||force) {
             if (!force) {
-                player.ap = player.ap.add(tmp.apGain)
-                player.aTimes++
-
-                player.bestAP2 = player.bestAP2.max(tmp.apGain)
+                player.aRes.ap = player.aRes.ap.add(tmp.apGain)
+                player.aRes.aTimes++
             }
 
             updateTemp()
@@ -206,13 +207,14 @@ RESET.ap = {
     },
 
     doReset(order="a") {
-        player.aTime = 0
-        player.aGrass = E(0)
-        player.aBestGrass = E(0)
-        player.xp = E(0)
-        player.level = 0
+        player.aRes.aTime = 0
+        player.aRes.grass = E(0)
+        player.aRes.bestGrass = E(0)
+        player.aRes.xp = E(0)
+        player.aRes.level = 0
+        player.chargeRate = E(0)
 
-        if (!hasUpgrade('auto',18)) resetUpgrades('aGrass')
+        if (!hasUpgrade('aAuto',8)) resetUpgrades('aGrass')
 
         resetGlasses()
 
@@ -225,19 +227,19 @@ UPGS.ap = {
 
     title: "Anonymity Upgrades",
 
-    req: _=>player.aTimes > 0,
+    req: _=>player.aRes.aTimes > 0,
     reqDesc: _=>`Anonymity once to unlock.`,
 
-    underDesc: _=>`You have ${format(player.ap,0)} Anonymity Points.`,
+    underDesc: _=>`You have ${format(player.aRes.ap,0)} Anonymity Points`+(tmp.apGainP > 0 ? " <span class='smallAmt'>"+formatGain(player.aRes.ap,tmp.apGain.mul(tmp.apGainP))+"</span>" : ""),
 
-    autoUnl: _=>hasUpgrade('auto',15),
-    noSpend: _=>hasUpgrade('auto',19),
+    autoUnl: _=>hasUpgrade('aAuto',2),
 
     ctn: [
         {
             max: Infinity,
 
             title: "AP Value",
+            tier: 2,
             desc: `Increase grass gain by <b class="green">+25%</b> per level.`,
         
             res: "ap",
@@ -247,14 +249,15 @@ UPGS.ap = {
             bulk: i => i.div(25).max(1).log(1.2).floor().toNumber()+1,
         
             effect(i) {
-                return E(i/2+1)
+                return E(i/4+1)
             },
             effDesc: x => format(x)+"x",
         },{
             max: Infinity,
 
             title: "AP Charge",
-            desc: `Increase charge rate by <b class="green">+50%</b> per level.`,
+            tier: 2,
+            desc: `Increase charge rate by <b class="green">+25%</b> per level.`,
         
             res: "ap",
             icon: ['Curr/Charge'],
@@ -263,41 +266,42 @@ UPGS.ap = {
             bulk: i => i.div(20).max(1).log(1.2).floor().toNumber()+1,
 
             effect(i) {
-                return E(i/2+1)
+                return E(i/4+1)
             },
             effDesc: x => x.format()+"x",
         },{
-            max: 10,
+            max: Infinity,
 
-            title: "Anti-XP",
-            desc: `Levels scale <span class="green">+0.05x</span> slower in Anti-Realm.`,
+            title: "AP XP",
+            tier: 2,
+            desc: `Increase XP by <b class="green">+25%</b> per level.`,
         
             res: "ap",
-            icon: ['Icons/XP', 'Icons/StarSpeed'],
+            icon: ['Icons/XP'],
             
-            cost: i => Decimal.pow(15,i**1.25).mul(100).ceil(),
-            bulk: i => i.div(100).max(1).log(15).root(1.25).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.2,i).mul(20).ceil(),
+            bulk: i => i.div(20).max(1).log(1.2).floor().toNumber()+1,
 
             effect(i) {
-                return i/20+1
+                return E(i/4+1)
             },
-            effDesc: x => format(x,2)+"x",
+            effDesc: x => format(x,0)+"x",
         },{
-            max: 10,
+            max: Infinity,
 
-            title: "Anti-TP",
-            desc: `Increase Tier multiplier by <span class="green">+0.1x</span> in Anti-Realm.`,
+            title: "AP TP",
+            desc: `Increase TP by <b class="green">+50%</b> per level.`,
         
             res: "ap",
-            icon: ['Icons/TP', 'Icons/StarSpeed'],
+            icon: ['Icons/TP'],
             
-            cost: i => Decimal.pow(10,i).mul(150).ceil(),
-            bulk: i => i.div(150).max(1).log(10).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.2,i).mul(20).ceil(),
+            bulk: i => i.div(20).max(1).log(1.2).floor().toNumber()+1,
 
             effect(i) {
-                return i/10+2
+                return E(i/2+1)
             },
-            effDesc: x => format(x,2)+"x",
+            effDesc: x => format(x,1)+"x",
         },{
             max: 50,
 
@@ -323,5 +327,5 @@ tmp_update.push(_=>{
     tmp.ppGainP = (upgEffect('auto',8,0)+upgEffect('gen',0,0))*upgEffect('factory',1,1)
 
     tmp.apGain = MAIN.ap.gain()
-    tmp.apGainP = 0 //upgEffect('auto',11,0)
+    tmp.apGainP = upgEffect('aAuto',4,0)
 })
