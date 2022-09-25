@@ -88,16 +88,16 @@ UPGS.pp = {
 
             title: "Grass Value II",
             tier: 2,
-            desc: `Increase grass gain by <b class="green">+50%</b> per level. This effect is increased by <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
+            desc: `Increase grass gain by <b class="green">+25%</b> per level. This effect is increased by <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
         
             res: "pp",
             icon: ["Curr/Grass"],
                         
-            cost: i => Decimal.pow(1.2,i).mul(5).ceil(),
-            bulk: i => i.div(5).max(1).log(1.2).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.2,i).mul(30).ceil(),
+            bulk: i => i.div(30).max(1).log(1.2).floor().toNumber()+1,
         
             effect(i) {
-                let x = Decimal.pow(2,Math.floor(i/25)).mul(i/2+1)
+                let x = Decimal.pow(2,Math.floor(i/25)).mul(i/4+1)
         
                 return x
             },
@@ -107,16 +107,16 @@ UPGS.pp = {
 
             title: "XP II",
             tier: 2,
-            desc: `Increase XP gain by <b class="green">+50%</b> per level. This effect is increased by <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
+            desc: `Increase XP gain by <b class="green">+25%</b> per level. This effect is increased by <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
         
             res: "pp",
             icon: ["Icons/XP"],
                         
-            cost: i => Decimal.pow(1.2,i).mul(30).ceil(),
-            bulk: i => i.div(30).max(1).log(1.2).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.2,i).mul(60).ceil(),
+            bulk: i => i.div(60).max(1).log(1.2).floor().toNumber()+1,
 
             effect(i) {
-                let x = Decimal.pow(2,Math.floor(i/25)).mul(i/2+1)
+                let x = Decimal.pow(2,Math.floor(i/25)).mul(i/4+1)
                 if (inChal(1)) x = E(1)
                 return x
             },

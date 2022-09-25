@@ -101,7 +101,6 @@ RESET.gh = {
         player.bestCrystal = E(0)
         player.chargeRate = E(0)
 
-            console.log(order, "resetting")
         if (!hasUpgrade('assembler', 7) || order !== "gh") {
             tmp.chal.bulk = []
             for (let i = 0; i < 2; i++) player.chal.comp[i] = Math.min(upgEffect('assembler', 5, 0), player.chal.comp[i])

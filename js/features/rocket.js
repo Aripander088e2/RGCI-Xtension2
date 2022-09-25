@@ -457,7 +457,7 @@ UPGS.momentum = {
 }
 
 el.update.rocket = _=>{
-    if (mapID == "rl") {
+    if (mapID == "rf") {
         tmp.el.refinery_div.setDisplay(hasUpgrade('factory', 5))
 
         for (let i = 0; i < 2; i++) {

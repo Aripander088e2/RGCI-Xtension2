@@ -25,7 +25,7 @@ const MAP_UNLS = {
 	gh: _ => player.cTimes > 0,
 	fd: _ => hasUpgrade("factory", 0),
 	dc: _ => hasUpgrade("factory", 4),
-	rl: _ => hasUpgrade("factory", 5) || galUnlocked(),
+	rf: _ => hasUpgrade("factory", 5) || galUnlocked(),
 	gal: _ => player.rocket.part > 0 || galUnlocked(),
 }
 
@@ -39,7 +39,7 @@ const MAP_LOCS = {
 	gh: "Prestige",
 	fd: "Factory",
 	dc: "Challenges",
-	rl: "Rocket Launch Pad",
+	rf: "Refinery",
 	gal: "Prestige",
 }
 

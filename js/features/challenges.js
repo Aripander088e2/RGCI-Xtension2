@@ -111,7 +111,7 @@ const CHALS = [
         goalDesc: x=>"Tier "+format(x,0),
         goalAmt: _=>player.tier,
 
-        eff: i=>i+1,
+        eff: i=>i,
         effDesc: x=>format(x,1)+"x",
     },{
         unl: _=>player.sTimes>=1,

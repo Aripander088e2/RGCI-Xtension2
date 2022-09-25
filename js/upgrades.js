@@ -37,8 +37,8 @@ const UPGS = {
                 res: "grass",
                 icon: ['Curr/Grass'],
                 
-                cost: i => Decimal.pow(1.15,i).mul(5).ceil(),
-                bulk: i => i.div(5).max(1).log(1.15).floor().toNumber()+1,
+                cost: i => Decimal.pow(1.15,i).mul(10).ceil(),
+                bulk: i => i.div(10).max(1).log(1.15).floor().toNumber()+1,
 
                 effect(i) {
                     let x = Decimal.pow(2,Math.floor(i/25)).mul(i/2+1)
@@ -68,16 +68,16 @@ const UPGS = {
                 max: 50,
 
                 title: "Grow Speed",
-                desc: `Grass grows <b class="green">+20%</b> faster per level.`,
+                desc: `Grass grows <b class="green">+50%</b> faster per level.`,
 
                 res: "grass",
                 icon: ['Icons/Speed'],
                 
-                cost: i => Decimal.pow(1.2,i).mul(3).ceil(),
-                bulk: i => i.div(3).max(1).log(1.2).floor().toNumber()+1,
+                cost: i => Decimal.pow(2,i).mul(3).ceil(),
+                bulk: i => i.div(3).max(1).log(2).floor().toNumber()+1,
 
                 effect(i) {
-                    let x = i/5+1
+                    let x = i/4+1
 
                     return x
                 },
@@ -86,16 +86,16 @@ const UPGS = {
                 max: Infinity,
 
                 title: "XP",
-                desc: `Increase experience (XP) gain by <b class="green">+1</b> per level.<br>This effect is <b class="green">doubled</b> every <b class="yellow">25</b> levels.`,
+                desc: `Increase experience (XP) gain by <b class="green">+0.5</b> per level.<br>This effect is <b class="green">doubled</b> every <b class="yellow">25</b> levels.`,
 
                 res: "grass",
                 icon: ['Icons/XP'],
                 
-                cost: i => Decimal.pow(1.15,i).mul(50).ceil(),
-                bulk: i => i.div(50).max(1).log(1.15).floor().toNumber()+1,
+                cost: i => Decimal.pow(1.15,i).mul(100).ceil(),
+                bulk: i => i.div(100).max(1).log(1.15).floor().toNumber()+1,
 
                 effect(i) {
-                    let x = Decimal.pow(2,Math.floor(i/25)).mul(i+1)
+                    let x = Decimal.pow(2,Math.floor(i/25)).mul(i/2+1)
 
                     return x
                 },
@@ -355,13 +355,13 @@ const UPGS = {
                 max: 5,
 
                 title: "Autocut",
-                desc: `Auto cuts grass every <b class="green">5</b> seconds (-1s every level after the first).`,
+                desc: `Auto cuts grass every <b class="green">5</b> seconds. (-1s every level after the first)`,
             
                 res: "grass",
                 icon: ['Curr/Grass','Icons/Automation'],
                             
-                cost: i => Decimal.pow(10,i).mul(1e3).ceil(),
-                bulk: i => i.div(1e3).max(1).log(10).floor().toNumber()+1,
+                cost: i => Decimal.pow(100,i).mul(1e3).ceil(),
+                bulk: i => i.div(1e3).max(1).log(100).floor().toNumber()+1,
             
                 effect(i) {
                     let x = Math.max(i-1,0)
@@ -374,13 +374,13 @@ const UPGS = {
                 max: 5,
 
                 title: "Autocut Value",
-                desc: `Auto cuts grass is worth <b class="green">+100%</b> more grass, XP & TP.`,
+                desc: `Auto cuts grass is worth <b class="green">+1x</b> more grass, XP & TP.`,
             
                 res: "pp",
                 icon: ['Curr/Grass','Icons/StarSpeed'],
                             
-                cost: i => Decimal.pow(3,i).mul(20).ceil(),
-                bulk: i => i.div(20).max(1).log(3).floor().toNumber()+1,
+                cost: i => Decimal.pow(10,i).mul(200).ceil(),
+                bulk: i => i.div(200).max(1).log(10).floor().toNumber()+1,
             
                 effect(i) {
                     let x = E(i+1)
@@ -389,13 +389,13 @@ const UPGS = {
                 },
                 effDesc: x => format(x)+"x",
             },{
-                unl: _=>player.pTimes>0,
+                unl: _=>player.cTimes>0,
                 max: 5,
 
                 title: "Autocut Amount",
                 desc: `Increases auto cut amount by <b class="green">1</b>.`,
             
-                res: "pp",
+                res: "crystal",
                 icon: ['Icons/MoreGrass','Icons/StarSpeed'],
                             
                 cost: i => Decimal.pow(5,i).mul(25).ceil(),
@@ -408,7 +408,7 @@ const UPGS = {
                 },
                 effDesc: x => "+"+format(x,0),
             },{
-                unl: _=>player.pTimes>0,
+                unl: _=>player.cTimes>0,
 
                 title: "Grass Upgrade Autobuy",
                 desc: `You can now automatically buy Grass Upgrades.`,
@@ -416,7 +416,7 @@ const UPGS = {
                 res: "pp",
                 icon: ['Curr/Grass','Icons/Automation'],
                             
-                cost: i => E(1e3),
+                cost: i => E(1e6),
                 bulk: i => 1,
             },{
                 unl: _=>player.cTimes>0,
@@ -430,7 +430,7 @@ const UPGS = {
                 cost: i => E(1e10),
                 bulk: i => 1,
             },{
-                unl: _=>player.cTimes>0,
+                unl: _=>player.grasshop>=1,
 
                 title: "Prestige Upgrade Autobuy",
                 desc: `You can now automatically buy Prestige Upgrades.`,
@@ -438,7 +438,7 @@ const UPGS = {
                 res: "crystal",
                 icon: ['Curr/Prestige','Icons/Automation'],
                             
-                cost: i => E(1e8),
+                cost: i => E(1e5),
                 bulk: i => 1,
             },{
                 unl: _=>player.grasshop>=1,
@@ -508,8 +508,8 @@ const UPGS = {
 
         unl: _=>player.pTimes>0,
 
-        req: _=>player.tier >= 3||player.cTimes > 0,
-        reqDesc: _=>`Reach Tier 3 to unlock.`,
+        req: _=>player.tier >= 2 || player.cTimes > 0,
+        reqDesc: _=>`Reach Tier 2 to unlock.`,
 
         underDesc: _=>`You have ${format(player.plat,0)} Platinum (${formatPercent(tmp.platChance)} grow chance)`,
 
@@ -984,7 +984,7 @@ function updateUpgradesHTML(id) {
                     tmp.el[div_id].changeStyle("width",height+"px")
                     tmp.el[div_id].changeStyle("height",height+"px")
 
-                    tmp.el[div_id+"_cost"].setTxt(amt < tu.max[x] ? format(tu.cost[x],0,6)+" "+UPG_RES[upg.res][0] : "")
+                    tmp.el[div_id+"_cost"].setTxt(amt < tu.max[x] ? format(tu.cost[x],0)+" "+UPG_RES[upg.res][0] : "")
                     tmp.el[div_id+"_cost"].setClasses({upg_cost: true, locked: Decimal.lt(res,tu.cost[x]) && amt < tu.max[x]})
 
                     tmp.el[div_id+"_amt"].setTxt(amt < tu.max[x] ? format(amt,0) : "")
@@ -1023,7 +1023,7 @@ function updateUpgResource(id) {
     tmp.upg_res[id] = p[q]
 }
 
-function hideUpgOption() { player.options.hideUpgOption = !player.options.hideUpgOption }
+function toggleOption(x) { player.options[x] = !player.options[x] }
 
 tmp_update.push(_=>{
     for (let x in UPG_RES) updateUpgResource(x)
@@ -1066,6 +1066,7 @@ el.update.upgs = _=>{
     }
 
 	if (mapID == 'opt') {
+		tmp.el.scientific.setTxt(player.options.scientific?"ON":"OFF")
 		tmp.el.hideUpgOption.setTxt(player.options.hideUpgOption?"ON":"OFF")
 		tmp.el.grassCap.setTxt(player.options.lowGrass?250:"Unlimited")
 

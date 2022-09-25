@@ -144,7 +144,7 @@ UPGS.factory = {
             max: 100,
 
             title: "Foundry",
-            desc: `Unlock a building (on right of Factory) where you can upgrade steel production. Each level increases foundry's effect by <b class="green">+10%</b>.`,
+            desc: `Unlock a building (above Steelie) where you can upgrade steel production. Each level increases foundry's effect by <b class="green">+10%</b>.`,
         
             res: "steel",
             icon: ["Icons/Foundry"],
@@ -162,7 +162,7 @@ UPGS.factory = {
             max: 100,
 
             title: "Generator",
-            desc: `Unlock a building (on right of Factory) where you can upgrade prestige/crystal generation. Each level increases generator's effect by <b class="green">+1%</b>.`,
+            desc: `Unlock a building (in Foundry) where you can upgrade prestige/crystal generation. Each level increases generator's effect by <b class="green">+1%</b>.`,
         
             res: "steel",
             icon: ["Icons/Generator"],
@@ -180,7 +180,7 @@ UPGS.factory = {
             max: 100,
 
             title: "Charger",
-            desc: `Unlock a building (on right of Factory) where you can boost production multipliers with charge. Each level increases charge rate by <b class="green">+10%</b>.`,
+            desc: `Unlock a building (in Foundry) where you can boost production multipliers with charge. Each level increases charge rate by <b class="green">+10%</b>.`,
         
             res: "steel",
             icon: ["Icons/Charger"],
@@ -198,7 +198,7 @@ UPGS.factory = {
             max: 100,
 
             title: "Assembler",
-            desc: `Unlock a building (on Automation) where you can get more QoL. Each level increases charge rate by <b class="green">+10%</b>.`,
+            desc: `Unlock a building (in Automation) where you can get more QoL. Each level increases charge rate by <b class="green">+10%</b>.`,
         
             res: "steel",
             icon: ["Icons/Assemblerv2"],
@@ -216,7 +216,7 @@ UPGS.factory = {
             max: 100,
 
             title: "Decelerator",
-            desc: `Unlock a building (on bottom of Factory) where you can slow down time. Each level increases charge rate by <b class="green">+10%</b>.`,
+            desc: `Unlock a building (below Steelie) where you can slow down time. Each level increases charge rate by <b class="green">+10%</b>.`,
         
             res: "steel",
             icon: ["Icons/Decelerate Badge"],
@@ -234,7 +234,7 @@ UPGS.factory = {
             max: 100,
 
             title: "Refinery",
-            desc: `Unlock a building (on bottom of Factory) where you can convert charge and oil into rocket fuel. Each level increases charge rate by <b class="green">+10%</b>.`,
+            desc: `Unlock a building (on the right of Foundry) where you can convert charge and oil into rocket fuel. Each level increases charge rate by <b class="green">+10%</b>.`,
         
             res: "steel",
             icon: ["Icons/Refinery"],
@@ -252,7 +252,7 @@ UPGS.factory = {
             max: 100,
 
             title: "Rocket Launch Pad",
-            desc: `Unlock a building (on top of Factory) where you can build a rocket. Each level increases charge rate by <b class="green">+10%</b>.`,
+            desc: `Unlock a building (in Refinery) where you can build a rocket. Each level increases charge rate by <b class="green">+10%</b>.`,
         
             res: "steel",
             icon: ["Icons/LaunchPad"],
@@ -469,7 +469,7 @@ UPGS.assembler = {
             res: "steel",
             icon: ["Curr/Prestige","Icons/Infinite"],
                         
-            cost: i => E(1e11),
+            cost: i => E(1e12),
             bulk: i => 1,
         },{
             title: "Crystal Upgrades EL",
@@ -478,7 +478,7 @@ UPGS.assembler = {
             res: "steel",
             icon: ["Curr/Crystal","Icons/Infinite"],
 
-            cost: i => E(1e13),
+            cost: i => E(1e15),
             bulk: i => 1,
         },{
             title: "Perk Autobuy",
@@ -487,7 +487,7 @@ UPGS.assembler = {
             res: "steel",
             icon: ['Curr/Perks','Icons/Automation'],
 
-            cost: i => E(1e15),
+            cost: i => E(1e25),
             bulk: i => 1,
         },{
             title: "Perk Save G",
@@ -537,7 +537,7 @@ UPGS.assembler = {
             res: "steel",
             icon: ['Icons/Challenge','Icons/StarProgression'],
 
-            cost: i => E(1e12),
+            cost: i => E(1e9),
             bulk: i => 1,
 
         },{
@@ -563,7 +563,7 @@ UPGS.assembler = {
             res: "steel",
             icon: ['Icons/Challenge','Icons/Multiply'],
 
-            cost: i => E(1e9),
+            cost: i => E(1e7),
             bulk: i => 1,
         }
     ],

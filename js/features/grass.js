@@ -10,7 +10,7 @@ function createGrass() {
         tmp.grasses.push({
             x: Math.random(),
             y: Math.random(),
-            pl: Math.random() < tmp.platChance && (player.tier>=3 || player.cTimes > 0),
+            pl: Math.random() < tmp.platChance && (player.tier >= 2 || player.cTimes > 0),
             tier: player.tier
         })
     }

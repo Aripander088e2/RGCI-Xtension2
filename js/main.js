@@ -228,7 +228,7 @@ tmp_update.push(_=>{
     if (player.grasshop >= 6) tmp.platChance *= 2
 
     tmp.platGain = 1
-    tmp.platGain += chalEff(5)
+    tmp.platGain += chalEff(5,0)
     if (player.grasshop >= 3) tmp.platGain += getGHEffect(2, 0)
 })
 

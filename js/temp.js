@@ -11,7 +11,7 @@ function resetTemp() {
         autocutAmt: 1,
         spawnAmt: 1,
 
-        platChance: 0.005,
+        platChance: 0.001,
         platGain: 1,
 
         grasses: [],

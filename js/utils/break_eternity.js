@@ -3288,5 +3288,5 @@ Decimal.prototype.softcap = function (start, power, mode) {
 	}
 	return x
 }
-Decimal.prototype.format = function (acc=2, max=9) { return format(this.clone(), acc, max) }
+Decimal.prototype.format = function (acc=2) { return format(this.clone(), acc) }
 Decimal.prototype.formatGain = function (gain, mass=false) { return formatGain(this.clone(), gain, mass) }
