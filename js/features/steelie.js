@@ -103,8 +103,8 @@ MAIN.steel = {
 RESET.steel = {
     unl: _=>player.grasshop>=10||galUnlocked(),
 
-    req: _=>!player.decel && player.level>=250,
-    reqDesc: _=>player.decel ? `You can't Steelie in Anti-Realm!` : `Reach Level 250.`,
+    req: _=>!player.decel && player.level>=240,
+    reqDesc: _=>player.decel ? `You can't Steelie in Anti-Realm!` : `Reach Level 240.`,
 
     resetDesc: `Reset everything grasshop does, but it benefits from the milestones for grasshop.`,
     resetGain: _=> `Gain <b>${tmp.steelGain.format(0)}</b> Steel`,
@@ -292,8 +292,8 @@ UPGS.foundry = {
             res: "grass",
             icon: ["Curr/Steel2"],
                         
-            cost: i => Decimal.pow(1.5,i).mul(1e40).ceil(),
-            bulk: i => i.div(1e40).max(1).log(1.5).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.5,i).mul(1e39).ceil(),
+            bulk: i => i.div(1e39).max(1).log(1.5).floor().toNumber()+1,
         
             effect(i) {
                 let x = Decimal.pow(1.25, Math.floor(i/25)).mul(i/10+1)
@@ -328,8 +328,8 @@ UPGS.foundry = {
             res: "crystal",
             icon: ["Curr/Steel2"],
                         
-            cost: i => Decimal.pow(1.3,i**0.8).mul(1e11).ceil(),
-            bulk: i => i.div(1e11).max(1).log(1.3).root(0.8).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.3,i**0.8).mul(1e9).ceil(),
+            bulk: i => i.div(1e9).max(1).log(1.3).root(0.8).floor().toNumber()+1,
         
             effect(i) {
                 let x = Decimal.pow(1.25, Math.floor(i/25)).mul(i/10+1)
@@ -346,8 +346,8 @@ UPGS.foundry = {
             res: "steel",
             icon: ["Curr/Steel2"],
                         
-            cost: i => Decimal.pow(1.2,i).mul(1e3).ceil(),
-            bulk: i => i.div(1e3).max(1).log(1.2).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.2,i).mul(10).ceil(),
+            bulk: i => i.div(10).max(1).log(1.2).floor().toNumber()+1,
         
             effect(i) {
                 let x = Decimal.pow(1.5,Math.floor(i/25)).mul(i/5+1)
@@ -490,8 +490,8 @@ UPGS.assembler = {
             cost: i => E(1e25),
             bulk: i => 1,
         },{
-            title: "Perk Save G",
-            desc: `Keep perks on Grasshop, and Steelie Challenges.`,
+            title: "Perk Save GH",
+            desc: `Keep perks on Grasshop.`,
 
             res: "steel",
             icon: ['Curr/Perks','Icons/StarProgression'],
@@ -524,7 +524,7 @@ UPGS.assembler = {
             icon: ['Icons/Challenge','Icons/StarProgression'],
 
             cost: i => E(10).pow(i+15),
-            bulk: i => Math.floor(E(i).log10().root(1.5).sub(15).toNumber())+1,
+            bulk: i => Math.floor(E(i).log10().sub(15).toNumber())+1,
 
             effect(i) {
                 return i
@@ -549,8 +549,8 @@ UPGS.assembler = {
             res: "steel",
             icon: ['Icons/Challenge','Icons/Automation'],
 
-            cost: i => E(1e24),
-            bulk: i => 1,
+            cost: i => E(1e24).mul(E(1e3).pow(i)),
+            bulk: i => E(i).div(1e24).log(1e3).add(1).floor(),
 
             effect(i) {
                 return 300 / i

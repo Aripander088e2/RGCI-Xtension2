@@ -10,8 +10,8 @@ const CHALS = [
         cond: _=>!hasUpgrades("grass"),
         reward: `Grass gain is <b class='green'>doubled</b> each completion.`,
 
-        goal: i=>60+10*i,
-        bulk: i=>Math.floor((i-60)/10+1),
+        goal: i=>60+20*i,
+        bulk: i=>Math.floor((i-60)/20+1),
 
         goalDesc: x=>"Level "+format(x,0),
         goalAmt: _=>player.level,
@@ -29,8 +29,8 @@ const CHALS = [
         cond: _=>!hasUpgrade("pp",1),
         reward: `XP gain is <b class='green'>doubled</b> each completion.`,
 
-        goal: i=>80+15*i,
-        bulk: i=>Math.floor((i-80)/15+1),
+        goal: i=>80+30*i,
+        bulk: i=>Math.floor((i-80)/30+1),
 
         goalDesc: x=>"Level "+format(x,0),
         goalAmt: _=>player.level,
@@ -48,8 +48,8 @@ const CHALS = [
         cond: _=>player.tier==0,
         reward: `TP gain is increased by <b class='green'>doubled</b> each completion.`,
 
-        goal: i=>Math.ceil(70+20*i),
-        bulk: i=>Math.floor((i-70)/20+1),
+        goal: i=>Math.ceil(50+15*i),
+        bulk: i=>Math.floor((i-50)/15+1),
 
         goalDesc: x=>"Level "+format(x,0),
         goalAmt: _=>player.level,
@@ -59,21 +59,21 @@ const CHALS = [
     },{
         unl: _=>true,
 
-        max: 4,
+        max: 5,
         id: 'crystal',
 
         title: `Perkless`,
         desc: `You cannot buy Perks.`,
         cond: _=>player.chal.c4,
-        reward: `Perk gain is increased by <b class="green">+0.5</b> per completion.`,
+        reward: `Perk gain is increased by <b class="green">+0.2</b> per completion.`,
 
-        goal: i=>7+i*4,
-        bulk: i=>Math.floor((i-7)/4+1),
+        goal: i=>7+i*3,
+        bulk: i=>Math.floor((i-7)/3+1),
 
         goalDesc: x=>"Tier "+format(x,0),
         goalAmt: _=>player.tier,
 
-        eff: i=>i/2+1,
+        eff: i=>i/5+1,
         effDesc: x=>format(x,1)+"x",
     },{
         unl: _=>true,
@@ -86,8 +86,8 @@ const CHALS = [
         cond: _=>!hasUpgrades("pp"),
         reward: `PP gain is <b class="green">doubled</b> each completion.`,
 
-        goal: i=>2+i*2,
-        bulk: i=>Math.floor(i/2),
+        goal: i=>4+i*2,
+        bulk: i=>Math.floor((i-4)/2+1),
 
         goalDesc: x=>"Tier "+format(x,0),
         goalAmt: _=>player.tier,

@@ -4,9 +4,7 @@ function getPlayerData() {
 		autoUpg: {},
 
 		time: 0,
-		options: {
-			hideUpgOption: false
-		},
+		options: {},
 		version: VER,
 		tb_ver: TB_VER,
 

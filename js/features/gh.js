@@ -1,5 +1,5 @@
 MAIN.gh = {
-    req: _=> player.grasshop >= 10 ? 160 + player.grasshop * 10 : 200 + player.grasshop * 5,
+    req: _=> player.grasshop >= 10 ? 150 + player.grasshop * 10 : 200 + player.grasshop * 4,
 
     milestone: [
         {
@@ -15,8 +15,8 @@ MAIN.gh = {
             effDesc: x=> "+"+format(x,1),
         },{
             r: 4,
-            desc: `Perk worth <b class="green">+0.1</b> per Grasshop. (starting at 3 and ending at 10)`,
-            effect: _=>Math.max(0,(Math.min(player.grasshop,10)-2)/10),
+            desc: `Perk worth <b class="green">+0.1</b> per Grasshop. (starting at 3)`,
+            effect: _=>Math.max(0,(player.grasshop-2)/10),
             effDesc: x=> "+"+format(x,1),
         },{
             r: 5,

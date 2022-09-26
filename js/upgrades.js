@@ -143,6 +143,7 @@ const UPGS = {
     },
     perk: {
         title: "Perk Upgrades",
+        btns: `<button id="losePerksBtn" class="buyAllUpg" onclick='toggleOption("losePerks")'>Keep on reset: <span id="losePerks"></span></button>`,
 
         cannotBuy: _=>inChal(3),
 
@@ -200,7 +201,7 @@ const UPGS = {
                 costOnce: true,
 
                 title: "Grow Speed Perk",
-                desc: `Increase grass grow speed by <b class="green">25%</b> per level.`,
+                desc: `Increase grass grow speed by <b class="green">+25%</b> per level.`,
 
                 res: "perk",
                 icon: ['Icons/Speed'],
@@ -220,7 +221,7 @@ const UPGS = {
                 costOnce: true,
 
                 title: "XP Perk",
-                desc: `Increase XP gain by <b class="green">50%</b> per level.`,
+                desc: `Increase XP gain by <b class="green">+50%</b> per level.`,
 
                 res: "perk",
                 icon: ['Icons/XP'],
@@ -275,20 +276,20 @@ const UPGS = {
                 },
                 effDesc: x => "+"+format(x,0),
             },{
-                max: 100,
+                max: 50,
 
                 unl: _=>player.cTimes>0,
 
                 costOnce: true,
 
                 title: "PP Perk",
-                desc: `Increase PP gain by <b class="green">50%</b> per level.`,
+                desc: `Increase PP gain by <b class="green">+50%</b> per level.`,
 
                 res: "perk",
                 icon: ['Curr/Prestige'],
                 
-                cost: i => 5,
-                bulk: i => Math.floor(i/5),
+                cost: i => 10,
+                bulk: i => Math.floor(i/10),
 
                 effect(i) {
                     let x = E(i/2+1)
@@ -304,16 +305,16 @@ const UPGS = {
                 costOnce: true,
 
                 title: "TP Perk",
-                desc: `Increase TP gain by <b class="green">25%</b> per level.`,
+                desc: `Increase TP gain by <b class="green">+50%</b> per level.`,
 
                 res: "perk",
                 icon: ['Icons/TP'],
                 
-                cost: i => 10,
-                bulk: i => Math.floor(i/10),
+                cost: i => 15,
+                bulk: i => Math.floor(i/15),
 
                 effect(i) {
-                    let x = E(i/4+1)
+                    let x = E(i/2+1)
 
                     return x
                 },
@@ -326,13 +327,13 @@ const UPGS = {
                 costOnce: true,
 
                 title: "Crystal Perk",
-                desc: `Increase Crystal gain by <b class="green">25%</b> per level.`,
+                desc: `Increase Crystal gain by <b class="green">+25%</b> per level.`,
 
                 res: "perk",
                 icon: ['Curr/Crystal'],
                 
-                cost: i => 10,
-                bulk: i => Math.floor(i/10),
+                cost: i => 15,
+                bulk: i => Math.floor(i/15),
 
                 effect(i) {
                     let x = E(i/4+1)
@@ -449,7 +450,7 @@ const UPGS = {
                 res: "crystal",
                 icon: ['Curr/Perks','Icons/StarProgression'],
                             
-                cost: i => E(1e11),
+                cost: i => E(1e9),
                 bulk: i => 1,
             },{
                 unl: _=>player.sTimes>0,
@@ -535,7 +536,7 @@ const UPGS = {
                 },
                 effDesc: x => format(tmp.autocut)+" seconds",
             },{
-                max: 20,
+                max: 10,
 
                 costOnce: true,
 
@@ -555,7 +556,7 @@ const UPGS = {
                 },
                 effDesc: x => format(x)+"x",
             },{
-                max: 20,
+                max: 10,
 
                 costOnce: true,
 
@@ -575,7 +576,7 @@ const UPGS = {
                 },
                 effDesc: x => format(x)+"x",
             },{
-                max: 50,
+                max: 40,
 
                 unl: _=>player.cTimes>0,
 
@@ -587,8 +588,8 @@ const UPGS = {
                 res: "plat",
                 icon: ['Curr/Prestige'],
                 
-                cost: i => 20,
-                bulk: i => Math.floor(i/20),
+                cost: i => 50,
+                bulk: i => Math.floor(i/50),
 
                 effect(i) {
                     let x = E(i/4+1)
@@ -604,7 +605,7 @@ const UPGS = {
                 costOnce: true,
 
                 title: "Plat TP",
-                desc: `Increase TP gain by <b class="green">+25%</b> per level.`,
+                desc: `Increase TP gain by <b class="green">+50%</b> per level.`,
 
                 res: "plat",
                 icon: ['Icons/TP'],
@@ -613,9 +614,7 @@ const UPGS = {
                 bulk: i => Math.floor(i/100),
 
                 effect(i) {
-                    let x = E(i/4+1)
-
-                    return x
+                    return E(i/2+1)
                 },
                 effDesc: x => format(x)+"x",
             },{
@@ -626,7 +625,7 @@ const UPGS = {
                 costOnce: true,
 
                 title: "Plat Crystal",
-                desc: `Increase Crystal gain by <b class="green">+25%</b> per level.`,
+                desc: `Increase Crystal gain by <b class="green">+50%</b> per level.`,
 
                 res: "plat",
                 icon: ['Curr/Crystal'],
@@ -635,9 +634,7 @@ const UPGS = {
                 bulk: i => Math.floor(i/100),
 
                 effect(i) {
-                    let x = E(i/4+1)
-
-                    return x
+                    return E(i/2+1)
                 },
                 effDesc: x => format(x)+"x",
             },{
@@ -697,8 +694,8 @@ const UPGS = {
                 res: "plat",
                 icon: ['Curr/Anonymity'],
                 
-                cost: i => 500,
-                bulk: i => Math.floor(i/500),
+                cost: i => 2e3,
+                bulk: i => Math.floor(i/2e3),
 
                 effect(i) {
                     let x = E(i*0.2+1)
@@ -719,8 +716,8 @@ const UPGS = {
                 res: "plat",
                 icon: ['Curr/Oil'],
                 
-                cost: i => 3e3,
-                bulk: i => Math.floor(i/3e3),
+                cost: i => 5e3,
+                bulk: i => Math.floor(i/5e3),
 
                 effect(i) {
                     let x = E(i/5+1)
@@ -728,29 +725,7 @@ const UPGS = {
                     return x
                 },
                 effDesc: x => format(x)+"x",
-            },{
-                max: 25,
-
-                unl: _=>player.rocket.part>0,
-
-                costOnce: true,
-
-                title: "Plat-Exponential XP",
-                desc: `Increase XP multiplier's exponent by <b class="green">+1%</b> per level, but only in normal realm.`,
-
-                res: "plat",
-                icon: ['Icons/XP','Icons/Exponent'],
-                
-                cost: i => 1e6,
-                bulk: i => Math.floor(i/1e6),
-
-                effect(i) {
-                    let x = i*0.01+1
-
-                    return x
-                },
-                effDesc: x => "^"+format(x),
-            },
+            }
         ],
     },
 }
@@ -869,7 +844,7 @@ function setupUpgradesHTML(id) {
 
 		html += `
 			<div style="height: 40px;">
-				${upgs.title} <button class="buyAllUpg" onclick="buyMaxUpgrades('${id}')">Buy All</button><button class="buyAllUpg" id="upg_auto_${id}" onclick="switchAutoUpg('${id}')">Auto: OFF</button>
+				${upgs.title} ${upgs.btns ?? ''} <button class="buyAllUpg" onclick="buyMaxUpgrades('${id}')">Buy All</button><button class="buyAllUpg" id="upg_auto_${id}" onclick="switchAutoUpg('${id}')">Auto: OFF</button>
 			</div><div id="upgs_ctn_${id}" class="upgs_ctn">
 
 			</div><div style="height: 40px;" id="upg_under_${id}">
@@ -1042,6 +1017,8 @@ el.update.upgs = _=>{
     if (mapID == 'p') {
         updateUpgradesHTML('perk')
         updateUpgradesHTML('plat')
+        tmp.el.losePerksBtn.setDisplay(hasUpgrade('auto', 5))
+        tmp.el.losePerks.setTxt(player.options.losePerks ? "OFF" : "ON")
     }
 	if (mapID == 'auto') {
 		updateUpgradesHTML('auto')

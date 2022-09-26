@@ -49,9 +49,11 @@ RESET.pp = {
         player.xp = E(0)
         player.level = 0
 
-        let keep_perk = (order == "p" && hasUpgrade('auto',4)) ||
+        let keep_perk = ((order == "p" && hasUpgrade('auto',4)) ||
 			(order == "c" && hasUpgrade('auto',6)) ||
-			(order == "gh" && hasUpgrade('assembler',4))
+			(order == "gh" && hasUpgrade('assembler',4))) &&
+			!player.options.losePerks &&
+			!inChal(3)
 
         if (!keep_perk) {
             player.maxPerk = 0
