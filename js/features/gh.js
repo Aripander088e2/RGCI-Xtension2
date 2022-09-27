@@ -10,7 +10,7 @@ MAIN.gh = {
             desc: `Gain <b class="green">2x</b> more Crystals.`,
         },{
             r: 3,
-            desc: `Platinum worth <b class="green">+0.5</b> per Grasshop. (starting at 2)`,
+            desc: `Platinum worth <b class="green">+0.2</b> per Grasshop. (starting at 2)`,
             effect: _=>Math.max(0,(player.grasshop-2)/5),
             effDesc: x=> "+"+format(x,1),
         },{
@@ -31,6 +31,8 @@ MAIN.gh = {
             r: 10,
             desc: `Unlock Steelie reset.`,
         },{
+            unl: _=>player.sTimes > 0,
+
             r: 11,
             desc: `Gain <b class="green">2x</b> more Steel per Grasshop. (starting at 11)`,
             effect: _=>E(2).pow(Math.max(0,player.grasshop-10)),
@@ -38,19 +40,19 @@ MAIN.gh = {
         },{
             unl: _=>hasUpgrade('factory',2),
 
-            r: 19,
+            r: 12,
             desc: `Gain <b class="green">2x</b> more Charge per Grasshop. (starting at 19)`,
-            effect: _=>E(2).pow(Math.max(0,player.grasshop-18)),
+            effect: _=>E(2).pow(Math.max(0,player.grasshop-11)),
             effDesc: x=> format(x,0)+"x",
         },{
-            unl: _=>hasUpgrade('factory',2),
+            unl: _=>hasUpgrade('factory',3),
 
-            r: 20,
-            desc: `Charge rate bonuses start 10x earlier per 3 Grasshops. (starting at 20)`,
-            effect: _=>Math.max(0,Math.floor((player.grasshop-20)/3+1)),
+            r: 16,
+            desc: `Charge rate bonuses start 10x earlier per 2 Grasshops. (starting at 16)`,
+            effect: _=>Math.max(0,Math.floor((player.grasshop-20)/2+1)),
             effDesc: x=> format(E(10).pow(x),0)+"x",
         },{
-            unl: _=>hasUpgrade('factory',2),
+            unl: _=>hasUpgrade('factory',4),
 
             r: 35,
             desc: `Charge rate bonuses start 10x earlier per 4 Grasshops. (starting at 35)`,

@@ -50,10 +50,13 @@ function calc(dt) {
 	if (hasUpgrades("perk")) player.chal.c4 = false
     if (hasUpgrade("assembler", 8)) {
 		player.chal.time = (player.chal.time || 0) + dt / upgEffect("assembler", 8)
-		for (var i = 0; i < 6; i++) player.chal.comp[i] = Math.min(player.chal.comp[i] + Math.floor(player.chal.time), CHALS[i].max)
+		for (var i = 0; i < 6; i++) player.chal.comp[i] = Math.min(player.chal.comp[i] + Math.floor(player.chal.time), player.chal.max[i])
 		player.chal.time -= Math.floor(player.chal.time)
 	}
-    for (var i in CHALS) if (inChalCond(i) && tmp.chal.bulk[i] > (player.chal.comp[i] || 0)) player.chal.comp[i] = tmp.chal.bulk[i]
+	for (var i in CHALS) {
+		if (inChalCond(i) && tmp.chal.bulk[i] > (player.chal.comp[i] || 0)) player.chal.comp[i] = tmp.chal.bulk[i]
+		player.chal.max[i] = Math.max(player.chal.comp[i] || 0, player.chal.max[i] || 0)
+	}
 
 	if (galUnlocked()) galTick(dt)
 

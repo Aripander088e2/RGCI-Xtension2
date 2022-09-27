@@ -7,7 +7,7 @@ MAIN.crystal = {
         x = x.mul(upgEffect('perk',8))
 
         if (player.grasshop >= 2) x = x.mul(2)
-        x = x.mul(E(tmp.chargeEff[5]||1).pow(player.tier))
+        x = x.mul(E(tmp.chargeEff[6]||1).pow(player.tier))
 
         x = x.mul(upgEffect('rocket',4))
         x = x.mul(upgEffect('momentum',5))
@@ -190,7 +190,7 @@ MAIN.oil = {
 
         x = x.mul(upgEffect('plat',9))
         x = x.mul(chalEff(8))
-        x = x.mul(E(tmp.chargeEff[7]||1).pow(player.tier))
+        x = x.mul(E(tmp.chargeEff[8]||1).pow(player.tier))
 
         x = x.mul(upgEffect('rocket',8))
         x = x.mul(upgEffect('momentum',9))

@@ -143,6 +143,31 @@ button:not(.locked):hover {
 	transition-duration: 0.5s
 }
 
+#map_div {
+	display: table;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%)
+}
+#map_div tr {
+	display: table-row
+}
+#map_div button {
+	margin: 0;
+	padding: 0;
+	width: 120px;
+	height: 120px;
+	font-size: 16px
+}
+.map_btn.notify {
+	background: maroon;
+	color: red
+}
+.map_btn.misc {
+	background: grey
+}
+
 #grass_div {
     position: relative;
     width: 550px;
@@ -294,7 +319,8 @@ button:not(.locked):hover {
 }
 
 .upg_desc.grass,
-.upgs_div.grass {
+.upgs_div.grass,
+.map_btn.grass {
     background-color: #186834;
 }
 
@@ -316,7 +342,8 @@ button:not(.locked):hover {
 .reset_req.pp,
 .upg_desc.pp,
 .upgs_div.pp,
-.chal_div.pp {
+.chal_div.pp,
+.map_btn.pp {
     background-color: #5BFAFF;
 }
 
@@ -324,7 +351,8 @@ button:not(.locked):hover {
 .reset_req.crystal,
 .upg_desc.crystal,
 .upgs_div.crystal,
-.chal_div.crystal {
+.chal_div.crystal,
+.map_btn.crystal {
     background-color: #FF84F6;
 }
 
@@ -531,10 +559,6 @@ button:not(.locked):hover {
     top: 50%;
     width: 100%;
     transform: translateY(-50%);
-}
-
-#map_div_opt {
-    font-size: 16px;
 }
 
 .chal_div {

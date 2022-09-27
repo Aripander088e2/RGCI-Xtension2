@@ -18,10 +18,10 @@ const MAIN = {
         x = x.mul(upgEffect('pp',0))
         x = x.mul(upgEffect('crystal',0))
         x = x.mul(upgEffect('plat',2))
-        x = x.mul(upgEffect('aGrass',3))
         x = x.mul(chalEff(0))
 
         if (player.decel) x = x.div(1e4)
+        if (player.decel && hasUpgrade('aGrass', 3)) x = x.mul(upgEffect('aGrass',3))
         x = x.mul(upgEffect('ap',0))
         x = x.mul(upgEffect('oil',0))
 
@@ -56,8 +56,8 @@ const MAIN = {
 
         if (player.grasshop >= 7) x = x.mul(2)
 
-        if (player.decel) x = x.div(1e7)
-        x = x.mul(upgEffect('aGrass',4))
+        if (player.decel) x = x.div(1e5)
+        if (player.decel && hasUpgrade('aGrass', 4)) x = x.mul(upgEffect('aGrass', 4))
         x = x.mul(upgEffect('ap',2))
         x = x.mul(upgEffect('oil',1))
 
@@ -79,7 +79,7 @@ const MAIN = {
 
         if (player.grasshop >= 1) x = x.mul(4)
 
-        if (player.decel) x = x.div(1e4)
+        if (player.decel) x = x.div(100)
         x = x.mul(upgEffect('ap',3))
         x = x.mul(upgEffect('oil',2))
 
@@ -138,7 +138,7 @@ const MAIN = {
         base() {
 			let x = upgEffect('crystal',3)
 			if (player.grasshop >= 5) x += 0.1
-			x += E(tmp.chargeEff[6]||1).toNumber()
+			x += E(tmp.chargeEff[4]||1).toNumber()
 			return x
         },
         mult(i) {

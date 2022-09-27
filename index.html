@@ -3,7 +3,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Really Grass Cutting Incremental</title>
+    <title>RGCI: Thunderized Balance</title>
 
     <script src="js/utils/utils.js"></script>
     <script src="js/utils/break_eternity.js"></script>
@@ -11,14 +11,11 @@
     <script src="js/utils/saves.js"></script>
 
     <script src="js/elements.js"></script>
-    <script src="js/canvas.js"></script>
-    <script src="js/format.js"></script>
-
-    <script src="js/map.js"></script>
-
-    <script src="js/canvas.js"></script>
     <script src="js/temp.js"></script>
 
+    <script src="js/canvas.js"></script>
+    <script src="js/format.js"></script>
+    <script src="js/map.js"></script>
     <script src="js/upgrades.js"></script>
     <script src="js/reset.js"></script>
 
@@ -99,31 +96,35 @@
                     </div>
                 </div>
             </div><div id="map_div_opt">
-                <div style="width: 100%; height: 50%;">
-					<button onclick="save()">Save</button>
-					<button onclick="importy()">Import</button>
-					<button onclick="export_copy()">Export to clipboard</button>
-					<button onclick="exporty()">Export</button>
-					<button onclick="wipe()">Hard Reset</button><br>
-					<button onclick="window.open('https://discord.gg/Ekp8FsSwzR')">Join Discord Server</button><br>
-					<button onclick="toggleOption('scientific')">Scientific: <span id="scientific">OFF</span></button>
-					<button onclick="toggleOption('hideUpgOption')">Hide maxed upgrades: <span id="hideUpgOption">OFF</span></button>
-					<button onclick="toggleLowGrass()">Grass cap: <span id="grassCap">Unlimited</span></button><br><br>
-					Really Grass Cutting Incremental - Thunderized Balance β3 α5 - By TehAarex<br>
-					The game inspired by <a href="https://www.roblox.com/games/9292879820">Grass Cutting Incremental</a><br>
-					<b class="red">Warning! Recommended size is 1920x1080! You may change zoom!</b><br><br>
-					Endgame: Level ???
-                </div><div id="stats" style="width: 100%; height: 50%;">
+				<button onclick="save()">Save</button>
+				<button onclick="importy()">Import</button>
+				<button onclick="export_copy()">Export to clipboard</button>
+				<button onclick="exporty()">Export</button>
+				<button onclick="wipe()">Hard Reset</button><br>
+				<button onclick="window.open('https://discord.gg/Ekp8FsSwzR')">Join Discord Server</button><br>
+				<button onclick="toggleOption('scientific')">Scientific: <span id="scientific">OFF</span></button>
+				<button onclick="toggleOption('hideUpgOption')">Hide maxed upgrades: <span id="hideUpgOption">OFF</span></button>
+				<button onclick="toggleLowGrass()">Grass cap: <span id="grassCap">Unlimited</span></button><br><br>
+				Really Grass Cutting Incremental - Thunderized Balance β3 α6 - <a href="http://aarextiaokhiao.github.io">By TehAarex</a><br>
+				Inspired by <a href="https://www.roblox.com/games/9292879820">Grass Cutting Incremental</a>,
+				<a href="https://mrredshark77.github.io/Really-Grass-Cutting-Incremental/">Original by MrRedShark77</a><br>
+				<b class="red">Warning! Recommended size is 1920x1080! You may change zoom!</b><br><br>
+				Endgame: Level 400 - 500
+            </div><div id="map_div_stats">
+				<span id="time"></span><br>
+				<h1>Reset Layers</h1>
+				<button id="allStatsBtn" onclick="toggleOption('allStats')">Show: <span id="allStats">OFF</span></button>
+                <div id="stats">
 					<span id="pTimes"></span><br>
 					<span id="cTimes"></span><br>
 					<span id="sTimes"></span><br>
-					<span id="gTimes"></span>
-				</div><div id="aStats" style="width: 100%; height: 50%;">
+				</div><div id="aStats">
 					<span id="aTimes"></span><br>
 					<span id="lTimes"></span><br>
-					<span id="fTimes"></span>
+					<span id="fTimes"></span><br>
 				</div>
-            </div><div id="map_div_p">
+				<span id="gTimes"></span>
+            </div><div id="map_div_upg">
                 <div style="width: 100%; height: 50%;">
                     <div class="upgs_div" id="upgs_div_perk"></div>
                 </div><div style="width: 100%; height: 50%;">
@@ -178,7 +179,7 @@
                 <div style="width: 100%; height: 50%;" class="table_center">
                     <div style="width: 50%; height: 100%;"><div class="reset_div" id="reset_div_decel"></div></div>
                 </div>
-            </div><div id="map_div_rl">
+            </div><div id="map_div_rf">
                 <div style="width: 100%; height: 50%;" class="table_center">
                     <div style="width: 400px; height: 100%;"><div class="upgs_div rocket" id="refinery_div">
                         <h3>Refinery</h3><br>
@@ -204,15 +205,14 @@
             </div>
         </div>
         <div style="position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%);">
+            <button onclick="go_to = !go_to">Map</button>
             <button id="lMap" onclick="moveMap(-1,0)" class="locked">◀</button>
             <button id="rMap" onclick="moveMap(1,0)" class="locked">▶</button>
             <button id="uMap" onclick="moveMap(0,-1)" class="locked">▲</button>
             <button id="dMap" onclick="moveMap(0,1)" class="locked">▼</button>
+			<div class="smallAmt" id="position"></div>
         </div>
-		<div style="position: absolute; bottom: 5px; left: 5px;">
-			<button onclick="go_to = !go_to">Go to:</button>
-			<div id="go_to_div" style="position: absolute; left: 100%; bottom: 0; text-align: left; display: none"></div>
-		</div>
+		<div id="map_div">Hi</div>
     </div>
 </body>
 </html>

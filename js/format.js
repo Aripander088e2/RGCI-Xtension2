@@ -72,12 +72,7 @@ function format(ex, acc=2, type) {
 	if (!type) type = player.options.scientific ? "sc" : "mixed_sc"
     switch (type) {
         case "sc":
-            if (ex.log10().lt(Math.min(-acc,0)) && acc > 1) {
-                let e = ex.log10().ceil()
-                let m = ex.div(e.eq(-1)?E(0.1):E(10).pow(e))
-                let be = e.mul(-1).max(1).log10().gte(9)
-                return neg+(be?'':m.toFixed(2))+'e'+format(e, 0, "mixed_sc")
-            } else if (e.lt(6)) {
+            if (e.lt(6)) {
                 let a = Math.max(Math.min(acc-e.toNumber(), acc), 0)
                 return neg+(a>0?ex.toFixed(a):ex.toFixed(a).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'))
             } else {

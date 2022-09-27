@@ -26,6 +26,7 @@ RESET.gal = {
 
 		player.plat = 0
 		player.chal.comp = []
+		player.chal.max = []
 		player.grasshop = 0
 		player.steel = E(0)
 		player.bestCharge = E(0)

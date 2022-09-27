@@ -31,7 +31,7 @@ UPGS.aGrass = {
     unl: _=> player.decel,
 
     title: "Anti-Grass Upgrades",
-    underDesc: _=>`These upgrades affect the Normal Realm.`,
+    underDesc: _=>`Some upgrades affect the Normal Realm.`,
 
     autoUnl: _=>hasUpgrade('aAuto', 1),
 
@@ -42,7 +42,7 @@ UPGS.aGrass = {
             max: Infinity,
 
             title: "Anti-Grass Charge",
-            desc: `Increase charge rate by <b class="green">+10%</b> per level.<br>This effect is increased by <b class="green">50%</b> every <b class="yellow">25</b> levels.`,
+            desc: `Increase charge rate by <b class="green">+25%</b> per level.<br>This effect is increased by <b class="green">50%</b> every <b class="yellow">25</b> levels.`,
 
             res: "aGrass",
             icon: ['Curr/Charge'],
@@ -51,7 +51,7 @@ UPGS.aGrass = {
             bulk: i => i.div(10).max(1).log(1.2).floor().toNumber()+1,
 
             effect(i) {
-                let x = Decimal.pow(1.5,Math.floor(i/25)).mul(i/10+1)
+                let x = Decimal.pow(1.5,Math.floor(i/25)).mul(i/4+1)
 
                 return x
             },
@@ -78,54 +78,46 @@ UPGS.aGrass = {
             max: Infinity,
 
             title: "Anti-Grass Steel",
-            desc: `Increase steel gain by <b class="green">+10%</b> per level.<br>This effect is increased by <b class="green">25%</b> every <b class="yellow">25</b> levels.`,
+            desc: `Increase steel gain by <b class="green">+25%</b> per level.<br>This effect is increased by <b class="green">25%</b> every <b class="yellow">25</b> levels.`,
 
             res: "aGrass",
             icon: ['Curr/Steel2'],
             
-            cost: i => Decimal.pow(1.2,i).mul(1e3).ceil(),
-            bulk: i => i.div(1e3).max(1).log(1.2).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.2,i).mul(200).ceil(),
+            bulk: i => i.div(200).max(1).log(1.2).floor().toNumber()+1,
 
             effect(i) {
-                let x = Decimal.pow(1.25,Math.floor(i/25)).mul(i/10+1)
+                let x = Decimal.pow(1.25,Math.floor(i/25)).mul(i/4+1)
 
                 return x
             },
             effDesc: x => x.format()+"x",
         },{
-            max: Infinity,
-
-            title: "Anti-Grass Value",
-            desc: `Increase grass gain by <b class="green">+25%</b> per level.<br>This effect is increased by <b class="green">50%</b> every <b class="yellow">25</b> levels.`,
+            title: "Charged Grass",
+            desc: `Charge Rate boosts Grass in Anti-Realm.`,
 
             res: "aGrass",
-            icon: ['Curr/Grass'],
+            icon: ['Curr/Grass', 'Icons/StarSpeed'],
             
-            cost: i => Decimal.pow(1.2,i).mul(1e4).ceil(),
-            bulk: i => i.div(1e4).max(1).log(1.2).floor().toNumber()+1,
+            cost: i => E(500),
+            bulk: i => 1,
 
             effect(i) {
-                let x = Decimal.pow(1.5,Math.floor(i/25)).mul(i/4+1)
-
-                return x
+                return E(player.chargeRate).add(1).root(6)
             },
             effDesc: x => x.format()+"x",
         },{
-            max: Infinity,
-
-            title: "Anti-Grass XP",
-            desc: `Increase XP gain by <b class="green">+10%</b> per level.<br>This effect is increased by <b class="green">50%</b> every <b class="yellow">25</b> levels.`,
+            title: "Charged XP",
+            desc: `Charge Rate boosts XP in Anti-Realm.`,
 
             res: "aGrass",
-            icon: ['Icons/XP'],
+            icon: ['Icons/XP', 'Icons/StarSpeed'],
             
-            cost: i => Decimal.pow(1.2,i).mul(2e6).ceil(),
-            bulk: i => i.div(2e6).max(1).log(1.2).floor().toNumber()+1,
+            cost: i => E(100),
+            bulk: i => 1,
 
             effect(i) {
-                let x = Decimal.pow(1.5,Math.floor(i/25)).mul(i/10+1)
-
-                return x
+                return E(player.chargeRate).add(1).root(6)
             },
             effDesc: x => x.format()+"x",
         },{
@@ -144,7 +136,7 @@ UPGS.aGrass = {
 
             effect(i) {
                 let x = Decimal.pow(2,Math.floor(i/25)).mul(i/10+1)
-                x = x.pow(tmp.chargeEff[4]||1)
+                x = x.pow(tmp.chargeEff[5]||1)
 
                 return x
             },
@@ -158,7 +150,7 @@ UPGS.aGrass = {
             title: "Range II",
             desc: `Increase grass cut range by <b class="green">+10</b> per level.`,
 
-            res: "grass",
+            res: "aGrass",
             icon: ['Icons/Range'],
 
             cost: i => Decimal.pow(15,i).mul(200).ceil(),

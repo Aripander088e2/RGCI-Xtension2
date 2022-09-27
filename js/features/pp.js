@@ -124,7 +124,7 @@ UPGS.pp = {
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 125,
+            max: () => 125 + (tmp.chargeEff[7] || 0),
 
             title: "TP",
             desc: `Increase Tier Points (TP) gain by <b class="green">25%</b> compounding per level.`,

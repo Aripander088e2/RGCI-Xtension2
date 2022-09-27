@@ -4,6 +4,7 @@ function getPlayerData() {
 		autoUpg: {},
 
 		time: 0,
+		map_notify: {},
 		options: {},
 		version: VER,
 		tb_ver: TB_VER,
@@ -37,6 +38,7 @@ function getPlayerData() {
 		chal: {
 			progress: {},
 			comp: [],
+			max: [],
 		},
 
 		//GRASSHOP

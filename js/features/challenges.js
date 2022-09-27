@@ -10,8 +10,8 @@ const CHALS = [
         cond: _=>!hasUpgrades("grass"),
         reward: `Grass gain is <b class='green'>doubled</b> each completion.`,
 
-        goal: i=>60+20*i,
-        bulk: i=>Math.floor((i-60)/20+1),
+        goal: i=>60+15*i,
+        bulk: i=>Math.floor((i-60)/15+1),
 
         goalDesc: x=>"Level "+format(x,0),
         goalAmt: _=>player.level,
@@ -29,8 +29,8 @@ const CHALS = [
         cond: _=>!hasUpgrade("pp",1),
         reward: `XP gain is <b class='green'>doubled</b> each completion.`,
 
-        goal: i=>80+30*i,
-        bulk: i=>Math.floor((i-80)/30+1),
+        goal: i=>80+20*i,
+        bulk: i=>Math.floor((i-80)/20+1),
 
         goalDesc: x=>"Level "+format(x,0),
         goalAmt: _=>player.level,
@@ -120,12 +120,12 @@ const CHALS = [
         id: 'steel',
 
         title: `Clear Crystal`,
-        desc: `You can't buy Crystalize Upgrades.`,
+        desc: `You can't buy Crystal Upgrades.`,
         cond: _=>!hasUpgrades("crystal"),
         reward: `Gain more Steel.`,
 
-        goal: i=>16+i*2,
-        bulk: i=>Math.floor((i-16)/2+1),
+        goal: i=>8+i*2,
+        bulk: i=>Math.floor((i-8)/2+1),
 
         goalDesc: x=>"Tier "+format(x,0),
         goalAmt: _=>player.tier,
@@ -185,7 +185,7 @@ function inChal(x) {
 }
 
 function inChalCond(x) {
-    return inChal(x) || CHALS[x].cond()
+    return inChal(x) || (CHALS[x].cond() && !player.decel)
 }
 
 function enterChal(x) {
@@ -251,7 +251,7 @@ el.update.chal = _=>{
 		tmp.el.chal_div.setDisplay(unl)
 
 		if (unl) {
-			tmp.el.chal_top.setHTML(player.decel ? "You can't enter a Challenge while in Anti-Realm!" : `
+			tmp.el.chal_top.setHTML(player.decel ? "You can't complete Challenges in Anti-Realm!" : `
 				Click any challenge to start! Click again to exit.<br>
 				You can complete Challenges without entering if you satisfy a condition.
 			`)

@@ -147,8 +147,8 @@ const UPGS = {
 
         cannotBuy: _=>inChal(3),
 
-        req: _=>player.level >= 1 || player.pTimes > 0,
-        reqDesc: _=>`Reach Level 1 to unlock.`,
+        req: _=>(player.level >= 1 || player.pTimes > 0)&&!player.decel,
+        reqDesc: _=>player.decel?`You can't gain Perks in Anti-Realm!`:`Reach Level 1 to unlock.`,
 
         underDesc: _=>`You have ${format(tmp.perkUnspent,0)} Perk`,
 
@@ -347,7 +347,7 @@ const UPGS = {
     auto: {
         title: "Automation Upgrades",
 
-        unl: _=> !player.decel,
+        unl: _=>!player.decel,
         req: _=>player.level >= 5 || player.pTimes > 0,
         reqDesc: _=>`Reach Level 5 to unlock.`,
 
@@ -461,7 +461,7 @@ const UPGS = {
                 res: "crystal",
                 icon: ['Curr/Crystal','Icons/Automation'],
                             
-                cost: i => E(1e15),
+                cost: i => E(1e11),
                 bulk: i => 1,
             },{
                 unl: _=>player.sTimes>0,
@@ -493,8 +493,8 @@ const UPGS = {
                 res: "crystal",
                 icon: ['Curr/Crystal','Icons/Plus'],
                             
-                cost: i => Decimal.pow(7,i).mul(1e12).ceil(),
-                bulk: i => i.div(1e12).max(1).log(7).floor().toNumber()+1,
+                cost: i => Decimal.pow(10,i).mul(1e25).ceil(),
+                bulk: i => i.div(1e20).max(1).log(10).floor().toNumber()+1,
                 effect(i) {
                     let x = i/1e3
             
@@ -645,16 +645,16 @@ const UPGS = {
                 costOnce: true,
 
                 title: "Plat Steel",
-                desc: `Increase steel gain by <b class="green">+20%</b> per level.`,
+                desc: `Increase steel gain by <b class="green">+50%</b> per level.`,
 
                 res: "plat",
                 icon: ['Curr/Steel2'],
                 
-                cost: i => 200,
-                bulk: i => Math.floor(i/200),
+                cost: i => 100,
+                bulk: i => Math.floor(i/100),
 
                 effect(i) {
-                    let x = E(i/5+1)
+                    let x = E(i/2+1)
 
                     return x
                 },
@@ -667,16 +667,16 @@ const UPGS = {
                 costOnce: true,
 
                 title: "Plat Charge",
-                desc: `Increase charge rate by <b class="green">+20%</b> per level.`,
+                desc: `Increase charge rate by <b class="green">+50%</b> per level.`,
 
                 res: "plat",
                 icon: ['Curr/Charge'],
                 
-                cost: i => 1e3,
-                bulk: i => Math.floor(i/1e3),
+                cost: i => 150,
+                bulk: i => Math.floor(i/150),
 
                 effect(i) {
-                    let x = E(i/5+1)
+                    let x = E(i/2+1)
 
                     return x
                 },
@@ -817,7 +817,7 @@ function updateUpgTemp(id) {
         let amt = player.upgs[id][x]||0
         let res = tmp.upg_res[upg.res]
         
-        tu.max[x] = upg.max||1
+        tu.max[x] = (typeof upg.max == "function"?upg.max():upg.max)||1
         if (upg.unl?upg.unl():true) if (amt < tu.max[x]) ul++
 
         tu.cost[x] = upg.cost(amt)
@@ -1014,7 +1014,7 @@ el.update.upgs = _=>{
         updateUpgradesHTML('grass')
         updateUpgradesHTML('aGrass')
     }
-    if (mapID == 'p') {
+    if (mapID == 'upg') {
         updateUpgradesHTML('perk')
         updateUpgradesHTML('plat')
         tmp.el.losePerksBtn.setDisplay(hasUpgrade('auto', 5))
@@ -1046,18 +1046,24 @@ el.update.upgs = _=>{
 		tmp.el.scientific.setTxt(player.options.scientific?"ON":"OFF")
 		tmp.el.hideUpgOption.setTxt(player.options.hideUpgOption?"ON":"OFF")
 		tmp.el.grassCap.setTxt(player.options.lowGrass?250:"Unlimited")
+	}
+	if (mapID == 'stats') {
+		tmp.el.time.setHTML("Time: " + formatTime(player.time))
 
-		tmp.el.stats.setDisplay(!player.decel)
-		tmp.el.aStats.setDisplay(player.decel)
-
-		if (!player.decel) {
+		tmp.el.stats.setDisplay(!player.decel || player.options.allStats)
+		if (!player.decel || player.options.allStats) {
 			tmp.el.pTimes.setHTML(player.pTimes ? "You have done " + player.pTimes + " <b style='color: #5BFAFF'>Prestige</b> resets.<br>Time: " + formatTime(player.pTime) : "")
 			tmp.el.cTimes.setHTML(player.cTimes ? "You have done " + player.cTimes + " <b style='color: #FF84F6'>Crystalize</b> resets.<br>Time: " + formatTime(player.cTime) : "")
 			tmp.el.sTimes.setHTML(player.sTimes ? "You have done " + player.sTimes + " <b style='color: #c5c5c5'>Steelie</b> resets.<br>Time: " + formatTime(player.sTime) : "")
-			tmp.el.gTimes.setHTML(galUnlocked() ? "You have done " + player.gal.times + " <b style='color: #bf00ff'>Galactic</b> resets.<br>Time: " + formatTime(player.gal.time) : "")
-		} else {
+		}
+		tmp.el.aStats.setDisplay(player.decel || player.options.allStats)
+		if (player.decel || player.options.allStats) {
 			tmp.el.aTimes.setHTML(player.aRes.aTimes ? "You have done " + player.aRes.aTimes + " <b style='color: #FF4E4E'>Anonymity</b> resets.<br>Time: " + formatTime(player.aRes.aTime) : "")
 			tmp.el.lTimes.setHTML(player.aRes.lTimes ? "You have done " + player.aRes.lTimes + " <b style='color: #2b2b2b'>Liquefy</b> resets.<br>Time: " + formatTime(player.aRes.lTime) : "")
 		}
+		tmp.el.gTimes.setHTML(galUnlocked() ? "You have done " + player.gal.times + " <b style='color: #bf00ff'>Galactic</b> resets.<br>Time: " + formatTime(player.gal.time) : "")
+
+		tmp.el.allStatsBtn.setDisplay(hasUpgrade('factory', 4) || galUnlocked())
+		tmp.el.allStats.setTxt(player.options.allStats ? "All" : "This realm")
 	}
 }
