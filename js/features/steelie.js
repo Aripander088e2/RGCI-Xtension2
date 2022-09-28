@@ -34,6 +34,7 @@ MAIN.steel = {
             if (player.decel) x = x.div(1e3)
             x = x.mul(upgEffect('aGrass',0))
             x = x.mul(upgEffect('ap',1))
+            x = x.mul(upgEffect('oil',5))
 
             x = x.mul(upgEffect('rocket',6))
             x = x.mul(upgEffect('momentum',7))
@@ -50,13 +51,13 @@ MAIN.steel = {
             },{
                 req: E(100),
                 eff(c) {
-                    return c.add(1).log10().div(20).add(1)
+                    return c.add(1).log10().div(40).add(1)
                 },
                 effDesc: x => "Each Tier gives "+format(x)+"x more PP.",
             },{
                 req: E(1e6),
                 eff(c) {
-                    return c.add(1).log10().div(10).min(2).toNumber()
+                    return E(1).sub(E(1).div(c.add(1).log10().div(20).add(1))).toNumber()
                 },
                 effDesc: x => "Strengthen Grass Upgrade's 'PP' by +"+format(x)+"x.",
             },{
@@ -64,7 +65,7 @@ MAIN.steel = {
 
                 req: E(1e9),
                 eff(c) {
-                    return c.add(1).log10().div(50).add(1).min(2).toNumber()
+                    return E(2).sub(E(1).div(c.add(1).log10().div(15).add(1))).toNumber()
                 },
                 effDesc: x => "Gain " + format(x) + "x Levels in Anti-Realm",
             },{
@@ -72,7 +73,7 @@ MAIN.steel = {
 
                 req: E(1e12),
                 eff(c) {
-                    return c.add(1).log10().div(20)
+                    return c.add(1).log10().div(40)
                 },
                 effDesc: x => "Increase Tier base by +"+format(x,3)+"x.",
             },{
@@ -80,34 +81,10 @@ MAIN.steel = {
 
                 req: E(1e15),
                 eff(c) {
-                    return c.add(1).log10().div(50).add(1).min(2).toNumber()
+                    return c.add(1).log10().root(1.25).div(10).pow10()
                 },
-                effDesc: x => "Strengthen Anti-Grass Upgrade's 'AP' by "+format(x)+"x.",
-            },{
-                unl: _ => player.aRes.aTimes > 0,
-
-                req: E(1e18),
-                eff(c) {
-                    return c.add(1).log10().div(50).add(1).min(2)
-                },
-                effDesc: x => "Each Tier gives "+format(x)+"x more Crystals.",
-            },{
-                unl: _ => player.aRes.lTimes > 0,
-
-                req: E(1e21),
-                eff(c) {
-                    return c.add(1).log10().pow(0.8).floor().toNumber()
-                },
-                effDesc: x => "Increase Prestige Upgrade's 'TP' cap by "+format(x,0)+" levels [soon]",
-            },{
-                unl: _ => player.aRes.lTimes > 1,
-
-                req: E(1e24),
-                eff(c) {
-                    return c.add(1).log10().div(50).add(1).min(2)
-                },
-                effDesc: x => "Each Tier gives "+format(x)+"x more Oil.",
-            }
+                effDesc: x => "Gain more "+format(x,3)+"x TP in Anti-Realm.",
+            },
         ],
     },
 }
@@ -215,8 +192,8 @@ UPGS.factory = {
             res: "steel",
             icon: ["Icons/Assemblerv2"],
                         
-            cost: i => Decimal.pow(2,i).mul(1e7).ceil(),
-            bulk: i => i.div(1e7).max(1).log(2).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.5,i).mul(1e7).ceil(),
+            bulk: i => i.div(1e7).max(1).log(1.5).floor().toNumber()+1,
         
             effect(i) {
                 let x = i/10+1
@@ -251,8 +228,8 @@ UPGS.factory = {
             res: "steel",
             icon: ["Icons/Refinery"],
                         
-            cost: i => Decimal.pow(1.5,i).mul(1e57).ceil(),
-            bulk: i => i.div(1e57).max(1).log(1.5).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.5,i).mul(1e22).ceil(),
+            bulk: i => i.div(1e22).max(1).log(1.5).floor().toNumber()+1,
         
             effect(i) {
                 let x = i/10+1
@@ -269,8 +246,8 @@ UPGS.factory = {
             res: "steel",
             icon: ["Icons/LaunchPad"],
                         
-            cost: i => Decimal.pow(1.5,i).mul(1e61).ceil(),
-            bulk: i => i.div(1e61).max(1).log(1.5).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.5,i).mul(1e24).ceil(),
+            bulk: i => i.div(1e24).max(1).log(1.5).floor().toNumber()+1,
         
             effect(i) {
                 let x = i/10+1
@@ -521,15 +498,15 @@ UPGS.assembler = {
             res: "pp",
             icon: ['Icons/Challenge','Icons/StarProgression'],
 
-            cost: i => E(10).pow((i+10)**1.5),
-            bulk: i => Math.floor(E(i).log10().root(1.5).sub(10).toNumber())+1,
+            cost: i => E(10).pow((i+15)**1.5),
+            bulk: i => Math.floor(E(i).log10().root(1.5).sub(15).toNumber())+1,
 
             effect(i) {
                 return i
             },
             effDesc: x => "Up to "+format(x,0)+" completions",
         },{
-            max: 10,
+            max: 15,
 
             title: "Challenge Save C",
             desc: `Keep Crystalize challenge completions on Grasshop and Steelie.`,
@@ -537,8 +514,8 @@ UPGS.assembler = {
             res: "crystal",
             icon: ['Icons/Challenge','Icons/StarProgression'],
 
-            cost: i => E(10).pow(i+13),
-            bulk: i => Math.floor(E(i).log10().sub(13).toNumber())+1,
+            cost: i => E(10).pow(i+15),
+            bulk: i => Math.floor(E(i).log10().sub(15).toNumber())+1,
 
             effect(i) {
                 return i
@@ -591,13 +568,13 @@ tmp_update.push(_=>{
 
     tmp.chargeGain = ms.charger.gain()
 
-    tmp.chargeOoM = getGHEffect(10, 0) + getGHEffect(11, 0)
+    tmp.chargeOoM = getGHEffect(10, 0)
     tmp.chargeOoMMul = Decimal.pow(10, tmp.chargeOoM)
 
     for (let x = 0; x < ms.charger.effs.length; x++) {
         let ce = ms.charger.effs[x]
         let unl = ce.unl ? ce.unl() : true
-        tmp.chargeEff[x] = ce.eff(unl && player.chargeRate.gt(ce.req) ? player.chargeRate.div(E(ce.req).div(tmp.chargeOoMMul).max(1)) : E(0))
+        tmp.chargeEff[x] = ce.eff(unl && player.bestCharge.gt(ce.req) ? player.chargeRate.div(E(ce.req).div(tmp.chargeOoMMul).max(1)) : E(0))
     }
 })
 

@@ -74,7 +74,7 @@ UPGS.pp = {
 
     title: "Prestige Upgrades",
 
-    cannotBuy: _=>inChal(4) || inChal(5) || inChal(8),
+    cannotBuy: _=>inChal(4) || inChal(5),
 
     autoUnl: _=>hasUpgrade('auto',5),
     noSpend: _=>hasUpgrade('assembler',1),
@@ -124,7 +124,7 @@ UPGS.pp = {
             },
             effDesc: x => format(x)+"x",
         },{
-            max: () => 125 + (tmp.chargeEff[7] || 0),
+            max: 125,
 
             title: "TP",
             desc: `Increase Tier Points (TP) gain by <b class="green">25%</b> compounding per level.`,

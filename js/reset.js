@@ -58,7 +58,7 @@ el.update.reset = _=> {
     if (mapID == 'dc') {
         updateResetHTML('decel')
     }
-    if (mapID == 'rl') {
+    if (mapID == 'rf') {
         updateResetHTML('rocket_part')
     }
     if (mapID == 'gal') {

@@ -48,17 +48,10 @@ MAIN.gh = {
             unl: _=>hasUpgrade('factory',3),
 
             r: 16,
-            desc: `Charge rate bonuses start 10x earlier per 2 Grasshops. (starting at 16)`,
-            effect: _=>Math.max(0,Math.floor((player.grasshop-20)/2+1)),
+            desc: `Charge rate bonuses start 10x earlier per Grasshop. (starting at 16)`,
+            effect: _=>Math.max(0,player.grasshop-15),
             effDesc: x=> format(E(10).pow(x),0)+"x",
-        },{
-            unl: _=>hasUpgrade('factory',4),
-
-            r: 35,
-            desc: `Charge rate bonuses start 10x earlier per 4 Grasshops. (starting at 35)`,
-            effect: _=>Math.max(0,Math.floor((player.grasshop-35)/4+1)),
-            effDesc: x=> format(E(10).pow(x),0)+"x",
-        },
+        }
     ],
 }
 
@@ -170,8 +163,10 @@ el.update.ghMilestone = _=>{
 
                 for (let x = 0; x < GH_MIL_LEN; x++) {
                     let m = MAIN.gh.milestone[x]
+                    let unl = m.unl ? m.unl : true
                     let id = "gh_mil_ctn"+x
 
+                    tmp.el[id+"_div"].setDisplay(unl && (!player.options.hideMilestone || x+1 >= GH_MIL_LEN || player.grasshop < MAIN.gh.milestone[x+1].r))
                     tmp.el[id+"_div"].setClasses({bought: player.grasshop >= m.r})
                     if (m.effDesc) tmp.el[id+"_eff"].setHTML(m.effDesc(tmp.ghEffect[x]))
                 }

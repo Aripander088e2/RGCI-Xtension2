@@ -65,8 +65,8 @@ UPGS.aGrass = {
             res: "aGrass",
             icon: ['Icons/Speed'],
             
-            cost: i => Decimal.pow(2,i).mul(100).ceil(),
-            bulk: i => i.div(100).max(1).log(2).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.5,i).mul(100).ceil(),
+            bulk: i => i.div(100).max(1).log(1.5).floor().toNumber()+1,
 
             effect(i) {
                 let x = i/10+1
@@ -78,7 +78,7 @@ UPGS.aGrass = {
             max: Infinity,
 
             title: "Anti-Grass Steel",
-            desc: `Increase steel gain by <b class="green">+25%</b> per level.<br>This effect is increased by <b class="green">25%</b> every <b class="yellow">25</b> levels.`,
+            desc: `Increase steel gain by <b class="green">+10%</b> per level.<br>This effect is increased by <b class="green">25%</b> every <b class="yellow">25</b> levels.`,
 
             res: "aGrass",
             icon: ['Curr/Steel2'],
@@ -87,7 +87,7 @@ UPGS.aGrass = {
             bulk: i => i.div(200).max(1).log(1.2).floor().toNumber()+1,
 
             effect(i) {
-                let x = Decimal.pow(1.25,Math.floor(i/25)).mul(i/4+1)
+                let x = Decimal.pow(1.25,Math.floor(i/25)).mul(i/10+1)
 
                 return x
             },
@@ -103,7 +103,7 @@ UPGS.aGrass = {
             bulk: i => 1,
 
             effect(i) {
-                return E(player.chargeRate).add(1).root(6)
+                return E(player.chargeRate).div(1e3).add(1).root(4)
             },
             effDesc: x => x.format()+"x",
         },{
@@ -117,7 +117,7 @@ UPGS.aGrass = {
             bulk: i => 1,
 
             effect(i) {
-                return E(player.chargeRate).add(1).root(6)
+                return E(player.chargeRate).div(1e3).add(1).root(4)
             },
             effDesc: x => x.format()+"x",
         },{
@@ -126,19 +126,16 @@ UPGS.aGrass = {
             max: Infinity,
 
             title: "Anti-Grass AP",
-            desc: `Increase AP gain by <b class="green">+10%</b> per level.<br>This effect is increased by <b class="green">doubled</b> every <b class="yellow">25</b> levels.`,
+            desc: `Increase AP gain by <b class="green">+10%</b> compounding.`,
 
             res: "aGrass",
             icon: ['Curr/Anonymity'],
             
-            cost: i => Decimal.pow(1.15,i).mul(1e11).ceil(),
-            bulk: i => i.div(1e11).max(1).log(1.15).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.2,i).mul(1e7).ceil(),
+            bulk: i => i.div(1e7).max(1).log(1.2).floor().toNumber()+1,
 
             effect(i) {
-                let x = Decimal.pow(2,Math.floor(i/25)).mul(i/10+1)
-                x = x.pow(tmp.chargeEff[5]||1)
-
-                return x
+                return E(1.1).pow(i)
             },
             effDesc: x => x.format()+"x",
         },{

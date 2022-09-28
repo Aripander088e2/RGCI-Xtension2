@@ -20,7 +20,7 @@ const UPGS = {
     grass: {
         unl: _=> !player.decel,
 
-        cannotBuy: _=>inChal(0) || inChal(5) || inChal(8),
+        cannotBuy: _=>inChal(0) || inChal(5),
 
         autoUnl: _=>hasUpgrade('auto',3),
         noSpend: _=>hasUpgrade('assembler',0),
@@ -134,7 +134,7 @@ const UPGS = {
 
                 effect(i) {
                     let x = Decimal.pow(2,Math.floor(i/25)).mul(i/2+1)
-                    x = x.pow(upgEffect('crystal',4)+(tmp.chargeEff[2]||0)+upgEffect('oil',5,0))
+                    x = x.pow(upgEffect('crystal',4)+(tmp.chargeEff[2]||0))
                     return x
                 },
                 effDesc: x => x.format()+"x",
@@ -598,7 +598,7 @@ const UPGS = {
                 },
                 effDesc: x => format(x)+"x",
             },{
-                max: 20,
+                max: 10,
 
                 unl: _=>player.cTimes>0,
 
@@ -618,7 +618,7 @@ const UPGS = {
                 },
                 effDesc: x => format(x)+"x",
             },{
-                max: 20,
+                max: 10,
 
                 unl: _=>player.cTimes>0,
 
@@ -694,8 +694,8 @@ const UPGS = {
                 res: "plat",
                 icon: ['Curr/Anonymity'],
                 
-                cost: i => 2e3,
-                bulk: i => Math.floor(i/2e3),
+                cost: i => 300,
+                bulk: i => Math.floor(i/300),
 
                 effect(i) {
                     let x = E(i*0.2+1)
@@ -704,7 +704,7 @@ const UPGS = {
                 },
                 effDesc: x => format(x)+"x",
             },{
-                max: 20,
+                max: 10,
 
                 unl: _=>player.aRes.lTimes>0,
 
@@ -716,8 +716,8 @@ const UPGS = {
                 res: "plat",
                 icon: ['Curr/Oil'],
                 
-                cost: i => 5e3,
-                bulk: i => Math.floor(i/5e3),
+                cost: i => 500,
+                bulk: i => Math.floor(i/500),
 
                 effect(i) {
                     let x = E(i/5+1)
@@ -844,7 +844,7 @@ function setupUpgradesHTML(id) {
 
 		html += `
 			<div style="height: 40px;">
-				${upgs.title} ${upgs.btns ?? ''} <button class="buyAllUpg" onclick="buyMaxUpgrades('${id}')">Buy All</button><button class="buyAllUpg" id="upg_auto_${id}" onclick="switchAutoUpg('${id}')">Auto: OFF</button>
+				${upgs.title} <button class="buyAllUpg" onclick="buyMaxUpgrades('${id}')">Buy All</button><button class="buyAllUpg" id="upg_auto_${id}" onclick="switchAutoUpg('${id}')">Auto: OFF</button> ${upgs.btns ?? ''}
 			</div><div id="upgs_ctn_${id}" class="upgs_ctn">
 
 			</div><div style="height: 40px;" id="upg_under_${id}">
@@ -1037,15 +1037,17 @@ el.update.upgs = _=>{
         updateUpgradesHTML('foundry')
         updateUpgradesHTML('gen')
     }
-    if (mapID == 'rl') {
+    if (mapID == 'rf') {
         updateUpgradesHTML('rocket')
         updateUpgradesHTML('momentum')
     }
 
 	if (mapID == 'opt') {
 		tmp.el.scientific.setTxt(player.options.scientific?"ON":"OFF")
-		tmp.el.hideUpgOption.setTxt(player.options.hideUpgOption?"ON":"OFF")
 		tmp.el.grassCap.setTxt(player.options.lowGrass?250:"Unlimited")
+		tmp.el.hideUpgOption.setTxt(player.options.hideUpgOption?"ON":"OFF")
+		tmp.el.hideMilestoneBtn.setDisplay(player.grasshop > 0 || player.sTimes > 0)
+		tmp.el.hideMilestone.setTxt(player.options.hideMilestone?"At last obtained":"All")
 	}
 	if (mapID == 'stats') {
 		tmp.el.time.setHTML("Time: " + formatTime(player.time))

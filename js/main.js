@@ -80,6 +80,7 @@ const MAIN = {
         if (player.grasshop >= 1) x = x.mul(4)
 
         if (player.decel) x = x.div(100)
+        if (player.decel) x = x.mul(tmp.chargeEff[5]||1)
         x = x.mul(upgEffect('ap',3))
         x = x.mul(upgEffect('oil',2))
 

@@ -55,6 +55,7 @@ function calc(dt) {
 	}
 	for (var i in CHALS) {
 		if (inChalCond(i) && tmp.chal.bulk[i] > (player.chal.comp[i] || 0)) player.chal.comp[i] = tmp.chal.bulk[i]
+		if (player.chal.comp[i] == CHALS[i].max) delete player.chal.progress[i]
 		player.chal.max[i] = Math.max(player.chal.comp[i] || 0, player.chal.max[i] || 0)
 	}
 

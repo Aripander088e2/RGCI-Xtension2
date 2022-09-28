@@ -1,4 +1,4 @@
-const RF_COST_POW = 1.1
+const RF_COST_POW = 1.5
 
 const ROCKET = {
     bulk(x,r,base) {
@@ -15,8 +15,8 @@ const ROCKET = {
 
             let c = Decimal.pow(RF_COST_POW, b).sub(Decimal.pow(RF_COST_POW, rf)).div(RF_COST_POW-1).mul(tmp.rf_base_mult)
 
-            player.chargeRate = player.chargeRate.sub(Decimal.mul(c,1e36)).max(0)
-            player.aRes.oil = player.aRes.oil.sub(Decimal.mul(c,1e9)).max(0)
+            player.chargeRate = player.chargeRate.sub(Decimal.mul(c,1e21)).max(0)
+            player.aRes.oil = player.aRes.oil.sub(Decimal.mul(c,100)).max(0)
 
             updateRocketTemp()
         }
@@ -267,7 +267,9 @@ RESET.rocket_part = {
 UPGS.momentum = {
     title: "Momentum Upgrades",
 
-    unl: _=>player.rocket.part>0,
+    unl: _=>hasUpgrade("factory",6),
+    req: _=>player.rocket.part>0,
+	reqDesc: _=>`Get a Rocket Part to unlock.`,
 
     underDesc: _=>`You have ${format(player.momentum,0)} Momentum`,
 
@@ -276,7 +278,7 @@ UPGS.momentum = {
             costOnce: true,
 
             title: "Grass is Life",
-            desc: `Multiply grass gain by 10.`,
+            desc: `Multiply grass gain by 3x.`,
 
             res: "momentum",
             icon: ['Curr/Grass'],
@@ -285,7 +287,7 @@ UPGS.momentum = {
             bulk: i => 1,
 
             effect(i) {
-                let x = i*9+1
+                let x = i*2+1
 
                 return x
             },
@@ -294,7 +296,7 @@ UPGS.momentum = {
             costOnce: true,
 
             title: "Gotta Grow Fast",
-            desc: `Multiply grass grow speed by 5.`,
+            desc: `Grass grows 3x faster.`,
 
             res: "momentum",
             icon: ['Icons/Speed'],
@@ -303,7 +305,7 @@ UPGS.momentum = {
             bulk: i => 1,
 
             effect(i) {
-                let x = i*4+1
+                let x = i*2+1
 
                 return x
             },
@@ -312,7 +314,7 @@ UPGS.momentum = {
             costOnce: true,
 
             title: "Gas Gas Gas",
-            desc: `Multiply XP gain by 10.`,
+            desc: `Multiply XP gain by 3x.`,
 
             res: "momentum",
             icon: ['Icons/XP'],
@@ -321,7 +323,7 @@ UPGS.momentum = {
             bulk: i => 1,
 
             effect(i) {
-                let x = i*9+1
+                let x = i*2+1
 
                 return x
             },
@@ -330,7 +332,7 @@ UPGS.momentum = {
             costOnce: true,
 
             title: "In Tiers",
-            desc: `Multiply TP gain by 10.`,
+            desc: `Multiply TP gain by 3x.`,
 
             res: "momentum",
             icon: ['Icons/TP'],
@@ -339,7 +341,7 @@ UPGS.momentum = {
             bulk: i => 1,
 
             effect(i) {
-                let x = i*9+1
+                let x = i*2+1
 
                 return x
             },
@@ -348,7 +350,7 @@ UPGS.momentum = {
             costOnce: true,
 
             title: "Popular",
-            desc: `Multiply PP gain by 10.`,
+            desc: `Multiply PP gain by 3x.`,
 
             res: "momentum",
             icon: ['Curr/Prestige'],
@@ -357,7 +359,7 @@ UPGS.momentum = {
             bulk: i => 1,
 
             effect(i) {
-                let x = i*9+1
+                let x = i*2+1
 
                 return x
             },
@@ -366,7 +368,7 @@ UPGS.momentum = {
             costOnce: true,
 
             title: "Shine Bright",
-            desc: `Multiply Crystal gain by 10.`,
+            desc: `Multiply Crystal gain by 3x.`,
 
             res: "momentum",
             icon: ['Curr/Crystal'],
@@ -375,7 +377,7 @@ UPGS.momentum = {
             bulk: i => 1,
 
             effect(i) {
-                let x = i*9+1
+                let x = i*2+1
 
                 return x
             },
@@ -384,7 +386,7 @@ UPGS.momentum = {
             costOnce: true,
 
             title: "Steel Going?",
-            desc: `Multiply steel gain by 10.`,
+            desc: `Multiply steel gain by 3x.`,
 
             res: "momentum",
             icon: ['Curr/Steel2'],
@@ -393,7 +395,7 @@ UPGS.momentum = {
             bulk: i => 1,
 
             effect(i) {
-                let x = i*9+1
+                let x = i*2+1
 
                 return x
             },
@@ -402,7 +404,7 @@ UPGS.momentum = {
             costOnce: true,
 
             title: "Powerful",
-            desc: `Multiply charge rate by 10.`,
+            desc: `Multiply charge rate by 3x.`,
 
             res: "momentum",
             icon: ['Icons/Charge'],
@@ -411,7 +413,7 @@ UPGS.momentum = {
             bulk: i => 1,
 
             effect(i) {
-                let x = i*9+1
+                let x = i*2+1
 
                 return x
             },
@@ -420,7 +422,7 @@ UPGS.momentum = {
             costOnce: true,
 
             title: "Quickly Forgettable",
-            desc: `Multiply AP gain by 10.`,
+            desc: `Multiply AP gain by 3x.`,
 
             res: "momentum",
             icon: ['Curr/Anonymity'],
@@ -429,7 +431,7 @@ UPGS.momentum = {
             bulk: i => 1,
 
             effect(i) {
-                let x = i*9+1
+                let x = i*2+1
 
                 return x
             },
@@ -438,7 +440,7 @@ UPGS.momentum = {
             costOnce: true,
 
             title: "Fracking",
-            desc: `Multiply oil gain by 10.`,
+            desc: `Multiply oil gain by 3x.`,
 
             res: "momentum",
             icon: ['Curr/Oil'],
@@ -447,7 +449,7 @@ UPGS.momentum = {
             bulk: i => 1,
 
             effect(i) {
-                let x = i*9+1
+                let x = i*2+1
 
                 return x
             },
@@ -479,16 +481,16 @@ el.update.rocket = _=>{
 function updateRocketTemp() {
     let rf = player.rocket.total_fp
     let b = Decimal.pow(RF_COST_POW,rf).mul(tmp.rf_base_mult)
-    tmp.rf_cost = [b.mul(1e36),b.mul(1e9)]
+    tmp.rf_cost = [b.mul(1e21),b.mul(100)]
 
     let bulk = 0
-    if (player.chargeRate.gte(tmp.rf_cost[0]) && player.aRes.oil.gte(tmp.rf_cost[1])) bulk = Math.min(ROCKET.bulk(player.chargeRate,rf,1e36),ROCKET.bulk(player.aRes.oil,rf,1e9))
+    if (player.chargeRate.gte(tmp.rf_cost[0]) && player.aRes.oil.gte(tmp.rf_cost[1])) bulk = Math.min(ROCKET.bulk(player.chargeRate,rf,1e2),ROCKET.bulk(player.aRes.oil,rf,100))
     tmp.rf_bulk = bulk
 }
 
 tmp_update.push(_=>{
-    tmp.rp_req = [Decimal.pow(4+player.rocket.part/2,player.rocket.part).mul(1e60),player.rocket.part>9?1/0:15*player.rocket.part+15]
-    tmp.rf_base_mult = Decimal.pow(1.5,player.rocket.part)
+    tmp.rp_req = [E(player.rocket.part).add(1).pow(2).mul(1e24),player.rocket.part>9?1/0:10*player.rocket.part+10]
+    tmp.rf_base_mult = E(player.rocket.part).div(2).add(1)
 
     updateRocketTemp()
 })

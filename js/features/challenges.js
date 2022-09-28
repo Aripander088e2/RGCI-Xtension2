@@ -40,7 +40,7 @@ const CHALS = [
     },{
         unl: _=>true,
 
-        max: 10,
+        max: 7,
         id: 'crystal',
 
         title: `No Tiers`,
@@ -78,7 +78,7 @@ const CHALS = [
     },{
         unl: _=>true,
 
-        max: 10,
+        max: 7,
         id: 'crystal',
 
         title: `Prestigeless`,
@@ -97,7 +97,7 @@ const CHALS = [
     },{
         unl: _=>true,
 
-        max: 10,
+        max: 5,
         id: 'crystal',
 
         title: `Unefficient`,
@@ -122,7 +122,7 @@ const CHALS = [
         title: `Clear Crystal`,
         desc: `You can't buy Crystal Upgrades.`,
         cond: _=>!hasUpgrades("crystal"),
-        reward: `Gain more Steel.`,
+        reward: `Steel gain is <b class='green'>doubled</b> each completion.`,
 
         goal: i=>8+i*2,
         bulk: i=>Math.floor((i-8)/2+1),
@@ -141,7 +141,7 @@ const CHALS = [
         title: `Empower`,
         desc: `Non-Steelie Challenge Rewards do nothing.`,
         cond: _=>false,
-        reward: `Gain more Charge Rate.`,
+        reward: `Charge gain is increased by <b class='green'>5x</b> each completion.`,
 
         goal: i=>25+i*2,
         bulk: i=>Math.floor((i-25)/2+1),
@@ -150,25 +150,6 @@ const CHALS = [
         goalAmt: _=>player.tier,
 
         eff: i=>Decimal.pow(5,i),
-        effDesc: x=>format(x,1)+"x",
-    },{
-        unl: _=>player.aRes.lTimes>=1,
-
-        max: 5,
-        id: 'steel',
-
-        title: `Powerhouse`,
-        desc: `You can't buy Grass, Prestige, and Crystal Upgrades.`,
-        cond: _=>!hasUpgrades("grass")&&!hasUpgrades("pp")&&!hasUpgrades("crystal"),
-        reward: `Gain more Oil.`,
-
-        goal: i=>11+i*2,
-        bulk: i=>Math.floor((i-11)/2+1),
-
-        goalDesc: x=>"Tier "+format(x,0),
-        goalAmt: _=>player.tier,
-
-        eff: i=>Decimal.pow(3,i),
         effDesc: x=>format(x,1)+"x",
     }
 ]
@@ -189,13 +170,19 @@ function inChalCond(x) {
 }
 
 function enterChal(x) {
-	if (player.decel) return
+	if (player.chal.progress[x]) {
+		delete player.chal.progress[x]
+		return
+	}
 
-	if (player.chal.progress[x]) delete player.chal.progress[x]
-	else if (hasUpgrade('assembler', 9)) player.chal.progress[x] = true
+	if (player.decel) return
+	if (CHALS[x].cond()) return
+	if (player.chal.comp[x] == CHALS[x].max) return
+
+	if (hasUpgrade('assembler', 9)) player.chal.progress[x] = true
 	else player.chal.progress = { [x]: true }
 
-	if (player.chal.progress[x]) RESET[CHALS[x].id].reset(true)
+	RESET[CHALS[x].id].reset(true)
 }
 
 function chalEff(x,def=E(1)) { return tmp.chal.eff[x] || def }
@@ -260,7 +247,7 @@ el.update.chal = _=>{
 
 			for (let i in CHALS) {
 				let c = CHALS[i]
-				let unl2 = c.unl()
+				let unl2 = c.unl() && (!player.options.hideUpgOption || player.chal.comp[i] < c.max)
 				tmp.el['chal_div_'+i].setDisplay(unl2)
 
 				if (unl2) {

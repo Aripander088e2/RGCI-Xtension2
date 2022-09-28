@@ -7,7 +7,6 @@ MAIN.crystal = {
         x = x.mul(upgEffect('perk',8))
 
         if (player.grasshop >= 2) x = x.mul(2)
-        x = x.mul(E(tmp.chargeEff[6]||1).pow(player.tier))
 
         x = x.mul(upgEffect('rocket',4))
         x = x.mul(upgEffect('momentum',5))
@@ -59,7 +58,7 @@ RESET.crystal = {
 UPGS.crystal = {
     title: "Crystal Upgrades",
 
-    cannotBuy: _=>inChal(6) || inChal(8),
+    cannotBuy: _=>inChal(6),
 
     unl: _=>player.pTimes > 0 && !player.decel,
 
@@ -185,12 +184,10 @@ UPGS.crystal = {
 // Liquefy, Oil
 MAIN.oil = {
     gain() {
-        let l = player.aRes.tier
-        let x = Decimal.pow(2,l)
+        let x = Decimal.pow(2, player.aRes.tier)
 
         x = x.mul(upgEffect('plat',9))
         x = x.mul(chalEff(8))
-        x = x.mul(E(tmp.chargeEff[8]||1).pow(player.tier))
 
         x = x.mul(upgEffect('rocket',8))
         x = x.mul(upgEffect('momentum',9))
@@ -338,22 +335,22 @@ UPGS.oil = {
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 10,
+            max: Infinity,
 
-            title: "Oily PP Synergy",
-            tier: 2,
-            desc: `Grass Upgrade's "PP" upgrade is <b class="green">+0.1x</b> stronger per level.`,
+            title: "Oily Charge",
+            tier: 3,
+            desc: `Charge rate is increased by <b class="green">30%</b> compounding per level.`,
         
             res: "oil",
-            icon: ['Curr/Prestige', 'Icons/StarSpeed'],
+            icon: ['Curr/Charge'],
             
-            cost: i => Decimal.pow(10,i).mul(100).ceil(),
-            bulk: i => i.div(100).max(1).log(10).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.5,i).mul(20).ceil(),
+            bulk: i => i.div(20).max(1).log(1.5).floor().toNumber()+1,
 
             effect(i) {
-                return i/10
+                return E(1.3).pow(i)
             },
-            effDesc: x => "+"+format(x,1)+"x",
+            effDesc: x => format(x)+"x",
         },
     ],
 }
