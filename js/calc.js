@@ -7,6 +7,7 @@ function calc(dt) {
     player.pTime += dt
     player.cTime += dt
     player.sTime += dt
+
     player.aRes.aTime += dt
     player.aRes.lTime += dt
 
@@ -28,13 +29,17 @@ function calc(dt) {
 
     player.maxPerk = Math.max(player.maxPerk, tmp.perks)
 
-    for (let x in UPGS) if (tmp.upgs[x].autoUnl && !(['grass','pp','crystal'].includes(x) && decel) && !(['aGrass'].includes(x) && !decel)) if (player.autoUpg[x]) buyMaxUpgrades(x,true)
+    for (let x in UPGS) if (tmp.upgs[x].autoUnl && !(['grass','pp','crystal'].includes(x) && decel) && !(['aGrass'].includes(x) && !decel)) if (player.autoUpg[x]) buyAllUpgrades(x,true)
 
     if (tmp.ppGainP > 0 && player.level >= 30 && !decel) player.pp = player.pp.add(tmp.ppGain.mul(dt*tmp.ppGainP))
     if (tmp.crystalGainP > 0 && player.level >= 100 && !decel) player.crystal = player.crystal.add(tmp.crystalGain.mul(dt*tmp.crystalGainP))
 
     if (tmp.apGainP > 0 && player.aRes.level >= 30) player.aRes.ap = player.aRes.ap.add(tmp.apGain.mul(dt*tmp.apGainP))
     if (tmp.oilGainP > 0 && player.aRes.level >= 100) player.aRes.oil = player.aRes.oil.add(tmp.oilGain.mul(dt*tmp.oilGainP))
+
+    if (tmp.steelPass > 0) {
+        player.steel = player.steel.add(tmp.steelGain.mul(tmp.steelPass*dt))
+    }
 
     if (hasUpgrade('factory',2)) player.chargeRate = player.chargeRate.add(tmp.chargeGain.mul(dt))
 

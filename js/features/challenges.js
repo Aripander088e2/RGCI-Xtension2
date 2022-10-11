@@ -247,11 +247,11 @@ el.update.chal = _=>{
 
 			for (let i in CHALS) {
 				let c = CHALS[i]
-				let unl2 = c.unl() && (!player.options.hideUpgOption || player.chal.comp[i] < c.max)
+				let l = player.chal.comp[i] || 0
+				let unl2 = c.unl() && (!player.options.hideUpgOption || l < c.max || player.chal.progress == i)
 				tmp.el['chal_div_'+i].setDisplay(unl2)
 
 				if (unl2) {
-					let l = player.chal.comp[i]||0
 					let completed = l >= c.max
 
 					tmp.el["chal_comp_"+i].setTxt(format(l,0) + " / " + format(c.max,0))

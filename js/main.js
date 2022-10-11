@@ -1,7 +1,3 @@
-var player = {}, date = Date.now(), diff = 0;
-const VER = 0.0306
-const TB_VER = 1.02
-
 function loop() {
     diff = Date.now() - date
     updateTemp()
@@ -10,6 +6,7 @@ function loop() {
     date = Date.now();
 }
 
+var player = {}, date = Date.now(), diff = 0;
 const MAIN = {
     grassGain() {
         let x = upgEffect('grass',0).mul(tmp.tier.mult)
@@ -89,12 +86,20 @@ const MAIN = {
 
         return x
     },
+    spGain() {
+        let x = E(1)
+
+        if (player.grassskip>=2) x = x.add(getGSEffect(1,0))
+
+        return x
+    },
     rangeCut: _=>70+upgEffect('grass',4,0)+upgEffect('perk',4,0)+upgEffect('aGrass',6,0),
     autoCut() {
 		let interval = 5-upgEffect('auto',0,0)-upgEffect('plat',0,0)
 		if (player.decel) interval *= 10 / upgEffect('aAuto', 0)
 		return interval
 	},
+
     level: {
         req(i) {
             if (player.decel) i /= tmp.chargeEff[3]||1
@@ -123,14 +128,12 @@ const MAIN = {
     tier: {
         req(i) {
             let x = Decimal.pow(4,i).mul(500)
-
             return x
         },
         bulk(i) {
             let x = i.div(500)
             if (x.lt(1)) return 0
             x = x.log(4)
-
             return Math.floor(x.toNumber()+1)
         },
         cur(i) {
@@ -146,6 +149,23 @@ const MAIN = {
             return Decimal.pow(MAIN.tier.base(), i)
         },
     },
+    astral: {
+        req(i) {
+            let x = Decimal.pow(3,i).mul(100)
+
+            return x.ceil()
+        },
+        bulk(i) {
+            let x = i.div(100)
+            if (x.lt(1)) return 0
+            x = x.log(3)
+
+            return Math.floor(x.toNumber()+1)
+        },
+        cur(i) {
+            return i > 0 ? this.req(i-1) : E(0) 
+        },
+    },
     checkCutting() {
         if (tmp.realmSrc.xp.gte(tmp.level.next)) {
             tmp.realmSrc.level = Math.max(tmp.realmSrc.level, tmp.level.bulk)
@@ -153,42 +173,69 @@ const MAIN = {
         if (tmp.realmSrc.tp.gte(tmp.tier.next)) {
             tmp.realmSrc.tier = Math.max(tmp.realmSrc.tier, tmp.tier.bulk)
         }
+        if (player.sp.gte(tmp.astral.next)) {
+            player.astral = Math.max(player.astral, tmp.astral.bulk)
+        }
     }, 
 }
 
 el.update.main = _=>{
-    let g = player.decel ? player.aRes.grass : player.grass
+	let g = player.decel ? player.aRes.grass : player.grass
 
-    tmp.el.grassAmt.setHTML(g.format(0))
-    tmp.el.grassGain.setHTML(tmp.autoCutUnlocked ? formatGain(g,tmp.grassGain.div(tmp.autocut).mul(tmp.autocutBonus).mul(tmp.autocutAmt)) : "")
+	tmp.el.grassAmt.setHTML(g.format(0))
+	tmp.el.grassGain.setHTML(tmp.autoCutUnlocked ? formatGain(g,tmp.grassGain.div(tmp.autocut).mul(tmp.autocutBonus).mul(tmp.autocutAmt)) : "")
 
-    let tier_unl = player.pTimes > 0
+	let level_unl = true
+	tmp.el.level.setDisplay(level_unl && !inSpace())
+	if (level_unl) {
+		tmp.el.level_top_bar.changeStyle("width",tmp.level.percent*100+"%")
+		tmp.el.level_top_info.setHTML(`Level <b class="cyan">${format(tmp.realmSrc.level,0)}</b> (${formatPercent(tmp.level.percent)})`)
+	}
 
-    tmp.el.level_top_bar.changeStyle("width",tmp.level.percent*100+"%")
-    tmp.el.level_top_info.setHTML(`Level <b class="cyan">${format(tmp.realmSrc.level,0)}</b> (${formatPercent(tmp.level.percent)})`)
+	let tier_unl = player.pTimes > 0
+	tmp.el.tier.setDisplay(tier_unl && !inSpace())
+	if (tier_unl) {
+		tmp.el.tier_top_bar.changeStyle("width",tmp.tier.percent*100+"%")
+		tmp.el.tier_top_info.setHTML(`Tier <b class="yellow">${format(tmp.realmSrc.tier,0)}</b> (${formatPercent(tmp.tier.percent)})`)
+	}
 
-    tmp.el.tier.setDisplay(tier_unl)
-    if (tier_unl) {
-        tmp.el.tier_top_bar.changeStyle("width",tmp.tier.percent*100+"%")
-        tmp.el.tier_top_info.setHTML(`Tier <b class="yellow">${format(tmp.realmSrc.tier,0)}</b> (${formatPercent(tmp.tier.percent)})`)
-    }
+	let astral_unl = player.gTimes > 0
+	tmp.el.astral.setDisplay(astral_unl && inSpace())
+	if (astral_unl) {
+		tmp.el.astral_top_bar.changeStyle("width",tmp.astral.percent*100+"%")
+		tmp.el.astral_top_info.setHTML(`Astral <b class="magenta">${format(player.astral,0)}</b> (${formatPercent(tmp.astral.percent)})`)
+	}
 
-    if (mapID == 'g') {
-        tmp.el.level_amt.setTxt(format(tmp.realmSrc.level,0))
-        tmp.el.level_progress.setTxt(tmp.level.progress.format(0)+" / "+tmp.level.next.sub(tmp.level.cur).format(0)+" XP")
-        tmp.el.level_bar.changeStyle("width",tmp.level.percent*100+"%")
-        tmp.el.level_cut.setTxt("+"+tmp.xpGain.format(1)+" XP/cut")
+	if (mapID == 'g') {
+		tmp.el.level_div.setDisplay(tier_unl)
+		if (level_unl) {
+			tmp.el.level_div.setDisplay(level_unl)
+			tmp.el.level_amt.setTxt(format(tmp.realmSrc.level,0))
+			tmp.el.level_progress.setTxt(tmp.level.progress.format(0)+" / "+tmp.level.next.sub(tmp.level.cur).format(0)+" XP")
+			tmp.el.level_bar.changeStyle("width",tmp.level.percent*100+"%")
+			tmp.el.level_cut.setTxt("+"+tmp.xpGain.format(1)+" XP/cut")
+		}
 
-        tmp.el.tier_div.setDisplay(tier_unl)
+		tmp.el.tier_div.setDisplay(tier_unl)
+		if (tier_unl) {
+			tmp.el.tier_amt.setTxt(format(tmp.realmSrc.tier,0))
+			tmp.el.tier_progress.setTxt(tmp.tier.progress.format(0)+" / "+tmp.tier.next.sub(tmp.tier.cur).format(0)+" TP")
+			tmp.el.tier_bar.changeStyle("width",tmp.tier.percent*100+"%")
+			tmp.el.tier_cut.setTxt("+"+tmp.tpGain.format(1)+" TP/cut")
+			tmp.el.tier_mult.setTxt(formatMult(tmp.tier.mult,0)+" → "+formatMult(MAIN.tier.mult(tmp.realmSrc.tier+1),0)+" multiplier")
+		}
 
-        if (tier_unl) {
-            tmp.el.tier_amt.setTxt(format(tmp.realmSrc.tier,0))
-            tmp.el.tier_progress.setTxt(tmp.tier.progress.format(0)+" / "+tmp.tier.next.sub(tmp.tier.cur).format(0)+" TP")
-            tmp.el.tier_bar.changeStyle("width",tmp.tier.percent*100+"%")
-            tmp.el.tier_cut.setTxt("+"+tmp.tpGain.format(1)+" TP/cut")
-            tmp.el.tier_mult.setTxt(formatMult(tmp.tier.mult,0)+" → "+formatMult(MAIN.tier.mult(tmp.realmSrc.tier+1),0)+" multiplier")
-        }
-    }
+		tmp.el.astral_div.setDisplay(astral_unl)
+		if (astral_unl) {
+			tmp.el.astral_amt.setTxt(format(player.astral,0))
+			tmp.el.astral_progress.setTxt(tmp.astral.progress.format(0)+" / "+tmp.astral.next.sub(tmp.astral.cur).format(0)+" SP")
+			tmp.el.astral_bar.changeStyle("width",tmp.astral.percent*100+"%")
+			tmp.el.astral_cut.setTxt("+"+tmp.SPGain.format(1)+" SP/cut")
+		}
+	}
+
+	tmp.el.main_app.changeStyle('background-color',inSpace() ? "#fff1" : "#fff2")
+	document.body.style.backgroundColor = inSpace() ? "#0A001E" : "#0052af"
 }
 
 tmp_update.push(_=>{
@@ -206,6 +253,7 @@ tmp_update.push(_=>{
     tmp.grassGain = MAIN.grassGain()
     tmp.xpGain = MAIN.xpGain()
     tmp.tpGain = MAIN.tpGain()
+    tmp.spGain = MAIN.tpGain()
 
     tmp.perks = MAIN.level.perk()
     tmp.perkUnspent = Math.max(player.maxPerk-player.spentPerk,0)
@@ -225,6 +273,13 @@ tmp_update.push(_=>{
     tmp.tier.percent = tmp.tier.progress.div(tmp.tier.next.sub(tmp.tier.cur)).max(0).min(1).toNumber()
     tmp.tier.mult = MAIN.tier.mult(tier)
 
+    let astr = player.astral
+    tmp.astral.next = MAIN.astral.req(astr)
+    tmp.astral.bulk = MAIN.astral.bulk(player.sp)
+    tmp.astral.cur = MAIN.astral.cur(astr)
+    tmp.astral.progress = player.sp.sub(tmp.astral.cur).max(0).min(tmp.astral.next)
+    tmp.astral.percent = tmp.astral.progress.div(tmp.astral.next.sub(tmp.astral.cur)).max(0).min(1).toNumber()
+
     tmp.platChance = 0.001
     if (player.grasshop >= 6) tmp.platChance *= 2
 
@@ -233,25 +288,34 @@ tmp_update.push(_=>{
     if (player.grasshop >= 3) tmp.platGain += getGHEffect(2, 0)
 })
 
+let shiftDown = false
 window.addEventListener('keydown', function(event) {
-	switch (event.key) {
+	if (event.keyCode == 16) shiftDown = true;
+	switch (event.key.toLowerCase()) {
 		case "p":
-			RESET.pp.reset();
+			if (shiftDown) RESET.rocket_part.reset();
+			else if (player.decel) RESET.ap.reset();
+			else RESET.pp.reset();
 			break;
 		case "c":
-			RESET.crystal.reset();
+			if (player.decel) RESET.oil.reset();
+			else RESET.crystal.reset();
 			break;
 		case "g":
-			RESET.gh.reset();
+			if (shiftDown) RESET.gal.reset();
+			else if (player.decel) RESET.gs.reset();
+			else RESET.gh.reset();
 			break;
 		case "s":
-			RESET.steel.reset();
+			if (shiftDown) RESET.steel.reset();
 			break;
-		case "a":
-			RESET.ap.reset();
+		case "f":
+			ROCKET.create()
 			break;
-		case "l":
-			RESET.oil.reset();
-			break;
+	}
+}, false);
+window.addEventListener('keyup', function(event) {
+	if (event.keyCode == 16) {
+		shiftDown = false;
 	}
 }, false);

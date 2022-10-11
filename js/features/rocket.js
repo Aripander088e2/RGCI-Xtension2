@@ -24,7 +24,7 @@ const ROCKET = {
 }
 
 UPGS.rocket = {
-    title: "Rocket Fuel Upgrade",
+    title: "Refinery Upgrades",
 
     unl: _=>true,
 
@@ -233,12 +233,13 @@ RESET.rocket_part = {
         You have created ${format(player.rocket.part,0)} Rocket Parts
         </span>
     `,
+    hotkey: `Shift+P`,
 
     title: `Rocket Part`,
     resetBtn: `Create Rocket Part`,
 
     reset(force=false) {
-        if (player.steel.gte(tmp.rp_req[0])&&player.rocket.total_fp >= tmp.rp_req[1]||force) {
+        if ((player.steel.gte(tmp.rp_req[0]) && player.rocket.total_fp >= tmp.rp_req[1]) || force) {
             if (!force) {
                 player.rocket.part++
                 player.rocket.momentum++
@@ -471,7 +472,7 @@ el.update.rocket = _=>{
             rc.setClasses({[res.gte(cost)?"green":"red"]: true})
         }
 
-        tmp.el.rf_craft_bulk.setTxt("Craft to "+format(Math.max(tmp.rf_bulk-player.rocket.total_fp,0),0)+" Rocket Fuel")
+        tmp.el.rf_craft_bulk.setTxt("(F) Craft to "+format(Math.max(tmp.rf_bulk-player.rocket.total_fp,0),0)+" Rocket Fuel")
         tmp.el.rf_craft_bulk.setClasses({locked: tmp.rf_bulk<=player.rocket.total_fp })
 
         tmp.el.reset_btn_rocket_part.setClasses({locked: player.rocket.total_fp < tmp.rp_req[1] || player.steel.lt(tmp.rp_req[0])})

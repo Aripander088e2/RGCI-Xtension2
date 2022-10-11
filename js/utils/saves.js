@@ -78,6 +78,25 @@ function getPlayerData() {
 			part: 0,
 			momentum: 0,
 		},
+
+		//will be moved later
+		gTimes: 0,
+		gTime: 0,
+		stars: E(0),
+		lowGH: 1e300,
+
+		astral: 0,
+		sp: E(0),
+
+		moonstone: 0,
+		grassskip: 0,
+		gsUnl: false,
+
+		star_chart: {
+			auto: [],
+			speed: [],
+			progress: [],
+		},
 	}
 	for (let x in UPGS) {
 		s.upgs[x] = []
@@ -104,6 +123,9 @@ function safecheckSave(data) {
 	return true
 }
 
+const VER = 0.0306
+const EX_COMMIT = 11
+const TB_VER = 1.02
 function loadPlayer(data) {
 	player = deepUndefinedAndDecimal(data, getPlayerData())
 	convertStringToDecimal()
@@ -208,6 +230,7 @@ function load(str) {
 	else newPlayer()
 
 	resetSaveInterval()
+	resetMap()
 	resetTemp()
 	for (let x = 0; x < 50; x++) updateTemp()
 }
@@ -273,6 +296,7 @@ function loadGame(start=true, gotNaN=false) {
 }
 
 function wipe() {
+	if (!confirm('Are you sure you want to wipe your save?')) return
 	if (!confirm("This will reset everything, with no rewards! Are you really sure to wipe?")) return
 	alert("If you did that accidentally, you can reload to retrieve your save. However, you have 30 seconds to think!")
 	load() //blank save

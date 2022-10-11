@@ -100,10 +100,10 @@ RESET.steel = {
 
     title: `Steelie`,
     resetBtn: `Steelie!`,
-    hotkey: `S`,
+    hotkey: `Shift+S`,
 
     reset(force=false) {
-        if (this.req()||force) {
+        if ((this.unl()&&this.req())||force) {
             if (!force) {
                 player.steel = player.steel.add(tmp.steelGain)
                 player.sTimes++

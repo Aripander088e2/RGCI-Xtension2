@@ -3273,11 +3273,11 @@ Decimal.prototype.clone = function() {
 	return this
 }
 Decimal.prototype.modular=Decimal.prototype.mod=function (other){
-	other=E(other);
-	if (other.eq(0)) return E(0);
-	if (this.sign*other.sign==-1) return this.abs().mod(other.abs()).neg();
-	if (this.sign==-1) return this.abs().mod(other.abs());
-	return this.sub(this.div(other).floor().mul(other));
+    other=E(other);
+    if (other.eq(0)) return E(0);
+    if (this.sign*other.sign==-1) return this.abs().mod(other.abs()).neg();
+    if (this.sign==-1) return this.abs().mod(other.abs());
+    return this.sub(this.div(other).floor().mul(other));
 }
 Decimal.prototype.softcap = function (start, power, mode) {
 	var x = this.clone()
@@ -3288,5 +3288,17 @@ Decimal.prototype.softcap = function (start, power, mode) {
 	}
 	return x
 }
+Decimal.prototype.scale = scale = function (s, p, mode, rev=false) {
+    s = E(s)
+    p = E(p)
+    var x = this.clone()
+    if (x.gte(s)) {
+        if ([0, "pow"].includes(mode)) x = rev ? x.mul(s.pow(p.sub(1))).root(p) : x.pow(p).div(s.pow(p.sub(1)))
+        if ([1, "exp"].includes(mode)) x = rev ? x.div(s).max(1).log(p).add(s) : Decimal.pow(p,x.sub(s)).mul(s)
+    }
+    return x
+}
 Decimal.prototype.format = function (acc=2) { return format(this.clone(), acc) }
 Decimal.prototype.formatGain = function (gain, mass=false) { return formatGain(this.clone(), gain, mass) }
+
+function expMult(a,b,base=10) { return Decimal.gte(a,10) ? Decimal.pow(base,Decimal.log(a,base).pow(b)) : E(a) }

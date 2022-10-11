@@ -8,11 +8,12 @@ el.setup.reset = _=>{
             let r = RESET[x]
 
             let html = `
-            <div>
+            <div id="reset_info_div_${x}">
                 <h2>${r.title}</h2><br>
                 ${r.resetDesc}
                 <div style="position: absolute; bottom: 0; width: 100%;">
                     <div id="reset_gain_${x}"></div>
+                    ${r.btns ?? ''}
                     <button id="reset_btn_${x}" onclick="RESET.${x}.reset()">${(r.hotkey ? `(${r.hotkey}) ` : ``) + r.resetBtn}</button>
                 </div>
             </div>
@@ -34,6 +35,7 @@ function updateResetHTML(id) {
     if (unl) {
         let req = r.req?r.req():true
 
+        tmp.el["reset_info_div_"+id].setDisplay(req)
         tmp.el["reset_req_div_"+id].setDisplay(!req)
         tmp.el["reset_req_desc_"+id].setHTML(r.reqDesc())
 
@@ -54,12 +56,14 @@ el.update.reset = _=> {
     if (mapID == 'gh') {
         updateResetHTML('gh')
         updateResetHTML('steel')
+        updateResetHTML('gs')
     }
     if (mapID == 'dc') {
         updateResetHTML('decel')
     }
     if (mapID == 'rf') {
         updateResetHTML('rocket_part')
+        updateResetHTML('gal')
     }
     if (mapID == 'gal') {
         updateResetHTML('gal')
