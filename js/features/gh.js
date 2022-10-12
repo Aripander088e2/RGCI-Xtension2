@@ -75,12 +75,10 @@ RESET.gh = {
 
     reset(force=false) {
         if ((this.req()&&player.level>=tmp.gh_req)||force) {
-            let res = Math.max(player.grasshop+1, MAIN.gh.bulk())
             if (force) {
                 this.doReset()
             } else if (galUnlocked()) {
-                /*if (hasStarTree('auto',1) && player.ghMult) player.grasshop = res
-                else*/ player.grasshop++
+                player.grasshop++
 
                 updateTemp()
 
@@ -89,8 +87,7 @@ RESET.gh = {
                 tmp.ghRunning = true
                 document.body.style.animation = "implode 2s 1"
                 setTimeout(_=>{
-                    /*if (hasStarTree('auto',1) && player.ghMult) player.grasshop = res
-                    else*/ player.grasshop++
+                    player.grasshop++
 
                     updateTemp()
         
@@ -313,7 +310,7 @@ el.update.milestones = _=>{
         if (unl) {
             unl = player.grasshop > 0 || galUnlocked()
 
-            tmp.el.multGHOption.setDisplay(false)
+            tmp.el.multGHBtn.setDisplay(false)
             tmp.el.multGHOption.setTxt(player.ghMult?"ON":"OFF")
 
             tmp.el.gh_mil_req.setDisplay(!unl)
@@ -339,7 +336,7 @@ el.update.milestones = _=>{
         tmp.el.milestone_div_gs.setDisplay(unl)
 /*
         if (unl) {
-            tmp.el.multGSOption.setDisplay(hasStarTree('auto', 4))
+            tmp.el.multGSBtn.setDisplay(hasStarTree('auto', 4))
             tmp.el.multGSOption.setTxt(player.gsMult ? "ON" : "OFF")
 
             unl = player.grassskip>0 || player.gsUnl
