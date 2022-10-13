@@ -23,7 +23,7 @@ RESET.decel = {
 el.update.decel = _=>{
     tmp.el.grass_div.changeStyle("background-color", player.decel ? "#242697" : "")
     tmp.el.grass.changeStyle("background-color", player.decel ? "#002D9F" : "")
-    tmp.el.fog.setDisplay(player.decel)
+    tmp.el.fog.setDisplay(player.decel && !inSpace())
     if (mapID == "dc") tmp.el.reset_btn_decel.setTxt(player.decel?"Accelerate":"Decelerate")
 }
 
@@ -139,9 +139,7 @@ UPGS.aGrass = {
             },
             effDesc: x => x.format()+"x",
         },{
-            max: 10,
-
-            max: Infinity,
+            max: 5,
             tier: 2,
 
             title: "Range II",
@@ -163,6 +161,8 @@ UPGS.aGrass = {
 
 UPGS.aAuto = {
 	title: "Anti-Anti-Automation Upgrades",
+	req: _=>player.aRes.aTimes>0,
+	reqDesc: _=>`Anonymity once to unlock.`,
 
 	unl: _=>player.decel,
 
@@ -196,7 +196,7 @@ UPGS.aAuto = {
 			cost: i => E(100),
 			bulk: i => 1,
 		},{
-			unl: _=>false, //Galactic
+			unl: _=>player.rocket.part>0 || galUnlocked(),
 
 			title: "Anonymity Upgrades Autobuy",
 			desc: `You can now automatically buy Anonymity Upgrades.`,
@@ -204,10 +204,10 @@ UPGS.aAuto = {
 			res: "rf",
 			icon: ['Curr/Anonymity','Icons/Automation'],
 						
-			cost: i => E(100),
+			cost: i => E(50),
 			bulk: i => 1,
 		},{
-			unl: _=>player.rocket.part>0,
+			unl: _=>galUnlocked(),
 
 			title: "Oil Upgrades Autobuy",
 			desc: `You can now automatically buy Oil Upgrades.`,
@@ -215,10 +215,10 @@ UPGS.aAuto = {
 			res: "rf",
 			icon: ['Curr/Oil','Icons/Automation'],
 						
-			cost: i => E(100),
+			cost: i => E(200),
 			bulk: i => 1,
 		},{
-			unl: _=>false, //Galactic
+			unl: _=>galUnlocked(),
 
 			max: 10,
 
@@ -237,7 +237,7 @@ UPGS.aAuto = {
 			},
 			effDesc: x => "+"+formatPercent(x,1)+"/s",
 		},{
-			unl: _=>player.rocket.part>0,
+			unl: _=>galUnlocked(),
 
 			max: 10,
 
@@ -247,8 +247,8 @@ UPGS.aAuto = {
 			res: "oil",
 			icon: ['Curr/Oil','Icons/Plus'],
 						
-			cost: i => Decimal.pow(3,i).mul(1e12).ceil(),
-			bulk: i => i.div(1e12).max(1).log(3).floor().toNumber()+1,
+			cost: i => Decimal.pow(2,i).mul(1e6).ceil(),
+			bulk: i => i.div(1e6).max(1).log(2).floor().toNumber()+1,
 			effect(i) {
 				let x = i/1e3
 		

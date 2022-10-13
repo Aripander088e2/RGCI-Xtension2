@@ -7,33 +7,48 @@ var mouse_in = false
 
 function createGrass() {
     if (tmp.grasses.length < tmp.grassCap) {
-        let pl = Math.random() < tmp.platChance && (player.tier >= 2 || player.cTimes > 0)
-        let ms = Math.random() < 0.005 && pl && galUnlocked()
+        let pl = (player.tier >= 2 || player.cTimes > 0) && Math.random() < tmp.platChance
+        let ms = galUnlocked() && pl && Math.random() < tmp.gal.ms.chance
+        let nt = hasGSMilestone(5) && Math.random() < 0.1
 
         tmp.grasses.push({
             x: Math.random(),
             y: Math.random(),
+
+            tier: player.tier,
+            nt: nt,
+
             pl: pl,
             ms: ms,
-            tier: player.tier
         })
     }
 }
 
 function removeGrass(i,auto=false) {
-    let tg = tmp.grasses[i]
-    if (!tg) return
+	let tg = tmp.grasses[i]
+	if (!tg) return
 
-    let y = 1
-    if (auto) y *= tmp.autocutBonus
+	let v = 1
+	if (tg.nt) v = MAIN.tier.base()
 
-    tmp.realmSrc.grass = tmp.realmSrc.grass.add(tmp.grassGain.mul(y))
-    tmp.realmSrc.xp = tmp.realmSrc.xp.add(tmp.xpGain.mul(y))
-    if (player.pTimes > 0) tmp.realmSrc.tp = tmp.realmSrc.tp.add(tmp.tpGain.mul(y))
-    if (tg.pl) player.plat += tmp.platGain
-    if (tg.ms) player.moonstone += 1
+	let av = 1
+	if (auto) av *= tmp.autocutBonus
+	if (!auto && hasGSMilestone(6)) av *= 2
 
-    tmp.grasses.splice(i, 1)
+	tmp.realmSrc.grass = tmp.realmSrc.grass.add(tmp.grassGain.mul(av).mul(v))
+	tmp.realmSrc.xp = tmp.realmSrc.xp.add(tmp.xpGain.mul(av).mul(v))
+	if (player.pTimes > 0) tmp.realmSrc.tp = tmp.realmSrc.tp.add(tmp.tpGain.mul(av))
+	if (galUnlocked()) player.gal.sp = player.gal.sp.add(tmp.gal.astral.gain)
+	if (tg.pl) {
+		player.plat += tmp.platGain * (hasAGHMilestone(1) ? v : 1)
+		if (hasGSMilestone(4)) player.gal.msLuck += 0.05
+	}
+	if (tg.ms) {
+		player.gal.moonstone += tmp.gal.ms.gain
+		player.gal.msLuck = 1
+	}
+
+	tmp.grasses.splice(i, 1)
 }
 
 el.update.grassCanvas = _=>{
@@ -68,7 +83,7 @@ function drawGrass() {
         let g = gs[i]
 
         if (g) {
-            grass_ctx.fillStyle = g.pl?g.ms?'#008DFF':"#DDD":grassColor(g.tier)
+            grass_ctx.fillStyle = g.pl?g.ms?'#008DFF':"#DDD":grassColor(g.tier+(g.nt?1:0))
 
             let [x,y] = [Math.min(grass_canvas.width*g.x,grass_canvas.width-G_SIZE),Math.min(grass_canvas.height*g.y,grass_canvas.height-G_SIZE)]
 

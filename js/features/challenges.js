@@ -135,7 +135,7 @@ const CHALS = [
     },{
         unl: _=>hasUpgrade('factory',2),
 
-        max: 8,
+        max: 5,
         id: 'steel',
 
         title: `Empower`,
@@ -151,6 +151,44 @@ const CHALS = [
 
         eff: i=>Decimal.pow(5,i),
         effDesc: x=>format(x,1)+"x",
+    },{
+        unl: _=>hasStarTree("progress", 6),
+
+        max: 12,
+        id: 'gal',
+
+        title: `Sleepy Hop`,
+        desc: `You must grasshop at least as you can. Getting 10 Rocket Parts will complete it.`,
+        cond: _=>tmp.chal.goal[8]>=player.grasshop,
+        reward: `Gain a AGH Level per completion.`,
+
+        goal: i=>24-i*2,
+        bulk: i=>Math.floor((24-player.grasshop)/2)+1,
+
+        goalDesc: x=>"Grasshop "+format(x,0),
+        goalAmt: _=>player.rocket.part==10?player.grasshop:1/0,
+
+        eff: i=>i,
+        effDesc: x=>"+"+format(x,0)+" AGH Level",
+    },{
+        unl: _=>hasStarTree("progress", 7),
+
+        max: 12,
+        id: 'gal',
+
+        title: `Walk On Grass`,
+        desc: `You can't grasshop. Entering will reset your Grass-Skips.`,
+        cond: _=>player.grasshop==0,
+        reward: `Gain a AGH Level per completion.`,
+
+        goal: i=>9+i*3,
+        bulk: i=>Math.floor((i-9)/3+1),
+
+        goalDesc: x=>"Grass-Skip "+format(x,0),
+        goalAmt: _=>player.aRes.grassskip,
+
+        eff: i=>i,
+        effDesc: x=>"+"+format(x,0)+" AGH Level",
     }
 ]
 

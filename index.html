@@ -1,56 +1,56 @@
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RGCI: Thunderized Balance</title>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>RGCI: Thunderized Balance</title>
 
-    <script src="js/utils/break_eternity.js"></script>
-    <script src="js/utils/Element.js"></script>
-    <script src="js/utils/format.js"></script>
-    <script src="js/utils/saves.js"></script>
-    <script src="js/utils/utils.js"></script>
+	<script src="js/utils/break_eternity.js"></script>
+	<script src="js/utils/Element.js"></script>
+	<script src="js/utils/format.js"></script>
+	<script src="js/utils/saves.js"></script>
+	<script src="js/utils/utils.js"></script>
 
-    <script src="js/temp.js"></script>
-    <script src="js/canvas.js"></script>
-    <script src="js/map.js"></script>
-    <script src="js/reset.js"></script>
-    <script src="js/upgrades.js"></script>
+	<script src="js/temp.js"></script>
+	<script src="js/canvas.js"></script>
+	<script src="js/map.js"></script>
+	<script src="js/reset.js"></script>
+	<script src="js/upgrades.js"></script>
 
-    <script src="js/calc.js"></script>
-    <script src="js/main.js"></script>
+	<script src="js/calc.js"></script>
+	<script src="js/main.js"></script>
 
-    <script src="js/features/grass.js"></script>
-    <script src="js/features/pp.js"></script>
-    <script src="js/features/crystal.js"></script>
-    <script src="js/features/challenges.js"></script>
-    <script src="js/features/gh.js"></script>
-    <script src="js/features/steelie.js"></script>
-    <script src="js/features/decel.js"></script>
-    <script src="js/features/rocket.js"></script>
+	<script src="js/features/grass.js"></script>
+	<script src="js/features/pp.js"></script>
+	<script src="js/features/crystal.js"></script>
+	<script src="js/features/challenges.js"></script>
+	<script src="js/features/gh.js"></script>
+	<script src="js/features/steelie.js"></script>
+	<script src="js/features/decel.js"></script>
+	<script src="js/features/rocket.js"></script>
 
-    <script src="js/features/gal/main.js"></script>
-    <script src="js/features/gal/star_chart.js"></script>
+	<script src="js/features/gal/main.js"></script>
+	<script src="js/features/gal/star_chart.js"></script>
 
-    <link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="style.css">
 </head>
 <body onload="loadGame()">
-    <input id="copy" style="position: absolute; top: 0; left: 0; user-select: all; visibility: hidden;">
+	<input id="copy" style="position: absolute; top: 0; left: 0; user-select: all; visibility: hidden;">
 	<div id="loading">
 		<span id="loading_text">Loading...</span>
 	</div>
-    <div id="fog" style="display: none"></div>
-    <div id="app">
-        <div class="table_space">
-            <div id="grass_div" style="margin: 10px;">
-                <div class="table_between">
-                    <img id="grass" src="images/grass.png">
-                    <div>
-                        <span id="grassAmt"></span> <span id="grassGain"></span>
-                    </div>
-                </div>
-            </div>
-        </div><div class="table_space">
+	<div id="fog" style="display: none"></div>
+	<div id="app">
+		<div class="table_space">
+			<div id="grass_div" style="margin: 10px;">
+				<div class="table_between">
+					<img id="grass" src="images/grass.png">
+					<div>
+						<span id="grassAmt"></span> <span id="grassGain"></span>
+					</div>
+				</div>
+			</div>
+		</div><div class="table_space">
 			<div id="level" style="margin: 10px;">
 				<div id="level_top_bar"></div>
 				<div id="level_top_info"></div>
@@ -64,46 +64,46 @@
 				<div id="astral_top_info"></div>
 			</div>
 		</div>
-        <div id="loc"></div>
-        <div id="main_app">
-            <div id="map_div_g" class="table_center">
-                <div style="width: 50%; height: 100%;">
-                    <canvas id="grass_canvas"></canvas>
-                    <div id="grass_cap_div">
-                        <div class="table_between">
-                            <div id="grass_cap" style="width: 50%;"></div>
-                            <div id="grass_cut" style="width: 50%;"></div>
-                        </div>
-                    </div>
-                </div>
-                <div style="width: 50%; height: 100%;">
-                    <div style="height: 50%;">
-                        <div id="level_div">
-                            <div id="level_bar"></div><div id="level_info">
-                                Level <b id="level_amt" class="cyan"></b><br>
-                                <span id="level_progress" style="font-size: 18px;"></span><br>
-                                <span id="level_cut" style="font-size: 18px;"></span>
-                            </div>
-                        </div><div id="tier_div">
-                            <div id="tier_bar"></div><div id="tier_info">
-                                Tier <b id="tier_amt" class="yellow"></b><br>
-                                <span id="tier_progress" style="font-size: 18px;"></span><br>
-                                <span id="tier_cut" style="font-size: 18px;"></span><br>
-                                <span id="tier_mult" style="font-size: 18px;"></span>
-                            </div>
-                        </div><div id="astral_div">
-                            <div id="astral_bar"></div><div id="astral_info">
-                                Astral <b id="astral_amt" class="magenta">0</b><br>
-                                <span id="astral_progress" style="font-size: 18px;">0 / 0</span><br>
-                                <span id="astral_cut" style="font-size: 18px;"></span>
-                            </div>
-                        </div>
-                    </div><div style="height: 50%;">
-                        <div class="upgs_div" id="upgs_div_grass"></div>
-                        <div class="upgs_div" id="upgs_div_aGrass"></div>
-                    </div>
-                </div>
-            </div><div id="map_div_opt">
+		<div id="loc"></div>
+		<div id="main_app">
+			<div id="map_div_g" class="table_center">
+				<div style="width: 50%; height: 100%;">
+					<canvas id="grass_canvas"></canvas>
+					<div id="grass_cap_div">
+						<div class="table_between">
+							<div id="grass_cap" style="width: 50%;"></div>
+							<div id="grass_cut" style="width: 50%;"></div>
+						</div>
+					</div>
+				</div>
+				<div style="width: 50%; height: 100%;">
+					<div style="height: 50%;">
+						<div id="level_div">
+							<div id="level_bar"></div><div id="level_info">
+								Level <b id="level_amt" class="cyan"></b><br>
+								<span id="level_progress" style="font-size: 18px;"></span><br>
+								<span id="level_cut" style="font-size: 18px;"></span>
+							</div>
+						</div><div id="tier_div">
+							<div id="tier_bar"></div><div id="tier_info">
+								Tier <b id="tier_amt" class="yellow"></b><br>
+								<span id="tier_progress" style="font-size: 18px;"></span><br>
+								<span id="tier_cut" style="font-size: 18px;"></span><br>
+								<span id="tier_mult" style="font-size: 18px;"></span>
+							</div>
+						</div><div id="astral_div">
+							<div id="astral_bar"></div><div id="astral_info">
+								Astral <b id="astral_amt" class="magenta">0</b><br>
+								<span id="astral_progress" style="font-size: 18px;">0 / 0</span><br>
+								<span id="astral_cut" style="font-size: 18px;"></span>
+							</div>
+						</div>
+					</div><div style="height: 50%;">
+						<div class="upgs_div" id="upgs_div_grass"></div>
+						<div class="upgs_div" id="upgs_div_aGrass"></div>
+					</div>
+				</div>
+			</div><div id="map_div_opt">
 				<button onclick="save()">Save</button>
 				<button onclick="importy()">Import</button>
 				<button onclick="export_copy()">Export to clipboard</button>
@@ -114,18 +114,18 @@
 				<button onclick="toggleLowGrass()">Grass cap: <span id="grassCap">Unlimited</span></button>
 				<button onclick="toggleOption('hideUpgOption')">Hide maxed: <span id="hideUpgOption"></span></button>
 				<button id="hideMilestoneBtn" onclick="toggleOption('hideMilestone')">Show milestones: <span id="hideMilestone"></span></button><br><br>
-				Really Grass Cutting Incremental - Thunderized Balance β3 - <a href="http://aarextiaokhiao.github.io">By TehAarex</a><br>
+				Really Grass Cutting Incremental - Thunderized Balance β4a α1 - <a href="http://aarextiaokhiao.github.io">By TehAarex</a><br>
 				Inspired by <a href="https://www.roblox.com/games/9292879820">Grass Cutting Incremental</a>,
 				<a href="https://mrredshark77.github.io/Really-Grass-Cutting-Incremental/">Original by MrRedShark77</a><br>
 				<b class="red">Warning! Recommended size is 1920x1080! You may change zoom!</b><br><br>
-				Endgame: Level 400 - 500<br><br>
+				Endgame: ???<br><br>
 
 				Hint: Use arrow keys / WASD keys to move through the map. Hold shift to upgrade instantly.
-            </div><div id="map_div_stats">
+			</div><div id="map_div_stats">
 				<span id="time"></span><br>
 				<h1>Reset Layers</h1>
 				<button id="allStatsBtn" onclick="toggleOption('allStats')">Show: <span id="allStats">OFF</span></button>
-                <div id="stats">
+				<div id="stats">
 					<span id="pTimes"></span><br>
 					<span id="cTimes"></span><br>
 					<span id="sTimes"></span><br>
@@ -136,128 +136,138 @@
 				</div><div id="gStats">
 					<span id="gTimes"></span><br>
 				</div>
-            </div><div id="map_div_upg">
-                <div style="width: 100%; height: 50%;">
-                    <div class="upgs_div" id="upgs_div_perk"></div>
-                </div><div style="width: 100%; height: 50%;">
-                    <div class="upgs_div" id="upgs_div_plat"></div>
-                </div>
-            </div><div id="map_div_auto">
-                <div style="width: 100%; height: 50%;">
-                    <div class="upgs_div" id="upgs_div_auto"></div>
-                    <div class="upgs_div" id="upgs_div_aAuto"></div>
-                </div> <div style="width: 100%; height: 50%;">
-                    <div class="upgs_div" id="upgs_div_assembler"></div>
-                </div>
-            </div><div id="map_div_pc">
-                <div style="width: 100%; height: 50%;" class="table_center">
-                    <div style="width: 33%; height: 100%;"><div class="reset_div" id="reset_div_pp"></div><div class="reset_div" id="reset_div_ap"></div></div>
-                    <div style="width: 67%; height: 100%;"><div class="upgs_div" id="upgs_div_pp"></div><div class="upgs_div" id="upgs_div_ap"></div></div>
-                </div><div style="width: 100%; height: 50%;" class="table_center">
-                    <div style="width: 33%; height: 100%;"><div class="reset_div" id="reset_div_crystal"></div><div class="reset_div" id="reset_div_oil"></div></div>
-                    <div style="width: 67%; height: 100%;"><div class="upgs_div" id="upgs_div_crystal"></div><div class="upgs_div" id="upgs_div_oil"></div></div>
-                </div>
-            </div><div id="map_div_chal" style="overflow-y: auto;">
-                <div id="chal_unl">
-                    Crystalize once to unlock.
-                </div><div id="chal_div">
-                    <span id="chal_top"></span><br>
-                    <span id="chal_auto"></span><br>
-                    <div id="chal_table" class="table_center"></div>
-                </div>
-            </div><div id="map_div_gh">
-                <div style="width: 100%; height: 50%;" class="table_center">
-                    <div style="width: 33%; height: 100%;"><div class="reset_div" id="reset_div_gh"></div><div class="reset_div" id="reset_div_gs"></div></div>
-                    <div style="width: 67%; height: 100%;"><div class="milestone_div" id="milestone_div_gh"></div><div class="milestone_div" id="milestone_div_gs"></div></div>
-                </div><div style="width: 100%; height: 50%;" class="table_center">
-                    <div style="width: 33%; height: 100%;"><div class="reset_div" id="reset_div_steel"></div></div>
-                    <div style="width: 67%; height: 100%;"><div class="upgs_div" id="upgs_div_factory"></div></div>
-                </div>
-            </div><div id="map_div_fd">
-                <div style="width: 100%; height: 50%;" class="table_center">
-                    <div style="width: 100%; height: 100%;"><div class="upgs_div" id="upgs_div_foundry"></div></div>
-                </div><div style="width: 100%; height: 50%;" class="table_center">
-                    <div style="width: 50%; height: 100%;"><div class="upgs_div" id="upgs_div_gen"></div></div>
-                    <div style="width: 50%; height: 100%;"><div id="charger_div">
-                        <div style="height: 40px;" id="charge_upper">
-                            
-                        </div><div id="charge_mil">
-                        </div><div style="height: 40px;" id="charge_under">
-                            
-                        </div>
-                    </div></div>
-                </div>
-            </div><div id="map_div_dc">
-                <div style="width: 100%; height: 50%;" class="table_center">
-                    <div style="width: 50%; height: 100%;"><div class="reset_div" id="reset_div_decel"></div></div>
-                </div>
-            </div><div id="map_div_rf">
-                <div style="width: 100%; height: 50%;" class="table_center">
-                    <div style="width: 400px; height: 100%;"><div class="upgs_div rocket" id="refinery_div">
-                        <h3>Refinery</h3><br>
-                        Next Rocket Fuel:<br><br>
-                        <div style="font-size: 16px;">
-                            <b class="yellow">Charge</b><br>
-                            <span id="rf_cost0">0 / 0</span><br><br>
-                            <b class="black">Oil</b><br>
-                            <span id="rf_cost1">0 / 0</span>
-                        </div><div style="position: absolute; bottom: 5px; width: 100%;">
-                            <button id="rf_craft_bulk" onclick="ROCKET.create()">Craft to ??? Rocket Fuel</button>
-                        </div>
-                    </div></div>
-                    <div style="width: calc(100% - 400px); height: 100%;"><div class="upgs_div" id="upgs_div_rocket"></div></div>
-                </div><div style="width: 100%; height: 50%;" class="table_center">
-                    <div style="width: 500px; height: 100%;"><div class="reset_div" id="reset_div_rocket_part"></div></div>
-                    <div style="width: calc(100% - 500px); height: 100%;"><div class="upgs_div" id="upgs_div_momentum"></div></div>
-                </div>
-            </div><div id="map_div_gal">
-                <div style="width: 100%; height: 50%;" class="table_center">
-                    <div style="width: 50%; height: 100%;"><div class="reset_div" id="reset_div_gal"></div></div>
-                </div>
-            </div><div id="map_div_sc" style="position: relative;">
-                <div id="star_chart_div">
-                    <div id="star_chart_table"></div>
-                    <div style="height: 100px;"></div>
-                </div><div style="position: absolute; bottom: 5px; width: 100%;">
-                    <div id="sc_desc_div">
-                        <div id="sc_title"></div>
-                        <div id="sc_desc"></div><br>
-                        <button onclick="tmp.sc_choosed = [null,null]">Close</button>
-                        <button id="sc_upg_buy" onclick="buySCUpgrade(tmp.sc_choosed[0],tmp.sc_choosed[1])">Buy 1</button>
-                        <button id="sc_upg_next" onclick="buyNextSCUpgrade(tmp.sc_choosed[0],tmp.sc_choosed[1])">Buy Next</button>
-                        <button id="sc_upg_max" onclick="buyMaxSCUpgrade(tmp.sc_choosed[0],tmp.sc_choosed[1])">Buy Max</button>
-                    </div><div>
-                        <button onclick="tmp.sc_tab = 'auto'">Automation</button>
-                        <button onclick="tmp.sc_tab = 'speed'">Speed</button>
-                        <button onclick="tmp.sc_tab = 'progress'">Progression</button>
-                    </div>
-                </div><div style="position: absolute; right: 5px; top: 5px;">
-                    <span id="starAmt">0</span> Stars
-                </div><canvas id="star_chart_canvas">
+			</div><div id="map_div_upg">
+				<div style="width: 100%; height: 50%;">
+					<div class="upgs_div" id="upgs_div_perk"></div>
+				</div><div style="width: 100%; height: 50%;">
+					<div class="upgs_div" id="upgs_div_plat"></div>
+				</div>
+			</div><div id="map_div_auto">
+				<div style="width: 100%; height: 50%;">
+					<div class="upgs_div" id="upgs_div_auto"></div>
+					<div class="upgs_div" id="upgs_div_aAuto"></div>
+				</div> <div style="width: 100%; height: 50%;">
+					<div class="upgs_div" id="upgs_div_assembler"></div>
+				</div>
+			</div><div id="map_div_pc">
+				<div style="width: 100%; height: 50%;" class="table_center">
+					<div style="width: 33%; height: 100%;"><div class="reset_div" id="reset_div_pp"></div><div class="reset_div" id="reset_div_ap"></div></div>
+					<div style="width: 67%; height: 100%;"><div class="upgs_div" id="upgs_div_pp"></div><div class="upgs_div" id="upgs_div_ap"></div></div>
+				</div><div style="width: 100%; height: 50%;" class="table_center">
+					<div style="width: 33%; height: 100%;"><div class="reset_div" id="reset_div_crystal"></div><div class="reset_div" id="reset_div_oil"></div></div>
+					<div style="width: 67%; height: 100%;"><div class="upgs_div" id="upgs_div_crystal"></div><div class="upgs_div" id="upgs_div_oil"></div></div>
+				</div>
+			</div><div id="map_div_chal" style="overflow-y: auto;">
+				<div id="chal_unl">
+					Crystalize once to unlock.
+				</div><div id="chal_div">
+					<span id="chal_top"></span><br>
+					<span id="chal_auto"></span><br>
+					<div id="chal_table" class="table_center"></div>
+				</div>
+			</div><div id="map_div_gh">
+				<div style="width: 100%; height: 50%;" class="table_center">
+					<div style="width: 33%; height: 100%;"><div class="reset_div" id="reset_div_gh"></div><div class="reset_div" id="reset_div_gs"></div></div>
+					<div style="width: 67%; height: 100%;"><div class="milestone_div" id="milestone_div_gh"></div><div class="milestone_div" id="milestone_div_gs"></div></div>
+				</div><div style="width: 100%; height: 50%;" class="table_center">
+					<div style="width: 33%; height: 100%;"><div class="reset_div" id="reset_div_steel"></div></div>
+					<div style="width: 67%; height: 100%;"><div class="upgs_div" id="upgs_div_factory"></div></div>
+				</div>
+			</div><div id="map_div_fd">
+				<div style="width: 100%; height: 50%;" class="table_center">
+					<div style="width: 100%; height: 100%;"><div class="upgs_div" id="upgs_div_foundry"></div></div>
+				</div><div style="width: 100%; height: 50%;" class="table_center">
+					<div style="width: 50%; height: 100%;"><div class="upgs_div" id="upgs_div_gen"></div></div>
+					<div style="width: 50%; height: 100%;"><div id="charger_div">
+						<div style="height: 40px;" id="charge_upper">
+							
+						</div><div id="charge_mil">
+						</div><div style="height: 40px;" id="charge_under">
+							
+						</div>
+					</div></div>
+				</div>
+			</div><div id="map_div_dc">
+				<div style="width: 100%; height: 50%;" class="table_center">
+					<div style="width: 50%; height: 100%;"><div class="reset_div" id="reset_div_decel"></div></div>
+				</div>
+			</div><div id="map_div_rf">
+				<div style="width: 100%; height: 50%;" class="table_center">
+					<div style="width: 400px; height: 100%;"><div class="upgs_div rocket" id="refinery_div">
+						<h3>Refinery</h3><br>
+						Next Rocket Fuel:<br><br>
+						<div style="font-size: 16px;">
+							<b class="yellow">Charge</b><br>
+							<span id="rf_cost0">0 / 0</span><br><br>
+							<b class="black">Oil</b><br>
+							<span id="rf_cost1">0 / 0</span>
+						</div><div style="position: absolute; bottom: 5px; width: 100%;">
+							<button id="rf_craft_bulk" onclick="ROCKET.create()">Craft to ??? Rocket Fuel</button>
+						</div>
+					</div></div>
+					<div style="width: calc(100% - 400px); height: 100%;"><div class="upgs_div" id="upgs_div_rocket"></div></div>
+				</div><div style="width: 100%; height: 50%;" class="table_center">
+					<div style="width: 500px; height: 100%;"><div class="reset_div" id="reset_div_rocket_part"></div></div>
+					<div style="width: calc(100% - 500px); height: 100%;"><div class="upgs_div" id="upgs_div_momentum"></div></div>
+				</div>
+			</div><div id="map_div_gal">
+				<div style="width: 100%; height: 50%;" class="table_center">
+					<div style="width: 50%; height: 100%;"><div class="reset_div" id="reset_div_gal"></div></div>
+					<div style="width: 50%; height: 100%;"><div id="to_space_div">
+						<h1>To Space</h1><br>
+						Clicking the button below will bring you into Space.<br>
+						<button onclick="goToSpace()">To Space</button>
+					</div><div id="to_ground_div">
+						<h1>You're now leaving...</h1><br>
+						Clicking the button below will bring you back into Ground.<br>
+						<button onclick="goToSpace()">To Ground</button>
+					</div></div>
+				</div>
+				<div style="width: 100%; height: 50%;"><div class="upgs_div" id="upgs_div_star"></div></div>
+			</div><div id="map_div_sc" style="position: relative;">
+				<div id="star_chart_div">
+					<div id="star_chart_table"></div>
+					<div style="height: 100px;"></div>
+				</div><div style="position: absolute; bottom: 5px; width: 100%;">
+					<div id="sc_desc_div">
+						<div id="sc_title"></div>
+						<div id="sc_desc"></div><br>
+						<button onclick="tmp.gal.star_chart.choosed = [null,null]">Close</button>
+						<button id="sc_upg_buy" onclick="buySCUpgrade(tmp.gal.star_chart.choosed[0],tmp.gal.star_chart.choosed[1])">Buy 1</button>
+						<button id="sc_upg_next" onclick="buyNextSCUpgrade(tmp.gal.star_chart.choosed[0],tmp.gal.star_chart.choosed[1])">Buy Next</button>
+						<button id="sc_upg_max" onclick="buyMaxSCUpgrade(tmp.gal.star_chart.choosed[0],tmp.gal.star_chart.choosed[1])">Buy Max</button>
+					</div><div>
+						<button onclick="tmp.gal.star_chart.tab = 'qol'">QoL</button>
+						<button onclick="tmp.gal.star_chart.tab = 'auto'">Auto</button>
+						<button onclick="tmp.gal.star_chart.tab = 'progress'">Progress</button>
+					</div>
+				</div><div style="position: absolute; right: 5px; top: 5px;">
+					<span id="starAmt">0</span> Stars
+				</div><canvas id="star_chart_canvas">
 
-                </canvas>
-            </div><div id="map_div_at">
-                <div style="width: 100%; height: 50%;" class="table_center">
-                    <div style="width: 50%; height: 100%; overflow-y: auto; font-size: 18px;">
-                        <h3>Astral <span class="magenta" id="astral2">0</span></h3>
-                        <div id="astral_eff"></div>
-                    </div>
-                    <div style="width: 50%; height: 100%;"><div class="milestone_div" id="milestone_div_agh"></div></div>
-                </div><div style="width: 100%; height: 50%;" class="table_center">
-                    <div class="upgs_div" id="upgs_div_moonstone"></div>
-                </div>
-            </div>
-        </div>
-        <div style="position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%);">
-            <button id="mapBtn" onclick="go_to = !go_to">Map</button>
-            <button id="lMap" onclick="moveMap(-1,0)" class="locked">◀</button>
-            <button id="rMap" onclick="moveMap(1,0)" class="locked">▶</button>
-            <button id="uMap" onclick="moveMap(0,-1)" class="locked">▲</button>
-            <button id="dMap" onclick="moveMap(0,1)" class="locked">▼</button>
-            <button id="spaceButton" onclick="goToSpace()">Go to Space</button>
+				</canvas>
+			</div><div id="map_div_at">
+				<div style="width: 100%; height: 50%;" class="table_center">
+					<div style="width: 50%; height: 100%; overflow-y: auto; font-size: 18px;">
+						<h3>Astral <span class="magenta" id="astral2">0</span></h3>
+						<div id="astral_eff"></div>
+					</div>
+					<div style="width: 50%; height: 100%;"><div class="milestone_div" id="milestone_div_agh"></div></div>
+				</div><div style="width: 100%; height: 50%;" class="table_center">
+					<div class="upgs_div" id="upgs_div_moonstone"></div>
+				</div>
+			</div>
+		</div>
+		<div style="position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%);">
+			<button id="mapBtn" onclick="go_to = !go_to">Map</button>
+			<button id="lMap" onclick="moveMap(-1,0)" class="locked">◀</button>
+			<button id="rMap" onclick="moveMap(1,0)" class="locked">▶</button>
+			<button id="uMap" onclick="moveMap(0,-1)" class="locked">▲</button>
+			<button id="dMap" onclick="moveMap(0,1)" class="locked">▼</button>
+			<button id="spaceButton" onclick="goToSpace()">Go to Space</button>
 			<div class="smallAmt" id="position"></div>
-        </div>
+		</div>
 		<div id="map_div">Hi</div>
-    </div>
+	</div>
 </body>
 </html>

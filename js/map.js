@@ -6,7 +6,7 @@ function resetMap() {
 	mapPos = {
 		dim: "earth",
 		earth: [1,1],
-		space: [3,3]
+		space: [1,1]
 	}
 
 	let pos = getMapPos()
@@ -28,13 +28,8 @@ const MAP = {
 		['auto', null,'chal', 'dc', null],
 	],
 	space: [
-		[null,null,null,null,null,null,null],
-		[null,null,null,null,null,null,null],
-		[null,null,null,'opt','stats',null,null],
-		[null,null,null,'sc','at',null,null],
-		[null,null,null,null,null,null,null],
-		[null,null,null,null,null,null,null],
-		[null,null,null,null,null,null,null],
+		['opt', 'stats', null],
+		['gal', 'sc',    'at']
 	]
 }
 
@@ -108,7 +103,7 @@ el.update.map = _=>{
 	updateMapButton("uMap", mx, my-1, dim)
 	updateMapButton("dMap", mx, my+1, dim)
 
-	tmp.el.spaceButton.setDisplay(player.gTimes > 0)
+	tmp.el.spaceButton.setDisplay(galUnlocked())
 	tmp.el.spaceButton.setTxt(inSpace() ? "Go to Ground" : "Go to Space")
 }
 
@@ -222,7 +217,7 @@ const GO_TO_NAMES = {
 
 	//SPACE
 	sc: "Star Chart",
-	at: "Galactic",
+	at: "Astral",
 }
 
 let go_to = false
@@ -263,7 +258,7 @@ const MAP_NOTIFY = {
 	chal: _ => player.sTimes > 0 ? 2 :
 		player.cTimes > 0 ? 1 :
 		0,
-	gh: _ => galUnlocked() ? Infinity :
+	gh: _ => galUnlocked() ? 0 :
 		player.grasshop + (player.level >= MAIN.gh.req() ? 1 : 0),
 	fd: _ => galUnlocked() || hasUpgrade("factory", 2) ? 3 :
 		hasUpgrade("factory", 1) ? 2 :

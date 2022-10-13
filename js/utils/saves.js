@@ -70,6 +70,8 @@ function getPlayerData() {
 			bestOil: E(0),
 			lTimes: 0,
 			lTime: 0,
+
+			grassskip: 0
 		},
 
 		rocket: {
@@ -77,25 +79,6 @@ function getPlayerData() {
 			amount: 0,
 			part: 0,
 			momentum: 0,
-		},
-
-		//will be moved later
-		gTimes: 0,
-		gTime: 0,
-		stars: E(0),
-		lowGH: 1e300,
-
-		astral: 0,
-		sp: E(0),
-
-		moonstone: 0,
-		grassskip: 0,
-		gsUnl: false,
-
-		star_chart: {
-			auto: [],
-			speed: [],
-			progress: [],
 		},
 	}
 	for (let x in UPGS) {
@@ -204,7 +187,7 @@ function deepUndefinedAndDecimal(obj, data) {
 }
 
 function convertStringToDecimal() {
-	
+	if (player.gal) player.gal = deepUndefinedAndDecimal(player.gal, setupGal())
 }
 
 function cannotSave() { return false }
@@ -213,8 +196,8 @@ let saveInterval
 function save() {
 	let str = btoa(JSON.stringify(player))
 	if (cannotSave() || findNaN(str, true)) return
-	tmp.prevSave = localStorage.getItem("rgci_aarex")
-	localStorage.setItem("rgci_aarex",str)
+	tmp.prevSave = localStorage.getItem("rgci_tb_test")
+	localStorage.setItem("rgci_tb_test",str)
 	console.log("Game Saved")
 }
 
@@ -284,7 +267,7 @@ function loadGame(start=true, gotNaN=false) {
 		for (let y in UPGS[x].ctn) UPGS_SCOST[x][y] = UPGS[x].ctn[y].cost(0)
 	}
 
-	load(localStorage.getItem("rgci_aarex"))
+	load(localStorage.getItem("rgci_tb_test"))
 
 	setupHTML()
 	updateHTML()
@@ -305,7 +288,7 @@ function wipe() {
 function checkNaN() {
 	if (findNaN(player)) {
 		alert("Game Data got NaNed")
-		load(localStorage.getItem("rgci_aarex"))
+		load(localStorage.getItem("rgci_tb_test"))
 	}
 }
 

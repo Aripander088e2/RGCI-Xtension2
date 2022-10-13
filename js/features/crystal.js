@@ -185,11 +185,11 @@ UPGS.crystal = {
 MAIN.oil = {
     gain() {
         let x = Decimal.pow(2, player.aRes.tier)
-
         x = x.mul(upgEffect('plat',9))
-        x = x.mul(chalEff(8))
 
+        x = x.mul(tmp.chargeEff[6]||1)
         x = x.mul(upgEffect('rocket',8))
+        x = x.mul(upgEffect('rocket',15))
         x = x.mul(upgEffect('momentum',9))
 
         return x.floor()
@@ -199,8 +199,8 @@ MAIN.oil = {
 RESET.oil = {
     unl: _=> player.decel && player.aRes.aTimes > 0,
 
-    req: _=>player.aRes.level>=90,
-    reqDesc: _=>`Reach Level 90 to Liquefy.`,
+    req: _=>player.aRes.level>=100,
+    reqDesc: _=>`Reach Level 100 to Liquefy.`,
 
     resetDesc: `Liquefy resets everything Anonymity as well as your AP, Anonymity upgrades & tier for Oil.`,
     resetGain: _=> `Gain <b>${tmp.oilGain.format(0)}</b> Oil`,
@@ -275,8 +275,8 @@ UPGS.oil = {
             res: "oil",
             icon: ['Icons/XP'],
 
-            cost: i => Decimal.pow(1.75,i).mul(10).ceil(),
-            bulk: i => i.div(10).max(1).log(1.75).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.75,i).mul(30).ceil(),
+            bulk: i => i.div(30).max(1).log(1.75).floor().toNumber()+1,
 
             effect(i) {
                 return E(1.25).pow(i)
@@ -292,8 +292,8 @@ UPGS.oil = {
             res: "oil",
             icon: ['Icons/TP'],
             
-            cost: i => Decimal.pow(2,i).mul(1e3).ceil(),
-            bulk: i => i.div(1e3).max(1).log(2).floor().toNumber()+1,
+            cost: i => Decimal.pow(3,i).mul(1e3).ceil(),
+            bulk: i => i.div(1e3).max(1).log(3).floor().toNumber()+1,
 
             effect(i) {
                 return E(1.25).pow(i)
@@ -308,8 +308,8 @@ UPGS.oil = {
             res: "oil",
             icon: ['Curr/Anonymity'],
             
-            cost: i => Decimal.pow(1.2,i**0.8).mul(200).ceil(),
-            bulk: i => i.div(200).max(1).log(1.2).root(0.8).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.5,i).mul(200).ceil(),
+            bulk: i => i.div(200).max(1).log(1.5).floor().toNumber()+1,
 
             effect(i) {
                 return E(1.3).pow(i)
@@ -339,16 +339,16 @@ UPGS.oil = {
 
             title: "Oily Charge",
             tier: 3,
-            desc: `Charge rate is increased by <b class="green">30%</b> compounding per level.`,
+            desc: `Charge rate is increased by <b class="green">25%</b> compounding per level.`,
         
             res: "oil",
             icon: ['Curr/Charge'],
             
-            cost: i => Decimal.pow(1.5,i).mul(20).ceil(),
-            bulk: i => i.div(20).max(1).log(1.5).floor().toNumber()+1,
+            cost: i => Decimal.pow(2,i).mul(20).ceil(),
+            bulk: i => i.div(20).max(1).log(2).floor().toNumber()+1,
 
             effect(i) {
-                return E(1.3).pow(i)
+                return E(1.25).pow(i)
             },
             effDesc: x => format(x)+"x",
         },
@@ -357,7 +357,7 @@ UPGS.oil = {
 
 tmp_update.push(_=>{
     tmp.crystalGain = MAIN.crystal.gain()
-    tmp.crystalGainP = (upgEffect('auto',9,0)+upgEffect('gen',1,0))*upgEffect('factory',1,1)
+    tmp.crystalGainP = (upgEffect('auto',9,0)+upgEffect('gen',1,0)+starTreeEff("qol",0,0))*upgEffect('factory',1,1)
 
     tmp.oilGain = MAIN.oil.gain()
     tmp.oilGainP = upgEffect('aAuto',5,0)

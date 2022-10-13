@@ -1,7 +1,7 @@
 MAIN.steel = {
     gain() {
         let x = E(1)
-        if (hasUpgrade('factory',0)) x = x.mul(tmp.foundryEff)
+        if (hasUpgrade('factory',0)) x = x.mul(E(tmp.foundryEff).pow(getASEff('fd', 1)))
         x = x.mul(upgEffect('foundry',0)).mul(upgEffect('foundry',1)).mul(upgEffect('foundry',2)).mul(upgEffect('foundry',3))
 
         x = x.mul(upgEffect('plat',6))
@@ -13,6 +13,8 @@ MAIN.steel = {
         x = x.mul(upgEffect('oil',4))
 
         x = x.mul(upgEffect('rocket',5))
+        x = x.mul(upgEffect('rocket',12))
+        x = x.mul(upgEffect('rocket',18))
         x = x.mul(upgEffect('momentum',6))
 
         return x.floor()
@@ -37,7 +39,11 @@ MAIN.steel = {
             x = x.mul(upgEffect('oil',5))
 
             x = x.mul(upgEffect('rocket',6))
+            x = x.mul(upgEffect('rocket',13))
+            x = x.mul(upgEffect('rocket',19))
             x = x.mul(upgEffect('momentum',7))
+
+            x = x.mul(getASEff('ch'))
 
             return x
         },
@@ -61,7 +67,7 @@ MAIN.steel = {
                 },
                 effDesc: x => "Strengthen Grass Upgrade's 'PP' by +"+format(x)+"x.",
             },{
-                unl: _ => hasUpgrade("factory", 4),
+                unl: _ => hasUpgrade("factory", 4) || galUnlocked(),
 
                 req: E(1e9),
                 eff(c) {
@@ -69,7 +75,7 @@ MAIN.steel = {
                 },
                 effDesc: x => "Gain " + format(x) + "x Levels in Anti-Realm",
             },{
-                unl: _ => hasUpgrade("factory", 4),
+                unl: _ => hasUpgrade("factory", 4) || galUnlocked(),
 
                 req: E(1e12),
                 eff(c) {
@@ -77,20 +83,36 @@ MAIN.steel = {
                 },
                 effDesc: x => "Increase Tier base by +"+format(x,3)+"x.",
             },{
-                unl: _ => hasUpgrade("factory", 4),
+                unl: _ => hasUpgrade("factory", 4) || galUnlocked(),
 
                 req: E(1e15),
                 eff(c) {
                     return c.add(1).log10().root(1.25).div(10).pow10()
                 },
                 effDesc: x => "Gain more "+format(x,3)+"x TP in Anti-Realm.",
+            },{
+                unl: _ => hasUpgrade("factory", 4) || galUnlocked(),
+
+                req: E(1e21),
+                eff(c) {
+                    return c.add(1).log10().root(1.25).div(20).pow10()
+                },
+                effDesc: x => "Gain more "+format(x,3)+"x Oil.",
+            },{
+                unl: _ => hasStarTree("progress", 4),
+
+                req: E(1e30),
+                eff(c) {
+                    return c.add(1).log10().div(20).pow10()
+                },
+                effDesc: x => "Gain more "+format(x,3)+"x Space Power.",
             },
         ],
     },
 }
 
 RESET.steel = {
-    unl: _=>player.grasshop>=10||galUnlocked(),
+    unl: _=>(player.grasshop >= 10 || galUnlocked()) && !tmp.gs_shown,
 
     req: _=>!player.decel && player.level>=240,
     reqDesc: _=>player.decel ? `You can't Steelie in Anti-Realm!` : `Reach Level 240.`,
@@ -124,9 +146,10 @@ RESET.steel = {
 UPGS.factory = {
     title: "The Factory",
 
-    unl: _=>player.sTimes > 0,
+    unl: _=>player.sTimes > 0 && !tmp.gs_shown,
+    autoUnl: _=>hasStarTree('auto',0),
 
-    underDesc: _=>`You have ${format(player.steel,0)} Steel`,
+    underDesc: _=>`You have ${format(player.steel,0)} Steel`+(tmp.steelGainP > 0 ? " <span class='smallAmt'>"+formatGain(player.steel,tmp.steelGain.mul(tmp.steelGainP))+"</span>" : ""),
 
     ctn: [
         {
@@ -255,6 +278,24 @@ UPGS.factory = {
                 return x
             },
             effDesc: x => format(x)+"x",
+        },{
+            max: 100,
+
+            title: "Star Accumulator",
+            desc: `Unlock a building (in Galactic) where you can boost Stars. Each level increases charge rate by <b class="green">+10%</b>.`,
+        
+            res: "steel",
+            icon: ["Icons/StarAccumulator"],
+                        
+            cost: i => Decimal.pow(1.5,i).mul(1e27).ceil(),
+            bulk: i => i.div(1e27).max(1).log(1.5).floor().toNumber()+1,
+        
+            effect(i) {
+                let x = i/10+1
+        
+                return x
+            },
+            effDesc: x => format(x)+"x",
         }
     ],
 }
@@ -263,6 +304,7 @@ UPGS.foundry = {
     title: "Foundry",
 
     unl: _=>hasUpgrade('factory',0),
+    autoUnl: _=>hasStarTree('auto',1),
 
 	underDesc: _=>`
 		<b class="green">${tmp.foundryEff.format()}x</b>
@@ -352,6 +394,7 @@ UPGS.gen = {
     title: "Generator",
 
     unl: _=>hasUpgrade('factory',1),
+    autoUnl: _=>hasStarTree('auto',1),
 
     underDesc: _=>`<b class="green">${format(upgEffect('factory',1))}x</b> <span style="font-size:14px;">to PP/Crystal generator multiplier from factory upgrade</span>`,
 
@@ -366,8 +409,8 @@ UPGS.gen = {
             res: "steel",
             icon: ["Curr/Prestige"],
                         
-            cost: i => Decimal.pow(1.2,i).mul(1e3).ceil(),
-            bulk: i => i.div(1e3).max(1).log(1.2).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.2,i).mul(1e3).div(starTreeEff("auto", 4)).ceil(),
+            bulk: i => i.div(1e3).mul(starTreeEff("auto", 4)).max(1).log(1.2).floor().toNumber()+1,
         
             effect(i) {
                 let x = i/1e3
@@ -385,8 +428,8 @@ UPGS.gen = {
             res: "steel",
             icon: ["Curr/Crystal"],
                         
-            cost: i => Decimal.pow(1.2,i).mul(1e20).ceil(),
-            bulk: i => i.div(1e20).max(1).log(1.2).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.2,i).mul(1e20).div(starTreeEff("auto", 4)).ceil(),
+            bulk: i => i.div(1e20).mul(starTreeEff("auto", 4)).max(1).log(1.2).floor().toNumber()+1,
         
             effect(i) {
                 let x = i/1e3
@@ -427,6 +470,26 @@ UPGS.gen = {
                         
             cost: i => Decimal.pow(1.15,i**0.8).mul(1e9).ceil(),
             bulk: i => i.div(1e9).max(1).log(1.15).root(0.8).floor().toNumber()+1,
+        
+            effect(i) {
+                let x = Decimal.pow(1.5,Math.floor(i/25)).mul(i/10+1)
+        
+                return x
+            },
+            effDesc: x => format(x)+"x",
+        },{
+            max: Infinity,
+
+            unl: _=>hasUpgrade("factory", 2) && hasStarTree("progress", 3),
+
+            title: "Steel Charge",
+            desc: `Increase charge rate by <b class="green">+10%</b> per level. This effect is increased by <b class="green">50%</b> for every <b class="yellow">25</b> levels.`,
+        
+            res: "steel",
+            icon: ["Curr/Charge"],
+                        
+            cost: i => Decimal.pow(1.2,i).mul(1e30).ceil(),
+            bulk: i => i.div(1e30).max(1).log(1.2).floor().toNumber()+1,
         
             effect(i) {
                 let x = Decimal.pow(1.5,Math.floor(i/25)).mul(i/10+1)
@@ -564,6 +627,7 @@ tmp_update.push(_=>{
     let ms = MAIN.steel
     
     tmp.steelGain = ms.gain()
+    tmp.steelGainP = starTreeEff("qol",1,0)
     tmp.foundryEff = ms.foundryEff()
 
     tmp.chargeGain = ms.charger.gain()

@@ -1,7 +1,15 @@
 //GRASSHOP
 MAIN.gh = {
-    req: _=> player.grasshop >= 10 ? 150 + player.grasshop * 10 : 200 + player.grasshop * 4,
-    //bulk: _=> player.level>=300?E((player.level-300)/10).scale(20,2,0,true).floor().toNumber()+1:0,
+	req: _=> player.grasshop >= 10 ? 150 + player.grasshop * 10 : 200 + player.grasshop * 4,
+	bulk: _=> {
+		let b = (player.level - 200) / 4
+		if (b >= 10) b = (player.level - 150) / 10
+		b = Math.floor(b)+1
+
+		if (inChal(8)) b = Math.min(b, tmp.chal.goal[8])
+		if (inChal(9)) b = 0
+		return b
+	},
 
     milestone: [
         {
@@ -36,15 +44,15 @@ MAIN.gh = {
             unl: _=>player.sTimes > 0,
 
             r: 11,
-            desc: `Gain <b class="green">2x</b> more Steel per Grasshop. (starting at 11)`,
-            effect: _=>E(2).pow(Math.max(0,player.grasshop-10)),
+            desc: `Gain <b class="green">2x</b> more Steel per Grasshop. (starting at 11 and ending at 35)`,
+            effect: _=>E(2).pow(Math.max(0,Math.min(player.grasshop,35)-10)),
             effDesc: x=> format(x,0)+"x",
         },{
             unl: _=>hasUpgrade('factory',2),
 
             r: 12,
-            desc: `Gain <b class="green">2x</b> more Charge per Grasshop. (starting at 19)`,
-            effect: _=>E(2).pow(Math.max(0,player.grasshop-11)),
+            desc: `Gain <b class="green">2x</b> more Charge per Grasshop. (starting at 19 and ending at 35)`,
+            effect: _=>E(2).pow(Math.max(0,Math.min(player.grasshop,35)-11)),
             effDesc: x=> format(x,0)+"x",
         },{
             unl: _=>hasUpgrade('factory',3),
@@ -61,9 +69,9 @@ const GH_MIL_LEN = MAIN.gh.milestone.length
 function getGHEffect(x,def=1) { return tmp.ghEffect[x]||def }
 
 RESET.gh = {
-    unl: _=>player.cTimes>0,
-    req: _=>!player.decel && player.level>=200,
-    reqDesc: _=>player.decel ? `You can't Grasshop in Anti-Realm!` : `Reach Level 200.`,
+    unl: _=> player.cTimes > 0 && !tmp.gs_shown,
+    req: _=> player.level >= 200 && !player.decel && !inChal(9),
+    reqDesc: _=> inChal(9) ? `You can't Grasshop!` : player.decel ? `You can't Grasshop in Anti-Realm!` : `Reach Level 200.`,
 
     resetDesc: `Grasshopping resets everything crystalize does as well as crystals, crystal upgrades, challenges.`,
     resetGain: _=> `Reach Level <b>${format(tmp.gh_req,0)}</b> to Grasshop`,
@@ -73,33 +81,32 @@ RESET.gh = {
     resetBtn: `Grasshop!`,
     hotkey: `G`,
 
-    reset(force=false) {
-        if ((this.req()&&player.level>=tmp.gh_req)||force) {
-            if (force) {
-                this.doReset()
-            } else if (galUnlocked()) {
-                player.grasshop++
+	reset(force=false) {
+		if (!force) {
+			if (!this.req()) return
+			if (player.level < MAIN.gh.req()) return
 
-                updateTemp()
+			let res = MAIN.gh.bulk()
+			if (!player.ghMult) res = Math.min(res, player.grasshop + 1)
+			if (res <= player.grasshop) return
 
-                this.doReset()
-            } else if (!tmp.ghRunning) {
-                tmp.ghRunning = true
-                document.body.style.animation = "implode 2s 1"
-                setTimeout(_=>{
-                    player.grasshop++
+			player.grasshop = res
+		}
 
-                    updateTemp()
-        
-                    this.doReset()
-                },1000)
-                setTimeout(_=>{
-                    document.body.style.animation = ""
-                    tmp.ghRunning = false
-                },2000)
-            }
-        }
-    },
+		if (galUnlocked() || force) {
+			this.doReset()
+		} else if (!tmp.ghRunning) {
+			tmp.ghRunning = true
+			document.body.style.animation = "implode 2s 1"
+			setTimeout(_=>{
+				this.doReset()
+			},1000)
+			setTimeout(_=>{
+				document.body.style.animation = ""
+				tmp.ghRunning = false
+			},2000)
+		}
+	},
 
     doReset(order="gh") {
         player.crystal = E(0)
@@ -120,92 +127,116 @@ RESET.gh = {
 
 //GRASS-SKIPS
 MAIN.gs = {
-    req: _=> Math.ceil(400+E(player.grassskip).scale(10,2,0).toNumber()*10),
-    bulk: _=> E(player.level-400).div(10).scale(10,2,0,true).floor().toNumber()+1,
+    req: _ => 200 + player.aRes.grassskip * 15,
+    bulk: _ => Math.floor((player.aRes.level - 200) / 15) + 1,
 
     milestone: [
         {
             r: 1,
-            desc: `Gain <b class="green">+5</b> more stars per grass-skip.`,
-            effect: _=>5*player.grassskip,
-            effDesc: x=> "+"+format(x,0),
-        },{
+            desc: `Gain <b class="green">3x</b> more Grass and XP, only in Anti-Realm.`
+        },
+        {
             r: 2,
-            desc: `Gain <b class="green">+2</b> more SP per grass-skip.`,
-            effect: _=>player.grassskip*2,
-            effDesc: x=> "+"+format(x,0),
+            desc: `Each Grass-Skip gives <b class="green">2x</b> more SP. (starting at 2)`,
+            effect: _ => E(2).pow(Math.max(player.aRes.grassskip - 1, 0)),
+            effDesc: x => format(x, 0) + "x"
+        },
+        {
+            r: 3,
+            desc: `Each Grass-Skip gives <b class="green">30%</b> more Stars.`,
+            effect: _ => E(1.3).pow(player.aRes.grassskip),
+            effDesc: x => format(x) + "x"
+        },
+        {
+            r: 4,
+            desc: `Each Grass-Skip gives <b class="green">+0.5x</b> more Rocket Fuel. (starting at 4)`,
+            effect: _ => Math.max(player.aRes.grassskip - 3, 0) / 2,
+            effDesc: x => "+" + format(x, 1) + "x"
+        },
+        {
+            r: 5,
+            desc: `<b class="green">+5%</b> Moonstone luck on cutting Platinum. Resets on cutting Moonstone.`,
+            effect: _ => galUnlocked() ? player.gal.msLuck : 1,
+            effDesc: x => formatPercent(x-1)
+        },
+        {
+            r: 6,
+            desc: `There's <b class="green">10%</b> chance that next-tier Grass spawns.`
+        },
+        {
+            r: 7,
+            desc: `Manual cutting value is <b class="green">doubled</b>.`
+        },
+        {
+            r: 8,
+            desc: `Unlock the Funify reset. [soon]`
+        },
+        {
+            unl: _ => false,
+            r: 9,
+            desc: `Each Grass-Skip gives <b class="green">2x</b> more Fun. (starting at 9)`,
+            effect: _ => E(2).pow(Math.max(player.aRes.grassskip - 8, 0)),
+            effDesc: x => format(x, 0) + "x"
         },
     ],
 }
 
 const GS_MIL_LEN = MAIN.gs.milestone.length
+function hasGSMilestone(x) { return player.aRes.grassskip > x }
 function getGSEffect(x,def=1) { return tmp.gsEffect[x]||def }
 
 RESET.gs = {
-    unl: _=>player.gTimes>0 && player.decel,
-    req: _=>player.level>=400,
-    reqDesc: _=>`Reach Level 400.`,
+	unl: _=>tmp.gs_shown,
+	req: _=>player.aRes.level>=200,
+	reqDesc: _=>`Reach Level 200.`,
 
-    resetDesc: `Grass-skipping resets everything liquefy does as well as oil except oil upgrades.`,
-    resetGain: _=> `Reach Level <b>${format(tmp.gs_req,0)}</b> to Grass-skip`,
+	resetDesc: `Reset everything liquefy does as well as steel, foundry, charge upgrades, and oil. Grass-skips don't reset on Galactic!`,
+	resetGain: _=> `Reach Level <b>${format(tmp.gs_req,0)}</b> to Grass-skip`,
 
-    title: `Grass-Skip`,
-    btns: `<button id="multGSBtn" onclick="player.gsMult = !player.gsMult">Multi: <span id="multGSOption">OFF</span></button>`,
-    resetBtn: `Grass-Skip?`,
-    hotkey: `G`,
+	title: `Grass-Skip`,
+	btns: `<button id="multGSBtn" onclick="player.gsMult = !player.gsMult">Multi: <span id="multGSOption">OFF</span></button>`,
+	resetBtn: `Grass-Skip?`,
+	hotkey: `G`,
 
-    reset(force=false) {
-        if ((this.req()&&player.level>=tmp.gs_req)||force) {
-            let res = Math.max(player.grassskip+1, MAIN.gs.bulk())
-            if (force) {
-                this.doReset()
-            } else {
-                player.gsUnl = true
-                if (player.gsMult) player.grassskip = res
-                else player.grassskip++
+	reset(force=false) {
+		if (!force) {
+			if (!this.req()) return
+			if (player.aRes.level < MAIN.gs.req()) return
 
-                updateTemp()
-        
-                this.doReset()
-            }
-        }
-    },
+			let res = MAIN.gs.bulk()
+			if (!player.gsMult) res = Math.min(res, player.aRes.grassskip + 1)
+			if (res <= player.aRes.grassskip) return
 
-    doReset(order="gh") {
-        player.oil = E(0)
-        player.bestOil = E(0)
+			player.aRes.grassskip = res
+		}
 
-        RESET.oil.doReset(order)
-    },
+		if (force) {
+			this.doReset()
+		} else if (!tmp.ghRunning) {
+			tmp.ghRunning = true
+			document.body.style.animation = "implode 2s 1"
+			setTimeout(_=>{
+				this.doReset()
+			},1000)
+			setTimeout(_=>{
+				document.body.style.animation = ""
+				tmp.ghRunning = false
+			},2000)
+		}
+	},
+
+	doReset(order="gs") {
+		player.steel = E(0)
+		player.chargeRate = E(0)
+		delete player.upgs.gen[2]
+		delete player.upgs.gen[3]
+
+		resetUpgrades('foundry')
+		resetAntiRealm()
+
+		RESET.oil.doReset(order)
+	},
 }
-
-//ANTI-GH MILESTONES
-MAIN.agh_milestone = [
-    {
-        r: 36,
-        desc: `Grass gain is increased by <b class="green">100%</b> every astral.`,
-        effect: _=>Decimal.pow(2,player.astral),
-        effDesc: x=> format(x)+"x",
-    },{
-        r: 32,
-        desc: `XP gain is increased by <b class="green">100%</b> every astral.<br>Keep challenges on Grasshop, Galactic.`,
-        effect: _=>Decimal.pow(2,player.astral),
-        effDesc: x=> format(x)+"x",
-    },{
-        r: 28,
-        desc: `TP gain is increased by <b class="green">100%</b> every astral.`,
-        effect: _=>Decimal.pow(2,player.astral),
-        effDesc: x=> format(x)+"x",
-    },{
-        r: 24,
-        desc: `Star gain is increased by <b class="green">10%</b> per astral.<br>Tier requirement is sightly weaker.`,
-        effect: _=>player.astral/10+1,
-        effDesc: x=> format(x)+"x",
-    },
-]
-
-const AGH_MIL_LEN = MAIN.agh_milestone.length
-function getAGHEffect(x,def=1) { return tmp.aghEffect[x]||def }
 
 //OTHERS
 tmp_update.push(_=>{
@@ -216,11 +247,7 @@ tmp_update.push(_=>{
         if (m.effect) tmp.ghEffect[x] = m.effect()
     }
 
-    for (let x = 0; x < AGH_MIL_LEN; x++) {
-        let m = MAIN.agh_milestone[x]
-        if (m.effect) tmp.aghEffect[x] = m.effect()
-    }
-
+    tmp.gs_shown = galUnlocked() && player.decel
     tmp.gs_req = MAIN.gs.req()
 
     for (let x = 0; x < GS_MIL_LEN; x++) {
@@ -245,27 +272,6 @@ el.setup.milestones = _=>{
             <h3>${m.r} Grasshop</h3><br>
             ${m.desc}
             ${m.effDesc?`<br>Effect: <b class="cyan" id="gh_mil_ctn${i}_eff"></b>`:""}
-        </div>
-        `
-    }
-
-    h += `</div></div>`
-
-    t.setHTML(h)
-
-    t = new Element("milestone_div_agh")
-    h = ""
-
-    h += `<div id="gh_mil_ctns">Your lowest grasshop is <b id="agh">0</b><div class="milestone_ctns">`
-
-    for (i in MAIN.agh_milestone) {
-        let m = MAIN.agh_milestone[i]
-
-        h += `
-        <div id="agh_mil_ctn${i}_div">
-            <h3>${m.r} Grasshop</h3><br>
-            ${m.desc}
-            ${m.effDesc?`<br>Effect: <b class="cyan" id="agh_mil_ctn${i}_eff"></b>`:""}
         </div>
         `
     }
@@ -301,16 +307,14 @@ el.setup.milestones = _=>{
 el.update.milestones = _=>{
     if (mapID == 'gh') {
         tmp.el.reset_btn_gh.setClasses({locked: player.level < tmp.gh_req})
-        tmp.el.reset_btn_gs.setClasses({locked: player.level < tmp.gs_req})
+        tmp.el.reset_btn_gs.setClasses({locked: player.aRes.level < tmp.gs_req})
 
-        let unl = player.cTimes > 0
+        let ghUnl = player.cTimes > 0 && !tmp.gs_shown
+        tmp.el.milestone_div_gh.setDisplay(ghUnl)
+        if (ghUnl) {
+            let unl = player.grasshop > 0 || galUnlocked()
 
-        tmp.el.milestone_div_gh.setDisplay(unl)
-
-        if (unl) {
-            unl = player.grasshop > 0 || galUnlocked()
-
-            tmp.el.multGHBtn.setDisplay(false)
+            tmp.el.multGHBtn.setDisplay(hasStarTree("qol", 4))
             tmp.el.multGHOption.setTxt(player.ghMult?"ON":"OFF")
 
             tmp.el.gh_mil_req.setDisplay(!unl)
@@ -331,43 +335,30 @@ el.update.milestones = _=>{
             }
         }
 
-        unl = false
+        let gsUnl = tmp.gs_shown
+        tmp.el.milestone_div_gs.setDisplay(gsUnl)
+        if (gsUnl) {
+            let unl = player.aRes.grassskip > 0 || galUnlocked()
 
-        tmp.el.milestone_div_gs.setDisplay(unl)
-/*
-        if (unl) {
-            tmp.el.multGSBtn.setDisplay(hasStarTree('auto', 4))
+            tmp.el.multGSBtn.setDisplay(false)
             tmp.el.multGSOption.setTxt(player.gsMult ? "ON" : "OFF")
-
-            unl = player.grassskip>0 || player.gsUnl
 
             tmp.el.gs_mil_req.setDisplay(!unl)
             tmp.el.gs_mil_ctns.setDisplay(unl)
 
             if (unl) {
-                tmp.el.gs.setHTML(format(player.grassskip,0))
+                tmp.el.gs.setHTML(format(player.aRes.grassskip,0))
 
                 for (let x = 0; x < GS_MIL_LEN; x++) {
                     let m = MAIN.gs.milestone[x]
+                    let unl = m.unl ? m.unl() : true
                     let id = "gs_mil_ctn"+x
 
-                    tmp.el[id+"_div"].setDisplay(!player.options.hideMilestone || x+1 >= GS_MIL_LEN || player.grassskip < MAIN.gs.milestone[x+1].r)
+                    tmp.el[id+"_div"].setDisplay(unl && (!player.options.hideMilestone || x+1 >= GS_MIL_LEN || player.aRes.grassskip < MAIN.gs.milestone[x+1].r))
+                    tmp.el[id+"_div"].setClasses({bought: player.aRes.grassskip >= m.r})
                     if (m.effDesc) tmp.el[id+"_eff"].setHTML(m.effDesc(tmp.gsEffect[x]))
                 }
             }
-        }
-*/
-    }
-    if (mapID == 'at') {
-        tmp.el.agh.setHTML(format(player.lowGH,0))
-
-        for (let x = 0; x < AGH_MIL_LEN; x++) {
-            let m = MAIN.agh_milestone[x]
-            let id = "agh_mil_ctn"+x
-
-            tmp.el[id+"_div"].setDisplay(!player.options.hideMilestone || x+1 >= AGH_MIL_LEN || player.lowGH > MAIN.agh_milestone[x+1].r)
-            tmp.el[id+"_div"].setClasses({bought: player.lowGH <= m.r})
-            if (m.effDesc) tmp.el[id+"_eff"].setHTML(m.effDesc(tmp.aghEffect[x]))
         }
     }
 }

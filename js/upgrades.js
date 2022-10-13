@@ -12,7 +12,8 @@ const UPG_RES = {
     oil: ["Oil",_=>[player.aRes,"oil"],'LiquefyBase'],
     rf: ["Rocket Fuel",_=>[player.rocket,"amount"],'RocketBase'],
     momentum: ["Momentum",_=>[player.rocket,"momentum"],'RocketBase'],
-    moonstone: ["Moonstone",_=>[player,"moonstone"],'MoonBase'],
+    star: ["Stars",_=>[player.gal,"stars"],'SpaceBase'],
+    moonstone: ["Moonstone",_=>[player.gal,"moonstone"],'MoonBase'],
 }
 
 const isResNumber = ['perk','plat','rf','momentum','moonstone']
@@ -432,7 +433,7 @@ const UPGS = {
                 cost: i => E(1e10),
                 bulk: i => 1,
             },{
-                unl: _=>player.grasshop>=1,
+                unl: _=>player.grasshop>=1 || galUnlocked(),
 
                 title: "Prestige Upgrade Autobuy",
                 desc: `You can now automatically buy Prestige Upgrades.`,
@@ -443,7 +444,7 @@ const UPGS = {
                 cost: i => E(1e5),
                 bulk: i => 1,
             },{
-                unl: _=>player.grasshop>=1,
+                unl: _=>player.grasshop>=1 || galUnlocked(),
 
                 title: "Perk Save C",
                 desc: `Keep perks on Crystalize.`,
@@ -493,9 +494,9 @@ const UPGS = {
             
                 res: "crystal",
                 icon: ['Curr/Crystal','Icons/Plus'],
-                            
-                cost: i => Decimal.pow(10,i).mul(1e25).ceil(),
-                bulk: i => i.div(1e20).max(1).log(10).floor().toNumber()+1,
+
+                cost: i => Decimal.pow(10,i).mul(1e15).ceil(),
+                bulk: i => i.div(1e15).max(1).log(10).floor().toNumber()+1,
                 effect(i) {
                     let x = i/1e3
             
@@ -1010,7 +1011,7 @@ function resetUpgrades(id) {
 
 function updateUpgResource(id) {
     let [p,q] = UPG_RES[id][1]()
-    tmp.upg_res[id] = p[q]
+    tmp.upg_res[id] = p?.[q] || 0
 }
 
 function toggleOption(x) { player.options[x] = !player.options[x] }
@@ -1056,9 +1057,6 @@ el.update.upgs = _=>{
         updateUpgradesHTML('rocket')
         updateUpgradesHTML('momentum')
     }
-	if (mapID == 'at') {
-		updateUpgradesHTML('moonstone')
-	}
 
 	if (mapID == 'opt') {
 		tmp.el.scientific.setTxt(player.options.scientific?"ON":"OFF")
@@ -1088,7 +1086,7 @@ el.update.upgs = _=>{
 		let gStats = inSpace()
 		tmp.el.gStats.setDisplay(gStats || player.options.allStats)
 		if (gStats || player.options.allStats) {
-			tmp.el.gTimes.setHTML(player.gTimes ? "You have done " + player.gTimes + " <b style='color: #505'>Galactic</b> resets.<br>Time: " + formatTime(player.gTime) : "")
+			tmp.el.gTimes.setHTML(player.gal.times ? "You have done " + player.gal.times + " <b style='color: #bf00ff'>Galactic</b> resets.<br>Time: " + formatTime(player.gal.time) : "")
 		}
 
 		tmp.el.allStatsBtn.setDisplay(hasUpgrade('factory', 4) || galUnlocked())

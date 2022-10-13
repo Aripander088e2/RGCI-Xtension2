@@ -425,6 +425,7 @@ button:not(.locked):hover {
 
 .reset_div.gal,
 .reset_req.gal,
+.chal_div.gal,
 .map_btn.gal {
     background-color: #bf00ff;
 }

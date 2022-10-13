@@ -10,6 +10,7 @@ MAIN.pp = {
         x = x.mul(E(tmp.chargeEff[1]||1).pow(player.tier))
 
         x = x.mul(upgEffect('rocket',3))
+        x = x.mul(upgEffect('rocket',11))
         x = x.mul(upgEffect('momentum',4))
 
         return x.floor()
@@ -124,7 +125,7 @@ UPGS.pp = {
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 125,
+            max: _ => 125 + hasStarTree("progress", 5),
 
             title: "TP",
             desc: `Increase Tier Points (TP) gain by <b class="green">25%</b> compounding per level.`,
@@ -161,6 +162,26 @@ UPGS.pp = {
                 return x
             },
             effDesc: x => format(x)+"x",
+        },{
+            max: Infinity,
+
+            unl: _=>hasStarTree("progress", 2),
+
+            title: "Weak TP",
+            desc: `Increase Tier Points (TP) gain by <b class="green">25%</b> compounding per level.`,
+
+            res: "pp",
+            icon: ["Icons/TP"],
+                        
+            cost: i => Decimal.pow(3,i**1.25).mul(1e80).ceil(),
+            bulk: i => i.div(1e80).max(1).log(3).root(1.25).floor().toNumber()+1,
+        
+            effect(i) {
+                let x = Decimal.pow(1.2,i)
+        
+                return x
+            },
+            effDesc: x => format(x)+"x",
         },
     ],
 }
@@ -176,6 +197,8 @@ MAIN.ap = {
         x = x.mul(upgEffect('oil',3))
 
         x = x.mul(upgEffect('rocket',7))
+        x = x.mul(upgEffect('rocket',14))
+        x = x.mul(upgEffect('rocket',17))
         x = x.mul(upgEffect('momentum',8))
 
         return x.floor()
@@ -251,7 +274,9 @@ UPGS.ap = {
             bulk: i => i.div(25).max(1).log(1.2).floor().toNumber()+1,
         
             effect(i) {
-                return E(i/4+1)
+                let r = E(i/4+1)
+                if (hasAGHMilestone(6)) r = r.mul(E(getAGHEffect(6, 1)).pow(Math.floor(i/25)))
+                return r
             },
             effDesc: x => format(x)+"x",
         },{
@@ -268,7 +293,9 @@ UPGS.ap = {
             bulk: i => i.div(20).max(1).log(1.2).floor().toNumber()+1,
 
             effect(i) {
-                return E(i/4+1)
+                let r = E(i/4+1)
+                if (hasAGHMilestone(6)) r = r.mul(E(getAGHEffect(6, 1)).pow(Math.floor(i/25)))
+                return r
             },
             effDesc: x => x.format()+"x",
         },{
@@ -285,11 +312,13 @@ UPGS.ap = {
             bulk: i => i.div(20).max(1).log(1.2).floor().toNumber()+1,
 
             effect(i) {
-                return E(i/4+1)
+                let r = E(i/4+1)
+                if (hasAGHMilestone(6)) r = r.mul(E(getAGHEffect(6, 1)).pow(Math.floor(i/25)))
+                return r
             },
             effDesc: x => format(x,0)+"x",
         },{
-            max: Infinity,
+            max: 300,
 
             title: "AP TP",
             desc: `Increase TP by <b class="green">+50%</b> per level.`,
@@ -301,7 +330,9 @@ UPGS.ap = {
             bulk: i => i.div(20).max(1).log(1.2).floor().toNumber()+1,
 
             effect(i) {
-                return E(i/2+1)
+                let r = E(i/4+1)
+                if (hasAGHMilestone(6)) r = r.mul(E(getAGHEffect(6, 1)).pow(Math.floor(i/25)))
+                return r
             },
             effDesc: x => format(x,1)+"x",
         },{
@@ -326,7 +357,7 @@ UPGS.ap = {
 
 tmp_update.push(_=>{
     tmp.ppGain = MAIN.pp.gain()
-    tmp.ppGainP = (upgEffect('auto',8,0)+upgEffect('gen',0,0))*upgEffect('factory',1,1)
+    tmp.ppGainP = (upgEffect('auto',8,0)+upgEffect('gen',0,0)+starTreeEff("qol",0,0))*upgEffect('factory',1,1)
 
     tmp.apGain = MAIN.ap.gain()
     tmp.apGainP = upgEffect('aAuto',4,0)

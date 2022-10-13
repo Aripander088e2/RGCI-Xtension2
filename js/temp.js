@@ -7,9 +7,6 @@ function resetTemp() {
         el: tmp.el,
         map_notify: {},
 
-        sc_tab: 'auto',
-        sc_choosed: [null,null],
-
         spawn_time: 0,
         rangeCut: 50,
         autocut: 5,
@@ -23,7 +20,6 @@ function resetTemp() {
         grasses: [],
         level: {},
         tier: {},
-        astral: {},
 
         upgs: {},
         upg_res: {},
@@ -45,41 +41,6 @@ function resetTemp() {
         ghEffect: [],
         aghEffect: [],
         gsEffect: [],
-
-        star_chart: {
-            auto: {
-                max: [],
-                cost: [],
-                bulk: [],
-                eff: [],
-            },
-            speed: {
-                max: [],
-                cost: [],
-                bulk: [],
-                eff: [],
-            },
-            progress: {
-                max: [],
-                cost: [],
-                bulk: [],
-                eff: [],
-            },
-        },
-
-        sc_unl: {
-            auto: [],
-            speed: [],
-            progress: [],
-        },
-
-        sc_afford: {
-            auto: [],
-            speed: [],
-            progress: [],
-        },
-
-        astral_eff: {},
     }
 
     for (let x in UPG_RES) tmp.upg_res[x] = E(0)

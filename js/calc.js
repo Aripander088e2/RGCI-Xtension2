@@ -33,13 +33,10 @@ function calc(dt) {
 
     if (tmp.ppGainP > 0 && player.level >= 30 && !decel) player.pp = player.pp.add(tmp.ppGain.mul(dt*tmp.ppGainP))
     if (tmp.crystalGainP > 0 && player.level >= 100 && !decel) player.crystal = player.crystal.add(tmp.crystalGain.mul(dt*tmp.crystalGainP))
+    if (tmp.steelGainP > 0) player.steel = player.steel.add(tmp.steelGain.mul(tmp.steelGainP*dt))
 
     if (tmp.apGainP > 0 && player.aRes.level >= 30) player.aRes.ap = player.aRes.ap.add(tmp.apGain.mul(dt*tmp.apGainP))
     if (tmp.oilGainP > 0 && player.aRes.level >= 100) player.aRes.oil = player.aRes.oil.add(tmp.oilGain.mul(dt*tmp.oilGainP))
-
-    if (tmp.steelPass > 0) {
-        player.steel = player.steel.add(tmp.steelGain.mul(tmp.steelPass*dt))
-    }
 
     if (hasUpgrade('factory',2)) player.chargeRate = player.chargeRate.add(tmp.chargeGain.mul(dt))
 
@@ -54,7 +51,7 @@ function calc(dt) {
 
 	if (hasUpgrades("perk")) player.chal.c4 = false
     if (hasUpgrade("assembler", 8)) {
-		player.chal.time = (player.chal.time || 0) + dt / upgEffect("assembler", 8)
+		player.chal.time = (player.chal.time || 0) + dt / upgEffect("assembler", 8) / starTreeEff("auto", 3)
 		for (var i = 0; i < 6; i++) player.chal.comp[i] = Math.min(player.chal.comp[i] + Math.floor(player.chal.time), player.chal.max[i])
 		player.chal.time -= Math.floor(player.chal.time)
 	}
