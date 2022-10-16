@@ -1,4 +1,4 @@
-const RF_COST_POW = 2
+const RF_COST_POW = 1.5
 
 const ROCKET = {
 	cost(rf,mul) {
@@ -634,12 +634,14 @@ RESET.rocket_part = {
 
 	doReset(order="rp") {
 		player.rocket.total_fp = 0
-		player.steel = E(0)
-		player.chargeRate = E(0)
-		delete player.upgs.gen[2]
-		delete player.upgs.gen[3]
 
-		resetUpgrades('foundry')
+		if (!hasStarTree("qol", 8)) {
+			player.steel = E(0)
+			player.chargeRate = E(0)
+			delete player.upgs.gen[2]
+			delete player.upgs.gen[3]
+			resetUpgrades('foundry')
+		}
 		resetAntiRealm()
 
 		RESET.gh.doReset(order)

@@ -1,6 +1,14 @@
 function calc(dt) {
-    let decel = player.decel
+	if (galUnlocked()) galTick(dt)
 
+	//PRE-GALACTIC
+	dt *= tmp.gSpeed
+	if (tmp.gJump) {
+		dt += tmp.gJump
+		tmp.gJump = 0
+	}
+
+    let decel = player.decel
     tmp.spawn_time += dt
     tmp.autocutTime += dt
     player.time += dt
@@ -60,8 +68,6 @@ function calc(dt) {
 		if (player.chal.comp[i] == CHALS[i].max) delete player.chal.progress[i]
 		player.chal.max[i] = Math.max(player.chal.comp[i] || 0, player.chal.max[i] || 0)
 	}
-
-	if (galUnlocked()) galTick(dt)
 
     MAIN.checkCutting()
 }

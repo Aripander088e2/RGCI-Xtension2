@@ -39,7 +39,7 @@ const MAIN = {
         let x = 2
         x /= upgEffect('grass',2,1)
         x /= upgEffect('perk',2,1)
-        x /= upgEffect('aGrass',1,1)
+        if (player.decel) x /= upgEffect('aGrass',1,1)
         x /= upgEffect('momentum',1)
         if (hasUpgrade('rocket',16)) x = 1 / (1 / x + upgEffect('rocket', 16))
         return x
@@ -96,6 +96,7 @@ const MAIN = {
     rangeCut: _=>70+upgEffect('grass',4,0)+upgEffect('perk',4,0)+upgEffect('aGrass',6,0),
     autoCut() {
 		let interval = 5-upgEffect('auto',0,0)-upgEffect('plat',0,0)
+		interval /= starTreeEff("auto",7)
 		if (player.decel) interval *= 10 / upgEffect('aAuto', 0)
 		return interval
 	},
@@ -241,6 +242,7 @@ tmp_update.push(_=>{
 
     tmp.platChance = 0.001
     if (player.grasshop >= 6) tmp.platChance *= 2
+    if (!player.decel && hasGSMilestone(6)) tmp.platChance *= 2
     tmp.platChance += upgEffect('rocket',16,0)
 
     tmp.platGain = 1

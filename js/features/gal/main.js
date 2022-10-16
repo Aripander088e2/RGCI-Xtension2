@@ -21,7 +21,7 @@ RESET.gal = {
 	reqDesc: _=>`Get 10 Rocket Parts to unlock.`,
 
 	resetDesc: `Galactic will reset <b class="red">EVERYTHING prior</b> except Rocket Fuel upgrades! Last chance before departure...`,
-    resetGain: _=> galUnlocked() ? `Gain <b>${tmp.gal.star_gain.format(0)}</b> Stars` : `You'll also unlock <b>Grass-Skip</b> in Anti-Realm.`,
+    resetGain: _=> galUnlocked() ? `Gain <b>${tmp.gal.star_gain.format(0)}</b> Stars` : `You'll also unlock <b>Chronology</b> and <b>Grass-Skips</b>.`,
 
 	title: `Galactic`,
 	resetBtn: `Galactic!`,
@@ -51,16 +51,16 @@ RESET.gal = {
 		player.steel = E(0)
 		player.bestCharge = E(0)
 		player.decel = false
-		player.rocket = { total_fp: 0, amount: hasStarTree("qol", 6) ? player.rocket.amount : 0, part: 0, momentum: 0 }
+		player.rocket = { total_fp: 0, amount: hasStarTree("qol", 9) ? player.rocket.amount : 0, part: 0, momentum: 0 }
 		resetAntiRealm()
 
-		if (!hasStarTree("qol", 2)) resetUpgrades("auto")
-		if (!hasStarTree("qol", 3)) resetUpgrades("aAuto")
+		if (!hasStarTree("qol", 0)) resetUpgrades("auto")
+		if (!hasStarTree("qol", 1)) resetUpgrades("aAuto")
 		resetUpgrades("plat")
 		resetUpgrades("factory")
 		resetUpgrades("foundry")
 		resetUpgrades("gen")
-		if (!hasStarTree("qol", 5)) resetUpgrades("assembler")
+		if (!hasStarTree("qol", 6)) resetUpgrades("assembler")
 		resetUpgrades("momentum")
 		resetUpgrades("star")
 
@@ -88,10 +88,13 @@ tmp_update.push(_=>{
 
 	data.ms = {}
 	data.ms.chance = 1/200
-	if (hasAGHMilestone(5)) data.ms.chance *= player.gal.msLuck
+	if (hasGSMilestone(5)) data.ms.chance *= player.gal.msLuck
+	if (hasAGHMilestone(5)) data.ms.chance *= 2
+	if (!player.decel && hasAGHMilestone(6)) data.ms.chance /= 10
 	data.ms.gain = 1
 	data.ms.gain += getASEff('ms', 0)
 
+	updateChronoTemp()
 	updateSCTemp()
 })
 
@@ -115,6 +118,10 @@ function setupGal() {
 		sp: E(0),
 		moonstone: 0,
 		msLuck: 1,
+
+		chrona: 0,
+		ability: null,
+		abilityCooldown: 0,
 
 		stars: E(0),
 		star_chart: {
@@ -190,12 +197,12 @@ const ASTRAL = {
 		let a = player.gal.astral
 		let x = {}
 
-		x.tp = a/5+1
+		x.tp = a+1
 		x.fd = a/20+1
 		if (hasAGHMilestone(2)) x.rf = a/4
 		if (hasAGHMilestone(3)) x.ch = a/2+1
 		if (hasAGHMilestone(4)) x.tb = Math.sqrt(a)/20
-		if (hasAGHMilestone(8)) x.st = 1.3 ** a
+		if (hasAGHMilestone(8)) x.st = 1.2 ** a
 		if (hasAGHMilestone(9)) x.fu = a/5+1
 		if (hasAGHMilestone(10)) x.sf = E(2).pow(a)
 
@@ -242,7 +249,7 @@ UPGS.moonstone = {
 			effect(i) {
 				return i
 			},
-			effDesc: x => format(x)+"x",
+			effDesc: x => "+"+format(x,0)+"x",
 		}, {
 			max: 10,
 
@@ -325,8 +332,7 @@ UPGS.star = {
     title: "Star Accumulator",
 
     unl: _=>hasUpgrade("factory", 7),
-    req: _=>true,
-    underDesc: _=>``,
+    autoUnl: _=>hasStarTree('auto', 4),
 
 	ctn: [
 		{
@@ -338,8 +344,8 @@ UPGS.star = {
 			res: "plat",
 			icon: ["Curr/Star"],
 
-			cost: i => E(1.2).pow(i).mul(1e4),
-			bulk: i => E(i).div(1e4).log(1.2).floor().toNumber() + 1,
+			cost: i => E(1.2).pow(i).mul(1e3),
+			bulk: i => E(i).div(1e3).log(1.2).floor().toNumber() + 1,
 
 			effect(i) {
 				return E(1.1).pow(i)
@@ -354,8 +360,8 @@ UPGS.star = {
 			res: "steel",
 			icon: ["Curr/Star"],
 
-			cost: i => E(2).pow(i).mul(1e36),
-			bulk: i => E(i).div(1e36).log(2).floor().toNumber() + 1,
+			cost: i => E(10).pow(i).mul(1e36),
+			bulk: i => E(i).div(1e36).log(10).floor().toNumber() + 1,
 
 			effect(i) {
 				return E(1.1).pow(i)
@@ -386,8 +392,8 @@ UPGS.star = {
 			res: "moonstone",
 			icon: ["Curr/Star"],
 
-			cost: i => E(1.1).pow(i).mul(100),
-			bulk: i => E(i).div(100).log(1.1).floor().toNumber() + 1,
+			cost: i => E(1.1).pow(i).mul(5),
+			bulk: i => E(i).div(5).log(1.1).floor().toNumber() + 1,
 
 			effect(i) {
 				return E(1.1).pow(i)
@@ -423,7 +429,7 @@ MAIN.agh_milestone = [
     }, {
         r: 7,
         desc: `Every 25 levels of AP upgrade, gain a multiplier based on AGH Level. (starting at 7)`,
-		effect: _ => E(1.05).pow(tmp.gal.agh.lvl-6).max(1).min(1.5),
+		effect: _ => E(1.05).pow(tmp.gal.agh.lvl-6).max(1).min(1.25),
 		effDesc: x => format(x) + "x per 25 levels",
     }, {
         unl: _ => false,

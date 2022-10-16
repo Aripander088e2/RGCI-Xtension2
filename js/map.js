@@ -23,13 +23,14 @@ window.addEventListener('keydown', e=>{
 
 const MAP = {
 	earth: [
-		[null,  'opt','stats','fd','rf'],
-		['upg', 'g',  'pc',   'gh','gal'],
-		['auto', null,'chal', 'dc', null],
+		[null,  'opt','stats','fd','rf'  ],
+		['upg', 'g',  'pc',   'gh','gal' ],
+		['auto', null,'chal', 'dc','time'],
 	],
 	space: [
 		['opt', 'stats', null],
-		['gal', 'sc',    'at']
+		['gal', 'sc',   'at' ],
+		['time', null,   null]
 	]
 }
 
@@ -48,6 +49,7 @@ const MAP_UNLS = {
 	dc: _ => hasUpgrade("factory", 4),
 	rf: _ => hasUpgrade("factory", 5) || galUnlocked(),
 	gal: _ => player.rocket.part > 0 || galUnlocked(),
+	time: _ => player.rocket.part > 0 || galUnlocked(),
 
 	//SPACE
 	sc: _ => true,
@@ -133,6 +135,7 @@ const MAP_COLORS = {
 	dc: "gh",
 	rf: "gh",
 	gal: "gal",
+	time: "gal",
 
 	//SPACE
 	sc: "gal",
@@ -179,6 +182,7 @@ const MAP_LOCS = {
 	fd: "Factory",
 	dc: "Challenges",
 	rf: "Factory",
+	time: "Misc",
 
 	//SPACE
 	gal: "Prestige",
@@ -214,6 +218,7 @@ const GO_TO_NAMES = {
 	dc: "Deceleration",
 	rf: "Refinery",
 	gal: "Galactic",
+	time: "Chronology",
 
 	//SPACE
 	sc: "Star Chart",
@@ -269,6 +274,7 @@ const MAP_NOTIFY = {
 		hasUpgrade("factory", 5) ? 1 :
 		0,
 	gal: _ => galUnlocked() || player.rocket.part >= 10 ? 1 : 0,
+	time: _ => galUnlocked() ? 1 : 0,
 
 	//SPACE
 	sc: _ => 0,

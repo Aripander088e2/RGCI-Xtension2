@@ -44,15 +44,15 @@ MAIN.gh = {
             unl: _=>player.sTimes > 0,
 
             r: 11,
-            desc: `Gain <b class="green">2x</b> more Steel per Grasshop. (starting at 11 and ending at 35)`,
-            effect: _=>E(2).pow(Math.max(0,Math.min(player.grasshop,35)-10)),
+            desc: `Gain <b class="green">2x</b> more Steel per Grasshop. (starting at 11)`,
+            effect: _=>E(2).pow(Math.max(0,player.grasshop-10)),
             effDesc: x=> format(x,0)+"x",
         },{
             unl: _=>hasUpgrade('factory',2),
 
             r: 12,
-            desc: `Gain <b class="green">2x</b> more Charge per Grasshop. (starting at 19 and ending at 35)`,
-            effect: _=>E(2).pow(Math.max(0,Math.min(player.grasshop,35)-11)),
+            desc: `Gain <b class="green">2x</b> more Charge per Grasshop. (starting at 19 and ending at 30)`,
+            effect: _=>E(2).pow(Math.max(0,Math.min(player.grasshop,30)-11)),
             effDesc: x=> format(x,0)+"x",
         },{
             unl: _=>hasUpgrade('factory',3),
@@ -155,7 +155,7 @@ MAIN.gs = {
         },
         {
             r: 5,
-            desc: `<b class="green">+5%</b> Moonstone luck on cutting Platinum. Resets on cutting Moonstone.`,
+            desc: `<b class="green">+0.01%</b> Moonstone luck on cutting Grass and <b class="green">+5%</b> Moonstone luck on cutting Platinum. Resets on cutting Moonstone.`,
             effect: _ => galUnlocked() ? player.gal.msLuck : 1,
             effDesc: x => formatPercent(x-1)
         },
@@ -165,11 +165,25 @@ MAIN.gs = {
         },
         {
             r: 7,
-            desc: `Manual cutting value is <b class="green">doubled</b>.`
+            desc: `In Normal Realm, platinum chance is <b class="green">doubled</b> but moonstone chance is 10x lower.`
         },
         {
             r: 8,
             desc: `Unlock the Funify reset. [soon]`
+        },
+        {
+            unl: _ => false,
+            r: 9,
+            desc: `Each Grass-Skip gives <b class="green">2x</b> more Fun. (starting at 9)`,
+            effect: _ => E(2).pow(Math.max(player.aRes.grassskip - 8, 0)),
+            effDesc: x => format(x, 0) + "x"
+        },
+        {
+            unl: _ => false,
+            r: 10,
+            desc: `Each Grass-Skip gives <b class="green">2x</b> more Fun. (starting at 9)`,
+            effect: _ => E(2).pow(Math.max(player.aRes.grassskip - 8, 0)),
+            effDesc: x => format(x, 0) + "x"
         },
         {
             unl: _ => false,
@@ -227,11 +241,14 @@ RESET.gs = {
 
 	doReset(order="gs") {
 		player.steel = E(0)
-		player.chargeRate = E(0)
-		delete player.upgs.gen[2]
-		delete player.upgs.gen[3]
 
-		resetUpgrades('foundry')
+		if (!hasStarTree("qol", 10)) {
+			player.steel = E(0)
+			player.chargeRate = E(0)
+			delete player.upgs.gen[2]
+			delete player.upgs.gen[3]
+			resetUpgrades('foundry')
+		}
 		resetAntiRealm()
 
 		RESET.oil.doReset(order)
@@ -314,7 +331,7 @@ el.update.milestones = _=>{
         if (ghUnl) {
             let unl = player.grasshop > 0 || galUnlocked()
 
-            tmp.el.multGHBtn.setDisplay(hasStarTree("qol", 4))
+            tmp.el.multGHBtn.setDisplay(hasStarTree("qol", 5))
             tmp.el.multGHOption.setTxt(player.ghMult?"ON":"OFF")
 
             tmp.el.gh_mil_req.setDisplay(!unl)
@@ -340,7 +357,7 @@ el.update.milestones = _=>{
         if (gsUnl) {
             let unl = player.aRes.grassskip > 0 || galUnlocked()
 
-            tmp.el.multGSBtn.setDisplay(false)
+            tmp.el.multGSBtn.setDisplay(hasStarTree("qol", 7))
             tmp.el.multGSOption.setTxt(player.gsMult ? "ON" : "OFF")
 
             tmp.el.gs_mil_req.setDisplay(!unl)

@@ -162,8 +162,8 @@ const CHALS = [
         cond: _=>tmp.chal.goal[8]>=player.grasshop,
         reward: `Gain a AGH Level per completion.`,
 
-        goal: i=>24-i*2,
-        bulk: i=>Math.floor((24-player.grasshop)/2)+1,
+        goal: i=>Math.max(33-i*3,0),
+        bulk: i=>Math.floor((33-i)/3)+1,
 
         goalDesc: x=>"Grasshop "+format(x,0),
         goalAmt: _=>player.rocket.part==10?player.grasshop:1/0,
@@ -178,7 +178,7 @@ const CHALS = [
 
         title: `Walk On Grass`,
         desc: `You can't grasshop. Entering will reset your Grass-Skips.`,
-        cond: _=>player.grasshop==0,
+        cond: _=>false,
         reward: `Gain a AGH Level per completion.`,
 
         goal: i=>9+i*3,
@@ -220,6 +220,7 @@ function enterChal(x) {
 	if (hasUpgrade('assembler', 9)) player.chal.progress[x] = true
 	else player.chal.progress = { [x]: true }
 
+	if (x == 9) player.aRes.grassskip = 0
 	RESET[CHALS[x].id].reset(true)
 }
 

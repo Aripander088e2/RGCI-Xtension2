@@ -433,7 +433,7 @@ const UPGS = {
                 cost: i => E(1e10),
                 bulk: i => 1,
             },{
-                unl: _=>player.grasshop>=1 || galUnlocked(),
+                unl: _=>player.cTimes>0,
 
                 title: "Prestige Upgrade Autobuy",
                 desc: `You can now automatically buy Prestige Upgrades.`,
@@ -452,10 +452,10 @@ const UPGS = {
                 res: "crystal",
                 icon: ['Curr/Perks','Icons/StarProgression'],
                             
-                cost: i => E(1e9),
+                cost: i => E(1e7),
                 bulk: i => 1,
             },{
-                unl: _=>player.sTimes>0,
+                unl: _=>player.grasshop>=1 || galUnlocked(),
 
                 title: "Crystal Upgrade Autobuy",
                 desc: `You can now automatically buy Crystal Upgrades.`,
@@ -463,7 +463,7 @@ const UPGS = {
                 res: "crystal",
                 icon: ['Curr/Crystal','Icons/Automation'],
                             
-                cost: i => E(1e11),
+                cost: i => E(1e8),
                 bulk: i => 1,
             },{
                 unl: _=>player.sTimes>0,
@@ -485,7 +485,7 @@ const UPGS = {
                 },
                 effDesc: x => "+"+formatPercent(x)+"/s",
             },{
-                unl: _=>player.sTimes>0,
+                unl: _=>hasUpgrade('factory', 4) || galUnlocked(),
 
                 max: 10,
 
@@ -510,6 +510,7 @@ const UPGS = {
         title: "Platinum Upgrades",
 
         unl: _=>player.pTimes>0,
+        autoUnl: _=>hasStarTree('auto',6),
 
         req: _=>player.tier >= 2 || player.cTimes > 0,
         reqDesc: _=>`Reach Tier 2 to unlock.`,
@@ -518,7 +519,7 @@ const UPGS = {
 
         ctn: [
             {
-                max: 7,
+                max: 8,
 
                 costOnce: true,
 
@@ -674,8 +675,8 @@ const UPGS = {
                 res: "plat",
                 icon: ['Curr/Charge'],
                 
-                cost: i => 150,
-                bulk: i => Math.floor(i/150),
+                cost: i => 500,
+                bulk: i => Math.floor(i/500),
 
                 effect(i) {
                     let x = E(i/2+1)
@@ -696,8 +697,8 @@ const UPGS = {
                 res: "plat",
                 icon: ['Curr/Anonymity'],
                 
-                cost: i => 300,
-                bulk: i => Math.floor(i/300),
+                cost: i => 1e3,
+                bulk: i => Math.floor(i/1e3),
 
                 effect(i) {
                     let x = E(i*0.2+1)
@@ -718,8 +719,8 @@ const UPGS = {
                 res: "plat",
                 icon: ['Curr/Oil'],
                 
-                cost: i => 500,
-                bulk: i => Math.floor(i/500),
+                cost: i => 2e3,
+                bulk: i => Math.floor(i/2e3),
 
                 effect(i) {
                     let x = E(i/5+1)
@@ -938,6 +939,7 @@ function updateUpgradesHTML(id) {
                 `
 
                 if (upg.effDesc) h += '<br>Effect: <span class="cyan">'+upg.effDesc(tu.eff[ch])+"</span>"
+                h += '<br>'
 
                 let canBuy = Decimal.gte(tmp.upg_res[upg.res], tu.cost[ch])
                 let hasBuy25 = (Math.floor(amt / 25) + 1) * 25 < tu.max[ch]

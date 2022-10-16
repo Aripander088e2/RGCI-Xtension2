@@ -246,6 +246,7 @@ UPGS.oil = {
     underDesc: _=>`You have ${format(player.aRes.oil,0)} Oil`+(tmp.oilGainP > 0 ? " <span class='smallAmt'>"+formatGain(player.aRes.oil,tmp.oilGain.mul(tmp.oilGainP))+"</span>" : ""),
 
     autoUnl: _=>hasUpgrade('aAuto',3),
+    noSpend: _=>hasStarTree('qol', 3),
 
     ctn: [
         {
@@ -360,5 +361,5 @@ tmp_update.push(_=>{
     tmp.crystalGainP = (upgEffect('auto',9,0)+upgEffect('gen',1,0)+starTreeEff("qol",0,0))*upgEffect('factory',1,1)
 
     tmp.oilGain = MAIN.oil.gain()
-    tmp.oilGainP = upgEffect('aAuto',5,0)
+    tmp.oilGainP = upgEffect('aAuto',5,0)+starTreeEff("qol",3,0)
 })

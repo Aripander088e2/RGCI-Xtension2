@@ -258,6 +258,7 @@ UPGS.ap = {
     underDesc: _=>`You have ${format(player.aRes.ap,0)} Anonymity Points`+(tmp.apGainP > 0 ? " <span class='smallAmt'>"+formatGain(player.aRes.ap,tmp.apGain.mul(tmp.apGainP))+"</span>" : ""),
 
     autoUnl: _=>hasUpgrade('aAuto',2),
+    noSpend: _=>hasStarTree('qol', 3),
 
     ctn: [
         {
@@ -318,10 +319,10 @@ UPGS.ap = {
             },
             effDesc: x => format(x,0)+"x",
         },{
-            max: 300,
+            max: 50,
 
             title: "AP TP",
-            desc: `Increase TP by <b class="green">+50%</b> per level.`,
+            desc: `Increase TP by <b class="green">+25%</b> per level.`,
         
             res: "ap",
             icon: ['Icons/TP'],
@@ -336,7 +337,7 @@ UPGS.ap = {
             },
             effDesc: x => format(x,1)+"x",
         },{
-            max: 50,
+            max: 25,
 
             title: "AP More Grass",
             desc: `Increase grass cap by <b class="green">+10</b> per level.`,
@@ -360,5 +361,5 @@ tmp_update.push(_=>{
     tmp.ppGainP = (upgEffect('auto',8,0)+upgEffect('gen',0,0)+starTreeEff("qol",0,0))*upgEffect('factory',1,1)
 
     tmp.apGain = MAIN.ap.gain()
-    tmp.apGainP = upgEffect('aAuto',4,0)
+    tmp.apGainP = upgEffect('aAuto',4,0)+starTreeEff("qol",3,0)
 })

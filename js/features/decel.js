@@ -34,8 +34,7 @@ UPGS.aGrass = {
     underDesc: _=>`Some upgrades affect the Normal Realm.`,
 
     autoUnl: _=>hasUpgrade('aAuto', 1),
-
-    noSpend: _=>false,
+    noSpend: _=>hasStarTree('qol', 3),
 
     ctn: [
         {
@@ -57,10 +56,10 @@ UPGS.aGrass = {
             },
             effDesc: x => x.format()+"x",
         },{
-            max: 40,
+            max: 100,
 
-            title: "Anti-Grass Grow Speed",
-            desc: `Increase grass grow speed by <b class="green">+10%</b> per level.`,
+            title: "Anti-Realm Grow Speed",
+            desc: `Increase grass grow speed by <b class="green">+50%</b> per level in Anti-Realm.`,
 
             res: "aGrass",
             icon: ['Icons/Speed'],
@@ -69,7 +68,7 @@ UPGS.aGrass = {
             bulk: i => i.div(100).max(1).log(1.5).floor().toNumber()+1,
 
             effect(i) {
-                let x = i/10+1
+                let x = i/2+1
 
                 return x
             },

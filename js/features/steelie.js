@@ -71,7 +71,7 @@ MAIN.steel = {
 
                 req: E(1e9),
                 eff(c) {
-                    return E(2).sub(E(1).div(c.add(1).log10().div(15).add(1))).toNumber()
+                    return E(2).sub(E(1).div(c.add(1).log10().div(15).add(1))).min(1.5).toNumber()
                 },
                 effDesc: x => "Gain " + format(x) + "x Levels in Anti-Realm",
             },{
@@ -304,7 +304,7 @@ UPGS.foundry = {
     title: "Foundry",
 
     unl: _=>hasUpgrade('factory',0),
-    autoUnl: _=>hasStarTree('auto',1),
+    autoUnl: _=>hasUpgrade('assembler',10),
 
 	underDesc: _=>`
 		<b class="green">${tmp.foundryEff.format()}x</b>
@@ -409,8 +409,8 @@ UPGS.gen = {
             res: "steel",
             icon: ["Curr/Prestige"],
                         
-            cost: i => Decimal.pow(1.2,i).mul(1e3).div(starTreeEff("auto", 4)).ceil(),
-            bulk: i => i.div(1e3).mul(starTreeEff("auto", 4)).max(1).log(1.2).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.2,i).mul(1e3).div(starTreeEff("auto", 6)).ceil(),
+            bulk: i => i.div(1e3).mul(starTreeEff("auto", 6)).max(1).log(1.2).floor().toNumber()+1,
         
             effect(i) {
                 let x = i/1e3
@@ -428,8 +428,8 @@ UPGS.gen = {
             res: "steel",
             icon: ["Curr/Crystal"],
                         
-            cost: i => Decimal.pow(1.2,i).mul(1e20).div(starTreeEff("auto", 4)).ceil(),
-            bulk: i => i.div(1e20).mul(starTreeEff("auto", 4)).max(1).log(1.2).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.2,i).mul(1e20).div(starTreeEff("auto", 6)).ceil(),
+            bulk: i => i.div(1e20).mul(starTreeEff("auto", 6)).max(1).log(1.2).floor().toNumber()+1,
         
             effect(i) {
                 let x = i/1e3
@@ -619,6 +619,16 @@ UPGS.assembler = {
 
             cost: i => E(1e7),
             bulk: i => 1,
+        },{
+            unl: _ => player.rocket.part > 0 || galUnlocked(),
+            title: "Quick Foundry",
+            desc: `You can automate Foundry Upgrades.`,
+
+            res: "steel",
+            icon: ['Icons/Foundry','Icons/Automation'],
+
+            cost: i => E(1e24),
+            bulk: i => 1,
         }
     ],
 }
@@ -627,7 +637,7 @@ tmp_update.push(_=>{
     let ms = MAIN.steel
     
     tmp.steelGain = ms.gain()
-    tmp.steelGainP = starTreeEff("qol",1,0)
+    tmp.steelGainP = starTreeEff("qol",4,0)
     tmp.foundryEff = ms.foundryEff()
 
     tmp.chargeGain = ms.charger.gain()

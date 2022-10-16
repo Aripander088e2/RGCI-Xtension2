@@ -41,6 +41,9 @@ function resetTemp() {
         ghEffect: [],
         aghEffect: [],
         gsEffect: [],
+
+		gSpeed: 1,
+		gJump: 0,
     }
 
     for (let x in UPG_RES) tmp.upg_res[x] = E(0)
