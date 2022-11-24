@@ -372,3 +372,6 @@ el.update.milestones = _=>{
         }
     }
 }
+
+function changeGHMult() { player.ghMult = !player.ghMult }
+function changeGSMult() { player.gsMult = !player.gsMult }

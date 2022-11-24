@@ -18,6 +18,7 @@ function calc(dt) {
 
     player.aRes.aTime += dt
     player.aRes.lTime += dt
+    player.aRes.fTime += dt
 
     if (tmp.spawn_time >= tmp.grassSpawn) {
         while (tmp.spawn_time >= tmp.grassSpawn) {
@@ -68,6 +69,17 @@ function calc(dt) {
 		if (player.chal.comp[i] == CHALS[i].max) delete player.chal.progress[i]
 		player.chal.max[i] = Math.max(player.chal.comp[i] || 0, player.chal.max[i] || 0)
 	}
+
+    if (player.lowGH <= 16 && player.decel) {
+        player.bestAP2 = player.bestAP2.max(tmp.apGain)
+        player.bestOil2 = player.bestOil2.max(tmp.oilGain)
+    }
+
+    if (hasUpgrade('funMachine',1)) {
+        player.aRes.sfrgt = player.aRes.sfrgt.add(tmp.SFRGTgain.mul(dt))
+    }
+
+    if (hasStarTree('auto',10)) ROCKET.create()
 
     MAIN.checkCutting()
 }

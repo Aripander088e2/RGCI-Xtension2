@@ -3301,4 +3301,12 @@ Decimal.prototype.scale = scale = function (s, p, mode, rev=false) {
 Decimal.prototype.format = function (acc=2) { return format(this.clone(), acc) }
 Decimal.prototype.formatGain = function (gain, mass=false) { return formatGain(this.clone(), gain, mass) }
 
+function softcap(x,s,p,m) {
+    if (x >= s) {
+        if ([0, "pow"].includes(m)) x = (x/s)**p*s
+        if ([1, "mul"].includes(m)) x = (x-s)/p+s
+        if ([2, "pow2"].includes(m)) x = (x-s+1)**p+s-1
+    }
+    return x
+}
 function expMult(a,b,base=10) { return Decimal.gte(a,10) ? Decimal.pow(base,Decimal.log(a,base).pow(b)) : E(a) }

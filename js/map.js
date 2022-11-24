@@ -28,9 +28,9 @@ const MAP = {
 		['auto', null,'chal', 'dc','time'],
 	],
 	space: [
-		['opt', 'stats', null],
-		['gal', 'sc',   'at' ],
-		['time', null,   null]
+		['opt', 'stats', null,null ],
+		['gal', 'sc',   'at' ,'sac'],
+		['time', null,   null,null ]
 	]
 }
 
@@ -54,6 +54,7 @@ const MAP_UNLS = {
 	//SPACE
 	sc: _ => true,
 	at: _ => true,
+	sac: _ => false,
 }
 
 const MAP_IDS = (_=>{
@@ -139,7 +140,8 @@ const MAP_COLORS = {
 
 	//SPACE
 	sc: "gal",
-	at: "gal"
+	at: "gal",
+	sac: "gal"
 }
 
 el.update.map_ext = _ => {
@@ -188,6 +190,7 @@ const MAP_LOCS = {
 	gal: "Prestige",
 	sc: "Space",
 	at: "Space",
+	sac: "Space",
 }
 
 let locTimeout
@@ -223,6 +226,7 @@ const GO_TO_NAMES = {
 	//SPACE
 	sc: "Star Chart",
 	at: "Astral",
+	sac: "Sacrifice",
 }
 
 let go_to = false
@@ -279,6 +283,7 @@ const MAP_NOTIFY = {
 	//SPACE
 	sc: _ => 0,
 	at: _ => 0,
+	sac: _ => 0,
 }
 
 tmp_update.push(_=>{

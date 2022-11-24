@@ -100,6 +100,7 @@ tmp_update.push(_=>{
 
 function galTick(dt) {
 	player.gal.time += dt
+	player.gal.sacTime += dt
 	if (player.gal.sp.gte(tmp.gal.astral.req)) {
 		player.gal.astral = ASTRAL.bulk()
 	}

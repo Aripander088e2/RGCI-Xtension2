@@ -28,8 +28,10 @@
 	<script src="js/features/challenges.js"></script>
 	<script src="js/features/gh.js"></script>
 	<script src="js/features/steelie.js"></script>
-	<script src="js/features/decel.js"></script>
 	<script src="js/features/rocket.js"></script>
+
+	<script src="js/features/decel/decel.js"></script>
+	<script src="js/features/decel/funify.js"></script>
 
 	<script src="js/features/gal/main.js"></script>
 	<script src="js/features/gal/star_chart.js"></script>
@@ -133,11 +135,14 @@
 					<span id="cTimes"></span><br>
 					<span id="sTimes"></span><br>
 				</div><div id="aStats">
-					<span id="aTimes"></span><br>
-					<span id="lTimes"></span><br>
-					<span id="fTimes"></span><br>
+					<h2 id="aStatsHeader">Anti-Realm<br></h2>
+					<span id="aTimes"></span>
+					<span id="lTimes"></span>
+					<span id="fTimes"></span>
 				</div><div id="gStats">
-					<span id="gTimes"></span><br>
+					<h2 id="gStatsHeader">Space<br></h2>
+					<span id="gTimes"></span>
+					<span id="sacTimes"></span>
 				</div>
 			</div><div id="map_div_upg">
 				<div style="width: 100%; height: 50%;">
@@ -154,11 +159,21 @@
 				</div>
 			</div><div id="map_div_pc">
 				<div style="width: 100%; height: 50%;" class="table_center">
-					<div style="width: 33%; height: 100%;"><div class="reset_div" id="reset_div_pp"></div><div class="reset_div" id="reset_div_ap"></div></div>
-					<div style="width: 67%; height: 100%;"><div class="upgs_div" id="upgs_div_pp"></div><div class="upgs_div" id="upgs_div_ap"></div></div>
+					<div style="width: 33%; height: 100%;">
+						<div class="reset_div" id="reset_div_pp"></div>
+						<div class="reset_div" id="reset_div_ap"></div>
+					</div><div style="width: 67%; height: 100%;">
+						<div class="upgs_div" id="upgs_div_pp"></div>
+						<div class="upgs_div" id="upgs_div_ap"></div>
+					</div>
 				</div><div style="width: 100%; height: 50%;" class="table_center">
-					<div style="width: 33%; height: 100%;"><div class="reset_div" id="reset_div_crystal"></div><div class="reset_div" id="reset_div_oil"></div></div>
-					<div style="width: 67%; height: 100%;"><div class="upgs_div" id="upgs_div_crystal"></div><div class="upgs_div" id="upgs_div_oil"></div></div>
+					<div style="width: 33%; height: 100%;">
+						<div class="reset_div" id="reset_div_crystal"></div>
+						<div class="reset_div" id="reset_div_oil"></div>
+					</div><div style="width: 67%; height: 100%;">
+						<div class="upgs_div" id="upgs_div_crystal"></div>
+						<div class="upgs_div" id="upgs_div_oil"></div>
+					</div>
 				</div>
 			</div><div id="map_div_chal" style="overflow-y: auto;">
 				<div id="chal_unl">
@@ -170,18 +185,33 @@
 				</div>
 			</div><div id="map_div_gh">
 				<div style="width: 100%; height: 50%;" class="table_center">
-					<div style="width: 33%; height: 100%;"><div class="reset_div" id="reset_div_gh"></div><div class="reset_div" id="reset_div_gs"></div></div>
-					<div style="width: 67%; height: 100%;"><div class="milestone_div" id="milestone_div_gh"></div><div class="milestone_div" id="milestone_div_gs"></div></div>
+					<div style="width: 33%; height: 100%;">
+						<div class="reset_div" id="reset_div_gh"></div>
+						<div class="reset_div" id="reset_div_gs"></div>
+					</div><div style="width: 67%; height: 100%;">
+						<div class="milestone_div" id="milestone_div_gh"></div>
+						<div class="milestone_div" id="milestone_div_gs"></div>
+					</div>
 				</div><div style="width: 100%; height: 50%;" class="table_center">
-					<div style="width: 33%; height: 100%;"><div class="reset_div" id="reset_div_steel"></div></div>
-					<div style="width: 67%; height: 100%;"><div class="upgs_div" id="upgs_div_factory"></div></div>
+					<div style="width: 33%; height: 100%;">
+						<div class="reset_div" id="reset_div_steel"></div>
+						<div class="reset_div" id="reset_div_fun"></div>
+					</div><div style="width: 67%; height: 100%;">
+						<div class="upgs_div" id="upgs_div_factory"></div>
+						<div class="upgs_div" id="upgs_div_funMachine"></div>
+					</div>
 				</div>
 			</div><div id="map_div_fd">
 				<div style="width: 100%; height: 50%;" class="table_center">
-					<div style="width: 100%; height: 100%;"><div class="upgs_div" id="upgs_div_foundry"></div></div>
+					<div style="width: 100%; height: 100%;">
+						<div class="upgs_div" id="upgs_div_foundry"></div>
+						<div class="upgs_div" id="upgs_div_fundry"></div>
+					</div>
 				</div><div style="width: 100%; height: 50%;" class="table_center">
-					<div style="width: 50%; height: 100%;"><div class="upgs_div" id="upgs_div_gen"></div></div>
-					<div style="width: 50%; height: 100%;"><div id="charger_div">
+					<div style="width: 50%; height: 100%;">
+						<div class="upgs_div" id="upgs_div_gen"></div>
+						<div class="upgs_div" id="upgs_div_sfrgt"></div>
+					</div><div style="width: 50%; height: 100%;"><div id="charger_div">
 						<div style="height: 40px;" id="charge_upper">
 							
 						</div><div id="charge_mil">
@@ -285,7 +315,12 @@
 				</div><div style="width: 100%; height: 50%;" class="table_center">
 					<div class="upgs_div" id="upgs_div_moonstone"></div>
 				</div>
-			</div>
+			</div><div id="map_div_sac">
+                <div style="width: 100%; height: 50%;" class="table_center">
+                    <div style="width: 33%; height: 100%;"><div class="reset_div" id="reset_div_sac"></div></div>
+                    <div style="width: 67%; height: 100%;"><div class="upgs_div" id="upgs_div_dm" style="display: none;"></div></div>
+                </div>
+            </div>
 		</div>
 		<div style="position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%);">
 			<button id="mapBtn" onclick="go_to = !go_to">Map</button>

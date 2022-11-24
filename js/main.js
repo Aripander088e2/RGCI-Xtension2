@@ -270,7 +270,8 @@ window.addEventListener('keydown', function(event) {
 			else RESET.gh.reset();
 			break;
 		case "s":
-			if (shiftDown) RESET.steel.reset();
+			if (shiftDown && player.decel) RESET.fun.reset();
+			else if (shiftDown) RESET.steel.reset();
 			break;
 		case "f":
 			ROCKET.create()

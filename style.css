@@ -435,6 +435,14 @@ button:not(.locked):hover {
     background-color: #003380;
 }
 
+.reset_div.sac,
+.reset_req.sac,
+.upg_desc.dm,
+.upgs_div.dm {
+    border-color: #ffa4d9;
+    background-color: #305;
+}
+
 .upgs_ctn {
     height: calc(100% - 84px);
     width: calc(100% - 24px);
@@ -640,8 +648,19 @@ button:not(.locked):hover {
 #milestone_div_gs,
 #milestone_div_gs .milestone_ctns > div,
 .reset_div.gs,
-.reset_req.gs {
+.reset_req.gs,
+.reset_div.fun,
+.reset_req.fun,
+.upg_desc.funMachine,
+.upgs_div.funMachine,
+.upg_desc.fundry,
+.upgs_div.fundry {
     background-color: #ffff79;
+}
+
+.upg_desc.sfrgt,
+.upgs_div.sfrgt {
+    background-color: #bfff79;
 }
 
 .milestone_ctns {

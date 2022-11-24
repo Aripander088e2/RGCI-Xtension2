@@ -57,15 +57,18 @@ el.update.reset = _=> {
         updateResetHTML('gh')
         updateResetHTML('steel')
         updateResetHTML('gs')
+        updateResetHTML('fun')
     }
     if (mapID == 'dc') {
         updateResetHTML('decel')
     }
     if (mapID == 'rf') {
         updateResetHTML('rocket_part')
-        updateResetHTML('gal')
     }
     if (mapID == 'gal') {
         updateResetHTML('gal')
+    }
+    if (mapID == 'sac') {
+        updateResetHTML('sac')
     }
 }

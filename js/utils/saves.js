@@ -43,6 +43,8 @@ function getPlayerData() {
 
 		//GRASSHOP
 		grasshop: 0,
+		ghMult: false,
+
 		steel: E(0),
 		sTimes: 0,
 		sTime: 0,
@@ -71,7 +73,11 @@ function getPlayerData() {
 			lTimes: 0,
 			lTime: 0,
 
-			grassskip: 0
+			grassskip: 0,
+			fun: E(0),
+			fTimes: 0,
+			fTime: 0,
+			sfrgt: E(0)
 		},
 
 		rocket: {
@@ -106,8 +112,8 @@ function safecheckSave(data) {
 	return true
 }
 
-const VER = 0.0306
-const EX_COMMIT = 11
+const VER = 0.042
+const EX_COMMIT = 11.05
 const TB_VER = 1.02
 function loadPlayer(data) {
 	player = deepUndefinedAndDecimal(data, getPlayerData())
