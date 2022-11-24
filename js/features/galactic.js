@@ -3,7 +3,7 @@ RESET.gal = {
 	req: _=>player.rocket.part==10,
 	reqDesc: _=>`Get 10 Rocket Parts to unlock.`,
 
-	resetDesc: `Galactic will reset <b class="red">EVERYTHING prior</b> except Rocket Fuel upgrades! Last chance before departure...`,
+	resetDesc: `Galactic will reset <b class="red">EVERYTHING prior</b> except Rocket Fuel and Refinery Upgrades! Last chance before departure...`,
 	resetGain: _=> `Coming soon!`,
 
 	title: `Galactic`,
@@ -31,7 +31,7 @@ RESET.gal = {
 		player.steel = E(0)
 		player.bestCharge = E(0)
 		player.decel = false
-		player.rocket = { total_fp: 0, amount: 0, part: 0, momentum: 0 }
+		player.rocket = { total_fp: 0, amount: player.rocket.amount, part: 0, momentum: 0 }
 		resetAntiRealm()
 
 		resetUpgrades("auto")

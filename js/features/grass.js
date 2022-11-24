@@ -42,7 +42,7 @@ function removeGrass(i,auto=false) {
 	tmp.realmSrc.xp = tmp.realmSrc.xp.add(tmp.xpGain.mul(av).mul(v))
 	if (player.pTimes > 0) tmp.realmSrc.tp = tmp.realmSrc.tp.add(tmp.tpGain.mul(av))
 	if (galUnlocked()) player.gal.sp = player.gal.sp.add(tmp.gal.astral.gain)
-	if (tg.pl) player.plat += tmp.platGain * (hasAGHMilestone(1) ? v : 1)
+	if (tg.pl) player.plat += tmp.platGain * (player.aRes.grassskip > 0 ? v : 1)
 	if (tg.ms) player.gal.moonstone += tmp.gal.ms.gain
 	if (tg.ch) MAIN.chrono.onCut()
 

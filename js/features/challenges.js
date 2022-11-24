@@ -226,6 +226,12 @@ function enterChal(x) {
 
 function chalEff(x,def=E(1)) { return tmp.chal.eff[x] || def }
 
+function autoChalTime() {
+	let r = upgEffect("assembler", 8)
+	r /= starTreeEff("auto", 3)
+	return r
+}
+
 tmp_update.push(_=>{
 	for (let i in CHALS) {
 		let c = player.chal.comp[i] || 0
@@ -236,7 +242,7 @@ tmp_update.push(_=>{
 			let c = CHALS[i]
 			let a = c.goalAmt()
 			tmp.chal.amt[i] = a
-			tmp.chal.bulk[i] = a >= chalSGoal[i] ? Math.min(c.bulk(a), c.max) : 0
+			tmp.chal.bulk[i] = Math.max(Math.min(c.bulk(a), c.max), 0)
 		}
 	}
 })
@@ -282,7 +288,7 @@ el.update.chal = _=>{
 				You can complete Challenges without entering if you satisfy a condition.
 			`)
 			tmp.el.chal_auto.setDisplay(hasUpgrade("assembler", 8))
-			tmp.el.chal_auto.setTxt("Auto-completing in " + format((1 - player.chal.time) * upgEffect("assembler", 8), 1) + "s")
+			tmp.el.chal_auto.setTxt("Auto-completing in " + format((1 - player.chal.time) * autoChalTime(), 1) + "s")
 
 			for (let i in CHALS) {
 				let c = CHALS[i]

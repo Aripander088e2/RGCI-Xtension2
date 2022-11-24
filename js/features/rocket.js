@@ -1,4 +1,4 @@
-const RF_COST_POW = 1.5
+const RF_COST_POW = 2
 
 const ROCKET = {
 	cost(rf,mul) {
@@ -35,7 +35,7 @@ UPGS.rocket = {
 	ctn: [
 		//Tier 1
 		{
-			max: 150,
+			max: 50,
 
 			costOnce: true,
 
@@ -55,7 +55,7 @@ UPGS.rocket = {
 			},
 			effDesc: x => format(x)+"x",
 		},{
-			max: 150,
+			max: 50,
 
 			costOnce: true,
 
@@ -75,7 +75,7 @@ UPGS.rocket = {
 			},
 			effDesc: x => format(x)+"x",
 		},{
-			max: 150,
+			max: 50,
 
 			costOnce: true,
 
@@ -85,8 +85,8 @@ UPGS.rocket = {
 			res: "rf",
 			icon: ['Icons/TP'],
 			
-			cost: i => 1,
-			bulk: i => i,
+			cost: i => 2,
+			bulk: i => Math.floor(i/2),
 
 			effect(i) {
 				let x = E(i*0.05+1)
@@ -95,7 +95,7 @@ UPGS.rocket = {
 			},
 			effDesc: x => format(x)+"x",
 		},{
-			max: 150,
+			max: 50,
 
 			costOnce: true,
 
@@ -115,7 +115,7 @@ UPGS.rocket = {
 			},
 			effDesc: x => format(x)+"x",
 		},{
-			max: 150,
+			max: 50,
 
 			costOnce: true,
 
@@ -135,7 +135,7 @@ UPGS.rocket = {
 			},
 			effDesc: x => format(x)+"x",
 		},{
-			max: 150,
+			max: 50,
 
 			costOnce: true,
 
@@ -155,7 +155,7 @@ UPGS.rocket = {
 			},
 			effDesc: x => format(x)+"x",
 		},{
-			max: 150,
+			max: 50,
 
 			costOnce: true,
 
@@ -175,7 +175,7 @@ UPGS.rocket = {
 			},
 			effDesc: x => format(x)+"x",
 		},{
-			max: 150,
+			max: 50,
 
 			costOnce: true,
 
@@ -195,7 +195,7 @@ UPGS.rocket = {
 			},
 			effDesc: x => format(x)+"x",
 		},{
-			max: 150,
+			max: 50,
 
 			costOnce: true,
 
@@ -231,15 +231,15 @@ UPGS.rocket = {
 			res: "rf",
 			icon: ['Icons/Speed'],
 			
-			cost: i => 5,
-			bulk: i => i/5,
+			cost: i => 10,
+			bulk: i => i/10,
 
 			effect(i) {
-				let x = E(i*0.05+1)
+				let x = E(i*0.1+1)
 
 				return x
 			},
-			effDesc: x => format(x)+"x",
+			effDesc: x => format(x,1)+"/s",
 		},{
 			unl: _ => hasStarTree("progress", 0),
 			tier: 2,
@@ -249,16 +249,16 @@ UPGS.rocket = {
 			costOnce: true,
 
 			title: "Rocket Fueled Levels II",
-			desc: `Increase XP gain by <b class="green">+5%</b> per level.`,
+			desc: `Increase XP gain by <b class="green">+10%</b> per level.`,
 
 			res: "rf",
 			icon: ['Icons/XP'],
 			
-			cost: i => 5,
-			bulk: i => i/5,
+			cost: i => 30,
+			bulk: i => i/30,
 
 			effect(i) {
-				let x = E(i*0.05+1)
+				let x = E(i*0.1+1)
 
 				return x
 			},
@@ -272,16 +272,16 @@ UPGS.rocket = {
 			costOnce: true,
 
 			title: "Rocket Fueled Prestiges II",
-			desc: `Increase PP gain by <b class="green">+5%</b> per level.`,
+			desc: `Increase PP gain by <b class="green">+10%</b> per level.`,
 
 			res: "rf",
 			icon: ['Curr/Prestige'],
 			
-			cost: i => 5,
-			bulk: i => i/5,
+			cost: i => 30,
+			bulk: i => i/30,
 
 			effect(i) {
-				let x = E(i*0.05+1)
+				let x = E(i*0.1+1)
 
 				return x
 			},
@@ -295,16 +295,16 @@ UPGS.rocket = {
 			costOnce: true,
 
 			title: "Rocket Fueled Foundry II",
-			desc: `Increase steel gain by <b class="green">+5%</b> per level.`,
+			desc: `Increase steel gain by <b class="green">+10%</b> per level.`,
 
 			res: "rf",
 			icon: ['Curr/Steel2'],
 			
-			cost: i => 5,
-			bulk: i => i/5,
+			cost: i => 30,
+			bulk: i => i/30,
 
 			effect(i) {
-				let x = E(i*0.05+1)
+				let x = E(i*0.1+1)
 
 				return x
 			},
@@ -318,16 +318,16 @@ UPGS.rocket = {
 			costOnce: true,
 
 			title: "Rocket Fueled Charge II",
-			desc: `Increase charge rate by <b class="green">+5%</b> per level.`,
+			desc: `Increase charge rate by <b class="green">+10%</b> per level.`,
 
 			res: "rf",
 			icon: ['Icons/Charge'],
 			
-			cost: i => 5,
-			bulk: i => i/5,
+			cost: i => 30,
+			bulk: i => i/30,
 
 			effect(i) {
-				let x = E(i*0.05+1)
+				let x = E(i*0.1+1)
 
 				return x
 			},
@@ -341,16 +341,16 @@ UPGS.rocket = {
 			costOnce: true,
 
 			title: "Rocket Fueled Anonymity II",
-			desc: `Increase AP gain by <b class="green">+5%</b> per level.`,
+			desc: `Increase AP gain by <b class="green">+10%</b> per level.`,
 
 			res: "rf",
 			icon: ['Curr/Anonymity'],
 			
-			cost: i => 5,
-			bulk: i => i/5,
+			cost: i => 30,
+			bulk: i => i/30,
 
 			effect(i) {
-				let x = E(i*0.05+1)
+				let x = E(i*0.1+1)
 
 				return x
 			},
@@ -364,16 +364,16 @@ UPGS.rocket = {
 			costOnce: true,
 
 			title: "Rocket Fueled Pumpjacks II",
-			desc: `Increase oil gain by <b class="green">+5%</b> per level.`,
+			desc: `Increase oil gain by <b class="green">+10%</b> per level.`,
 
 			res: "rf",
 			icon: ['Curr/Oil'],
 			
-			cost: i => 5,
-			bulk: i => i/5,
+			cost: i => 30,
+			bulk: i => i/30,
 
 			effect(i) {
-				let x = E(i*0.05+1)
+				let x = E(i*0.1+1)
 
 				return x
 			},
@@ -382,9 +382,7 @@ UPGS.rocket = {
 			unl: _ => hasStarTree("progress", 0),
 			tier: 2,
 
-			max: 10,
-
-			costOnce: true,
+			max: 20,
 
 			title: "Rocket Fueled Luck",
 			desc: `Increase Platinum chance by <b class="green">+0.2%</b>.`,
@@ -392,8 +390,8 @@ UPGS.rocket = {
 			res: "rf",
 			icon: ['Curr/Platinum'],
 			
-			cost: i => 100,
-			bulk: i => i/100,
+			cost: i => E(2).pow(i).mul(100),
+			bulk: i => E(i).div(100).log(2).floor().toNumber() + 1,
 
 			effect(i) {
 				return i * 0.002

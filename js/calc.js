@@ -59,7 +59,7 @@ function calc(dt) {
 
 	if (hasUpgrades("perk")) player.chal.c4 = false
     if (hasUpgrade("assembler", 8)) {
-		player.chal.time = (player.chal.time || 0) + dt / upgEffect("assembler", 8) / starTreeEff("auto", 3)
+		player.chal.time = (player.chal.time || 0) + dt / autoChalTime()
 		for (var i = 0; i < 6; i++) player.chal.comp[i] = Math.min(player.chal.comp[i] + Math.floor(player.chal.time), player.chal.max[i])
 		player.chal.time -= Math.floor(player.chal.time)
 	}

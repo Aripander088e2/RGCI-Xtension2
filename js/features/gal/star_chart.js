@@ -8,7 +8,7 @@ const SC_IDS = {
 	auto: [
 		[4,0,1],
 		[2,3,5,6],
-		[7,null]
+		[7]
 	],
 	progress: [
 		[0],
@@ -50,8 +50,8 @@ const STAR_CHART = {
 			branch: 0,
 			icon: ['Curr/Prestige','Icons/StarProgression'],
 							
-			cost: i => E(3).pow(i),
-			bulk: i => i.log(3).floor().toNumber() + 1,
+			cost: i => E(3).pow(i).mul(30),
+			bulk: i => i.div(30).log(3).floor().toNumber() + 1,
 
 			effect(i) {
 				return i/1e3
@@ -66,8 +66,8 @@ const STAR_CHART = {
 			branch: 2,
 			icon: ['Curr/Anonymity','Icons/StarProgression'],
 							
-			cost: i => E(3).pow(i),
-			bulk: i => i.log(3).floor().toNumber() + 1,
+			cost: i => E(3).pow(i).mul(1e4),
+			bulk: i => i.div(1e4).log(3).floor().toNumber() + 1,
 
 			effect(i) {
 				return i/1e3
@@ -81,9 +81,9 @@ const STAR_CHART = {
 
 			branch: 2,
 			icon: ['Curr/Steel2','Icons/StarProgression'],
-							
-			cost: i => E(3).pow(i).mul(5),
-			bulk: i => i.div(5).log(3).floor().toNumber() + 1,
+
+			cost: i => E(3).pow(i).mul(1e5),
+			bulk: i => i.div(1e5).log(3).floor().toNumber() + 1,
 
 			effect(i) {
 				return i/1e3
@@ -98,7 +98,7 @@ const STAR_CHART = {
 			branch: 0,
 			icon: ['Icons/Grasshop2','Icons/StarProgression'],
 
-			cost: i => E(15),
+			cost: i => E(200),
 			bulk: i => 1
 		}, {
 			max: 1,
@@ -109,7 +109,7 @@ const STAR_CHART = {
 			branch: 5,
 			icon: ['Icons/Assemblerv2','Icons/StarProgression'],
 	
-			cost: i => E(30),
+			cost: i => E(150),
 			bulk: i => 1
 		}, {
 			unl: _ => false,
@@ -121,7 +121,7 @@ const STAR_CHART = {
 			branch: 5,
 			icon: ['Icons/Grassskip','Icons/StarProgression'],
 
-			cost: i => E(1e3),
+			cost: i => E(1e10),
 			bulk: i => 1
 		}, {
 			max: 1,
@@ -155,7 +155,7 @@ const STAR_CHART = {
 			branch: 8,
 			icon: ['Curr/Charge','Icons/StarProgression'],
 
-			cost: i => E(50),
+			cost: i => E(1e3),
 			bulk: i => 1
 		},
 	],
@@ -178,19 +178,19 @@ const STAR_CHART = {
 
 			branch: 0,
 			icon: ['Curr/Charge','Icons/StarAuto'],
-							
-			cost: i => E(5),
+
+			cost: i => E(20),
 			bulk: i => 1
 		}, {
 			max: 1,
 
-			title: "Moving to Launch",
+			title: "Moving and Launch",
 			desc: `Automate the Refinery (soon) and Momentum Upgrades.`,
 
 			branch: 0,
 			icon: ['Curr/RocketFuel','Icons/StarAuto'],
-							
-			cost: i => EINF,
+
+			cost: i => E(50),
 			bulk: i => 1
 		}, {
 			max: 20,
@@ -200,9 +200,9 @@ const STAR_CHART = {
 
 			branch: 0,
 			icon: ['Icons/Challenge','Icons/StarAuto'],
-							
-			cost: i => EINF,
-			bulk: i => 1,
+
+			cost: i => E(2).pow(i).mul(10),
+			bulk: i => i.div(10).log(2).floor().toNumber() + 1,
 
 			effect(i) {
 				return i/5+1
@@ -217,7 +217,7 @@ const STAR_CHART = {
 			branch: 0,
 			icon: ['Icons/Assemblerv2','Icons/StarAuto'],
 							
-			cost: i => EINF,
+			cost: i => E(1e4),
 			bulk: i => 1,
 		}, {
 			max: 10,
@@ -227,8 +227,8 @@ const STAR_CHART = {
 
 			branch: 0,
 			icon: ['Curr/Platinum','Icons/StarAuto'],
-							
-			cost: i => EINF,
+
+			cost: i => E(3e3),
 			bulk: i => 1,
 		}, {
 			max: 10,
@@ -238,12 +238,12 @@ const STAR_CHART = {
 
 			branch: 0,
 			icon: ['Icons/Assemblerv2','Icons/StarAuto'],
-							
+
 			cost: i => E(2).pow(i).mul(100),
 			bulk: i => i.div(100).log(2).floor().toNumber() + 1,
 
 			effect(i) {
-				return E(2).pow(i)
+				return E(10).pow(i)
 			},
 			effDesc: x => "/"+format(x)
 		}, {
@@ -252,9 +252,9 @@ const STAR_CHART = {
 			title: "Speedgrass",
 			desc: `Auto-Cutting is faster.`,
 
-			branch: 7,
+			branch: 0,
 			icon: ['Curr/Grass','Icons/StarAuto'],
-							
+
 			cost: i => EINF,
 			bulk: i => 1,
 
@@ -284,7 +284,7 @@ const STAR_CHART = {
 			branch: 0,
 			icon: ['Curr/RocketFuel','Icons/StarSpeed'],
 
-			cost: i => E(15),
+			cost: i => E(1/0),
 			bulk: i => 1
 		}, {
 			max: 1,
@@ -294,8 +294,8 @@ const STAR_CHART = {
 
 			branch: 0,
 			icon: ['Icons/TP','Icons/StarSpeed'],
-							
-			cost: i => EINF,
+
+			cost: i => E(1e3),
 			bulk: i => 0
 		}, {
 			max: 1,
@@ -305,8 +305,8 @@ const STAR_CHART = {
 
 			branch: 2,
 			icon: ['Curr/Charge','Icons/StarSpeed'],
-							
-			cost: i => EINF,
+
+			cost: i => E(1e4),
 			bulk: i => 0
 		}, {
 			max: 1,
@@ -316,8 +316,8 @@ const STAR_CHART = {
 
 			branch: 3,
 			icon: ['Icons/SP','Icons/StarSpeed'],
-							
-			cost: i => EINF,
+
+			cost: i => E(1e5),
 			bulk: i => 0
 		}, {
 			max: Infinity,
@@ -328,26 +328,26 @@ const STAR_CHART = {
 			branch: 3,
 			icon: ['Icons/TP','Icons/StarSpeed'],
 							
-			cost: i => EINF,
-			bulk: i => 0,
+			cost: i => E(10).pow(i+6),
+			bulk: i => E(i).log10().sub(6).floor().toNumber() + 1,
 
 			effect(i) {
 				return i
 			},
 			effDesc: x => "+" + format(i, 0) + " levels"
 		}, {
-			max: 100,
+			max: 1,
 
 			title: "Challenge Bundle I-A",
 			desc: `Unlock "Sleepy Hops" Challenge.`,
 
 			branch: 2,
 			icon: ['Icons/Challenge','Icons/StarSpeed'],
-							
-			cost: i => EINF,
+
+			cost: i => E(1e4),
 			bulk: i => 0
 		}, {
-			max: 100,
+			max: 1,
 
 			title: "Challenge Bundle I-B",
 			desc: `Unlock "Walk On Grass" Challenge.`,

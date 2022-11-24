@@ -199,10 +199,10 @@ const ASTRAL = {
 
 		x.tp = a+1
 		x.fd = a/20+1
-		if (hasAGHMilestone(2)) x.rf = a/4
-		if (hasAGHMilestone(3)) x.ch = a/2+1
+		if (hasAGHMilestone(1)) x.st = 2**(a/4)
+		if (hasAGHMilestone(2)) x.rf = a/20
+		if (hasAGHMilestone(3)) x.ch = 2**(a/4-2)
 		if (hasAGHMilestone(4)) x.tb = Math.sqrt(a)/20
-		if (hasAGHMilestone(8)) x.st = 1.2 ** a
 		if (hasAGHMilestone(9)) x.fu = a/5+1
 		if (hasAGHMilestone(10)) x.sf = E(2).pow(a)
 
@@ -213,10 +213,10 @@ const ASTRAL = {
 
 		if (e.tp) x += `<b class="magenta">${format(e.tp)}x</b> to TP gain<br>`
 		if (e.fd) x += `<b class="magenta">^${format(e.fd)}</b> to Foundry effect<br>`
+		if (e.st) x += `<b class="magenta">${format(e.st,0)}x</b> to Star gain<br>`
 		if (e.rf) x += `<b class="magenta">+${format(e.rf)}x</b> to Rocket Fuel gain<br>`
 		if (e.ch) x += `<b class="magenta">${format(e.ch)}x</b> to Charge gain<br>`
 		if (e.tb) x += `<b class="magenta">+${format(e.tb,3)}x</b> to Tier multiplier base<br>`
-		if (e.st) x += `<b class="magenta">${format(e.st,0)}x</b> to Star gain<br>`
 		if (e.fu) x += `<b class="magenta">${format(e.fu)}x</b> to Fun gain<br>`
 		if (e.sf) x += `<b class="magenta">${format(e.sf,0)}x</b> to SFRGT gain<br>`
 
@@ -243,13 +243,13 @@ UPGS.moonstone = {
 			res: "moonstone",
 			icon: ["Curr/Platinum"],
 			
-			cost: i => 10,
-			bulk: i => Math.floor(i/10),
+			cost: i => 2,
+			bulk: i => i/2,
 
 			effect(i) {
-				return i
+				return i/2
 			},
-			effDesc: x => "+"+format(x,0)+"x",
+			effDesc: x => "+"+format(x,0),
 		}, {
 			max: 10,
 
@@ -261,8 +261,8 @@ UPGS.moonstone = {
 			res: "moonstone",
 			icon: ["Curr/RocketFuel"],
 			
-			cost: i => 20,
-			bulk: i => Math.floor(i/20),
+			cost: i => 10,
+			bulk: i => Math.floor(i/10),
 
 			effect(i) {
 				return i/2
@@ -339,64 +339,64 @@ UPGS.star = {
 			max: Infinity,
 
 			title: "Shiny Stars",
-			desc: `Increase star gain by <b class="green">10%</b> compounding per level.`,
+			desc: `Increase star gain by <b class="green">20%</b> compounding per level.`,
 		
 			res: "plat",
 			icon: ["Curr/Star"],
 
-			cost: i => E(1.2).pow(i).mul(1e3),
-			bulk: i => E(i).div(1e3).log(1.2).floor().toNumber() + 1,
+			cost: i => 1.5**i,
+			bulk: i => E(i).div(1e3).log(1.5).floor().toNumber() + 1,
 
 			effect(i) {
-				return E(1.1).pow(i)
+				return E(1.2).pow(i)
 			},
 			effDesc: x => format(x)+"x",
 		},{
 			max: Infinity,
 
 			title: "Industrial Stars",
-			desc: `Increase star gain by <b class="green">10%</b> compounding per level.`,
+			desc: `Increase star gain by <b class="green">20%</b> compounding per level.`,
 		
 			res: "steel",
 			icon: ["Curr/Star"],
 
-			cost: i => E(10).pow(i).mul(1e36),
-			bulk: i => E(i).div(1e36).log(10).floor().toNumber() + 1,
+			cost: i => E(10).pow(i).mul(1e30),
+			bulk: i => E(i).div(1e30).log(10).floor().toNumber() + 1,
 
 			effect(i) {
-				return E(1.1).pow(i)
+				return E(1.2).pow(i)
 			},
 			effDesc: x => format(x)+"x",
 		},{
 			max: Infinity,
 
 			title: "Thruster Stars",
-			desc: `Increase star gain by <b class="green">10%</b> compounding per level.`,
+			desc: `Increase star gain by <b class="green">20%</b> compounding per level.`,
 		
 			res: "rf",
 			icon: ["Curr/Star"],
 
-			cost: i => E(1.5).pow(i).mul(1e3),
-			bulk: i => E(i).div(1e3).log(1.5).floor().toNumber() + 1,
+			cost: i => E(1.5).pow(i**0.8).mul(50),
+			bulk: i => E(i).div(50).log(1.5).root(0.8).floor().toNumber() + 1,
 		
 			effect(i) {
-				return E(1.1).pow(i)
+				return E(1.2).pow(i)
 			},
 			effDesc: x => format(x)+"x",
 		},{
 			max: Infinity,
 
 			title: "Accumulated Stars",
-			desc: `Increase star gain by <b class="green">10%</b> compounding per level.`,
+			desc: `Increase star gain by <b class="green">20%</b> compounding per level.`,
 		
 			res: "moonstone",
 			icon: ["Curr/Star"],
 
-			cost: i => E(1.1).pow(i).mul(5),
-			bulk: i => E(i).div(5).log(1.1).floor().toNumber() + 1,
+			cost: i => 1.5**i,
+			bulk: i => E(i).log(1.5).floor().toNumber() + 1,
 
 			effect(i) {
-				return E(1.1).pow(i)
+				return E(1.2).pow(i)
 			},
 			effDesc: x => format(x)+"x",
 		}
@@ -407,13 +407,13 @@ UPGS.star = {
 MAIN.agh_milestone = [
     {
         r: 1,
-        desc: `Gain +50% more SP per AGH Level.`,
+        desc: `Gain <b class="green">+1x</b> more SP per AGH Level.`,
 
-		effect: _ => tmp.gal.agh.lvl / 2 + 1,
+		effect: _ => tmp.gal.agh.lvl + 1,
 		effDesc: x => format(x, 1)+"x",
     }, {
         r: 2,
-        desc: `Auto-value boosts Platinum.`,
+        desc: `Astral boosts Stars.`,
     }, {
         r: 3,
         desc: `Astral boosts Rocket Fuel.`,
@@ -435,7 +435,7 @@ MAIN.agh_milestone = [
         unl: _ => false,
 
         r: 8,
-        desc: `Astral boosts Stars.`,
+        desc: `???`,
     }, {
         unl: _ => false,
 
@@ -460,7 +460,7 @@ MAIN.agh_milestone = [
 ]
 
 const AGH_MIL_LEN = MAIN.agh_milestone.length
-function hasAGHMilestone(x,def=1) { return tmp.gal && tmp.gal.agh.lvl > MAIN.agh_milestone[x].r }
+function hasAGHMilestone(x,def=1) { return tmp.gal && tmp.gal.agh.lvl >= MAIN.agh_milestone[x].r }
 function getAGHEffect(x,def=1) { return (tmp.gal && tmp.gal.agh.eff[x]) || def }
 function updateAGHTemp() {
 	let data = tmp.gal.agh || {}

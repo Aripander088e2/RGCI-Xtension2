@@ -51,7 +51,7 @@ MAIN.gh = {
             unl: _=>hasUpgrade('factory',2),
 
             r: 12,
-            desc: `Gain <b class="green">2x</b> more Charge per Grasshop. (starting at 19 and ending at 30)`,
+            desc: `Gain <b class="green">2x</b> more Charge per Grasshop. (starting at 12 and ending at 30)`,
             effect: _=>E(2).pow(Math.max(0,Math.min(player.grasshop,30)-11)),
             effDesc: x=> format(x,0)+"x",
         },{
@@ -127,13 +127,13 @@ RESET.gh = {
 
 //GRASS-SKIPS
 MAIN.gs = {
-    req: _ => 200 + player.aRes.grassskip * 15,
-    bulk: _ => Math.floor((player.aRes.level - 200) / 15) + 1,
+    req: _ => 200+player.aRes.grassskip*10,
+    bulk: _ => Math.floor((player.aRes.level-200)/10) + 1,
 
     milestone: [
         {
             r: 1,
-            desc: `Gain <b class="green">3x</b> more Grass and XP, only in Anti-Realm.`
+            desc: `Gain <b class="green">3x</b> more Grass and XP, only in Anti-Realm. Auto-value boosts Platinum.`
         },
         {
             r: 2,
@@ -149,8 +149,8 @@ MAIN.gs = {
         },
         {
             r: 4,
-            desc: `Each Grass-Skip gives <b class="green">+0.5x</b> more Rocket Fuel. (starting at 4)`,
-            effect: _ => Math.max(player.aRes.grassskip - 3, 0) / 2,
+            desc: `Each Grass-Skip gives <b class="green">+0.1x</b> more Rocket Fuel. (starting at 4)`,
+            effect: _ => Math.max(player.aRes.grassskip-3,0)/10,
             effDesc: x => "+" + format(x, 1) + "x"
         },
         {
@@ -181,13 +181,6 @@ MAIN.gs = {
         {
             unl: _ => false,
             r: 10,
-            desc: `Each Grass-Skip gives <b class="green">2x</b> more Fun. (starting at 9)`,
-            effect: _ => E(2).pow(Math.max(player.aRes.grassskip - 8, 0)),
-            effDesc: x => format(x, 0) + "x"
-        },
-        {
-            unl: _ => false,
-            r: 9,
             desc: `Each Grass-Skip gives <b class="green">2x</b> more Fun. (starting at 9)`,
             effect: _ => E(2).pow(Math.max(player.aRes.grassskip - 8, 0)),
             effDesc: x => format(x, 0) + "x"

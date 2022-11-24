@@ -101,9 +101,9 @@ MAIN.steel = {
             },{
                 unl: _ => hasStarTree("progress", 4),
 
-                req: E(1e30),
+                req: E(1e27),
                 eff(c) {
-                    return c.add(1).log10().div(20).pow10()
+                    return c.div(1e15).add(1).log10().div(10).pow10()
                 },
                 effDesc: x => "Gain more "+format(x,3)+"x Space Power.",
             },
