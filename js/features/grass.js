@@ -10,9 +10,8 @@ function createGrass() {
 		let rng = Math.random()
 
         let nt = hasGSMilestone(5) && rng < 0.1
-        let pl = (player.tier >= 2 || player.cTimes > 0) && rng < tmp.platChance
-        let ch = galUnlocked() && rng < 0.001
-        let ms = galUnlocked() && pl && Math.random() < tmp.gal.ms.chance
+        let pl = (player.tier >= 2 || player.cTimes > 0) && Math.random() < tmp.platChance
+        let ms = pl && galUnlocked() && Math.random() < tmp.gal.ms.chance
 
         tmp.grasses.push({
             x: Math.random(),
@@ -21,9 +20,8 @@ function createGrass() {
             tier: player.tier,
             nt: nt,
 
-            pl: pl && !ch,
-            ms: ms && !ch,
-            ch: ch,
+            pl: pl,
+            ms: ms
         })
     }
 }
@@ -44,7 +42,6 @@ function removeGrass(i,auto=false) {
 	if (galUnlocked()) player.gal.sp = player.gal.sp.add(tmp.gal.astral.gain)
 	if (tg.pl) player.plat += tmp.platGain * (player.aRes.grassskip > 0 ? v : 1)
 	if (tg.ms) player.gal.moonstone += tmp.gal.ms.gain
-	if (tg.ch) MAIN.chrono.onCut()
 
 	if (hasGSMilestone(4)) {
 		if (tg.ms) player.gal.msLuck = 1
@@ -87,7 +84,7 @@ function drawGrass() {
         let g = gs[i]
 
         if (g) {
-            grass_ctx.fillStyle = g.ch?'#50b':g.ms?'#008DFF':g.pl?"#DDD":grassColor(g.tier+(g.nt?1:0))
+            grass_ctx.fillStyle = g.ms?'#008DFF':g.pl?"#DDD":grassColor(g.tier+(g.nt?1:0))
 
             let [x,y] = [Math.min(grass_canvas.width*g.x,grass_canvas.width-G_SIZE),Math.min(grass_canvas.height*g.y,grass_canvas.height-G_SIZE)]
 

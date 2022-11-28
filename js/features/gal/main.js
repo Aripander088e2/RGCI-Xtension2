@@ -21,7 +21,7 @@ RESET.gal = {
 	reqDesc: _=>`Get 10 Rocket Parts to unlock.`,
 
 	resetDesc: `Galactic will reset <b class="red">EVERYTHING prior</b> except Rocket Fuel upgrades! Last chance before departure...`,
-    resetGain: _=> galUnlocked() ? `Gain <b>${tmp.gal.star_gain.format(0)}</b> Stars` : `You'll also unlock <b>Chronology</b> and <b>Grass-Skips</b>.`,
+    resetGain: _=> galUnlocked() ? `Gain <b>${tmp.gal.star_gain.format(0)}</b> Stars` : `You'll also unlock <b>Grass-Skips</b>.`,
 
 	title: `Galactic`,
 	resetBtn: `Galactic!`,
@@ -94,7 +94,7 @@ tmp_update.push(_=>{
 	data.ms.gain = 1
 	data.ms.gain += getASEff('ms', 0)
 
-	updateChronoTemp()
+	//updateChronoTemp()
 	updateSCTemp()
 })
 

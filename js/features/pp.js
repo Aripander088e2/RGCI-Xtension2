@@ -172,7 +172,7 @@ UPGS.pp = {
 
             res: "pp",
             icon: ["Icons/TP"],
-                        
+
             cost: i => Decimal.pow(3,i**1.25).mul(1e80).ceil(),
             bulk: i => i.div(1e80).max(1).log(3).root(1.25).floor().toNumber()+1,
         

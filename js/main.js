@@ -57,7 +57,7 @@ const MAIN = {
         if (player.grasshop >= 7) x = x.mul(2)
 
         if (player.decel) x = x.div(1e5)
-        if (player.decel && hasUpgrade('aGrass', 4)) x = x.mul(upgEffect('aGrass', 4))
+        if (player.decel && hasUpgrade('aGrass',4)) x = x.mul(upgEffect('aGrass',4))
         x = x.mul(upgEffect('ap',2))
         x = x.mul(upgEffect('oil',1))
         if (player.decel && hasGSMilestone(0)) x = x.mul(3)

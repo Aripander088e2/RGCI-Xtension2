@@ -159,7 +159,7 @@ const CHALS = [
 
         title: `Sleepy Hop`,
         desc: `You must grasshop at least as you can. Getting 10 Rocket Parts will complete it.`,
-        cond: _=>tmp.chal.goal[8]>=player.grasshop,
+        cond: _=>galUnlocked()&&tmp.chal.goal[8]>=player.grasshop,
         reward: `Gain a AGH Level per completion.`,
 
         goal: i=>Math.max(33-i*3,0),

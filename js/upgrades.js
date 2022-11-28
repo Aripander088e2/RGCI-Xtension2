@@ -1060,6 +1060,9 @@ el.update.upgs = _=>{
     if (mapID == 'fd') {
         updateUpgradesHTML('foundry')
         updateUpgradesHTML('gen')
+
+        updateUpgradesHTML('fundry')
+        updateUpgradesHTML('sfrgt')
     }
     if (mapID == 'rf') {
         updateUpgradesHTML('rocket')

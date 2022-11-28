@@ -281,9 +281,11 @@ UPGS.factory = {
         },{
             max: 100,
 
+            unl: _=>galUnlocked(),
+
             title: "Star Accumulator",
             desc: `Unlock a building (in Galactic) where you can boost Stars. Each level increases charge rate by <b class="green">+10%</b>.`,
-        
+
             res: "steel",
             icon: ["Icons/StarAccumulator"],
                         

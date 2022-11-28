@@ -145,5 +145,3 @@ function formatReduction(ex) { ex = E(ex); return format(E(1).sub(ex).mul(100))+
 function formatPercent(ex) { ex = E(ex); return format(ex.mul(100))+"%" }
 
 function formatMult(ex,acc=2) { ex = E(ex); return ex.gte(1)?"×"+ex.format(acc):"/"+ex.pow(-1).format(acc)}
-
-function softcapHTML(x, start) { return E(x).gte(start)?` <span class='soft'>(softcapped)</span>`:"" }
