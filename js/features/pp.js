@@ -46,15 +46,13 @@ RESET.pp = {
     doReset(order="p") {
         player.pTime = 0
         player.grass = E(0)
-        player.bestGrass = E(0)
         player.xp = E(0)
         player.level = 0
 
         let keep_perk = ((order == "p" && hasUpgrade('auto',4)) ||
-			(order == "c" && hasUpgrade('auto',6)) ||
-			(order == "gh" && hasUpgrade('assembler',4))) &&
-			!player.options.losePerks &&
-			!inChal(3)
+			(order == "c" && !inChal(3) && hasUpgrade('auto',6)) ||
+			(order == "gh" && !inChal(7) && hasUpgrade('assembler',4)))
+			!player.options.losePerks
 
         if (!keep_perk) {
             player.maxPerk = 0
@@ -186,180 +184,7 @@ UPGS.pp = {
     ],
 }
 
-// Anti-Prestige (Anonymity)
-
-MAIN.ap = {
-    gain() {
-        let x = Decimal.pow(1.15,player.aRes.level)
-
-        x = x.mul(upgEffect('aGrass',5))
-        x = x.mul(upgEffect('plat',8))
-        x = x.mul(upgEffect('oil',3))
-
-        x = x.mul(upgEffect('rocket',7))
-        x = x.mul(upgEffect('rocket',14))
-        x = x.mul(upgEffect('rocket',17))
-        x = x.mul(upgEffect('momentum',8))
-
-        return x.floor()
-    },
-}
-
-RESET.ap = {
-    unl: _=> player.decel,
-
-    req: _=>player.aRes.level>=30,
-    reqDesc: _=>`Reach Level 30 to Anonymity.`,
-
-    resetDesc: `Anonymity resets your anti-grass, anti-grass upgrades, level, and charge for Anonymity Points (AP).`,
-    resetGain: _=> `Gain <b>${tmp.apGain.format(0)}</b> Anonymity Points`,
-
-    title: `Anonymity`,
-    resetBtn: `Anonymity?`,
-    hotkey: `P`,
-
-    reset(force=false) {
-        if (this.req()||force) {
-            if (!force) {
-                player.aRes.ap = player.aRes.ap.add(tmp.apGain)
-                player.aRes.aTimes++
-            }
-
-            updateTemp()
-
-            this.doReset()
-        }
-    },
-
-    doReset(order="a") {
-        player.aRes.aTime = 0
-        player.aRes.grass = E(0)
-        player.aRes.bestGrass = E(0)
-        player.aRes.xp = E(0)
-        player.aRes.level = 0
-        player.chargeRate = E(0)
-
-        if (!hasUpgrade('aAuto',8)) resetUpgrades('aGrass')
-
-        resetGlasses()
-
-        updateTemp()
-    },
-}
-
-UPGS.ap = {
-    unl: _=> player.decel,
-
-    title: "Anonymity Upgrades",
-
-    req: _=>player.aRes.aTimes > 0,
-    reqDesc: _=>`Anonymity once to unlock.`,
-
-    underDesc: _=>`You have ${format(player.aRes.ap,0)} Anonymity Points`+(tmp.apGainP > 0 ? " <span class='smallAmt'>"+formatGain(player.aRes.ap,tmp.apGain.mul(tmp.apGainP))+"</span>" : ""),
-
-    autoUnl: _=>hasUpgrade('aAuto',2),
-    noSpend: _=>hasStarTree('qol', 3),
-
-    ctn: [
-        {
-            max: Infinity,
-
-            title: "AP Value",
-            tier: 2,
-            desc: `Increase grass gain by <b class="green">+25%</b> per level.`,
-        
-            res: "ap",
-            icon: ["Curr/Grass"],
-
-            cost: i => Decimal.pow(1.2,i).mul(25).ceil(),
-            bulk: i => i.div(25).max(1).log(1.2).floor().toNumber()+1,
-        
-            effect(i) {
-                let r = E(i/4+1)
-                if (hasAGHMilestone(6)) r = r.mul(E(getAGHEffect(6, 1)).pow(Math.floor(i/25)))
-                return r
-            },
-            effDesc: x => format(x)+"x",
-        },{
-            max: Infinity,
-
-            title: "AP Charge",
-            tier: 2,
-            desc: `Increase charge rate by <b class="green">+25%</b> per level.`,
-        
-            res: "ap",
-            icon: ['Curr/Charge'],
-            
-            cost: i => Decimal.pow(1.2,i).mul(20).ceil(),
-            bulk: i => i.div(20).max(1).log(1.2).floor().toNumber()+1,
-
-            effect(i) {
-                let r = E(i/4+1)
-                if (hasAGHMilestone(6)) r = r.mul(E(getAGHEffect(6, 1)).pow(Math.floor(i/25)))
-                return r
-            },
-            effDesc: x => x.format()+"x",
-        },{
-            max: Infinity,
-
-            title: "AP XP",
-            tier: 2,
-            desc: `Increase XP by <b class="green">+25%</b> per level.`,
-        
-            res: "ap",
-            icon: ['Icons/XP'],
-            
-            cost: i => Decimal.pow(1.2,i).mul(20).ceil(),
-            bulk: i => i.div(20).max(1).log(1.2).floor().toNumber()+1,
-
-            effect(i) {
-                let r = E(i/4+1)
-                if (hasAGHMilestone(6)) r = r.mul(E(getAGHEffect(6, 1)).pow(Math.floor(i/25)))
-                return r
-            },
-            effDesc: x => format(x,0)+"x",
-        },{
-            max: 50,
-
-            title: "AP TP",
-            desc: `Increase TP by <b class="green">+25%</b> per level.`,
-        
-            res: "ap",
-            icon: ['Icons/TP'],
-            
-            cost: i => Decimal.pow(1.2,i).mul(20).ceil(),
-            bulk: i => i.div(20).max(1).log(1.2).floor().toNumber()+1,
-
-            effect(i) {
-                let r = E(i/4+1)
-                if (hasAGHMilestone(6)) r = r.mul(E(getAGHEffect(6, 1)).pow(Math.floor(i/25)))
-                return r
-            },
-            effDesc: x => format(x,1)+"x",
-        },{
-            max: 25,
-
-            title: "AP More Grass",
-            desc: `Increase grass cap by <b class="green">+10</b> per level.`,
-        
-            res: "ap",
-            icon: ['Icons/MoreGrass'],
-            
-            cost: i => Decimal.pow(1.2,i).mul(1e3).ceil(),
-            bulk: i => i.div(1e3).max(1).log(1.2).floor().toNumber()+1,
-
-            effect(i) {
-                return i*10
-            },
-            effDesc: x => "+"+format(x,0),
-        }
-    ],
-}
-
 tmp_update.push(_=>{
     tmp.ppGain = MAIN.pp.gain()
     tmp.ppGainP = (upgEffect('auto',8,0)+upgEffect('gen',0,0)+starTreeEff("qol",0,0))*upgEffect('factory',1,1)
-
-    tmp.apGain = MAIN.ap.gain()
-    tmp.apGainP = upgEffect('aAuto',4,0)+starTreeEff("qol",3,0)
 })

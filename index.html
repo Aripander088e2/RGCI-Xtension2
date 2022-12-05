@@ -27,11 +27,12 @@
 	<script src="js/features/crystal.js"></script>
 	<script src="js/features/challenges.js"></script>
 	<script src="js/features/gh.js"></script>
-	<script src="js/features/steelie.js"></script>
-	<script src="js/features/rocket.js"></script>
 
-	<script src="js/features/decel/decel.js"></script>
-	<script src="js/features/decel/funify.js"></script>
+	<script src="js/features/steelie/steelie.js"></script>
+	<script src="js/features/steelie/rocket.js"></script>
+
+	<script src="js/features/realms/decel.js"></script>
+	<script src="js/features/realms/funify.js"></script>
 
 	<script src="js/features/gal/main.js"></script>
 	<script src="js/features/gal/star_chart.js"></script>
@@ -111,21 +112,30 @@
 			</div><div id="map_div_opt">
 				<button onclick="save()">Save</button>
 				<button onclick="importy()">Import</button>
-				<button onclick="export_copy()">Export to clipboard</button>
-				<button onclick="exporty()">Export</button>
+				<button onclick="export_copy()">Export</button>
+				<button onclick="exporty()">Download</button>
 				<button onclick="wipe()">Hard Reset</button><br>
-				<button onclick="window.open('https://discord.gg/Ekp8FsSwzR')">Join Discord Server</button><br>
 				<button onclick="toggleOption('scientific')">Scientific: <span id="scientific"></span></button>
 				<button onclick="toggleLowGrass()">Grass cap: <span id="grassCap">Unlimited</span></button>
 				<button onclick="toggleOption('hideUpgOption')">Hide maxed: <span id="hideUpgOption"></span></button>
 				<button id="hideMilestoneBtn" onclick="toggleOption('hideMilestone')">Show milestones: <span id="hideMilestone"></span></button><br><br>
-				Really Grass Cutting Incremental - Thunderized Balance β4a α2 - <a href="http://aarextiaokhiao.github.io">By TehAarex</a><br>
-				Inspired by <a href="https://www.roblox.com/games/9292879820">Grass Cutting Incremental</a>,
-				<a href="https://mrredshark77.github.io/Really-Grass-Cutting-Incremental/">Original by MrRedShark77</a><br>
-				<b class="red">Warning! Recommended size is 1920x1080! You may change zoom!</b><br><br>
-				Endgame: ???<br><br>
 
-				Hint: Use arrow keys / WASD keys to move through the map. Hold shift to upgrade instantly.
+				<b style="color: #ffffbf">RGCI: Thunderized Balance</b> - <a href="http://aarextiaokhiao.github.io">By TehAarex</a><br>
+				<span style="font-size: 16px">
+					Version β4a α3
+				</span><br>
+				<span style="font-size: 12px">
+					Inspired by <a href="http://www.roblox.com/games/9292879820">Grass Cutting Incremental</a>,
+					Built on <a href="http://aarextiaokhiao.github.io/Really-Grass-Cutting-Incremental/">RGCI: Extension</a>,
+					Original by <a href="http://mrredshark77.github.io/Really-Grass-Cutting-Incremental/">MrRedShark77</a>
+				</span><br><br>
+
+				<button onclick="window.open('https://discord.gg/Ekp8FsSwzR')">Discord</button>
+				<button onclick="window.open('http://aarextiaokhiao.github.io')">Home</button><br><br>
+
+				<b class="red">Recommended size is 1920x1080! You may change zoom!</b><br>
+				Hint: Use arrow keys / WASD keys to move through the map. Hold shift to upgrade instantly.<br>
+				Endgame: ???<br>
 			</div><div id="map_div_stats">
 				<span id="time"></span><br>
 				<h1>Reset Layers</h1>
@@ -136,12 +146,12 @@
 					<span id="sTimes"></span><br>
 				</div><div id="aStats">
 					<h2 id="aStatsHeader">Anti-Realm<br></h2>
-					<span id="aTimes"></span>
-					<span id="lTimes"></span>
+					<span id="aTimes"></span><br>
+					<span id="lTimes"></span><br>
 					<span id="fTimes"></span>
 				</div><div id="gStats">
 					<h2 id="gStatsHeader">Space<br></h2>
-					<span id="gTimes"></span>
+					<span id="gTimes"></span><br>
 					<span id="sacTimes"></span>
 				</div>
 			</div><div id="map_div_upg">
@@ -281,8 +291,8 @@
 							</div>
 						</div>
 					</div>
-				</div>-->
-			</div><div id="map_div_sc" style="position: relative;">
+				</div>
+			</div>--><div id="map_div_sc" style="position: relative;">
 				<div id="star_chart_div">
 					<div id="star_chart_table"></div>
 					<div style="height: 100px;"></div>

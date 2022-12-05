@@ -199,13 +199,16 @@ const ASTRAL = {
 		let x = {}
 
 		x.tp = a+1
-		x.fd = a/20+1
+		x.fd = a/50+1
 		if (hasAGHMilestone(1)) x.st = 2**(a/4)
 		if (hasAGHMilestone(2)) x.rf = a/20
 		if (hasAGHMilestone(3)) x.ch = 2**(a/4-2)
-		if (hasAGHMilestone(4)) x.tb = Math.sqrt(a)/20
-		if (hasAGHMilestone(9)) x.fu = a/5+1
-		if (hasAGHMilestone(10)) x.sf = E(2).pow(a)
+		if (hasAGHMilestone(4)) x.xp = 2**(a/20)
+		if (hasAGHMilestone(5)) x.fu = a/5+1
+		if (hasAGHMilestone(6)) x.sf = E(2).pow(a)
+		if (hasAGHMilestone(10)) x.tb = a/50
+		if (hasAGHMilestone(11)) x.ap = Math.min(1+a/200,1.5)
+		if (hasAGHMilestone(12)) x.fc = Math.min(1+a/200,1.5)
 
 		return x
 	},
@@ -217,9 +220,12 @@ const ASTRAL = {
 		if (e.st) x += `<b class="magenta">${format(e.st,0)}x</b> to Star gain<br>`
 		if (e.rf) x += `<b class="magenta">+${format(e.rf)}x</b> to Rocket Fuel gain<br>`
 		if (e.ch) x += `<b class="magenta">${format(e.ch)}x</b> to Charge gain<br>`
-		if (e.tb) x += `<b class="magenta">+${format(e.tb,3)}x</b> to Tier multiplier base<br>`
+		if (e.xp) x += `<b class="magenta">+${format(e.xp,0)}x</b> to XP gain<br>`
 		if (e.fu) x += `<b class="magenta">${format(e.fu)}x</b> to Fun gain<br>`
 		if (e.sf) x += `<b class="magenta">${format(e.sf,0)}x</b> to SFRGT gain<br>`
+		if (e.tb) x += `<b class="magenta">+${format(e.tb,3)}x</b> to Tier multiplier base<br>`
+		if (e.ap) x += `<b class="magenta">+${format(e.ap,3)}x</b> to effects for each 25 AP upgrades<br>`
+		if (e.fc) x += `<b class="magenta">+${format(e.fc,3)}x</b> to effects for each 25 Factory upgrades<br>`
 
 		return x
 	},
@@ -288,7 +294,7 @@ UPGS.moonstone = {
 			},
 			effDesc: x => format(x)+"x",
 		}, {
-			max: 40,
+			max: 10,
 
 			costOnce: true,
 
@@ -306,8 +312,8 @@ UPGS.moonstone = {
 			},
 			effDesc: x => format(x)+"x",
 		}, {
-			unl: _ => false,
-			max: 100,
+			unl: _ => player.aRes.fTimes,
+			max: 5,
 
 			costOnce: true,
 
@@ -316,6 +322,25 @@ UPGS.moonstone = {
 
 			res: "moonstone",
 			icon: ["Curr/Fun"],
+			
+			cost: i => 5,
+			bulk: i => Math.floor(i/5),
+
+			effect(i) {
+				return i+1
+			},
+			effDesc: x => format(x)+"x",
+		}, {
+			unl: _ => player.aRes.fTimes,
+			max: 5,
+
+			costOnce: true,
+
+			title: "Moon SFRGT",
+			desc: `Boost SFRGT by <b class="green">+100%</b> per level.`,
+
+			res: "moonstone",
+			icon: ["Curr/SuperFun"],
 			
 			cost: i => 5,
 			bulk: i => Math.floor(i/5),
@@ -345,8 +370,8 @@ UPGS.star = {
 			res: "plat",
 			icon: ["Curr/Star"],
 
-			cost: i => 1.5**i,
-			bulk: i => E(i).div(1e3).log(1.5).floor().toNumber() + 1,
+			cost: i => 1.5**i*300,
+			bulk: i => E(i).div(300).log(1.5).floor().toNumber() + 1,
 
 			effect(i) {
 				return E(1.2).pow(i)
@@ -361,8 +386,8 @@ UPGS.star = {
 			res: "steel",
 			icon: ["Curr/Star"],
 
-			cost: i => E(10).pow(i).mul(1e30),
-			bulk: i => E(i).div(1e30).log(10).floor().toNumber() + 1,
+			cost: i => E(100).pow(i).mul(1e35),
+			bulk: i => E(i).div(1e35).log(100).floor().toNumber() + 1,
 
 			effect(i) {
 				return E(1.2).pow(i)
@@ -373,12 +398,12 @@ UPGS.star = {
 
 			title: "Thruster Stars",
 			desc: `Increase star gain by <b class="green">20%</b> compounding per level.`,
-		
+
 			res: "rf",
 			icon: ["Curr/Star"],
 
-			cost: i => E(1.5).pow(i**0.8).mul(50),
-			bulk: i => E(i).div(50).log(1.5).root(0.8).floor().toNumber() + 1,
+			cost: i => E(1.5).pow(i**0.8).mul(200),
+			bulk: i => E(i).div(200).log(1.5).root(0.8).floor().toNumber() + 1,
 		
 			effect(i) {
 				return E(1.2).pow(i)
@@ -422,41 +447,50 @@ MAIN.agh_milestone = [
         r: 4,
         desc: `Astral boosts Charge.`,
     }, {
+        unl: _ => player.aRes.fTimes,
+
         r: 5,
-        desc: `Astral adds Tier bonus.`,
+        desc: `Astral boosts XP.`,
     }, {
+        unl: _ => player.aRes.fTimes,
+
         r: 6,
-        desc: `Moonstone chance is doubled.`,
+        desc: `Astral boosts Fun.`,
     }, {
+        unl: _ => player.aRes.fTimes,
+
         r: 7,
-        desc: `Every 25 levels of AP upgrade, gain a multiplier based on AGH Level. (starting at 7)`,
-		effect: _ => E(1.05).pow(tmp.gal.agh.lvl-6).max(1).min(1.25),
-		effDesc: x => format(x) + "x per 25 levels",
+        desc: `Astral boosts SFRGT.`,
     }, {
-        unl: _ => false,
+        unl: _ => player.aRes.fTimes,
 
         r: 8,
-        desc: `???`,
+        desc: `Unlock the Dark Matter Plant reset.`,
     }, {
-        unl: _ => false,
+        unl: _ => player.aRes.fTimes,
 
         r: 9,
-        desc: `Astral boosts Fun.`,
+        desc: `Moonstone chance is doubled.`,
     }, {
         unl: _ => false,
 
         r: 10,
-        desc: `Astral boosts SFRGT.`,
+        desc: `Unlock the Recelerator upgrade in Fun Machine.`,
     }, {
         unl: _ => false,
 
         r: 11,
-        desc: `Unlock the Dark Matter Plant reset.`,
+        desc: `Astral adds Tier multiplier base.`,
     }, {
         unl: _ => false,
 
         r: 12,
-        desc: `Unlock the Recelerator upgrade in Fun Machine.`,
+        desc: `Astral multiplies effects for each 25 levels of AP upgrade. (soon!)`,
+    }, {
+        unl: _ => false,
+
+        r: 13,
+        desc: `Astral multiplies effects for each 25 levels of Factory upgrade. (soon!)`,
     }
 ]
 

@@ -112,7 +112,7 @@ MAIN.steel = {
 }
 
 RESET.steel = {
-    unl: _=>(player.grasshop >= 10 || galUnlocked()) && !tmp.gs_shown,
+    unl: _=>(player.grasshop >= 10 || galUnlocked()) && !tmp.gs.shown,
 
     req: _=>!player.decel && player.level>=240,
     reqDesc: _=>player.decel ? `You can't Steelie in Anti-Realm!` : `Reach Level 240.`,
@@ -146,8 +146,11 @@ RESET.steel = {
 UPGS.factory = {
     title: "The Factory",
 
-    unl: _=>player.sTimes > 0 && !tmp.gs_shown,
+    unl: _=>(player.grasshop >= 10 || galUnlocked()) && !tmp.gs.shown,
     autoUnl: _=>hasStarTree('auto',0),
+
+    req: _=>player.sTimes > 0,
+    reqDesc: _=>`Steelie once to unlock.`,
 
     underDesc: _=>`You have ${format(player.steel,0)} Steel`+(tmp.steelGainP > 0 ? " <span class='smallAmt'>"+formatGain(player.steel,tmp.steelGain.mul(tmp.steelGainP))+"</span>" : ""),
 
@@ -213,7 +216,7 @@ UPGS.factory = {
             desc: `Unlock a building (in Automation) where you can get more QoL. Each level increases charge rate by <b class="green">+10%</b>.`,
         
             res: "steel",
-            icon: ["Icons/Assemblerv2"],
+            icon: ["Icons/Assembler"],
                         
             cost: i => Decimal.pow(1.5,i).mul(1e7).ceil(),
             bulk: i => i.div(1e7).max(1).log(1.5).floor().toNumber()+1,
@@ -251,8 +254,8 @@ UPGS.factory = {
             res: "steel",
             icon: ["Icons/Refinery"],
                         
-            cost: i => Decimal.pow(1.5,i).mul(1e22).ceil(),
-            bulk: i => i.div(1e22).max(1).log(1.5).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.5,i).mul(1e20).ceil(),
+            bulk: i => i.div(1e20).max(1).log(1.5).floor().toNumber()+1,
         
             effect(i) {
                 let x = i/10+1
@@ -269,8 +272,8 @@ UPGS.factory = {
             res: "steel",
             icon: ["Icons/LaunchPad"],
                         
-            cost: i => Decimal.pow(1.5,i).mul(1e24).ceil(),
-            bulk: i => i.div(1e24).max(1).log(1.5).floor().toNumber()+1,
+            cost: i => Decimal.pow(2,i).mul(1e21).ceil(),
+            bulk: i => i.div(1e21).max(1).log(2).floor().toNumber()+1,
         
             effect(i) {
                 let x = i/10+1
@@ -305,8 +308,9 @@ UPGS.factory = {
 UPGS.foundry = {
     title: "Foundry",
 
-    unl: _=>hasUpgrade('factory',0),
-    autoUnl: _=>hasUpgrade('assembler',10),
+    unl: _=> hasUpgrade('factory',0) && !tmp.aRes.funShown,
+    autoUnl: _=> hasUpgrade('assembler',10),
+    noSpend: _=>hasStarTree('qol', 4),
 
 	underDesc: _=>`
 		<b class="green">${tmp.foundryEff.format()}x</b>
@@ -319,7 +323,7 @@ UPGS.foundry = {
         {
             max: Infinity,
 
-            title: "Steel Grass",
+            title: "Grass Steel",
             desc: `Increase steel gain by <b class="green">+20%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
         
             res: "grass",
@@ -337,7 +341,7 @@ UPGS.foundry = {
         },{
             max: Infinity,
 
-            title: "Steel Prestige",
+            title: "Prestige Steel",
             desc: `Increase steel gain by <b class="green">+20%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
         
             res: "pp",
@@ -355,7 +359,7 @@ UPGS.foundry = {
         },{
             max: Infinity,
 
-            title: "Steel Crystal",
+            title: "Crystal Steel",
             desc: `Increase steel gain by <b class="green">+20%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
         
             res: "crystal",
@@ -395,8 +399,9 @@ UPGS.foundry = {
 UPGS.gen = {
     title: "Generator",
 
-    unl: _=>hasUpgrade('factory',1),
-    autoUnl: _=>hasStarTree('auto',1),
+    unl: _ => hasUpgrade('factory', 1) && !tmp.aRes.funShown,
+    autoUnl: _ => hasStarTree('auto', 1),
+    noSpend: _=>hasStarTree('qol', 4),
 
     underDesc: _=>`<b class="green">${format(upgEffect('factory',1))}x</b> <span style="font-size:14px;">to PP/Crystal generator multiplier from factory upgrade</span>`,
 
@@ -571,7 +576,7 @@ UPGS.assembler = {
             },
             effDesc: x => "Up to "+format(x,0)+" completions",
         },{
-            max: 15,
+            max: 7,
 
             title: "Challenge Save C",
             desc: `Keep Crystalize challenge completions on Grasshop and Steelie.`,
@@ -644,7 +649,7 @@ tmp_update.push(_=>{
 
     tmp.chargeGain = ms.charger.gain()
 
-    tmp.chargeOoM = getGHEffect(10, 0)
+    tmp.chargeOoM = getGHEffect(11, 0)
     tmp.chargeOoMMul = Decimal.pow(10, tmp.chargeOoM)
 
     for (let x = 0; x < ms.charger.effs.length; x++) {

@@ -601,9 +601,8 @@ RESET.rocket_part = {
 	reqDesc: _=>``,
 
 	resetDesc: `<span style="font-size: 14px">Reset everything grasshop does as well as steel, foundry, charge upgrades, anti-realm, and total rocket fuel.
-	You will create a rocket part, earn one momentum, and reset the cost to make rocket fuel.
-	You keep rocket fuel and rocket fuel upgrades.</span>`,
-	resetGain: _=> `
+	You will create a rocket part, earn one momentum, and reset the cost to make rocket fuel.</span>`,
+	resetGain: _=> player.rocket.part == 10 ? `<span class="pink">Maxed!</span>` :`
 		<span style="font-size: 14px">
 		<b class="lightgray">Steel</b><br>
 		<span class="${player.steel.gte(tmp.rp_req[0])?"green":"red"}">${player.steel.format(0)} / ${tmp.rp_req[0].format(0)}</span><br><br>
@@ -618,7 +617,7 @@ RESET.rocket_part = {
 	resetBtn: `Create Rocket Part`,
 
 	reset(force=false) {
-		if ((player.steel.gte(tmp.rp_req[0]) && player.rocket.total_fp >= tmp.rp_req[1]) || force) {
+		if ((player.steel.gte(tmp.rp_req[0]) && player.rocket.total_fp >= tmp.rp_req[1] && player.rocket.part < 10) || force) {
 			if (!force) {
 				player.rocket.part++
 				player.rocket.momentum++
@@ -638,6 +637,7 @@ RESET.rocket_part = {
 			player.chargeRate = E(0)
 			delete player.upgs.gen[2]
 			delete player.upgs.gen[3]
+			delete player.upgs.gen[4]
 			resetUpgrades('foundry')
 		}
 		resetAntiRealm()
@@ -858,7 +858,7 @@ el.update.rocket = _=>{
 		tmp.el.rf_craft_bulk.setTxt("(F) Craft to "+format(Math.max(tmp.rf_bulk-player.rocket.total_fp,0),0)+" Rocket Fuel")
 		tmp.el.rf_craft_bulk.setClasses({locked: tmp.rf_bulk<=player.rocket.total_fp })
 
-		tmp.el.reset_btn_rocket_part.setClasses({locked: player.rocket.total_fp < tmp.rp_req[1] || player.steel.lt(tmp.rp_req[0])})
+		tmp.el.reset_btn_rocket_part.setClasses({locked: player.rocket.total_fp < tmp.rp_req[1] || player.steel.lt(tmp.rp_req[0]) || player.rocket.part == 10})
 	}
 }
 
@@ -874,7 +874,7 @@ function updateRocketTemp() {
 }
 
 tmp_update.push(_=>{
-	tmp.rp_req = [E(player.rocket.part).add(1).pow(2).mul(1e24),player.rocket.part>9?1/0:E(10*player.rocket.part+10)]
+	tmp.rp_req = [E(player.rocket.part).add(1).pow(2).mul(1e21),E(10*player.rocket.part+10)]
 	tmp.rf_base_mult = E(player.rocket.part).div(2).add(1)
 
 	updateRocketTemp()

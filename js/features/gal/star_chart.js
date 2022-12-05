@@ -14,7 +14,8 @@ const SC_IDS = {
 		[0],
 		[1,2],
 		[null,6,3],
-		[7,4,5]
+		[7,4,5],
+		[8,9,10,11]
 	],
 }
 
@@ -77,7 +78,7 @@ const STAR_CHART = {
 			max: 10,
 
 			title: "Steel Labor",
-			desc: `Generate <b class="green">+0.1%</b> of Steel gain per level.`,
+			desc: `Generate <b class="green">+0.1%</b> of Steel gain per level. Foundry and Generator Upgrades don't spend anything.`,
 
 			branch: 2,
 			icon: ['Curr/Steel2','Icons/StarProgression'],
@@ -107,9 +108,9 @@ const STAR_CHART = {
 			desc: `Keep Assembler on Galactic. Challenge completions still reset on Galactic!`,
 
 			branch: 5,
-			icon: ['Icons/Assemblerv2','Icons/StarProgression'],
+			icon: ['Icons/Assembler','Icons/StarProgression'],
 	
-			cost: i => E(150),
+			cost: i => E(1e3),
 			bulk: i => 1
 		}, {
 			unl: _ => false,
@@ -132,7 +133,7 @@ const STAR_CHART = {
 			branch: 5,
 			icon: ['Curr/Charge','Icons/StarProgression'],
 
-			cost: i => E(50),
+			cost: i => E(1e5),
 			bulk: i => 1
 		}, {
 			max: 1,
@@ -143,7 +144,7 @@ const STAR_CHART = {
 			branch: 5,
 			icon: ['Curr/RocketFuel','Icons/StarProgression'],
 
-			cost: i => E(75),
+			cost: i => E(1e6),
 			bulk: i => 1
 		}, {
 			unl: _ => false,
@@ -185,7 +186,7 @@ const STAR_CHART = {
 			max: 1,
 
 			title: "Moving and Launch",
-			desc: `Automate the Refinery (soon) and Momentum Upgrades.`,
+			desc: `Automate the Refinery and Momentum Upgrades.`,
 
 			branch: 0,
 			icon: ['Curr/RocketFuel','Icons/StarAuto'],
@@ -215,7 +216,7 @@ const STAR_CHART = {
 			desc: `Automate Star Accumulator.`,
 
 			branch: 0,
-			icon: ['Icons/Assemblerv2','Icons/StarAuto'],
+			icon: ['Icons/Assembler','Icons/StarAuto'],
 							
 			cost: i => E(1e4),
 			bulk: i => 1,
@@ -237,7 +238,7 @@ const STAR_CHART = {
 			desc: `Cheapen Non-Charger Generator Upgrades.`,
 
 			branch: 0,
-			icon: ['Icons/Assemblerv2','Icons/StarAuto'],
+			icon: ['Icons/Assembler','Icons/StarAuto'],
 
 			cost: i => E(2).pow(i).mul(100),
 			bulk: i => i.div(100).log(2).floor().toNumber() + 1,
@@ -354,6 +355,50 @@ const STAR_CHART = {
 
 			branch: 6,
 			icon: ['Icons/Challenge','Icons/StarSpeed'],
+							
+			cost: i => EINF,
+			bulk: i => 0
+		}, {
+			max: 1,
+
+			title: "Challenge Bundle I-C",
+			desc: `Unlock "-Grasshops" Challenge. (Soon)`,
+
+			branch: 7,
+			icon: ['Icons/Challenge','Icons/StarSpeed'],
+							
+			cost: i => EINF,
+			bulk: i => 0
+		}, {
+			max: Infinity,
+
+			title: "Improved Factory",
+			desc: `Raise level caps for each Factory upgrade by +1 per level.`,
+
+			branch: 4,
+			icon: ['Icons/Assembler','Icons/StarSpeed'],
+							
+			cost: i => EINF,
+			bulk: i => 0
+		}, {
+			max: 1,
+
+			title: "Hopped Space",
+			desc: `Each Grass-Hop increases Space Power by 20%, starting at 40.`,
+
+			branch: 5,
+			icon: ['Icons/SP','Icons/StarSpeed'],
+							
+			cost: i => EINF,
+			bulk: i => 0
+		}, {
+			max: 1,
+
+			title: "Tiered Space",
+			desc: `Each Tiered increases Space Power by 50%, starting at 40.`,
+
+			branch: 5,
+			icon: ['Icons/SP','Icons/StarSpeed'],
 							
 			cost: i => EINF,
 			bulk: i => 0
@@ -624,12 +669,12 @@ function updateStarChart() {
 		let hasMax = amt + 1 < tt.max[i]
 
 		if (amt < tt.max[i]) {
+			h += `<br><span class="${Decimal.gte(star,tt.cost[i])?"green":"red"}">Cost: ${format(tt.cost[i],0)} Stars</span>`
+
 			let cost2 = tu.costOnce?Decimal.mul(tt.cost[i],25-amt%25):tu.cost((Math.floor(amt/25)+1)*25-1)
 			let cost3 = tu.costOnce?Decimal.mul(tt.cost[i],tt.max[i]-amt):tu.cost(tt.max[i]-1)
-			if (hasBuy25) h += `<br><span class="${Decimal.gte(star,cost2)?"green":"red"}">Cost to next 25: ${format(cost2,0)} Stars</span>`
-			else if (hasMax) h += `<br><span class="${Decimal.gte(star,cost3)?"green":"red"}">Cost to max: ${format(cost2,0)} Stars</span>`
-
-			h += `<br><span class="${Decimal.gte(star,tt.cost[i])?"green":"red"}">Cost: ${format(tt.cost[i],0)} Stars</span>`
+			if (hasBuy25) h += `<br><span class="${Decimal.gte(star,cost2)?"green":"red"}">Next 25: ${format(cost2,0)} Stars</span>`
+			else if (hasMax) h += `<br><span class="${Decimal.gte(star,cost3)?"green":"red"}">Max: ${format(cost3,0)} Stars</span>`
 		} else h += "<br><b class='pink'>Maxed!</b>"
 
 		tmp.el.sc_desc.setHTML(h)

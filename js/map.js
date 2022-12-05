@@ -105,7 +105,7 @@ el.update.map = _=>{
 	updateMapButton("dMap", mx, my+1, dim)
 
 	tmp.el.spaceButton.setDisplay(galUnlocked())
-	tmp.el.spaceButton.setTxt(inSpace() ? "Go to Ground" : "Go to Space")
+	tmp.el.spaceButton.setTxt("(Z) " + (inSpace() ? "Go to Ground" : "Go to Space"))
 }
 
 function updateMapButton(el, mx, my, dim) {

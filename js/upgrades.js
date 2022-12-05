@@ -765,46 +765,37 @@ function clickUpgrade(id, x) {
 	else tmp.upg_ch[id] = x
 }
 
-function buyUpgrade(id, x, type = "once") {
+function buyUpgrade(id, x, type = "once", amt) {
 	//Upgrade Data
 	let tu = tmp.upgs[id]
 	let upg = UPGS[id].ctn[x]
-	let costOnce = upg.costOnce
-
-	//Resource Data
-	let resDis = upg.res
-	let resNum = isResNumber.includes(resDis)
-	let res = tmp.upg_res[resDis]
-	if (E(tu.cost[x]).gt(res)) return
-
-	//Upgrade Save
 	let upgData = player.upgs[id]
-	let amt = upgData[x] || 0
-	if (amt >= tu.max[x]) return
 
 	//Determine Levels
-	let bulk = tu.bulk[x]
-	if (costOnce) bulk += amt
-	if (type == "next") bulk = Math.min(bulk, Math.ceil((amt + 1) / 25) * 25)
-	if (type == "once") bulk = amt + 1
-	else bulk = Math.max(Math.floor(bulk), amt + 1)
+	let lvl = upgData[x] || 0
+	let bulk = amt ? getUpgradeBulk(id, x, amt) : tu.bulk[x]
+	if (type == "next") bulk = Math.min(bulk, Math.ceil((lvl + 1) / 25) * 25)
+
 	bulk = Math.min(bulk, tu.max[x])
-	upgData[x] = bulk
+	if (lvl >= bulk) return
+	if (type == "once") bulk = lvl + 1
 
 	//Spend Resource
 	if (!tu.noSpend) {
-		let [p,q] = UPG_RES[resDis][1]()
-		let cost = costOnce ? tu.cost[x] * (bulk - amt) : upg.cost(bulk-1)
+		let res = upg.res
+		let cost = upg.costOnce ? tu.cost[x] * (bulk - lvl) : upg.cost(bulk - 1)
 
-		if (resDis == 'perk') {
+		if (res == 'perk') {
 			player.spentPerk += cost
 			tmp.perkUnspent = Math.max(player.maxPerk - player.spentPerk, 0)
 		} else {
-			p[q] = resNum ? Math.max(p[q]-cost, 0) : p[q].sub(cost).max(0)
+			let [p,q] = UPG_RES[res][1]()
+			p[q] = isResNumber.includes(res) ? Math.max(p[q]-cost, 0) : p[q].sub(cost).max(0)
 		}
-		updateUpgResource(resDis)
+		updateUpgResource(res)
 	}
 
+	upgData[x] = bulk
 	updateUpgTemp(id)
 }
 
@@ -823,8 +814,22 @@ function buyAllUpgrades(id) {
     }
 }
 
-function switchAutoUpg(id) {
-    player.autoUpg[id] = !player.autoUpg[id]
+function getUpgradeResource(id, x) {
+	return tmp.upg_res[UPGS[id].ctn[x].res]
+}
+
+function getUpgradeBulk(id, x, amt) {
+	let upg = UPGS[id].ctn[x]
+	let tu = tmp.upgs[id]
+	let res = amt || getUpgradeResource(id, x)
+
+	let lvl = 0
+	let min = player.upgs[id][x] || 0
+	if (upg.costOnce) lvl = Math.floor(res / tu.cost[x]) + min
+	else if (E(res).gte(tu.cost[x])) lvl = upg.bulk(E(res))
+	else lvl = min
+
+	return lvl
 }
 
 function updateUpgTemp(id) {
@@ -841,7 +846,7 @@ function updateUpgTemp(id) {
         if (upg.unl?upg.unl():true) if (amt < tu.max[x]) ul++
 
         tu.cost[x] = upg.cost(amt)
-        tu.bulk[x] = Decimal.gte(res,UPGS_SCOST[id][x])?Math.min(upg.bulk(res),tu.max[x]):0
+        tu.bulk[x] = getUpgradeBulk(id, x)
 
         if (upg.effect) {
 			tu.eff[x] = upg.effect(amt)
@@ -853,6 +858,9 @@ function updateUpgTemp(id) {
     tu.unlLength = ul
 }
 
+function switchAutoUpg(id) {
+    player.autoUpg[id] = !player.autoUpg[id]
+}
 
 function setupUpgradesHTML(id) {
 	let table = new Element("upgs_div_"+id)
@@ -949,15 +957,14 @@ function updateUpgradesHTML(id) {
                 let hasMax = amt + 1 < tu.max[ch]
 
                 if (amt < tu.max[ch]) {
+                    h += `<br><span class="${canBuy?"green":"red"}">Cost: ${format(tu.cost[ch],0)} ${dis}</span>`
+
                     let cost2 = upg.costOnce?Decimal.mul(tu.cost[ch],25-amt%25):upg.cost((Math.floor(amt/25)+1)*25-1)
                     let cost3 = upg.costOnce?Decimal.mul(tu.cost[ch],tu.max[ch]-amt):upg.cost(tu.max[ch]-1)
-                    if (hasBuy25) h += `<br><span class="${Decimal.gte(tmp.upg_res[upg.res],cost2)?"green":"red"}">Cost to next 25: ${format(cost2,0)} ${dis}</span>`
-                    else if (hasMax) h += `<br><span class="${Decimal.gte(tmp.upg_res[upg.res],cost3)?"green":"red"}">Cost to max: ${format(cost3,0)} ${dis}</span>`
+                    if (hasBuy25) h += `<br><span class="${Decimal.gte(tmp.upg_res[upg.res],cost2)?"green":"red"}">Next 25: ${format(cost2,0)} ${dis}</span>`
+                    else if (hasMax) h += `<br><span class="${Decimal.gte(tmp.upg_res[upg.res],cost3)?"green":"red"}">Max: ${format(cost3,0)} ${dis}</span>`
 
-                    h += `
-                    <br><span class="${canBuy?"green":"red"}">Cost: ${format(tu.cost[ch],0)} ${dis}</span>
-                    <br>You have ${format(res,0)} ${dis}
-                    `
+                    h += `<br>You have ${format(res,0)} ${dis}`
                 } else h += "<br><b class='pink'>Maxed!</b>"
 
                 tmp.el["upg_desc_"+id].setHTML(h)
@@ -1082,8 +1089,8 @@ el.update.upgs = _=>{
 		let stats = !player.decel && !inSpace()
 		tmp.el.stats.setDisplay(stats || player.options.allStats)
 		if (stats || player.options.allStats) {
-			tmp.el.pTimes.setHTML(player.pTimes ? "You have done " + player.pTimes + " <b style='color: #5BFAFF'>Prestige</b> resets.<br>Time: " + formatTime(player.pTime) : "")
-			tmp.el.cTimes.setHTML(player.cTimes ? "You have done " + player.cTimes + " <b style='color: #FF84F6'>Crystalize</b> resets.<br>Time: " + formatTime(player.cTime) : "")
+			tmp.el.pTimes.setHTML((player.pTimes ? "You have done " + player.pTimes + " <b style='color: #5BFAFF'>Prestige</b> resets." : "") + (!player.decel && player.pTimes ? "<br>Time: " + formatTime(player.pTime) : ""))
+			tmp.el.cTimes.setHTML((player.cTimes ? "You have done " + player.cTimes + " <b style='color: #FF84F6'>Crystalize</b> resets." : "") + (!player.decel && player.cTimes ? "<br>Time: " + formatTime(player.cTime) : ""))
 			tmp.el.sTimes.setHTML(player.sTimes ? "You have done " + player.sTimes + " <b style='color: #c5c5c5'>Steelie</b> resets.<br>Time: " + formatTime(player.sTime) : "")
 		}
 
@@ -1095,8 +1102,9 @@ el.update.upgs = _=>{
 		}
 
 		let gStats = inSpace()
-		tmp.el.gStats.setDisplay(gStats || player.options.allStats)
-		if (gStats || player.options.allStats) {
+		let gStatsUnl = galUnlocked()
+		tmp.el.gStats.setDisplay(gStatsUnl && (gStats || player.options.allStats))
+		if (gStatsUnl && (gStats || player.options.allStats)) {
 			tmp.el.gTimes.setHTML(player.gal.times ? "You have done " + player.gal.times + " <b style='color: #bf00ff'>Galactic</b> resets.<br>Time: " + formatTime(player.gal.time) : "")
 		}
 

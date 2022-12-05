@@ -122,8 +122,9 @@ const MAIN = {
         perk() {
             let x = chalEff(3)
             if (player.grasshop >= 4) x += getGHEffect(3, 0)
+            if (inChal(7)) x = 1
 
-            return x * player.level
+            return Math.floor(x * player.level)
         },
     },
     tier: {
@@ -220,7 +221,6 @@ tmp_update.push(_=>{
     tmp.grassGain = MAIN.grassGain()
     tmp.xpGain = MAIN.xpGain()
     tmp.tpGain = MAIN.tpGain()
-    tmp.spGain = MAIN.tpGain()
 
     tmp.perks = MAIN.level.perk()
     tmp.perkUnspent = Math.max(player.maxPerk-player.spentPerk,0)
@@ -275,6 +275,12 @@ window.addEventListener('keydown', function(event) {
 			break;
 		case "f":
 			ROCKET.create()
+			break;
+		case "t":
+			RESET.decel.reset()
+			break;
+		case "z":
+			goToSpace()
 			break;
 	}
 }, false);

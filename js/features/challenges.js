@@ -114,9 +114,9 @@ const CHALS = [
         eff: i=>i,
         effDesc: x=>format(x,1)+"x",
     },{
-        unl: _=>player.sTimes>=1,
+        unl: _=>player.grasshop >= 15,
 
-        max: 10,
+        max: 5,
         id: 'steel',
 
         title: `Clear Crystal`,
@@ -124,8 +124,8 @@ const CHALS = [
         cond: _=>!hasUpgrades("crystal"),
         reward: `Steel gain is <b class='green'>doubled</b> each completion.`,
 
-        goal: i=>8+i*2,
-        bulk: i=>Math.floor((i-8)/2+1),
+        goal: i=>11+i*5,
+        bulk: i=>Math.floor((i-11)/5+1),
 
         goalDesc: x=>"Tier "+format(x,0),
         goalAmt: _=>player.tier,
@@ -133,18 +133,18 @@ const CHALS = [
         eff: i=>Decimal.pow(2,i),
         effDesc: x=>format(x,1)+"x",
     },{
-        unl: _=>hasUpgrade('factory',2),
+        unl: _=>player.grasshop >= 18,
 
-        max: 5,
+        max: 4,
         id: 'steel',
 
         title: `Empower`,
-        desc: `Non-Steelie Challenge Rewards do nothing.`,
+        desc: `Non-Steelie Challenge Rewards do nothing. Additionally, you gain 1 Perk per level.`,
         cond: _=>false,
         reward: `Charge gain is increased by <b class='green'>5x</b> each completion.`,
 
-        goal: i=>25+i*2,
-        bulk: i=>Math.floor((i-25)/2+1),
+        goal: i=>25+i*5,
+        bulk: i=>Math.floor((i-25)/5+1),
 
         goalDesc: x=>"Tier "+format(x,0),
         goalAmt: _=>player.tier,
@@ -162,8 +162,8 @@ const CHALS = [
         cond: _=>galUnlocked()&&tmp.chal.goal[8]>=player.grasshop,
         reward: `Gain a AGH Level per completion.`,
 
-        goal: i=>Math.max(33-i*3,0),
-        bulk: i=>Math.floor((33-i)/3)+1,
+        goal: i=>Math.max(30-i*3,0),
+        bulk: i=>Math.floor((30-i)/3)+1,
 
         goalDesc: x=>"Grasshop "+format(x,0),
         goalAmt: _=>player.rocket.part==10?player.grasshop:1/0,

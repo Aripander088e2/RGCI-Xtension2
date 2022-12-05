@@ -11,7 +11,6 @@ function getPlayerData() {
 
 		//RESOURCES
 		grass: E(0),
-		bestGrass: E(0),
 		level: 0,
 		xp: E(0),
 
@@ -20,7 +19,6 @@ function getPlayerData() {
 
 		//PRESTIGE
 		pp: E(0),
-		bestPP: E(0),
 		pTimes: 0,
 		pTime: 0,
 
@@ -31,7 +29,6 @@ function getPlayerData() {
 
 		//CRYSTALIZE
 		crystal: E(0),
-		bestCrystal: E(0),
 		cTimes: 0,
 		cTime: 0,
 
@@ -64,12 +61,10 @@ function getPlayerData() {
 			tp: E(0),
 
 			ap: E(0),
-			bestAP: E(0),
 			aTimes: 0,
 			aTime: 0,
 
 			oil: E(0),
-			bestOil: E(0),
 			lTimes: 0,
 			lTime: 0,
 
