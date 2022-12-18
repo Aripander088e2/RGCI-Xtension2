@@ -469,29 +469,6 @@ UPGS.rocket = {
 				return x
 			},
 			effDesc: x => format(x)+"x",
-		},{
-			unl: _ => hasStarTree("progress", 1),
-			tier: 3,
-
-			max: 200,
-
-			costOnce: true,
-
-			title: "Rocket Fueled Fun",
-			desc: `Increase fun gain.`,
-
-			res: "rf",
-			icon: ['Curr/Fun'],
-			
-			cost: i => 5e3,
-			bulk: i => i/5e3,
-
-			effect(i) {
-				let x = E(i).sqrt().add(1)
-
-				return x
-			},
-			effDesc: x => format(x)+"x",
 		}
 	],
 }

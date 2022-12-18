@@ -17,6 +17,8 @@ MAIN.steel = {
         x = x.mul(upgEffect('rocket',18))
         x = x.mul(upgEffect('momentum',6))
 
+        x = x.mul(upgEffect('moonstone',6))
+
         return x.floor()
     },
     foundryEff() {
@@ -95,7 +97,7 @@ MAIN.steel = {
 
                 req: E(1e21),
                 eff(c) {
-                    return c.add(1).log10().root(1.25).div(20).pow10()
+                    return c.add(1).log10().root(1.25).div(10).pow10()
                 },
                 effDesc: x => "Gain more "+format(x,3)+"x Oil.",
             },{
@@ -103,7 +105,7 @@ MAIN.steel = {
 
                 req: E(1e27),
                 eff(c) {
-                    return c.div(1e15).add(1).log10().div(20).pow10()
+                    return c.div(1e15).add(1).log10().div(15).pow10()
                 },
                 effDesc: x => "Gain more "+format(x,3)+"x Space Power.",
             },{
@@ -528,8 +530,8 @@ UPGS.gen = {
             res: "steel",
             icon: ["Curr/Charge"],
                         
-            cost: i => Decimal.pow(1.2,i).mul(1e30).ceil(),
-            bulk: i => i.div(1e30).max(1).log(1.2).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.15,i).mul(1e30).ceil(),
+            bulk: i => i.div(1e30).max(1).log(1.15).floor().toNumber()+1,
         
             effect(i) {
                 let x = Decimal.pow(1.5,Math.floor(i/25)).mul(i/10+1)

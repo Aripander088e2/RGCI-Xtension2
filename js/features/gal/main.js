@@ -143,7 +143,11 @@ function setupGal() {
 			qol: [],
 			auto: [],
 			progress: [],
-		}
+		},
+
+		dm: E(0),
+		sacTime: 0,
+		sacTimes: 0,
 	}
 }
 
@@ -195,7 +199,7 @@ const ASTRAL = {
 		r = r.mul(tmp.chargeEff[7] || 1)
 		r = r.mul(upgEffect('moonstone', 2))
         r = r.mul(getGSEffect(1))
-		r = r.mul(getAGHEffect(0))
+		r = r.mul(2)
 		r = r.mul(upgEffect('sfrgt', 2))
 
 		return r
@@ -295,7 +299,7 @@ UPGS.moonstone = {
 			},
 			effDesc: x => "+"+format(x)+"x",
 		}, {
-			max: 10,
+			max: 4,
 
 			costOnce: true,
 
@@ -305,15 +309,15 @@ UPGS.moonstone = {
 			res: "moonstone",
 			icon: ["Icons/SP"],
 			
-			cost: i => 50,
-			bulk: i => Math.floor(i/50),
+			cost: i => 5,
+			bulk: i => Math.floor(i/5),
 
 			effect(i) {
 				return i+1
 			},
 			effDesc: x => format(x)+"x",
 		}, {
-			max: 10,
+			max: 4,
 
 			costOnce: true,
 
@@ -323,8 +327,8 @@ UPGS.moonstone = {
 			res: "moonstone",
 			icon: ["Curr/Star"],
 			
-			cost: i => 50,
-			bulk: i => Math.floor(i/50),
+			cost: i => 7,
+			bulk: i => Math.floor(i/7),
 
 			effect(i) {
 				return i+1
@@ -363,6 +367,25 @@ UPGS.moonstone = {
 			
 			cost: i => 5,
 			bulk: i => Math.floor(i/5),
+
+			effect(i) {
+				return i+1
+			},
+			effDesc: x => format(x)+"x",
+		}, {
+			unl: _ => player.gal.sacTimes,
+			max: 5,
+
+			costOnce: true,
+
+			title: "Moon Steel",
+			desc: `Boost Steel by <b class="green">+100%</b> per level.`,
+
+			res: "moonstone",
+			icon: ["Curr/Steel"],
+			
+			cost: i => 15,
+			bulk: i => Math.floor(i/15),
 
 			effect(i) {
 				return i+1

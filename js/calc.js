@@ -25,7 +25,7 @@ function calc(dt) {
 	//STEELIE
 	player.sTime += dt
 
-	if (tmp.steelGainP > 0) player.steel = player.steel.add(tmp.steelGain.mul(tmp.steelGainP*dt))
+	if (tmp.steelGainP > 0 && player.level >= 240) player.steel = player.steel.add(tmp.steelGain.mul(tmp.steelGainP*dt))
 
 	if (hasUpgrade('factory',2)) player.chargeRate = player.chargeRate.add(tmp.chargeGain.mul(dt))
 	player.bestCharge = player.bestCharge.max(player.chargeRate)

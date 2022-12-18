@@ -7,10 +7,7 @@ function resetGHPotential() {
 MAIN.agh_milestone = [
     {
         r: 3,
-        desc: `Gain <b class="green">+1x</b> more SP per 3 Negative Energy.`,
-
-		effect: _ => player.gal.neg / 3 + 1,
-		effDesc: x => format(x, 1)+"x",
+        desc: `<b class="green">Double</b> Space Power.`
     }, {
         r: 6,
         desc: `Astral boosts Stars.`,

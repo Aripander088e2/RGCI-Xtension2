@@ -116,13 +116,13 @@ const CHALS = [
     },{
         unl: _=>player.grasshop >= 15,
 
-        max: 5,
+        max: 6,
         id: 'steel',
 
         title: `Clear Crystal`,
         desc: `You can't buy Crystal Upgrades.`,
         cond: _=>!hasUpgrades("crystal"),
-        reward: `Steel gain is <b class='green'>doubled</b> each completion.`,
+        reward: `Steel gain is <b class='green'>tripled</b> each completion.`,
 
         goal: i=>11+i*5,
         bulk: i=>Math.floor((i-11)/5+1),
@@ -130,7 +130,7 @@ const CHALS = [
         goalDesc: x=>"Tier "+format(x,0),
         goalAmt: _=>player.tier,
 
-        eff: i=>Decimal.pow(2,i),
+        eff: i=>Decimal.pow(3,i),
         effDesc: x=>format(x,1)+"x",
     },{
         unl: _=>player.grasshop >= 18,
@@ -143,8 +143,8 @@ const CHALS = [
         cond: _=>false,
         reward: `Charge gain is increased by <b class='green'>5x</b> each completion.`,
 
-        goal: i=>25+i*5,
-        bulk: i=>Math.floor((i-25)/5+1),
+        goal: i=>25+i*3,
+        bulk: i=>Math.floor((i-25)/3+1),
 
         goalDesc: x=>"Tier "+format(x,0),
         goalAmt: _=>player.tier,

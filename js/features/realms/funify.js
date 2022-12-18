@@ -2,7 +2,6 @@ MAIN.fun = {
 	gain() {
 		let x = E(1)
 		x = x.mul(tmp.chargeEff[8] || 1)
-		x = x.mul(upgEffect('rocket', 19))
         x = x.mul(getAstralEff('fu'))
 		x = x.mul(upgEffect('moonstone', 4))
 		x = x.mul(getGSEffect(8))
@@ -122,6 +121,18 @@ UPGS.funMachine = {
 			icon: ["Icons/Charger"],
 						
 			cost: i => E(1e6),
+			bulk: i => 1,
+		},{
+			max: 1,
+
+			unl: _ => player.gal.sacTimes,
+			title: "Recelerator",
+			desc: `Unlock Recelerator realm, where you can slow time further. Soon!`,
+		
+			res: "fun",
+			icon: ["Icons/Recelerator"],
+						
+			cost: i => EINF,
 			bulk: i => 1,
 		}
 	],

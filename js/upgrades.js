@@ -779,6 +779,7 @@ function buyUpgrade(id, x, type = "once", amt) {
 	bulk = Math.min(bulk, tu.max[x])
 	if (lvl >= bulk) return
 	if (type == "once") bulk = lvl + 1
+	if (tu.cannotBuy) return
 
 	//Spend Resource
 	if (!tu.noSpend) {
@@ -1106,6 +1107,7 @@ el.update.upgs = _=>{
 		tmp.el.gStats.setDisplay(gStatsUnl && (gStats || player.options.allStats))
 		if (gStatsUnl && (gStats || player.options.allStats)) {
 			tmp.el.gTimes.setHTML(player.gal.times ? "You have done " + player.gal.times + " <b style='color: #bf00ff'>Galactic</b> resets.<br>Time: " + formatTime(player.gal.time) : "")
+			tmp.el.sacTimes.setHTML(player.gal.sacTimes ? "You have done " + player.gal.sacTimes + " <b style='color: #bf00ff'>Sacrifice</b> resets.<br>Time: " + formatTime(player.gal.sacTime) : "")
 		}
 
 		tmp.el.allStatsBtn.setDisplay(hasUpgrade('factory', 4) || galUnlocked())

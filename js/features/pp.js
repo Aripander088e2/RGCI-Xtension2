@@ -81,7 +81,7 @@ UPGS.pp = {
     req: _=>player.pTimes > 0,
     reqDesc: _=>`Prestige once to unlock.`,
 
-    underDesc: _=>`You have ${format(player.pp,0)} Prestige Points`+(tmp.ppGainP > 0 ? " <span class='smallAmt'>"+formatGain(player.pp,tmp.ppGain.mul(tmp.ppGainP))+"</span>" : ""),
+    underDesc: _ => `You have ${format(player.pp,0)} Prestige Points` + (tmp.ppGainP > 0 ? " <span class='smallAmt'>"+formatGain(player.pp,tmp.ppGain.mul(tmp.ppGainP))+"</span>" : ""),
 
     ctn: [
         {
