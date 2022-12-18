@@ -143,7 +143,7 @@ UPGS.rocket = {
 			desc: `Increase steel gain by <b class="green">+5%</b> per level.`,
 
 			res: "rf",
-			icon: ['Curr/Steel2'],
+			icon: ['Curr/Steel'],
 			
 			cost: i => 1,
 			bulk: i => i,
@@ -221,7 +221,7 @@ UPGS.rocket = {
 			unl: _ => hasStarTree("progress", 0),
 			tier: 2,
 
-			max: 1000,
+			max: 50,
 
 			costOnce: true,
 
@@ -244,7 +244,7 @@ UPGS.rocket = {
 			unl: _ => hasStarTree("progress", 0),
 			tier: 2,
 
-			max: 1000,
+			max: 50,
 
 			costOnce: true,
 
@@ -267,7 +267,7 @@ UPGS.rocket = {
 			unl: _ => hasStarTree("progress", 0),
 			tier: 2,
 
-			max: 1000,
+			max: 50,
 
 			costOnce: true,
 
@@ -290,7 +290,7 @@ UPGS.rocket = {
 			unl: _ => hasStarTree("progress", 0),
 			tier: 2,
 
-			max: 1000,
+			max: 50,
 
 			costOnce: true,
 
@@ -298,7 +298,7 @@ UPGS.rocket = {
 			desc: `Increase steel gain by <b class="green">+10%</b> per level.`,
 
 			res: "rf",
-			icon: ['Curr/Steel2'],
+			icon: ['Curr/Steel'],
 			
 			cost: i => 30,
 			bulk: i => i/30,
@@ -313,7 +313,7 @@ UPGS.rocket = {
 			unl: _ => hasStarTree("progress", 0),
 			tier: 2,
 
-			max: 1000,
+			max: 50,
 
 			costOnce: true,
 
@@ -336,7 +336,7 @@ UPGS.rocket = {
 			unl: _ => hasStarTree("progress", 0),
 			tier: 2,
 
-			max: 1000,
+			max: 50,
 
 			costOnce: true,
 
@@ -359,7 +359,7 @@ UPGS.rocket = {
 			unl: _ => hasStarTree("progress", 0),
 			tier: 2,
 
-			max: 1000,
+			max: 50,
 
 			costOnce: true,
 
@@ -435,10 +435,10 @@ UPGS.rocket = {
 			desc: `Increase steel gain by <b class="green">+5%</b> per level.`,
 
 			res: "rf",
-			icon: ['Curr/Steel2'],
+			icon: ['Curr/Steel'],
 			
-			cost: i => 2e3,
-			bulk: i => i/2e3,
+			cost: i => 200,
+			bulk: i => i/200,
 
 			effect(i) {
 				let x = E(i*0.05+1)
@@ -460,8 +460,8 @@ UPGS.rocket = {
 			res: "rf",
 			icon: ['Icons/Charge'],
 			
-			cost: i => 2e3,
-			bulk: i => i/2e3,
+			cost: i => 200,
+			bulk: i => i/200,
 
 			effect(i) {
 				let x = E(i*0.05+1)
@@ -473,124 +473,26 @@ UPGS.rocket = {
 			unl: _ => hasStarTree("progress", 1),
 			tier: 3,
 
-			max: 1e3,
+			max: 200,
 
 			costOnce: true,
 
 			title: "Rocket Fueled Fun",
-			desc: `Increase fun gain by <b class="green">+5%</b> per level.`,
+			desc: `Increase fun gain.`,
 
 			res: "rf",
 			icon: ['Curr/Fun'],
 			
-			cost: i => 1e4,
-			bulk: i => i/1e4,
+			cost: i => 5e3,
+			bulk: i => i/5e3,
 
 			effect(i) {
-				let x = E(i*0.05+1)
+				let x = E(i).sqrt().add(1)
 
 				return x
 			},
 			effDesc: x => format(x)+"x",
-		}, 
-
-		//Tier 4
-		{
-			unl: _ => false, //Tier 4 placeholder
-			tier: 4,
-
-			max: 100,
-
-			costOnce: true,
-
-			title: "Rocket Fueled Fun II",
-			desc: `Increase fun gain by <b class="green">+5%</b> per level.`,
-
-			res: "rf",
-			icon: ['Curr/Fun'],
-			
-			cost: i => 1e6,
-			bulk: i => i/1e6,
-
-			effect(i) {
-				let x = E(i*0.05+1)
-
-				return x
-			},
-			effDesc: x => format(x)+"x",
-		}, 
-		{
-			unl: _ => false, //Tier 4 placeholder
-			tier: 4,
-
-			max: 100,
-
-			costOnce: true,
-
-			title: "Rocket Fueled Power",
-			desc: `Increase fun gain by <b class="green">+5%</b> per level.`,
-
-			res: "rf",
-			icon: ['Icons/SP'],
-			
-			cost: i => 1e6,
-			bulk: i => i/1e6,
-
-			effect(i) {
-				let x = E(i*0.05+1)
-
-				return x
-			},
-			effDesc: x => format(x)+"x",
-		}, 
-		{
-			unl: _ => false, //Tier 4 placeholder
-			tier: 4,
-
-			max: 100,
-
-			costOnce: true,
-
-			title: "Rocket Fueled Stars",
-			desc: `Increase star gain by <b class="green">+5%</b> per level.`,
-
-			res: "rf",
-			icon: ['Curr/Star'],
-			
-			cost: i => 1e6,
-			bulk: i => i/1e6,
-
-			effect(i) {
-				let x = E(i*0.05+1)
-
-				return x
-			},
-			effDesc: x => format(x)+"x",
-		}, 
-		{
-			unl: _ => false, //Tier 4 placeholder
-			tier: 4,
-
-			max: 100,
-
-			costOnce: true,
-
-			title: "Rocket Fueled Lunar",
-			desc: `Increase moonstone gain by <b class="green">+5%</b> per level.`,
-
-			res: "rf",
-			icon: ['Curr/Moonstone'],
-			
-			cost: i => 1e6,
-			bulk: i => i/1e6,
-
-			effect(i) {
-				let x = E(i*0.05+1)
-
-				return x
-			},
-			effDesc: x => format(x)+"x",
-		}, 
+		}
 	],
 }
 
@@ -773,7 +675,7 @@ UPGS.momentum = {
 			desc: `Multiply steel gain by 3x.`,
 
 			res: "momentum",
-			icon: ['Curr/Steel2'],
+			icon: ['Curr/Steel'],
 			
 			cost: i => 1,
 			bulk: i => 1,
@@ -863,19 +765,25 @@ el.update.rocket = _=>{
 }
 
 function updateRocketTemp() {
+	//Rocket Fuel
+	let rp_scale = 0.5
+	rp_scale *= Math.max(1 - starTreeEff("progress", 12, 1), 0)
+	tmp.rf_base_mult = E(player.rocket.part).mul(rp_scale).add(1)
+
 	tmp.rf_gain_mult = 1
 	tmp.rf_gain_mult += getGSEffect(3, 0)
-	tmp.rf_gain_mult += getASEff('rf', 0)
+	tmp.rf_gain_mult += getAstralEff('rf', 0)
 	tmp.rf_gain_mult += upgEffect('moonstone', 1, 0)
+
 
 	let rf = player.rocket.total_fp
 	tmp.rf_cost = [ROCKET.cost(rf, 1e20), ROCKET.cost(rf, 100)]
 	tmp.rf_bulk = Math.min(ROCKET.bulk(player.chargeRate, 1e20), ROCKET.bulk(player.aRes.oil, 100))
+
+	//Rocket Part
+	tmp.rp_req = [E(player.rocket.part).add(1).pow(2).mul(1e21),E(10*player.rocket.part+10)]
 }
 
 tmp_update.push(_=>{
-	tmp.rp_req = [E(player.rocket.part).add(1).pow(2).mul(1e21),E(10*player.rocket.part+10)]
-	tmp.rf_base_mult = E(player.rocket.part).div(2).add(1)
-
 	updateRocketTemp()
 })

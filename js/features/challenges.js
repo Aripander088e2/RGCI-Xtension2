@@ -154,41 +154,41 @@ const CHALS = [
     },{
         unl: _=>hasStarTree("progress", 6),
 
-        max: 12,
+        max: 11,
         id: 'gal',
 
         title: `Sleepy Hop`,
         desc: `You must grasshop at least as you can. Getting 10 Rocket Parts will complete it.`,
         cond: _=>galUnlocked()&&tmp.chal.goal[8]>=player.grasshop,
-        reward: `Gain a AGH Level per completion.`,
+        reward: `Nothing.`,
 
         goal: i=>Math.max(30-i*3,0),
-        bulk: i=>Math.floor((30-i)/3)+1,
+        bulk: i=>Math.floor((30-i)/3+1),
 
         goalDesc: x=>"Grasshop "+format(x,0),
         goalAmt: _=>player.rocket.part==10?player.grasshop:1/0,
 
         eff: i=>i,
-        effDesc: x=>"+"+format(x,0)+" AGH Level",
+        effDesc: x=>"however, you will feel a sense of accomplishment",
     },{
-        unl: _=>hasStarTree("progress", 7),
+        unl: _=>player.chal.comp[8] == 12,
 
-        max: 12,
+        max: Infinity,
         id: 'gal',
 
         title: `Walk On Grass`,
-        desc: `You can't grasshop. Entering will reset your Grass-Skips.`,
-        cond: _=>false,
-        reward: `Gain a AGH Level per completion.`,
+        desc: `You can't grasshop.`,
+        cond: _=>player.grasshop==0,
+        reward: `Nothing.`,
 
-        goal: i=>9+i*3,
-        bulk: i=>Math.floor((i-9)/3+1),
+        goal: i=>i*3,
+        bulk: i=>Math.floor(i/3+1),
 
         goalDesc: x=>"Grass-Skip "+format(x,0),
         goalAmt: _=>player.aRes.grassskip,
 
         eff: i=>i,
-        effDesc: x=>"+"+format(x,0)+" AGH Level",
+        effDesc: x=>"however, you will feel a sense of accomplishment",
     }
 ]
 
@@ -220,7 +220,6 @@ function enterChal(x) {
 	if (hasUpgrade('assembler', 9)) player.chal.progress[x] = true
 	else player.chal.progress = { [x]: true }
 
-	if (x == 9) player.aRes.grassskip = 0
 	RESET[CHALS[x].id].reset(true)
 }
 
@@ -258,13 +257,14 @@ el.setup.chal = _=>{
         <div class="chal_div ${c.id}" id="chal_div_${i}" onclick="enterChal(${i})">
             <h3>${c.title}</h3><br>
             <b class="yellow" id="chal_comp_${i}">0 / 0</b><br><br>
-            ${c.desc}<br>
+            ${c.desc}<br><br>
+
             Reward: ${c.reward}<br>
-            Effect: <b class="cyan" id="chal_eff_${i}">???</b>
+            (<b class="cyan" id="chal_eff_${i}"></b>)
 
             <div style="position:absolute; bottom:7px; width:100%;">
-                Status: <b class="red" id="chal_pro_${i}">Inactive</b><br>
-                <b class="white" id="chal_goal_${i}">Goal: ???</b>
+                <b id="chal_pro_${i}"></b><br>
+                <b class="white" id="chal_goal_${i}"></b>
             </div>
         </div>
         `
@@ -283,7 +283,7 @@ el.update.chal = _=>{
 		tmp.el.chal_div.setDisplay(unl)
 
 		if (unl) {
-			tmp.el.chal_top.setHTML(player.decel ? "You can't complete Challenges in Anti-Realm!" : `
+			tmp.el.chal_top.setHTML(player.decel ? "<b class='red'>You can't complete Challenges in Anti-Realm!</b>" : `
 				Click any challenge to start! Click again to exit.<br>
 				You can complete Challenges without entering if you satisfy a condition.
 			`)
@@ -298,13 +298,16 @@ el.update.chal = _=>{
 
 				if (unl2) {
 					let completed = l >= c.max
+					let progressing = inChal(i)
+					let active = inChalCond(i)
 
-					tmp.el["chal_comp_"+i].setTxt(format(l,0) + " / " + format(c.max,0))
+					tmp.el["chal_comp_"+i].setTxt(completed ? "Completed" : format(l,0) + " / " + format(c.max,0))
+					tmp.el["chal_comp_"+i].setClasses({[completed ? "pink" : "yellow"]: true})
 					tmp.el["chal_eff_"+i].setHTML(c.effDesc(tmp.chal.eff[i]))
-					tmp.el["chal_pro_"+i].setTxt(completed ? "Completed" : inChal(i) ? "Progress" : inChalCond(i) ? "Active" : "Inactive")
-					tmp.el["chal_pro_"+i].setClasses({[completed ? "pink" : inChal(i) ? "yellow" : inChalCond(i) ? "green" : "red"]: true})
 
-					tmp.el["chal_goal_"+i].setTxt("Goal: "+c.goalDesc(tmp.chal.goal[i]))
+					tmp.el["chal_pro_"+i].setTxt(completed ? "" : progressing ? "Progress" : active ? "Active" : "Inactive")
+					tmp.el["chal_pro_"+i].setClasses({[completed ? "pink" : progressing ? "yellow" : active ? "green" : "red"]: true})
+					tmp.el["chal_goal_"+i].setTxt(completed ? "" : "Goal: "+c.goalDesc(tmp.chal.goal[i]) + (progressing || active ? " (" + format(c.goalAmt(), 0) + ")" : ""))
 				}
 			}
 		}

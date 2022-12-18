@@ -15,7 +15,7 @@ const UPG_RES = {
     star: ["Stars",_=>[player.gal,"stars"],'SpaceBase'],
     moonstone: ["Moonstone",_=>[player.gal,"moonstone"],'MoonBase'],
     fun: ["Fun",_=>[player.aRes,"fun"],'FunBase'],
-    SFRGT: ["SFRGT",_=>[player.aRes,"SFRGT"],'FunBase'],
+    SFRGT: ["SFRGT",_=>[player.aRes,"sfrgt"],'FunBase'],
     dm: ["Dark Matter",_=>[player.gal,"dm"],'DarkMatterBase'],
 }
 
@@ -417,7 +417,7 @@ const UPGS = {
                 unl: _=>player.cTimes>0,
 
                 title: "Grass Upgrade Autobuy",
-                desc: `You can now automatically buy Grass Upgrades.`,
+                desc: `Automate Grass Upgrades.`,
             
                 res: "pp",
                 icon: ['Curr/Grass','Icons/Automation'],
@@ -439,7 +439,7 @@ const UPGS = {
                 unl: _=>player.cTimes>0,
 
                 title: "Prestige Upgrade Autobuy",
-                desc: `You can now automatically buy Prestige Upgrades.`,
+                desc: `Automate Prestige Upgrades.`,
             
                 res: "crystal",
                 icon: ['Curr/Prestige','Icons/Automation'],
@@ -461,7 +461,7 @@ const UPGS = {
                 unl: _=>player.grasshop>=1 || galUnlocked(),
 
                 title: "Crystal Upgrade Autobuy",
-                desc: `You can now automatically buy Crystal Upgrades.`,
+                desc: `Automate Crystal Upgrades.`,
             
                 res: "crystal",
                 icon: ['Curr/Crystal','Icons/Automation'],
@@ -498,8 +498,8 @@ const UPGS = {
                 res: "crystal",
                 icon: ['Curr/Crystal','Icons/Plus'],
 
-                cost: i => Decimal.pow(10,i).mul(1e15).ceil(),
-                bulk: i => i.div(1e15).max(1).log(10).floor().toNumber()+1,
+                cost: i => Decimal.pow(3,i).mul(1e15).ceil(),
+                bulk: i => i.div(1e15).max(1).log(3).floor().toNumber()+1,
                 effect(i) {
                     let x = i/1e3
             
@@ -654,7 +654,7 @@ const UPGS = {
                 desc: `Increase steel gain by <b class="green">+50%</b> per level.`,
 
                 res: "plat",
-                icon: ['Curr/Steel2'],
+                icon: ['Curr/Steel'],
                 
                 cost: i => 100,
                 bulk: i => Math.floor(i/100),

@@ -28,8 +28,9 @@ const MAP = {
 		['auto', null,'chal', 'dc',null ],
 	],
 	space: [
-		['opt', 'stats', null,null ],
-		['gal', 'sc',   'at' ,'sac']
+		['opt','stats', null ,null ],
+		['gal','sc',   'at'  ,'sac'],
+		[null , null  ,'chal',null ]
 	]
 }
 
@@ -52,7 +53,7 @@ const MAP_UNLS = {
 	//SPACE
 	sc: _ => true,
 	at: _ => true,
-	sac: _ => false,
+	sac: _ => hasAGHMilestone(6),
 }
 
 const MAP_IDS = (_=>{

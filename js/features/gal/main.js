@@ -2,14 +2,19 @@ MAIN.gal = {
 	gain() {
 		let r = E(10)
 
+		r = r.mul(tmp.chargeEff[11] || 1)
+
 		r = r.mul(upgEffect('star', 0))
 		r = r.mul(upgEffect('star', 1))
 		r = r.mul(upgEffect('star', 2))
 		r = r.mul(upgEffect('star', 3))
 
         if (hasGSMilestone(2)) r = r.mul(getGSEffect(2))
-		r = r.mul(getASEff("st"))
+		r = r.mul(getAstralEff("st"))
 		r = r.mul(upgEffect('moonstone', 3))
+		r = r.mul(upgEffect('sfrgt', 1))
+		if (hasStarTree("progress", 8) && player.grasshop >= 50) r = r.mul(E(1.2).pow(player.grasshop - 49))
+		if (hasStarTree("progress", 9) && player.tier >= 50) r = r.mul(E(1.2).pow(player.tier - 49))
 
 		return r
 	},
@@ -48,6 +53,7 @@ RESET.gal = {
 		for (var i = 0; i < 8; i++) player.chal.comp[i] = 0
 		for (var i = 0; i < 8; i++) player.chal.max[i] = 0
 		player.grasshop = 0
+		player.ghPotential = 0
 		player.steel = E(0)
 		player.bestCharge = E(0)
 		player.decel = false
@@ -89,10 +95,11 @@ tmp_update.push(_=>{
 	data.ms = {}
 	data.ms.chance = 1/200
 	if (hasGSMilestone(5)) data.ms.chance *= player.gal.msLuck
-	if (hasAGHMilestone(5)) data.ms.chance *= 2
-	if (!player.decel && hasAGHMilestone(6)) data.ms.chance /= 10
+	if (hasGSMilestone(6) && !player.decel) data.ms.chance /= 10
+	if (hasGSMilestone(9)) data.ms.chance *= 2
+	if (hasAGHMilestone(8)) data.ms.chance *= 2
 	data.ms.gain = 1
-	data.ms.gain += getASEff('ms', 0)
+	data.ms.gain += getAstralEff('ms', 0)
 
 	//updateChronoTemp()
 	updateSCTemp()
@@ -101,9 +108,12 @@ tmp_update.push(_=>{
 function galTick(dt) {
 	player.gal.time += dt
 	player.gal.sacTime += dt
-	if (player.gal.sp.gte(tmp.gal.astral.req)) {
-		player.gal.astral = ASTRAL.bulk()
-	}
+	if (player.gal.sp.gte(tmp.gal.astral.req)) player.gal.astral = ASTRAL.bulk()
+
+	player.gal.ghPotential = Math.max(player.gal.ghPotential, MAIN.gh.bulk())
+	player.gal.gsPotential = Math.max(player.gal.gsPotential, MAIN.gs.bulk())
+	if (player.rocket.part == 10) player.gal.neg = Math.max(player.gal.neg, tmp.gal.agh.neg)
+
 }
 
 function galUnlocked() {
@@ -120,9 +130,13 @@ function setupGal() {
 		moonstone: 0,
 		msLuck: 1,
 
-		chrona: 0,
+		ghPotential: 0,
+		gsPotential: 0,
+		neg: 0,
+
+		/*chrona: 0,
 		ability: null,
-		abilityCooldown: 0,
+		abilityCooldown: 0,*/
 
 		stars: E(0),
 		star_chart: {
@@ -139,7 +153,7 @@ el.update.space = _=>{
 	tmp.el.astral.setDisplay(astral_unl && inSpace())
 	if (astral_unl) {
 		tmp.el.astral_top_bar.changeStyle("width",tmp.gal.astral.progress*100+"%")
-		tmp.el.astral_top_info.setHTML(`Astral <b class="magenta">${format(player.gal.astral,0)}</b> (${formatPercent(tmp.gal.astral.progress)})`)
+		tmp.el.astral_top_info.setHTML(`Astral <b class="magenta">${format(player.gal.astral,0)}</b>`)
 	}
 	if (mapID == 'g') {
 		tmp.el.astral_div.setDisplay(astral_unl)
@@ -167,6 +181,9 @@ el.update.space = _=>{
 	if (mapID == 'at') {
 		updateUpgradesHTML('moonstone')
 	}
+	if (mapID == 'sac') {
+		updateUpgradesHTML('dm')
+	}
 }
 
 //ASTRAL
@@ -179,6 +196,7 @@ const ASTRAL = {
 		r = r.mul(upgEffect('moonstone', 2))
         r = r.mul(getGSEffect(1))
 		r = r.mul(getAGHEffect(0))
+		r = r.mul(upgEffect('sfrgt', 2))
 
 		return r
 	},
@@ -200,15 +218,15 @@ const ASTRAL = {
 
 		x.tp = a+1
 		x.fd = a/50+1
-		if (hasAGHMilestone(1)) x.st = 2**(a/4)
+		if (hasAGHMilestone(1)) x.st = E(2).pow(a/4)
 		if (hasAGHMilestone(2)) x.rf = a/20
-		if (hasAGHMilestone(3)) x.ch = 2**(a/4-2)
-		if (hasAGHMilestone(4)) x.xp = 2**(a/20)
-		if (hasAGHMilestone(5)) x.fu = a/5+1
-		if (hasAGHMilestone(6)) x.sf = E(2).pow(a)
+		if (hasAGHMilestone(3)) x.ch = E(2).pow(a/4-2).max(1)
+		if (hasAGHMilestone(4)) x.xp = E(1.3).pow(a-10).max(1)
+		if (hasAGHMilestone(5)) x.fu = E(2).pow(a/2-10).max(1)
+		if (hasAGHMilestone(7)) x.sf = E(2).pow(a/5-4).max(1)
 		if (hasAGHMilestone(10)) x.tb = a/50
 		if (hasAGHMilestone(11)) x.ap = Math.min(1+a/200,1.5)
-		if (hasAGHMilestone(12)) x.fc = Math.min(1+a/200,1.5)
+		if (hasAGHMilestone(12)) x.fc = Math.min(1+a/1e4,1.1)
 
 		return x
 	},
@@ -220,18 +238,19 @@ const ASTRAL = {
 		if (e.st) x += `<b class="magenta">${format(e.st,0)}x</b> to Star gain<br>`
 		if (e.rf) x += `<b class="magenta">+${format(e.rf)}x</b> to Rocket Fuel gain<br>`
 		if (e.ch) x += `<b class="magenta">${format(e.ch)}x</b> to Charge gain<br>`
-		if (e.xp) x += `<b class="magenta">+${format(e.xp,0)}x</b> to XP gain<br>`
+		if (e.xp) x += `<b class="magenta">${format(e.xp)}x</b> to XP gain (in Normal Realm)<br>`
+		if (e.xp) x += `<b class="magenta">${format(e.xp.root(1.5))}x</b> to XP gain (in Anti-Realm)<br>`
 		if (e.fu) x += `<b class="magenta">${format(e.fu)}x</b> to Fun gain<br>`
 		if (e.sf) x += `<b class="magenta">${format(e.sf,0)}x</b> to SFRGT gain<br>`
 		if (e.tb) x += `<b class="magenta">+${format(e.tb,3)}x</b> to Tier multiplier base<br>`
-		if (e.ap) x += `<b class="magenta">+${format(e.ap,3)}x</b> to effects for each 25 AP upgrades<br>`
-		if (e.fc) x += `<b class="magenta">+${format(e.fc,3)}x</b> to effects for each 25 Factory upgrades<br>`
+		if (e.ap) x += `<b class="magenta">+${format(e.ap,3)}x</b> to some effects for each 25 AP upgrades<br>`
+		if (e.fc) x += `<b class="magenta">+${format(e.fc,3)}x</b> to charge bonuses for each 25 Factory upgrades<br>`
 
 		return x
 	},
 }
 
-function getASEff(id, def = 1) { return (tmp.gal && tmp.gal.astral.eff[id]) || def }
+function getAstralEff(id, def = 1) { return (tmp.gal && tmp.gal.astral.eff[id]) || def }
 
 UPGS.moonstone = {
 	title: "Moonstone Upgrades",
@@ -245,7 +264,7 @@ UPGS.moonstone = {
 			costOnce: true,
 
 			title: "Moon Platinum",
-			desc: `Increase Platinum gain by <b class="green">+1</b> per level.`,
+			desc: `Increase Platinum gain by <b class="green">+0.5</b> per level.`,
 
 			res: "moonstone",
 			icon: ["Curr/Platinum"],
@@ -256,7 +275,7 @@ UPGS.moonstone = {
 			effect(i) {
 				return i/2
 			},
-			effDesc: x => "+"+format(x,0),
+			effDesc: x => "+"+format(x,1),
 		}, {
 			max: 10,
 
@@ -386,8 +405,8 @@ UPGS.star = {
 			res: "steel",
 			icon: ["Curr/Star"],
 
-			cost: i => E(100).pow(i).mul(1e35),
-			bulk: i => E(i).div(1e35).log(100).floor().toNumber() + 1,
+			cost: i => E(5).pow(i).mul(1e35),
+			bulk: i => E(i).div(1e35).log(5).floor().toNumber() + 1,
 
 			effect(i) {
 				return E(1.2).pow(i)
@@ -402,8 +421,8 @@ UPGS.star = {
 			res: "rf",
 			icon: ["Curr/Star"],
 
-			cost: i => E(1.5).pow(i**0.8).mul(200),
-			bulk: i => E(i).div(200).log(1.5).root(0.8).floor().toNumber() + 1,
+			cost: i => E(2).pow(i**0.8).mul(200),
+			bulk: i => E(i).div(200).log(2).root(0.8).floor().toNumber() + 1,
 		
 			effect(i) {
 				return E(1.2).pow(i)
@@ -427,123 +446,4 @@ UPGS.star = {
 			effDesc: x => format(x)+"x",
 		}
 	],
-}
-
-//ANTI-GH MILESTONES
-MAIN.agh_milestone = [
-    {
-        r: 1,
-        desc: `Gain <b class="green">+1x</b> more SP per AGH Level.`,
-
-		effect: _ => tmp.gal.agh.lvl + 1,
-		effDesc: x => format(x, 1)+"x",
-    }, {
-        r: 2,
-        desc: `Astral boosts Stars.`,
-    }, {
-        r: 3,
-        desc: `Astral boosts Rocket Fuel.`,
-    }, {
-        r: 4,
-        desc: `Astral boosts Charge.`,
-    }, {
-        unl: _ => player.aRes.fTimes,
-
-        r: 5,
-        desc: `Astral boosts XP.`,
-    }, {
-        unl: _ => player.aRes.fTimes,
-
-        r: 6,
-        desc: `Astral boosts Fun.`,
-    }, {
-        unl: _ => player.aRes.fTimes,
-
-        r: 7,
-        desc: `Astral boosts SFRGT.`,
-    }, {
-        unl: _ => player.aRes.fTimes,
-
-        r: 8,
-        desc: `Unlock the Dark Matter Plant reset.`,
-    }, {
-        unl: _ => player.aRes.fTimes,
-
-        r: 9,
-        desc: `Moonstone chance is doubled.`,
-    }, {
-        unl: _ => false,
-
-        r: 10,
-        desc: `Unlock the Recelerator upgrade in Fun Machine.`,
-    }, {
-        unl: _ => false,
-
-        r: 11,
-        desc: `Astral adds Tier multiplier base.`,
-    }, {
-        unl: _ => false,
-
-        r: 12,
-        desc: `Astral multiplies effects for each 25 levels of AP upgrade. (soon!)`,
-    }, {
-        unl: _ => false,
-
-        r: 13,
-        desc: `Astral multiplies effects for each 25 levels of Factory upgrade. (soon!)`,
-    }
-]
-
-const AGH_MIL_LEN = MAIN.agh_milestone.length
-function hasAGHMilestone(x,def=1) { return tmp.gal && tmp.gal.agh.lvl >= MAIN.agh_milestone[x].r }
-function getAGHEffect(x,def=1) { return (tmp.gal && tmp.gal.agh.eff[x]) || def }
-function updateAGHTemp() {
-	let data = tmp.gal.agh || {}
-	if (!tmp.gal.agh) tmp.gal.agh = data
-
-	data.lvl = chalEff(8, 0) + chalEff(9, 0)
-	data.eff = {}
-    for (let x = 0; x < AGH_MIL_LEN; x++) {
-        let m = MAIN.agh_milestone[x]
-        if (m.effect) data.eff[x] = m.effect()
-    }
-}
-
-el.setup.agh = _ => {
-	let t = new Element("milestone_div_agh")
-	let h = ""
-
-	h += `<div id="gh_mil_ctns">Anti-Grasshop Level: <b id="agh">0</b><div class="milestone_ctns">`
-
-	for (i in MAIN.agh_milestone) {
-		let m = MAIN.agh_milestone[i]
-
-		h += `
-		<div id="agh_mil_ctn${i}_div">
-			<h3>AGH Level ${m.r}</h3><br>
-			${m.desc}
-			${m.effDesc?`<br>Effect: <b class="cyan" id="agh_mil_ctn${i}_eff"></b>`:""}
-		</div>
-		`
-	}
-
-	h += `</div></div>`
-
-	t.setHTML(h)
-}
-
-el.update.agh = _=>{
-	if (mapID != 'at') return
-
-	tmp.el.agh.setHTML(format(tmp.gal.agh.lvl,0))
-
-	for (let x = 0; x < AGH_MIL_LEN; x++) {
-		let m = MAIN.agh_milestone[x]
-		let unl = m.unl ? m.unl() : true
-		let id = "agh_mil_ctn"+x
-
-		tmp.el[id+"_div"].setDisplay(unl && (!player.options.hideMilestone || x+1 >= AGH_MIL_LEN || !hasAGHMilestone(x+1)))
-		tmp.el[id+"_div"].setClasses({bought: hasAGHMilestone(x)})
-		if (m.effDesc) tmp.el[id+"_eff"].setHTML(m.effDesc(getAGHEffect(x)))
-	}
 }

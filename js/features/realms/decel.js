@@ -4,8 +4,7 @@ RESET.decel = {
     req: _=>true,
     reqDesc: _=>"",
 
-    resetDesc: `<span style="font-size: 14px;">Decelerating will temporarily slow down time and reduce the effectiveness of everything significantly until you press the Accelerate button.
-    <br>During this time you will not be able to earn regular grass, Instead you earn anti-grass which is spent in Anti-Grass Upgrades panel which takes the place of regular Grass Upgrades panel.
+    resetDesc: `<span style="font-size: 14px;">Decelerating nerfs everything until you Accelerate. You'll be able to cut Anti-Grass for new upgrades.
     </span>`,
     resetGain: _=> `Decelerating will force a Steelie.`,
 
@@ -81,7 +80,7 @@ UPGS.aGrass = {
             desc: `Increase steel gain by <b class="green">+10%</b> per level.<br>This effect is increased by <b class="green">25%</b> every <b class="yellow">25</b> levels.`,
 
             res: "aGrass",
-            icon: ['Curr/Steel2'],
+            icon: ['Curr/Steel'],
             
             cost: i => Decimal.pow(1.2,i).mul(200).ceil(),
             bulk: i => i.div(200).max(1).log(1.2).floor().toNumber()+1,
@@ -347,7 +346,7 @@ UPGS.ap = {
         
             effect(i) {
                 let r = E(i/4+1)
-                if (hasAGHMilestone(6)) r = r.mul(E(getAGHEffect(6, 1)).pow(Math.floor(i/25)))
+                r = r.mul(E(getAstralEff('ap')).pow(Math.floor(i/25)))
                 return r
             },
             effDesc: x => format(x)+"x",
@@ -366,7 +365,7 @@ UPGS.ap = {
 
             effect(i) {
                 let r = E(i/4+1)
-                if (hasAGHMilestone(6)) r = r.mul(E(getAGHEffect(6, 1)).pow(Math.floor(i/25)))
+                r = r.mul(E(getAstralEff('ap')).pow(Math.floor(i/25)))
                 return r
             },
             effDesc: x => x.format()+"x",
@@ -385,7 +384,7 @@ UPGS.ap = {
 
             effect(i) {
                 let r = E(i/4+1)
-                if (hasAGHMilestone(6)) r = r.mul(E(getAGHEffect(6, 1)).pow(Math.floor(i/25)))
+                r = r.mul(E(getAstralEff('ap')).pow(Math.floor(i/25)))
                 return r
             },
             effDesc: x => format(x,0)+"x",
@@ -403,7 +402,7 @@ UPGS.ap = {
 
             effect(i) {
                 let r = E(i/4+1)
-                if (hasAGHMilestone(6)) r = r.mul(E(getAGHEffect(6, 1)).pow(Math.floor(i/25)))
+                r = r.mul(E(getAstralEff('ap')).pow(Math.floor(i/25)))
                 return r
             },
             effDesc: x => format(x,1)+"x",
@@ -504,16 +503,16 @@ UPGS.oil = {
 
             title: "Oily Grass Value",
             tier: 3,
-            desc: `Increase grass gain by <b class="green">25%</b> compounding per level.`,
+            desc: `Increase grass gain by <b class="green">10%</b> compounding per level.`,
         
             res: "oil",
             icon: ["Curr/Grass"],
                         
-            cost: i => Decimal.pow(1.75,i).mul(50).ceil(),
-            bulk: i => i.div(50).max(1).log(1.75).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.5,i).mul(10).ceil(),
+            bulk: i => i.div(10).max(1).log(1.5).floor().toNumber()+1,
         
             effect(i) {
-                return E(1.25).pow(i)
+                return E(1.1).pow(i)
             },
             effDesc: x => format(x)+"x",
         },{
@@ -521,16 +520,16 @@ UPGS.oil = {
 
             title: "Oily XP",
             tier: 3,
-            desc: `Increase XP gain by <b class="green">25%</b> compounding per level.`,
+            desc: `Increase XP gain by <b class="green">10%</b> compounding per level.`,
         
             res: "oil",
             icon: ['Icons/XP'],
 
-            cost: i => Decimal.pow(1.75,i).mul(30).ceil(),
-            bulk: i => i.div(30).max(1).log(1.75).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.5,i).mul(10).ceil(),
+            bulk: i => i.div(10).max(1).log(1.5).floor().toNumber()+1,
 
             effect(i) {
-                return E(1.25).pow(i)
+                return E(1.1).pow(i)
             },
             effDesc: x => format(x)+"x",
         },{
@@ -574,10 +573,10 @@ UPGS.oil = {
             desc: `Steel gain is <b class="green">doubled</b> per level.`,
         
             res: "oil",
-            icon: ['Curr/Steel2'],
+            icon: ['Curr/Steel'],
             
-            cost: i => Decimal.pow(15,i**0.8).mul(100).ceil(),
-            bulk: i => i.div(100).max(1).log(15).root(0.8).floor().toNumber()+1,
+            cost: i => Decimal.pow(10,i).mul(100).ceil(),
+            bulk: i => i.div(100).max(1).log(10).floor().toNumber()+1,
 
             effect(i) {
                 let x = Decimal.pow(2,i)
@@ -670,22 +669,34 @@ MAIN.gs = {
         },
         {
             r: 8,
-            desc: `Unlock the Funify reset. [Soon!]`
+            desc: `Unlock the Funify reset.`
         },
         {
             unl: _ => player.aRes.fTimes,
             r: 9,
-            desc: `Each Grass-Skip gives <b class="green">2x</b> more Fun. (starting at 9)`,
-            effect: _ => E(2).pow(Math.max(player.aRes.grassskip - 8, 0)),
+            desc: `Each Grass-Skip gives <b class="green">3x</b> more Fun. (starting at 9)`,
+            effect: _ => E(3).pow(Math.max(player.aRes.grassskip - 8, 0)),
             effDesc: x => format(x, 0) + "x"
         },
         {
             unl: _ => player.aRes.fTimes,
             r: 10,
-            desc: `Each Grass-Skip gives <b class="green">2x</b> more Fun. (starting at 9)`,
-            effect: _ => E(2).pow(Math.max(player.aRes.grassskip - 8, 0)),
+            desc: `Moonstone chance is <b class="green">doubled.</b>`
+        },
+        {
+            unl: _ => player.aRes.fTimes,
+            r: 12,
+            desc: `Each Grass-Skip gives <b class="green">2x</b> more SRFGT. (starting at 12)`,
+            effect: _ => E(2).pow(Math.max(player.aRes.grassskip - 11, 0)),
             effDesc: x => format(x, 0) + "x"
         },
+        /*{
+            unl: _ => player.aRes.fTimes,
+            r: 16,
+            desc: `Grass-Skips raise Stars. (starting at 16 and ending at 30)`,
+            effect: _ => Math.min(Math.max(player.aRes.grassskip / 15, 1), 2),
+            effDesc: x => "^" + format(x)
+        },*/
     ],
 }
 

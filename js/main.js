@@ -66,6 +66,9 @@ const MAIN = {
         x = x.mul(upgEffect('rocket',10))
         x = x.mul(upgEffect('momentum',2))
 
+        if (player.decel) x = x.mul(E(getAstralEff('xp')).root(1.5))
+        if (!player.decel) x = x.mul(getAstralEff('xp'))
+
         if (x.lt(1)) return x
         return x
     },
@@ -89,7 +92,7 @@ const MAIN = {
         x = x.mul(upgEffect('rocket',2))
         x = x.mul(upgEffect('momentum',3))
 
-        x = x.mul(getASEff('tp'))
+        x = x.mul(getAstralEff('tp'))
 
         return x
     },
@@ -145,7 +148,8 @@ const MAIN = {
 			let x = upgEffect('crystal',3)
 			if (player.grasshop >= 5) x += 0.1
 			x += E(tmp.chargeEff[4]||1).toNumber()
-			x += getASEff('tb', 0)
+			if (player.decel) x += E(tmp.chargeEff[10]||1).toNumber()
+			x += getAstralEff('tb', 0)
 			return x
         },
         mult(i) {
@@ -172,14 +176,14 @@ el.update.main = _=>{
 	tmp.el.level.setDisplay(level_unl && !inSpace())
 	if (level_unl) {
 		tmp.el.level_top_bar.changeStyle("width",tmp.level.percent*100+"%")
-		tmp.el.level_top_info.setHTML(`Level <b class="cyan">${format(tmp.realmSrc.level,0)}</b> (${formatPercent(tmp.level.percent)})`)
+		tmp.el.level_top_info.setHTML(`Level <b class="cyan">${format(tmp.realmSrc.level,0)}</b>`)
 	}
 
 	let tier_unl = player.pTimes > 0
 	tmp.el.tier.setDisplay(tier_unl && !inSpace())
 	if (tier_unl) {
 		tmp.el.tier_top_bar.changeStyle("width",tmp.tier.percent*100+"%")
-		tmp.el.tier_top_info.setHTML(`Tier <b class="yellow">${format(tmp.realmSrc.tier,0)}</b> (${formatPercent(tmp.tier.percent)})`)
+		tmp.el.tier_top_info.setHTML(`Tier <b class="yellow">${format(tmp.realmSrc.tier,0)}</b>`)
 	}
 
 	if (mapID == 'g') {

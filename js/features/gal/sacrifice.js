@@ -1,27 +1,23 @@
 MAIN.sac = {
     dmGain() {
-        let a = Math.max(1,player.astral-44)
-
-        let x = player.stars.div(1e18).max(1).root(2).mul(Decimal.pow(1.1,a-1).mul(a))
-
-        return x.floor()
+        return E(1)
     },
 }
 
 RESET.sac = {
-    unl: _=> player.lowGH<=-24,
+    unl: _ => galUnlocked() && player.gal.neg >= 21,
 
-    req: _=>player.stars.gte(1e18),
-    reqDesc: _=>`Reach ${format(1e18)} stars to unlock.`,
+    req: _ => player.gal.stars.gte(1e8),
+    reqDesc: _ => `Reach ${format(1e8)} stars to unlock.`,
 
-    resetDesc: `<span style="font-size:14px">Sacrifice forces a Galactic reset as well as resetting Astral, Stars, Fun, Fun Upgrades (excluding ones in The Funny Machine) and SFRGT to earn Dark Matter.<br>
-    Gain more Dark Matters based on your stars (starting at 1 Qt) and astral (starting at 45).<br>First sacrifice unlocks new the funny machine upgrade.</span>`,
-    resetGain: _=> `Gain <b>${tmp.dmGain.format(0)}</b> Dark Matters`,
+    resetDesc: `<span style="font-size:14px">Sacrifice resets everything that Galactic resets, as well as Stars, Astral, Grass-Skips, and Funify (except Fun Machine).</span>`,
+    resetGain: _ => ``, //`Gain <b>${tmp.dmGain.format(0)}</b> Dark Matters`,
 
     title: `Dark Matter Plant`,
-    resetBtn: `Sacrifice`,
+    resetBtn: `Coming Soon!`, //`Sacrifice`,
 
     reset(force=false) {
+        return
         if (this.req()||force) {
             if (!force) {
                 player.gal.dm = player.gal.dm.add(tmp.dmGain)
@@ -40,9 +36,10 @@ RESET.sac = {
         resetUpgrades('fundry')
         resetUpgrades('sfrgt')
 
-        player.sp = E(0)
-        player.astral = 0
-        player.stars = E(0)
+        player.gal.sp = E(0)
+        player.gal.astral = 0
+        player.gal.stars = E(0)
+        player.aRes.grassskip = E(0)
         player.aRes.fun = E(0)
         player.aRes.sfrgt = E(0)
 
@@ -51,14 +48,14 @@ RESET.sac = {
 }
 
 UPGS.dm = {
-    unl: _=> player.lowGH<=-24,
+    unl: _ => hasAGHMilestone(6),
 
     title: "Dark Matter Upgrades",
 
-    req: _=>player.gal.sacTimes > 0,
-    reqDesc: _=>`Sacrifice once to unlock.`,
+    req: _ => player.gal.sacTimes > 0,
+    reqDesc: _ => `Sacrifice once to unlock.`,
 
-    underDesc: _=>`You have ${format(player.gal.dm,0)} Dark Matters`,
+    underDesc: _ => `You have ${format(player.gal.dm,0)} Dark Matters`,
 
     ctn: [
         {

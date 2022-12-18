@@ -391,6 +391,10 @@ button:not(.locked):hover {
     background-color: #FF84F6;
 }
 
+.map_btn.gh {
+    background-color: #c5c5c5;
+}
+
 .reset_div.decel,
 .reset_req.decel,
 .upg_desc.aGrass,

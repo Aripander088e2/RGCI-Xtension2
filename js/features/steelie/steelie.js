@@ -1,7 +1,7 @@
 MAIN.steel = {
     gain() {
         let x = E(1)
-        if (hasUpgrade('factory',0)) x = x.mul(E(tmp.foundryEff).pow(getASEff('fd', 1)))
+        if (hasUpgrade('factory',0)) x = x.mul(E(tmp.foundryEff).pow(getAstralEff('fd', 1)))
         x = x.mul(upgEffect('foundry',0)).mul(upgEffect('foundry',1)).mul(upgEffect('foundry',2)).mul(upgEffect('foundry',3))
 
         x = x.mul(upgEffect('plat',6))
@@ -43,7 +43,7 @@ MAIN.steel = {
             x = x.mul(upgEffect('rocket',19))
             x = x.mul(upgEffect('momentum',7))
 
-            x = x.mul(getASEff('ch'))
+            x = x.mul(getAstralEff('ch'))
 
             return x
         },
@@ -103,9 +103,41 @@ MAIN.steel = {
 
                 req: E(1e27),
                 eff(c) {
-                    return c.div(1e15).add(1).log10().div(10).pow10()
+                    return c.div(1e15).add(1).log10().div(20).pow10()
                 },
                 effDesc: x => "Gain more "+format(x,3)+"x Space Power.",
+            },{
+                unl: _ => hasUpgrade("funMachine", 2),
+
+                req: E(1e42),
+                eff(c) {
+                    return c.div(1e40).add(1).log10().div(5).pow10()
+                },
+                effDesc: x => "Gain more "+format(x,3)+"x Fun.",
+            },{
+                unl: _ => hasUpgrade("funMachine", 2),
+
+                req: E(1e45),
+                eff(c) {
+                    return c.div(1e40).add(1).log10().div(10).pow10()
+                },
+                effDesc: x => "Gain more "+format(x,3)+"x SFRGT.",
+            },{
+                unl: _ => hasUpgrade("funMachine", 2),
+
+                req: E(1e50),
+                eff(c) {
+                    return c.div(1e50).add(1).log10().div(10)
+                },
+                effDesc: x => "Increase Tier base by +"+format(x,3)+"x in Anti-Realm.",
+            },{
+                unl: _ => hasUpgrade("funMachine", 2),
+
+                req: E(1e55),
+                eff(c) {
+                    return c.div(1e55).add(1).log10().div(20).pow10()
+                },
+                effDesc: x => "Gain more "+format(x,3)+"x Stars.",
             },
         ],
     },
@@ -156,7 +188,7 @@ UPGS.factory = {
 
     ctn: [
         {
-            max: 100,
+            max: () => 100 + starTreeEff("progress", 7, 0),
 
             title: "Foundry",
             desc: `Unlock a building (above Steelie) where you can upgrade steel production. Each level increases foundry's effect by <b class="green">+10%</b>.`,
@@ -174,7 +206,7 @@ UPGS.factory = {
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 100,
+            max: () => 100 + starTreeEff("progress", 7, 0),
 
             title: "Generator",
             desc: `Unlock a building (in Foundry) where you can upgrade prestige/crystal generation. Each level increases generator's effect by <b class="green">+1%</b>.`,
@@ -192,7 +224,7 @@ UPGS.factory = {
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 100,
+            max: () => 100 + starTreeEff("progress", 7, 0),
 
             title: "Charger",
             desc: `Unlock a building (in Foundry) where you can boost production multipliers with charge. Each level increases charge rate by <b class="green">+10%</b>.`,
@@ -204,13 +236,13 @@ UPGS.factory = {
             bulk: i => i.div(1e6).max(1).log(1.5).floor().toNumber()+1,
         
             effect(i) {
-                let x = i/10+1
-        
-                return x
+                let r = E(i/10+1)
+                r = r.mul(E(getAstralEff('fc')).pow(Math.floor(i/25)))
+                return r
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 100,
+            max: () => 100 + starTreeEff("progress", 7, 0),
 
             title: "Assembler",
             desc: `Unlock a building (in Automation) where you can get more QoL. Each level increases charge rate by <b class="green">+10%</b>.`,
@@ -222,31 +254,31 @@ UPGS.factory = {
             bulk: i => i.div(1e7).max(1).log(1.5).floor().toNumber()+1,
         
             effect(i) {
-                let x = i/10+1
-        
-                return x
+                let r = E(i/10+1)
+                r = r.mul(E(getAstralEff('fc')).pow(Math.floor(i/25)))
+                return r
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 100,
+            max: () => 100 + starTreeEff("progress", 7, 0),
 
             title: "Decelerator",
             desc: `Unlock a building (below Steelie) where you can slow down time. Each level increases charge rate by <b class="green">+10%</b>.`,
         
             res: "steel",
-            icon: ["Icons/Decelerate Badge"],
+            icon: ["Icons/Decelerator"],
                         
             cost: i => Decimal.pow(1.5,i).mul(1e12).ceil(),
             bulk: i => i.div(1e12).max(1).log(1.5).floor().toNumber()+1,
         
             effect(i) {
-                let x = i/10+1
-        
-                return x
+                let r = E(i/10+1)
+                r = r.mul(E(getAstralEff('fc')).pow(Math.floor(i/25)))
+                return r
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 100,
+            max: () => 100 + starTreeEff("progress", 7, 0),
 
             title: "Refinery",
             desc: `Unlock a building (on the right of Foundry) where you can convert charge and oil into rocket fuel. Each level increases charge rate by <b class="green">+10%</b>.`,
@@ -258,13 +290,13 @@ UPGS.factory = {
             bulk: i => i.div(1e20).max(1).log(1.5).floor().toNumber()+1,
         
             effect(i) {
-                let x = i/10+1
-        
-                return x
+                let r = E(i/10+1)
+                r = r.mul(E(getAstralEff('fc')).pow(Math.floor(i/25)))
+                return r
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 100,
+            max: () => 100 + starTreeEff("progress", 7, 0),
 
             title: "Rocket Launch Pad",
             desc: `Unlock a building (in Refinery) where you can build a rocket. Each level increases charge rate by <b class="green">+10%</b>.`,
@@ -276,13 +308,13 @@ UPGS.factory = {
             bulk: i => i.div(1e21).max(1).log(2).floor().toNumber()+1,
         
             effect(i) {
-                let x = i/10+1
-        
-                return x
+                let r = E(i/10+1)
+                r = r.mul(E(getAstralEff('fc')).pow(Math.floor(i/25)))
+                return r
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 100,
+            max: () => 100 + starTreeEff("progress", 7, 0),
 
             unl: _=>galUnlocked(),
 
@@ -296,9 +328,9 @@ UPGS.factory = {
             bulk: i => i.div(1e27).max(1).log(1.5).floor().toNumber()+1,
         
             effect(i) {
-                let x = i/10+1
-        
-                return x
+                let r = E(i/10+1)
+                r = r.mul(E(getAstralEff('fc')).pow(Math.floor(i/25)))
+                return r
             },
             effDesc: x => format(x)+"x",
         }
@@ -327,7 +359,7 @@ UPGS.foundry = {
             desc: `Increase steel gain by <b class="green">+20%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
         
             res: "grass",
-            icon: ["Curr/Steel2"],
+            icon: ["Curr/Steel"],
                         
             cost: i => Decimal.pow(1.5,i).mul(1e38).ceil(),
             bulk: i => i.div(1e38).max(1).log(1.5).floor().toNumber()+1,
@@ -345,7 +377,7 @@ UPGS.foundry = {
             desc: `Increase steel gain by <b class="green">+20%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
         
             res: "pp",
-            icon: ["Curr/Steel2"],
+            icon: ["Curr/Steel"],
                         
             cost: i => Decimal.pow(1.5,i).mul(1e24).ceil(),
             bulk: i => i.div(1e24).max(1).log(1.5).floor().toNumber()+1,
@@ -363,7 +395,7 @@ UPGS.foundry = {
             desc: `Increase steel gain by <b class="green">+20%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
         
             res: "crystal",
-            icon: ["Curr/Steel2"],
+            icon: ["Curr/Steel"],
                         
             cost: i => Decimal.pow(1.3,i**0.8).mul(1e9).ceil(),
             bulk: i => i.div(1e9).max(1).log(1.3).root(0.8).floor().toNumber()+1,
@@ -381,14 +413,15 @@ UPGS.foundry = {
             desc: `Increase steel gain by <b class="green">+20%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
         
             res: "steel",
-            icon: ["Curr/Steel2"],
+            icon: ["Curr/Steel"],
                         
             cost: i => Decimal.pow(1.2,i).mul(10).ceil(),
             bulk: i => i.div(10).max(1).log(1.2).floor().toNumber()+1,
         
             effect(i) {
                 let x = Decimal.pow(1.5,Math.floor(i/25)).mul(i/5+1)
-        
+                x = x.pow(upgEffect('sfrgt',4))
+
                 return x
             },
             effDesc: x => format(x)+"x",
@@ -534,7 +567,7 @@ UPGS.assembler = {
             bulk: i => 1,
         },{
             title: "Crystal Upgrades EL",
-            desc: `Crystalize Upgrades no longer spend Crystals.`,
+            desc: `Crystal Upgrades no longer spend Crystals.`,
         
             res: "steel",
             icon: ["Curr/Crystal","Icons/Infinite"],
@@ -543,7 +576,7 @@ UPGS.assembler = {
             bulk: i => 1,
         },{
             title: "Perk Autobuy",
-            desc: `You can now automatically buy Perk Upgrades.`,
+            desc: `Automate Perk Upgrades.`,
 
             res: "steel",
             icon: ['Curr/Perks','Icons/Automation'],
@@ -563,13 +596,13 @@ UPGS.assembler = {
             max: 10,
 
             title: "Challenge Save P",
-            desc: `Keep Prestige challenge completions on Grasshop and Steelie.`,
+            desc: `Keep Prestige Challenges.`,
 
             res: "pp",
             icon: ['Icons/Challenge','Icons/StarProgression'],
 
-            cost: i => E(10).pow((i+15)**1.5),
-            bulk: i => Math.floor(E(i).log10().root(1.5).sub(15).toNumber())+1,
+            cost: i => E(10).pow((i/2+15)**1.5),
+            bulk: i => Math.floor(E(i).log10().root(1.5).sub(15).mul(2).toNumber())+1,
 
             effect(i) {
                 return i
@@ -579,13 +612,13 @@ UPGS.assembler = {
             max: 7,
 
             title: "Challenge Save C",
-            desc: `Keep Crystalize challenge completions on Grasshop and Steelie.`,
+            desc: `Keep Crystalize Challenges.`,
 
             res: "crystal",
             icon: ['Icons/Challenge','Icons/StarProgression'],
 
-            cost: i => E(10).pow(i+15),
-            bulk: i => Math.floor(E(i).log10().sub(15).toNumber())+1,
+            cost: i => E(10).pow(i/2+15),
+            bulk: i => Math.floor(E(i).log10().sub(15).mul(2).toNumber())+1,
 
             effect(i) {
                 return i
@@ -593,7 +626,7 @@ UPGS.assembler = {
             effDesc: x => "Up to "+format(x,0)+" completions",
         },{
             title: "Challenge Save G",
-            desc: `Keep all challenge completions on Grasshop.`,
+            desc: `Keep Challenges on Grasshop.`,
 
             res: "steel",
             icon: ['Icons/Challenge','Icons/StarProgression'],
@@ -605,7 +638,7 @@ UPGS.assembler = {
             max: 5,
 
             title: "Challenge Auto",
-            desc: `Auto-complete Prestige / Crystalize Challenges without entering. (up to max levels you've got)`,
+            desc: `Automatically gain Prestige / Crystalize Challenges up to your best.`,
 
             res: "steel",
             icon: ['Icons/Challenge','Icons/Automation'],
@@ -616,10 +649,10 @@ UPGS.assembler = {
             effect(i) {
                 return 30 / i
             },
-            effDesc: x => (hasUpgrade("assembler", 8) ? "Every "+format(x,0)+" seconds" : "Active challenges only"),
+            effDesc: x => (hasUpgrade("assembler", 8) ? "+1 per "+format(x,0)+" seconds" : "Manual only"),
         },{
             title: "Challenge Bulk",
-            desc: `You can enter multiple challenges at once.`,
+            desc: `Enter multiple challenges at once.`,
 
             res: "steel",
             icon: ['Icons/Challenge','Icons/Multiply'],
@@ -629,7 +662,7 @@ UPGS.assembler = {
         },{
             unl: _ => player.rocket.part > 0 || galUnlocked(),
             title: "Quick Foundry",
-            desc: `You can automate Foundry Upgrades.`,
+            desc: `Automate Foundry.`,
 
             res: "steel",
             icon: ['Icons/Foundry','Icons/Automation'],
@@ -649,7 +682,7 @@ tmp_update.push(_=>{
 
     tmp.chargeGain = ms.charger.gain()
 
-    tmp.chargeOoM = getGHEffect(11, 0)
+    tmp.chargeOoM = getGHEffect(11, 0) + upgEffect('sfrgt', 3, 0)
     tmp.chargeOoMMul = Decimal.pow(10, tmp.chargeOoM)
 
     for (let x = 0; x < ms.charger.effs.length; x++) {

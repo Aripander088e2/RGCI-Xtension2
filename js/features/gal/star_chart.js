@@ -13,9 +13,9 @@ const SC_IDS = {
 	progress: [
 		[0],
 		[1,2],
-		[null,6,3],
-		[7,4,5],
-		[8,9,10,11]
+		[10,6,3],
+		[11,,4,5],
+		[7,8,9]
 	],
 }
 
@@ -25,7 +25,7 @@ const STAR_CHART = {
 			max: 1,
 
 			title: "Auto-Automation",
-			desc: `Keep Automation Upgrades on Galactic except production upgrades.`,
+			desc: `Keep Automation Upgrades on Galactic except production.`,
 
 			icon: ['Curr/Grass','Icons/StarProgression'],
 							
@@ -34,8 +34,8 @@ const STAR_CHART = {
 		}, {
 			max: 1,
 
-			title: "Auto-Automation II",
-			desc: `Keep Anti-Automation Upgrades on Galactic except production upgrades.`,
+			title: "Anti-Anti-Auto-Automation",
+			desc: `Keep Anti-Automation Upgrades on Galactic except production.`,
 
 			branch: 0,
 			icon: ['Curr/AntiGrass','Icons/StarProgression'],
@@ -46,7 +46,7 @@ const STAR_CHART = {
 			max: 10,
 
 			title: "Resource Restoration",
-			desc: `Generate <b class="green">+0.1%</b> of pre-Steelie Resources per level.`,
+			desc: `Produce <b class="green">+0.1%</b> of pre-Steelie resources.`,
 
 			branch: 0,
 			icon: ['Curr/Prestige','Icons/StarProgression'],
@@ -62,7 +62,7 @@ const STAR_CHART = {
 			max: 10,
 
 			title: "Resource Restoration II",
-			desc: `Generate <b class="green">+0.1%</b> of Anti-Realm Resources per level. Anti-Realm Upgrades don't spend anything.`,
+			desc: `Produce <b class="green">+0.1%</b> of Anti-Realm resources. Anti-Realm Upgrades don't spend anything.`,
 
 			branch: 2,
 			icon: ['Curr/Anonymity','Icons/StarProgression'],
@@ -78,10 +78,10 @@ const STAR_CHART = {
 			max: 10,
 
 			title: "Steel Labor",
-			desc: `Generate <b class="green">+0.1%</b> of Steel gain per level. Foundry and Generator Upgrades don't spend anything.`,
+			desc: `Produce <b class="green">+0.1%</b> of Steel gain. Foundry and Generator don't spend anything.`,
 
 			branch: 2,
-			icon: ['Curr/Steel2','Icons/StarProgression'],
+			icon: ['Curr/Steel','Icons/StarProgression'],
 
 			cost: i => E(3).pow(i).mul(1e5),
 			bulk: i => i.div(1e5).log(3).floor().toNumber() + 1,
@@ -94,10 +94,10 @@ const STAR_CHART = {
 			max: 1,
 
 			title: "Bulk Hops",
-			desc: `You can bulk Grasshops.`,
+			desc: `Bulk Grasshops on one click.`,
 
 			branch: 0,
-			icon: ['Icons/Grasshop2','Icons/StarProgression'],
+			icon: ['Icons/Grasshop','Icons/StarProgression'],
 
 			cost: i => E(200),
 			bulk: i => 1
@@ -105,7 +105,7 @@ const STAR_CHART = {
 			max: 1,
 
 			title: "Reassembled",
-			desc: `Keep Assembler on Galactic. Challenge completions still reset on Galactic!`,
+			desc: `Keep Assembler. <b class="red">Challenges still reset on Galactic!</b>`,
 
 			branch: 5,
 			icon: ['Icons/Assembler','Icons/StarProgression'],
@@ -117,7 +117,7 @@ const STAR_CHART = {
 			max: 1,
 
 			title: "Bulk Skips",
-			desc: `You can bulk Grass-Skips.`,
+			desc: `Bulk Grass-Skips on one click.`,
 
 			branch: 5,
 			icon: ['Icons/Grassskip','Icons/StarProgression'],
@@ -167,7 +167,7 @@ const STAR_CHART = {
 			title: "Smart Factory",
 			desc: `Automate the Factory.`,
 
-			icon: ['Curr/Steel2','Icons/StarAuto'],
+			icon: ['Curr/Steel','Icons/StarAuto'],
 							
 			cost: i => E(0),
 			bulk: i => 1
@@ -269,7 +269,7 @@ const STAR_CHART = {
 		{
 			max: 1,
 
-			title: "Intermediate Fuelery",
+			title: "Novice Fuelery",
 			desc: `Unlock Tier II Rocket Fuel Upgrades.`,
 
 			icon: ['Curr/RocketFuel','Icons/StarSpeed'],
@@ -279,13 +279,13 @@ const STAR_CHART = {
 		}, {
 			max: 1,
 
-			title: "Advanced Fuelery",
+			title: "Intermediate Fuelery",
 			desc: `Unlock Tier III Rocket Fuel Upgrades.`,
 
 			branch: 0,
 			icon: ['Curr/RocketFuel','Icons/StarSpeed'],
 
-			cost: i => E(1/0),
+			cost: i => E(5e4),
 			bulk: i => 1
 		}, {
 			max: 1,
@@ -329,45 +329,23 @@ const STAR_CHART = {
 			branch: 3,
 			icon: ['Icons/TP','Icons/StarSpeed'],
 							
-			cost: i => E(10).pow(i+6),
-			bulk: i => E(i).log10().sub(6).floor().toNumber() + 1,
+			cost: i => E(5).pow(i**1.25+5),
+			bulk: i => E(i).log(5).sub(5).root(1.25).floor().toNumber() + 1,
 
 			effect(i) {
-				return i
+				return i * 5
 			},
 			effDesc: x => "+" + format(i, 0) + " levels"
 		}, {
 			max: 1,
 
-			title: "Challenge Bundle I-A",
-			desc: `Unlock "Sleepy Hops" Challenge.`,
+			title: "Negativity Givings",
+			desc: `Unlock Negative Energy, which you must gain by grasshopping less.`,
 
 			branch: 2,
 			icon: ['Icons/Challenge','Icons/StarSpeed'],
 
 			cost: i => E(1e4),
-			bulk: i => 0
-		}, {
-			max: 1,
-
-			title: "Challenge Bundle I-B",
-			desc: `Unlock "Walk On Grass" Challenge.`,
-
-			branch: 6,
-			icon: ['Icons/Challenge','Icons/StarSpeed'],
-							
-			cost: i => EINF,
-			bulk: i => 0
-		}, {
-			max: 1,
-
-			title: "Challenge Bundle I-C",
-			desc: `Unlock "-Grasshops" Challenge. (Soon)`,
-
-			branch: 7,
-			icon: ['Icons/Challenge','Icons/StarSpeed'],
-							
-			cost: i => EINF,
 			bulk: i => 0
 		}, {
 			max: Infinity,
@@ -379,12 +357,17 @@ const STAR_CHART = {
 			icon: ['Icons/Assembler','Icons/StarSpeed'],
 							
 			cost: i => EINF,
-			bulk: i => 0
+			bulk: i => 0,
+
+			effect(i) {
+				return i * 5
+			},
+			effDesc: x => "+" + format(i, 0) + " levels"
 		}, {
 			max: 1,
 
 			title: "Hopped Space",
-			desc: `Each Grass-Hop increases Space Power by 20%, starting at 40.`,
+			desc: `Each Grass-Hop increases Space Power by 20%, starting at 50.`,
 
 			branch: 5,
 			icon: ['Icons/SP','Icons/StarSpeed'],
@@ -395,13 +378,35 @@ const STAR_CHART = {
 			max: 1,
 
 			title: "Tiered Space",
-			desc: `Each Tiered increases Space Power by 50%, starting at 40.`,
+			desc: `Each Tier increases Space Power by 50%, starting at 50.`,
 
 			branch: 5,
 			icon: ['Icons/SP','Icons/StarSpeed'],
 							
 			cost: i => EINF,
 			bulk: i => 0
+		}, {
+			max: 1,
+
+			title: "Overpowerful Fuels",
+			desc: `Rocket Part scales faster and gives more Momentum. Galactic unlocks at 1 Part.`,
+
+			branch: 2,
+			icon: ['Curr/RocketFuel','Icons/StarSpeed'],
+
+			cost: i => E(1/0),
+			bulk: i => 1
+		}, {
+			max: 1,
+
+			title: "Momentum Towards Light",
+			desc: `Momentum Upgrades do not reset, unlock new Momentum Upgrades.`,
+
+			branch: 10,
+			icon: ['Curr/RocketFuel','Icons/StarSpeed'],
+
+			cost: i => E(1/0),
+			bulk: i => 1
 		},
 	],
 	/*
