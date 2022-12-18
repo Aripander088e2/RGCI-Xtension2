@@ -4,6 +4,10 @@ MAIN.sac = {
     },
 }
 
+function sacUnlocked() {
+	return galUnlocked() && player.gal.sacTimes
+}
+
 RESET.sac = {
     unl: _ => galUnlocked() && player.gal.neg >= 21,
 

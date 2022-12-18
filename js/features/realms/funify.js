@@ -125,7 +125,7 @@ UPGS.funMachine = {
 		},{
 			max: 1,
 
-			unl: _ => player.gal.sacTimes,
+			unl: _ => sacUnlocked(),
 			title: "Recelerator",
 			desc: `Unlock Recelerator realm, where you can slow time further. Soon!`,
 		

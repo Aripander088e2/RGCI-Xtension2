@@ -373,7 +373,7 @@ UPGS.moonstone = {
 			},
 			effDesc: x => format(x)+"x",
 		}, {
-			unl: _ => player.gal.sacTimes,
+			unl: _ => sacUnlocked(),
 			max: 5,
 
 			costOnce: true,
