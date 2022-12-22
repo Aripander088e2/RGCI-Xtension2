@@ -23,9 +23,9 @@ window.addEventListener('keydown', e=>{
 
 const MAP = {
 	earth: [
-		[null,  'opt','stats','fd','rf' ],
-		['upg', 'g',  'pc',   'gh','gal'],
-		['auto', null,'chal', 'dc',null ],
+		[null,  'opt',   'stats','fd','rf' ],
+		['upg', 'g',     'pc',   'gh','gal'],
+		['auto','chrono','chal', 'dc',null ],
 	],
 	space: [
 		['opt','stats', null ,null ],
@@ -37,6 +37,7 @@ const MAP = {
 const MAP_UNLS = {
 	opt: _ => true,
 	stats: _ => player.pTimes > 0,
+	chrono: _ => player.grasshop > 0 || player.sTimes > 0,
 
 	//EARTH
 	g: _ => true,
@@ -123,6 +124,7 @@ function updateMapButton(el, mx, my, dim) {
 const MAP_COLORS = {
 	opt: "misc",
 	stats: "misc",
+	chrono: "gh",
 
 	//EARTH
 	g: "grass",
@@ -171,6 +173,7 @@ el.update.map_ext = _ => {
 const MAP_LOCS = {
 	opt: "Misc",
 	stats: "Misc",
+	chrono: "Misc",
 
 	//EARTH
 	g: "Field",
@@ -206,6 +209,7 @@ function showLoc(x) {
 const GO_TO_NAMES = {
 	opt: "Options",
 	stats: "Stats",
+	chrono: "Chronology",
 
 	//EARTH
 	g: "Field",

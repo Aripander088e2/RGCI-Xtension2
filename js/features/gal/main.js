@@ -53,10 +53,9 @@ RESET.gal = {
 		for (var i = 0; i < 8; i++) player.chal.comp[i] = 0
 		for (var i = 0; i < 8; i++) player.chal.max[i] = 0
 		player.grasshop = 0
-		player.ghPotential = 0
 		player.steel = E(0)
 		player.bestCharge = E(0)
-		player.decel = false
+		/*if (!inRecel())*/ player.decel = 0
 		player.rocket = { total_fp: 0, amount: hasStarTree("qol", 9) ? player.rocket.amount : 0, part: 0, momentum: 0 }
 		resetAntiRealm()
 
@@ -69,6 +68,7 @@ RESET.gal = {
 		if (!hasStarTree("qol", 6)) resetUpgrades("assembler")
 		resetUpgrades("momentum")
 		resetUpgrades("star")
+		resetGHPotential()
 
 		RESET.steel.doReset(order)
 	},
@@ -97,9 +97,9 @@ tmp_update.push(_=>{
 	if (hasGSMilestone(5)) data.ms.chance *= player.gal.msLuck
 	if (hasGSMilestone(6) && !player.decel) data.ms.chance /= 10
 	if (hasGSMilestone(9)) data.ms.chance *= 2
-	if (hasAGHMilestone(8)) data.ms.chance *= 2
+	if (hasAGHMilestone(7)) data.ms.chance *= 2
 	data.ms.gain = 1
-	data.ms.gain += getAstralEff('ms', 0)
+	data.ms.gain *= upgEffect('dm', 3)
 
 	//updateChronoTemp()
 	updateSCTemp()
@@ -227,10 +227,10 @@ const ASTRAL = {
 		if (hasAGHMilestone(3)) x.ch = E(2).pow(a/4-2).max(1)
 		if (hasAGHMilestone(4)) x.xp = E(1.3).pow(a-10).max(1)
 		if (hasAGHMilestone(5)) x.fu = E(2).pow(a/2-10).max(1)
-		if (hasAGHMilestone(7)) x.sf = E(2).pow(a/5-4).max(1)
-		if (hasAGHMilestone(10)) x.tb = a/50
-		if (hasAGHMilestone(11)) x.ap = Math.min(1+a/200,1.5)
-		if (hasAGHMilestone(12)) x.fc = Math.min(1+a/1e4,1.1)
+		if (hasAGHMilestone(6)) x.sf = E(2).pow(a/5-4).max(1)
+		//if (hasAGHMilestone(9)) x.tb = a/50
+		//if (hasAGHMilestone(10)) x.ap = Math.min(1+a/200,1.5)
+		//if (hasAGHMilestone(11)) x.fc = Math.min(1+a/1e4,1.1)
 
 		return x
 	},
@@ -268,7 +268,7 @@ UPGS.moonstone = {
 			costOnce: true,
 
 			title: "Moon Platinum",
-			desc: `Increase Platinum gain by <b class="green">+0.5</b> per level.`,
+			desc: `Increase Platinum gain by <b class="green">+1</b> per level.`,
 
 			res: "moonstone",
 			icon: ["Curr/Platinum"],
@@ -277,9 +277,9 @@ UPGS.moonstone = {
 			bulk: i => i/2,
 
 			effect(i) {
-				return i/2
+				return i
 			},
-			effDesc: x => "+"+format(x,1),
+			effDesc: x => "+"+format(x),
 		}, {
 			max: 10,
 
@@ -304,7 +304,7 @@ UPGS.moonstone = {
 			costOnce: true,
 
 			title: "Moon Power",
-			desc: `Boost Space Power by <b class="green">+25%</b> per level.`,
+			desc: `Boost Space Power by <b class="green">+1x</b> per level.`,
 
 			res: "moonstone",
 			icon: ["Icons/SP"],
@@ -322,7 +322,7 @@ UPGS.moonstone = {
 			costOnce: true,
 
 			title: "Moon Stars",
-			desc: `Boost Stars by <b class="green">+25%</b> per level.`,
+			desc: `Boost Stars by <b class="green">+1x</b> per level.`,
 
 			res: "moonstone",
 			icon: ["Curr/Star"],
@@ -341,7 +341,7 @@ UPGS.moonstone = {
 			costOnce: true,
 
 			title: "Moon Fun",
-			desc: `Boost Fun by <b class="green">+100%</b> per level.`,
+			desc: `Boost Fun by <b class="green">+1x</b> per level.`,
 
 			res: "moonstone",
 			icon: ["Curr/Fun"],
@@ -360,7 +360,7 @@ UPGS.moonstone = {
 			costOnce: true,
 
 			title: "Moon SFRGT",
-			desc: `Boost SFRGT by <b class="green">+100%</b> per level.`,
+			desc: `Boost SFRGT by <b class="green">+1x</b> per level.`,
 
 			res: "moonstone",
 			icon: ["Curr/SuperFun"],
@@ -373,7 +373,7 @@ UPGS.moonstone = {
 			},
 			effDesc: x => format(x)+"x",
 		}, {
-			unl: _ => sacUnlocked(),
+			unl: _ => hasAGHMilestone(7),
 			max: 5,
 
 			costOnce: true,

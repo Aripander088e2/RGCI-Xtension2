@@ -11,6 +11,8 @@ MAIN.crystal = {
         x = x.mul(upgEffect('rocket',4))
         x = x.mul(upgEffect('momentum',5))
 
+        x = x.mul(upgEffect('dm',0))
+
         return x.floor()
     },
 }

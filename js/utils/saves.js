@@ -49,7 +49,7 @@ function getPlayerData() {
 		chargeRate: E(0),
 		bestCharge: E(0),
 
-		decel: false,
+		decel: 0,
 		aRes: {
 			grass: E(0),
 			bestGrass: E(0),
@@ -109,7 +109,7 @@ function safecheckSave(data) {
 
 const VER = 0.042
 const EX_COMMIT = 11.05
-const TB_VER = 1.02
+const TB_VER = 1.03
 function loadPlayer(data) {
 	player = deepUndefinedAndDecimal(data, getPlayerData())
 	convertStringToDecimal()
@@ -156,6 +156,18 @@ function loadPlayer(data) {
 
 		player.rocket.momentum = player.momentum
 		delete player.rocket.momentum
+	}
+	if (player.tb_ver < 1.03) {
+		if (galUnlocked() && player.gal.neg > 21) {
+			player.gal.neg = 21
+			player.gal.dm = E(10)
+			player.gal.sacTimes = 1
+			resetTemp()
+			RESET.sac.doReset(true)
+
+			alert("You are forced to do a Sacrifice with 10 Dark Matter due to exploit reasons!")
+		}
+		player.decel = player.decel ? 1 : 0
 	}
 	player.tb_ver = TB_VER
 }

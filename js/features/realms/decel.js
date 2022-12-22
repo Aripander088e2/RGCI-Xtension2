@@ -1,3 +1,7 @@
+function inDecel() {
+	return player.decel >= 1
+}
+
 RESET.decel = {
     unl: _=>hasUpgrade('factory',4),
 
@@ -14,7 +18,8 @@ RESET.decel = {
 
     reset(force=false) {
         if (hasUpgrade("factory", 4)) {
-            player.decel = !player.decel
+            if (player.decel == 1) player.decel = 0
+            else if (player.decel != 1) player.decel = 1
             RESET.steel.reset(true)
         }
     },
@@ -24,7 +29,7 @@ el.update.decel = _=>{
     tmp.el.grass_div.changeStyle("background-color", player.decel ? "#242697" : "")
     tmp.el.grass.changeStyle("background-color", player.decel ? "#002D9F" : "")
     tmp.el.fog.setDisplay(player.decel && !inSpace())
-    if (mapID == "dc") tmp.el.reset_btn_decel.setTxt(player.decel?"Accelerate":"Decelerate")
+    if (mapID == "dc") tmp.el.reset_btn_decel.setTxt(player.decel ? "Accelerate" : "Decelerate")
 }
 
 UPGS.aGrass = {
@@ -441,6 +446,8 @@ MAIN.oil = {
         x = x.mul(upgEffect('rocket',8))
         x = x.mul(upgEffect('rocket',15))
         x = x.mul(upgEffect('momentum',9))
+
+        x = x.mul(upgEffect('dm',1))
 
         return x.floor()
     },

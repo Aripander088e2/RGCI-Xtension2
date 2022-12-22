@@ -404,7 +404,7 @@ UPGS.rocket = {
 			unl: _ => hasStarTree("progress", 1),
 			tier: 3,
 
-			max: 200,
+			max: 100,
 
 			costOnce: true,
 

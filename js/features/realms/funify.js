@@ -15,7 +15,6 @@ MAIN.fun = {
 	},
 	SFRGTgain() {
 		let x = E(1)
-		x = x.mul(tmp.chargeEff[9] || 1)
 		x = x.mul(getGSEffect(10))
 		x = x.mul(upgEffect('funMachine', 1))
 		x = x.mul(upgEffect('sfrgt', 0))
@@ -125,7 +124,7 @@ UPGS.funMachine = {
 		},{
 			max: 1,
 
-			unl: _ => sacUnlocked(),
+			unl: _ => hasAGHMilestone(8),
 			title: "Recelerator",
 			desc: `Unlock Recelerator realm, where you can slow time further. Soon!`,
 		
@@ -257,8 +256,8 @@ UPGS.sfrgt = {
 			res: "SFRGT",
 			icon: ["Curr/Star"],
 
-			cost: i => Decimal.pow(100,i).mul(1e4).ceil(),
-			bulk: i => i.div(1e4).max(1).log(100).floor().toNumber()+1,
+			cost: i => Decimal.pow(10,i).mul(1e4).ceil(),
+			bulk: i => i.div(1e4).max(1).log(10).floor().toNumber()+1,
 		
 			effect(i) {
 				let x = Decimal.pow(2,i)
@@ -275,8 +274,8 @@ UPGS.sfrgt = {
 			res: "SFRGT",
 			icon: ["Icons/SP"],
 
-			cost: i => Decimal.pow(10,i).mul(500).ceil(),
-			bulk: i => i.div(500).max(1).log(10).floor().toNumber()+1,
+			cost: i => Decimal.pow(5,i).mul(500).ceil(),
+			bulk: i => i.div(500).max(1).log(5).floor().toNumber()+1,
 		
 			effect(i) {
 				let x = Decimal.pow(2,i)
@@ -293,15 +292,15 @@ UPGS.sfrgt = {
 			res: "SFRGT",
 			icon: ["Icons/Charge", "Icons/StarSpeed"],
 
-			cost: i => Decimal.pow(3,i).mul(300).ceil(),
-			bulk: i => i.div(300).max(1).log(3).floor().toNumber()+1,
+			cost: i => Decimal.pow(5,i).mul(300).ceil(),
+			bulk: i => i.div(300).max(1).log(5).floor().toNumber()+1,
 
 			effect(i) {
 				return i
 			},
-			effDesc: x => format(E(10).pow(i),0)+"x",
+			effDesc: x => format(E(10).pow(x),0)+"x",
 		}, {
-			max: Infinity,
+			max: 20,
 
 			title: "Funny Steel",
 			desc: `<b class="green">Strengthen</b> Steel Steel upgrade.`,
@@ -309,8 +308,8 @@ UPGS.sfrgt = {
 			res: "SFRGT",
 			icon: ["Curr/Steel"],
 
-			cost: i => Decimal.pow(10,i**1.25).mul(1e6).ceil(),
-			bulk: i => i.div(1e6).max(1).log(10).root(1.25).floor().toNumber()+1,
+			cost: i => Decimal.pow(4,i**1.25).mul(1e5).ceil(),
+			bulk: i => i.div(1e5).max(1).log(4).root(1.25).floor().toNumber()+1,
 		
 			effect(i) {
 				return i/10+1

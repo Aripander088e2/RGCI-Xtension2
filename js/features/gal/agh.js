@@ -30,35 +30,30 @@ MAIN.agh_milestone = [
     }, {
         unl: _ => player.aRes.fTimes,
 
-        r: 21,
-        desc: `Unlock the Dark Matter Plant reset.`,
-    }, {
-        unl: _ => player.aRes.fTimes,
-
-        r: 24,
+        r: 20,
         desc: `Astral boosts SFRGT.`,
     }, {
         unl: _ => player.aRes.fTimes,
 
-        r: 27,
-        desc: `Moonstone chance is doubled.`,
+        r: 21,
+        desc: `Unlock the Dark Matter Plant reset. Moonstone chance is doubled.`,
     }, {
-        unl: _ => false,
-
-        r: 30,
-        desc: `Unlock the Recelerator upgrade in Fun Machine.`,
-    }, {
-        unl: _ => false,
+        unl: _ => player.gal.sacTimes,
 
         r: 33,
+        desc: `Unlock the Recelerator upgrade in Fun Machine. (Soon!)`,
+    }, {
+        unl: _ => false, //player.gal.sacTimes,
+
+        r: 35,
         desc: `Astral adds Tier multiplier base.`,
     }, {
-        unl: _ => false,
+        unl: _ => false, //player.gal.sacTimes,
 
-        r: 36,
+        r: 37,
         desc: `Astral multiplies effects for each 25 levels of AP upgrade. (soon!)`,
     }, {
-        unl: _ => false,
+        unl: _ => false, //player.gal.sacTimes,
 
         r: 39,
         desc: `Astral multiplies effects for each 25 levels of Factory upgrade. (soon!)`,

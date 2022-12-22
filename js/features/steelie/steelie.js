@@ -8,6 +8,7 @@ MAIN.steel = {
         x = x.mul(getGHEffect(8, 1))
         x = x.mul(chalEff(6))
         x = x.mul(tmp.chargeEff[0]||1)
+		x = x.mul(tmp.chargeEff[9]||1)
 
         x = x.mul(upgEffect('aGrass',2))
         x = x.mul(upgEffect('oil',4))
@@ -121,15 +122,15 @@ MAIN.steel = {
 
                 req: E(1e45),
                 eff(c) {
-                    return c.div(1e40).add(1).log10().div(10).pow10()
+                    return c.div(1e40).add(1).log10().div(3).pow10()
                 },
-                effDesc: x => "Gain more "+format(x,3)+"x SFRGT.",
+                effDesc: x => "Gain more "+format(x,3)+"x Steel.",
             },{
                 unl: _ => hasUpgrade("funMachine", 2),
 
                 req: E(1e50),
                 eff(c) {
-                    return c.div(1e50).add(1).log10().div(10)
+                    return c.div(1e50).add(1).log10().div(20)
                 },
                 effDesc: x => "Increase Tier base by +"+format(x,3)+"x in Anti-Realm.",
             },{

@@ -253,6 +253,7 @@ tmp_update.push(_=>{
     tmp.platGain += chalEff(5,0)
     if (player.grasshop >= 3) tmp.platGain += getGHEffect(2, 0)
     tmp.platGain += upgEffect('moonstone', 0)
+	tmp.platGain *= upgEffect('dm', 2)
 })
 
 let shiftDown = false

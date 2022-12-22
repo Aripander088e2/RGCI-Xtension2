@@ -670,7 +670,8 @@ button:not(.locked):hover {
 }
 
 .upg_desc.sfrgt,
-.upgs_div.sfrgt {
+.upgs_div.sfrgt,
+.reset_div.recel {
     background-color: #bfff79;
 }
 
