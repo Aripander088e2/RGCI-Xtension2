@@ -2,10 +2,9 @@ function calc(dt) {
 	if (galUnlocked()) galTick(dt)
 
 	//PRE-GALACTIC
-	dt *= tmp.gSpeed
-	if (tmp.gJump) {
-		dt += tmp.gJump
-		tmp.gJump = 0
+	if (MAIN.chrono.unl()) {
+		MAIN.chrono.tick(dt)
+		dt *= player.ch.speed
 	}
 
 	//ANTI-REALM
@@ -37,6 +36,7 @@ function calc(dt) {
 	if (tmp.ppGainP > 0 && player.level >= 30) player.pp = player.pp.add(tmp.ppGain.mul(dt*tmp.ppGainP))
 	if (tmp.crystalGainP > 0 && player.level >= 90) player.crystal = player.crystal.add(tmp.crystalGain.mul(dt*tmp.crystalGainP))
 
+	if (player.decel) player.chal.progress = {}
 	for (var i in CHALS) {
 		if (inChalCond(i) && tmp.chal.bulk[i] > (player.chal.comp[i] || 0)) player.chal.comp[i] = tmp.chal.bulk[i]
 		if (player.chal.comp[i] == CHALS[i].max) delete player.chal.progress[i]

@@ -27,6 +27,7 @@
 	<script src="js/features/crystal.js"></script>
 	<script src="js/features/challenges.js"></script>
 	<script src="js/features/gh.js"></script>
+	<script src="js/features/chrono.js"></script>
 
 	<script src="js/features/steelie/steelie.js"></script>
 	<script src="js/features/steelie/rocket.js"></script>
@@ -269,10 +270,12 @@
 				</div>
 				<div style="width: 100%; height: 50%;"><div class="upgs_div" id="upgs_div_star"></div></div>
 			</div><div id="map_div_chrono">
-				<div id="chrono_req">
+				<div id="chrono_unl">
 					Steelie once to unlock.
 				</div><div id="chrono_div">
-					Coming soon!
+					<b class="red">This is currently incomplete. Updates soon!</b><br><br>
+					<b>Time Capacity</b>: <span id="chrono_amt"></span>/1,000<br>
+					<button id="chrono_speed" onclick="MAIN.chrono.toggle()">x2 speed: OFF</button><br>
 				</div>
 			</div><div id="map_div_sc" style="position: relative;">
 				<div id="star_chart_div">

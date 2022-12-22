@@ -4,6 +4,7 @@ function getPlayerData() {
 		autoUpg: {},
 
 		time: 0,
+		ch: MAIN.chrono.setup(),
 		map_notify: {},
 		options: {},
 		version: VER,

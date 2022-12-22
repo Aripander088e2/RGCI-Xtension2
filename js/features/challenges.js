@@ -274,8 +274,6 @@ el.setup.chal = _=>{
 }
 
 el.update.chal = _=>{
-	if (player.decel) player.chal.progress = {}
-
 	if (mapID == 'chal') {
 		let unl = player.cTimes > 0
 
