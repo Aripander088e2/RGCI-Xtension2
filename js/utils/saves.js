@@ -210,8 +210,8 @@ let saveInterval
 function save() {
 	let str = btoa(JSON.stringify(player))
 	if (cannotSave() || findNaN(str, true)) return
-	tmp.prevSave = localStorage.getItem("rgci_tb_test")
-	localStorage.setItem("rgci_tb_test",str)
+	tmp.prevSave = localStorage.getItem("rgci_tb")
+	localStorage.setItem("rgci_tb",str)
 	console.log("Game Saved")
 }
 
@@ -281,7 +281,7 @@ function loadGame(start=true, gotNaN=false) {
 		for (let y in UPGS[x].ctn) UPGS_SCOST[x][y] = UPGS[x].ctn[y].cost(0)
 	}
 
-	load(localStorage.getItem("rgci_tb_test"))
+	load(localStorage.getItem("rgci_tb"))
 
 	setupHTML()
 	updateHTML()
@@ -302,7 +302,7 @@ function wipe() {
 function checkNaN() {
 	if (findNaN(player)) {
 		alert("Game Data got NaNed")
-		load(localStorage.getItem("rgci_tb_test"))
+		load(localStorage.getItem("rgci_tb"))
 	}
 }
 
