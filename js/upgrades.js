@@ -12,7 +12,11 @@ const UPG_RES = {
     oil: ["Oil",_=>[player.aRes,"oil"],'LiquefyBase'],
     rf: ["Rocket Fuel",_=>[player.rocket,"amount"],'RocketBase'],
     momentum: ["Momentum",_=>[player.rocket,"momentum"],'RocketBase'],
-    moonstone: ["Moonstone",_=>[player,"moonstone"],'MoonBase'],
+    star: ["Stars",_=>[player.gal,"stars"],'SpaceBase'],
+    moonstone: ["Moonstone",_=>[player.gal,"moonstone"],'MoonBase'],
+    fun: ["Fun",_=>[player.aRes,"fun"],'FunBase'],
+    SFRGT: ["SFRGT",_=>[player.aRes,"sfrgt"],'FunBase'],
+    dm: ["Dark Matter",_=>[player.gal,"dm"],'DarkMatterBase'],
 }
 
 const isResNumber = ['perk','plat','rf','momentum','moonstone']
@@ -413,7 +417,7 @@ const UPGS = {
                 unl: _=>player.cTimes>0,
 
                 title: "Grass Upgrade Autobuy",
-                desc: `You can now automatically buy Grass Upgrades.`,
+                desc: `Automate Grass Upgrades.`,
             
                 res: "pp",
                 icon: ['Curr/Grass','Icons/Automation'],
@@ -432,10 +436,10 @@ const UPGS = {
                 cost: i => E(1e10),
                 bulk: i => 1,
             },{
-                unl: _=>player.grasshop>=1,
+                unl: _=>player.cTimes>0,
 
                 title: "Prestige Upgrade Autobuy",
-                desc: `You can now automatically buy Prestige Upgrades.`,
+                desc: `Automate Prestige Upgrades.`,
             
                 res: "crystal",
                 icon: ['Curr/Prestige','Icons/Automation'],
@@ -443,7 +447,7 @@ const UPGS = {
                 cost: i => E(1e5),
                 bulk: i => 1,
             },{
-                unl: _=>player.grasshop>=1,
+                unl: _=>player.grasshop>=1 || galUnlocked(),
 
                 title: "Perk Save C",
                 desc: `Keep perks on Crystalize.`,
@@ -451,18 +455,18 @@ const UPGS = {
                 res: "crystal",
                 icon: ['Curr/Perks','Icons/StarProgression'],
                             
-                cost: i => E(1e9),
+                cost: i => E(1e7),
                 bulk: i => 1,
             },{
-                unl: _=>player.sTimes>0,
+                unl: _=>player.grasshop>=1 || galUnlocked(),
 
                 title: "Crystal Upgrade Autobuy",
-                desc: `You can now automatically buy Crystal Upgrades.`,
+                desc: `Automate Crystal Upgrades.`,
             
                 res: "crystal",
                 icon: ['Curr/Crystal','Icons/Automation'],
                             
-                cost: i => E(1e11),
+                cost: i => E(1e8),
                 bulk: i => 1,
             },{
                 unl: _=>player.sTimes>0,
@@ -484,7 +488,7 @@ const UPGS = {
                 },
                 effDesc: x => "+"+formatPercent(x)+"/s",
             },{
-                unl: _=>player.sTimes>0,
+                unl: _=>hasUpgrade('factory', 4) || galUnlocked(),
 
                 max: 10,
 
@@ -493,9 +497,9 @@ const UPGS = {
             
                 res: "crystal",
                 icon: ['Curr/Crystal','Icons/Plus'],
-                            
-                cost: i => Decimal.pow(10,i).mul(1e25).ceil(),
-                bulk: i => i.div(1e20).max(1).log(10).floor().toNumber()+1,
+
+                cost: i => Decimal.pow(3,i).mul(1e15).ceil(),
+                bulk: i => i.div(1e15).max(1).log(3).floor().toNumber()+1,
                 effect(i) {
                     let x = i/1e3
             
@@ -509,6 +513,7 @@ const UPGS = {
         title: "Platinum Upgrades",
 
         unl: _=>player.pTimes>0,
+        autoUnl: _=>hasStarTree('auto',6),
 
         req: _=>player.tier >= 2 || player.cTimes > 0,
         reqDesc: _=>`Reach Tier 2 to unlock.`,
@@ -517,7 +522,7 @@ const UPGS = {
 
         ctn: [
             {
-                max: 7,
+                max: 8,
 
                 costOnce: true,
 
@@ -649,7 +654,7 @@ const UPGS = {
                 desc: `Increase steel gain by <b class="green">+50%</b> per level.`,
 
                 res: "plat",
-                icon: ['Curr/Steel2'],
+                icon: ['Curr/Steel'],
                 
                 cost: i => 100,
                 bulk: i => Math.floor(i/100),
@@ -673,8 +678,8 @@ const UPGS = {
                 res: "plat",
                 icon: ['Curr/Charge'],
                 
-                cost: i => 150,
-                bulk: i => Math.floor(i/150),
+                cost: i => 500,
+                bulk: i => Math.floor(i/500),
 
                 effect(i) {
                     let x = E(i/2+1)
@@ -695,8 +700,8 @@ const UPGS = {
                 res: "plat",
                 icon: ['Curr/Anonymity'],
                 
-                cost: i => 300,
-                bulk: i => Math.floor(i/300),
+                cost: i => 1e3,
+                bulk: i => Math.floor(i/1e3),
 
                 effect(i) {
                     let x = E(i*0.2+1)
@@ -717,8 +722,8 @@ const UPGS = {
                 res: "plat",
                 icon: ['Curr/Oil'],
                 
-                cost: i => 500,
-                bulk: i => Math.floor(i/500),
+                cost: i => 2e3,
+                bulk: i => Math.floor(i/2e3),
 
                 effect(i) {
                     let x = E(i/5+1)
@@ -760,46 +765,38 @@ function clickUpgrade(id, x) {
 	else tmp.upg_ch[id] = x
 }
 
-function buyUpgrade(id, x, type = "once") {
+function buyUpgrade(id, x, type = "once", amt) {
 	//Upgrade Data
 	let tu = tmp.upgs[id]
 	let upg = UPGS[id].ctn[x]
-	let costOnce = upg.costOnce
-
-	//Resource Data
-	let resDis = upg.res
-	let resNum = isResNumber.includes(resDis)
-	let res = tmp.upg_res[resDis]
-	if (E(tu.cost[x]).gt(res)) return
-
-	//Upgrade Save
 	let upgData = player.upgs[id]
-	let amt = upgData[x] || 0
-	if (amt >= tu.max[x]) return
 
 	//Determine Levels
-	let bulk = tu.bulk[x]
-	if (costOnce) bulk += amt
-	if (type == "next") bulk = Math.min(bulk, Math.ceil((amt + 1) / 25) * 25)
-	if (type == "once") bulk = amt + 1
-	else bulk = Math.max(Math.floor(bulk), amt + 1)
+	let lvl = upgData[x] || 0
+	let bulk = amt ? getUpgradeBulk(id, x, amt) : tu.bulk[x]
+	if (type == "next") bulk = Math.min(bulk, Math.ceil((lvl + 1) / 25) * 25)
+
 	bulk = Math.min(bulk, tu.max[x])
-	upgData[x] = bulk
+	if (lvl >= bulk) return
+	if (type == "once") bulk = lvl + 1
+	if (tu.cannotBuy) return
 
 	//Spend Resource
 	if (!tu.noSpend) {
-		let [p,q] = UPG_RES[resDis][1]()
-		let cost = costOnce ? tu.cost[x] * (bulk - amt) : upg.cost(bulk-1)
+		let res = upg.res
+		let cost = upg.costOnce ? tu.cost[x] * (bulk - lvl) : upg.cost(bulk - 1)
 
-		if (resDis == 'perk') {
+		if (res == 'perk') {
 			player.spentPerk += cost
 			tmp.perkUnspent = Math.max(player.maxPerk - player.spentPerk, 0)
 		} else {
-			p[q] = resNum ? Math.max(p[q]-cost, 0) : p[q].sub(cost).max(0)
+			let [p,q] = UPG_RES[res][1]()
+			p[q] = isResNumber.includes(res) ? Math.max(p[q]-cost, 0) : p[q].sub(cost).max(0)
 		}
-		updateUpgResource(resDis)
+		updateUpgResource(res)
 	}
 
+	upgData[x] = bulk
 	updateUpgTemp(id)
 }
 
@@ -818,8 +815,22 @@ function buyAllUpgrades(id) {
     }
 }
 
-function switchAutoUpg(id) {
-    player.autoUpg[id] = !player.autoUpg[id]
+function getUpgradeResource(id, x) {
+	return tmp.upg_res[UPGS[id].ctn[x].res]
+}
+
+function getUpgradeBulk(id, x, amt) {
+	let upg = UPGS[id].ctn[x]
+	let tu = tmp.upgs[id]
+	let res = amt || getUpgradeResource(id, x)
+
+	let lvl = 0
+	let min = player.upgs[id][x] || 0
+	if (upg.costOnce) lvl = Math.floor(res / tu.cost[x]) + min
+	else if (E(res).gte(tu.cost[x])) lvl = upg.bulk(E(res))
+	else lvl = min
+
+	return lvl
 }
 
 function updateUpgTemp(id) {
@@ -836,7 +847,7 @@ function updateUpgTemp(id) {
         if (upg.unl?upg.unl():true) if (amt < tu.max[x]) ul++
 
         tu.cost[x] = upg.cost(amt)
-        tu.bulk[x] = Decimal.gte(res,UPGS_SCOST[id][x])?Math.min(upg.bulk(res),tu.max[x]):0
+        tu.bulk[x] = getUpgradeBulk(id, x)
 
         if (upg.effect) {
 			tu.eff[x] = upg.effect(amt)
@@ -848,6 +859,9 @@ function updateUpgTemp(id) {
     tu.unlLength = ul
 }
 
+function switchAutoUpg(id) {
+    player.autoUpg[id] = !player.autoUpg[id]
+}
 
 function setupUpgradesHTML(id) {
 	let table = new Element("upgs_div_"+id)
@@ -937,21 +951,21 @@ function updateUpgradesHTML(id) {
                 `
 
                 if (upg.effDesc) h += '<br>Effect: <span class="cyan">'+upg.effDesc(tu.eff[ch])+"</span>"
+                h += '<br>'
 
                 let canBuy = Decimal.gte(tmp.upg_res[upg.res], tu.cost[ch])
                 let hasBuy25 = (Math.floor(amt / 25) + 1) * 25 < tu.max[ch]
                 let hasMax = amt + 1 < tu.max[ch]
 
                 if (amt < tu.max[ch]) {
+                    h += `<br><span class="${canBuy?"green":"red"}">Cost: ${format(tu.cost[ch],0)} ${dis}</span>`
+
                     let cost2 = upg.costOnce?Decimal.mul(tu.cost[ch],25-amt%25):upg.cost((Math.floor(amt/25)+1)*25-1)
                     let cost3 = upg.costOnce?Decimal.mul(tu.cost[ch],tu.max[ch]-amt):upg.cost(tu.max[ch]-1)
-                    if (hasBuy25) h += `<br><span class="${Decimal.gte(tmp.upg_res[upg.res],cost2)?"green":"red"}">Cost to next 25: ${format(cost2,0)} ${dis}</span>`
-                    else if (hasMax) h += `<br><span class="${Decimal.gte(tmp.upg_res[upg.res],cost3)?"green":"red"}">Cost to max: ${format(cost3,0)} ${dis}</span>`
+                    if (hasBuy25) h += `<br><span class="${Decimal.gte(tmp.upg_res[upg.res],cost2)?"green":"red"}">Next 25: ${format(cost2,0)} ${dis}</span>`
+                    else if (hasMax) h += `<br><span class="${Decimal.gte(tmp.upg_res[upg.res],cost3)?"green":"red"}">Max: ${format(cost3,0)} ${dis}</span>`
 
-                    h += `
-                    <br><span class="${canBuy?"green":"red"}">Cost: ${format(tu.cost[ch],0)} ${dis}</span>
-                    <br>You have ${format(res,0)} ${dis}
-                    `
+                    h += `<br>You have ${format(res,0)} ${dis}`
                 } else h += "<br><b class='pink'>Maxed!</b>"
 
                 tmp.el["upg_desc_"+id].setHTML(h)
@@ -1010,7 +1024,7 @@ function resetUpgrades(id) {
 
 function updateUpgResource(id) {
     let [p,q] = UPG_RES[id][1]()
-    tmp.upg_res[id] = p[q]
+    tmp.upg_res[id] = p?.[q] || 0
 }
 
 function toggleOption(x) { player.options[x] = !player.options[x] }
@@ -1047,18 +1061,21 @@ el.update.upgs = _=>{
         updateUpgradesHTML('ap')
         updateUpgradesHTML('oil')
     }
-    if (mapID == 'gh') updateUpgradesHTML('factory')
+    if (mapID == 'gh') {
+        updateUpgradesHTML('factory')
+        updateUpgradesHTML('funMachine')
+    }
     if (mapID == 'fd') {
         updateUpgradesHTML('foundry')
         updateUpgradesHTML('gen')
+
+        updateUpgradesHTML('fundry')
+        updateUpgradesHTML('sfrgt')
     }
     if (mapID == 'rf') {
         updateUpgradesHTML('rocket')
         updateUpgradesHTML('momentum')
     }
-	if (mapID == 'at') {
-		updateUpgradesHTML('moonstone')
-	}
 
 	if (mapID == 'opt') {
 		tmp.el.scientific.setTxt(player.options.scientific?"ON":"OFF")
@@ -1073,8 +1090,8 @@ el.update.upgs = _=>{
 		let stats = !player.decel && !inSpace()
 		tmp.el.stats.setDisplay(stats || player.options.allStats)
 		if (stats || player.options.allStats) {
-			tmp.el.pTimes.setHTML(player.pTimes ? "You have done " + player.pTimes + " <b style='color: #5BFAFF'>Prestige</b> resets.<br>Time: " + formatTime(player.pTime) : "")
-			tmp.el.cTimes.setHTML(player.cTimes ? "You have done " + player.cTimes + " <b style='color: #FF84F6'>Crystalize</b> resets.<br>Time: " + formatTime(player.cTime) : "")
+			tmp.el.pTimes.setHTML((player.pTimes ? "You have done " + player.pTimes + " <b style='color: #5BFAFF'>Prestige</b> resets." : "") + (!player.decel && player.pTimes ? "<br>Time: " + formatTime(player.pTime) : ""))
+			tmp.el.cTimes.setHTML((player.cTimes ? "You have done " + player.cTimes + " <b style='color: #FF84F6'>Crystalize</b> resets." : "") + (!player.decel && player.cTimes ? "<br>Time: " + formatTime(player.cTime) : ""))
 			tmp.el.sTimes.setHTML(player.sTimes ? "You have done " + player.sTimes + " <b style='color: #c5c5c5'>Steelie</b> resets.<br>Time: " + formatTime(player.sTime) : "")
 		}
 
@@ -1086,9 +1103,11 @@ el.update.upgs = _=>{
 		}
 
 		let gStats = inSpace()
-		tmp.el.gStats.setDisplay(gStats || player.options.allStats)
-		if (gStats || player.options.allStats) {
-			tmp.el.gTimes.setHTML(player.gTimes ? "You have done " + player.gTimes + " <b style='color: #505'>Galactic</b> resets.<br>Time: " + formatTime(player.gTime) : "")
+		let gStatsUnl = galUnlocked()
+		tmp.el.gStats.setDisplay(gStatsUnl && (gStats || player.options.allStats))
+		if (gStatsUnl && (gStats || player.options.allStats)) {
+			tmp.el.gTimes.setHTML(player.gal.times ? "You have done " + player.gal.times + " <b style='color: #bf00ff'>Galactic</b> resets.<br>Time: " + formatTime(player.gal.time) : "")
+			tmp.el.sacTimes.setHTML(player.gal.sacTimes ? "You have done " + player.gal.sacTimes + " <b style='color: #bf00ff'>Sacrifice</b> resets.<br>Time: " + formatTime(player.gal.sacTime) : "")
 		}
 
 		tmp.el.allStatsBtn.setDisplay(hasUpgrade('factory', 4) || galUnlocked())

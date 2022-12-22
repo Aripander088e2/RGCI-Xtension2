@@ -9,16 +9,16 @@
     table-align: center;
 	text-align: center;
 
-    text-shadow: #000 0px 0px 1px, #000 0px 0px 1px, #000 0px 0px 1px, 
-    #000 0px 0px 2px, #000 0px 0px 2px, #000 0px 0px 2px, 
-    #000 0px 0px 3px, #000 0px 0px 3px, #000 0px 0px 3px;
+    text-shadow: #000 0px 0px 1px, #000 0px 0px 1px,
+    #000 0px 0px 2px, #000 0px 0px 2px,
+    #000 0px 0px 3px, #000 0px 0px 3px
 }
 
 body {
     color: white;
     background-color: #0052af;
 	overflow: hidden;
-	font-size: 20px;
+	font-size: 18px;
 	margin: 0px;
 	user-select: none;
 }
@@ -43,9 +43,13 @@ h3 {
     font-size: 25px;
 }
 
+a {
+	color: #bfdfff
+}
+
 button {
     margin: 2px;
-    font-size: 20px;
+    font-size: 18px;
     border: solid 3px #0003;
     background-color: #dddd;
     color: white;
@@ -387,6 +391,10 @@ button:not(.locked):hover {
     background-color: #FF84F6;
 }
 
+.map_btn.gh {
+    background-color: #c5c5c5;
+}
+
 .reset_div.decel,
 .reset_req.decel,
 .upg_desc.aGrass,
@@ -425,6 +433,7 @@ button:not(.locked):hover {
 
 .reset_div.gal,
 .reset_req.gal,
+.chal_div.gal,
 .map_btn.gal {
     background-color: #bf00ff;
 }
@@ -432,6 +441,14 @@ button:not(.locked):hover {
 .upg_desc.moonstone,
 .upgs_div.moonstone {
     background-color: #003380;
+}
+
+.reset_div.sac,
+.reset_req.sac,
+.upg_desc.dm,
+.upgs_div.dm {
+    border-color: #ffa4d9;
+    background-color: #305;
 }
 
 .upgs_ctn {
@@ -643,6 +660,21 @@ button:not(.locked):hover {
     background-color: #ffff79;
 }
 
+.reset_div.fun,
+.reset_req.fun,
+.upg_desc.funMachine,
+.upgs_div.funMachine,
+.upg_desc.fundry,
+.upgs_div.fundry {
+    background-color: #dfff79;
+}
+
+.upg_desc.sfrgt,
+.upgs_div.sfrgt,
+.reset_div.recel {
+    background-color: #bfff79;
+}
+
 .milestone_ctns {
     position: absolute;
     width: calc(100% - 25px);
@@ -774,7 +806,7 @@ button:not(.locked):hover {
 
 #sc_desc_div {
     width: 100%;
-    background-color: #fff1;
+    background-color: #000b;
     padding: 5px 0;
     margin-bottom: 3px;
     font-size: 16px;

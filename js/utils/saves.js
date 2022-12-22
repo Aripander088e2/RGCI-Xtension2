@@ -4,6 +4,7 @@ function getPlayerData() {
 		autoUpg: {},
 
 		time: 0,
+		ch: MAIN.chrono.setup(),
 		map_notify: {},
 		options: {},
 		version: VER,
@@ -11,7 +12,6 @@ function getPlayerData() {
 
 		//RESOURCES
 		grass: E(0),
-		bestGrass: E(0),
 		level: 0,
 		xp: E(0),
 
@@ -20,7 +20,6 @@ function getPlayerData() {
 
 		//PRESTIGE
 		pp: E(0),
-		bestPP: E(0),
 		pTimes: 0,
 		pTime: 0,
 
@@ -31,7 +30,6 @@ function getPlayerData() {
 
 		//CRYSTALIZE
 		crystal: E(0),
-		bestCrystal: E(0),
 		cTimes: 0,
 		cTime: 0,
 
@@ -43,6 +41,8 @@ function getPlayerData() {
 
 		//GRASSHOP
 		grasshop: 0,
+		ghMult: false,
+
 		steel: E(0),
 		sTimes: 0,
 		sTime: 0,
@@ -50,7 +50,7 @@ function getPlayerData() {
 		chargeRate: E(0),
 		bestCharge: E(0),
 
-		decel: false,
+		decel: 0,
 		aRes: {
 			grass: E(0),
 			bestGrass: E(0),
@@ -62,14 +62,18 @@ function getPlayerData() {
 			tp: E(0),
 
 			ap: E(0),
-			bestAP: E(0),
 			aTimes: 0,
 			aTime: 0,
 
 			oil: E(0),
-			bestOil: E(0),
 			lTimes: 0,
 			lTime: 0,
+
+			grassskip: 0,
+			fun: E(0),
+			fTimes: 0,
+			fTime: 0,
+			sfrgt: E(0)
 		},
 
 		rocket: {
@@ -77,25 +81,6 @@ function getPlayerData() {
 			amount: 0,
 			part: 0,
 			momentum: 0,
-		},
-
-		//will be moved later
-		gTimes: 0,
-		gTime: 0,
-		stars: E(0),
-		lowGH: 1e300,
-
-		astral: 0,
-		sp: E(0),
-
-		moonstone: 0,
-		grassskip: 0,
-		gsUnl: false,
-
-		star_chart: {
-			auto: [],
-			speed: [],
-			progress: [],
 		},
 	}
 	for (let x in UPGS) {
@@ -123,9 +108,9 @@ function safecheckSave(data) {
 	return true
 }
 
-const VER = 0.0306
-const EX_COMMIT = 11
-const TB_VER = 1.02
+const VER = 0.042
+const EX_COMMIT = 11.05
+const TB_VER = 1.03
 function loadPlayer(data) {
 	player = deepUndefinedAndDecimal(data, getPlayerData())
 	convertStringToDecimal()
@@ -173,6 +158,18 @@ function loadPlayer(data) {
 		player.rocket.momentum = player.momentum
 		delete player.rocket.momentum
 	}
+	if (player.tb_ver < 1.03) {
+		if (galUnlocked() && player.gal.neg > 21) {
+			player.gal.neg = 21
+			player.gal.dm = E(10)
+			player.gal.sacTimes = 1
+			resetTemp()
+			RESET.sac.doReset(true)
+
+			alert("You are forced to do a Sacrifice with 10 Dark Matter due to exploit reasons!")
+		}
+		player.decel = player.decel ? 1 : 0
+	}
 	player.tb_ver = TB_VER
 }
 
@@ -204,7 +201,7 @@ function deepUndefinedAndDecimal(obj, data) {
 }
 
 function convertStringToDecimal() {
-	
+	if (player.gal) player.gal = deepUndefinedAndDecimal(player.gal, setupGal())
 }
 
 function cannotSave() { return false }
@@ -213,8 +210,8 @@ let saveInterval
 function save() {
 	let str = btoa(JSON.stringify(player))
 	if (cannotSave() || findNaN(str, true)) return
-	tmp.prevSave = localStorage.getItem("rgci_aarex")
-	localStorage.setItem("rgci_aarex",str)
+	tmp.prevSave = localStorage.getItem("rgci_tb_test")
+	localStorage.setItem("rgci_tb_test",str)
 	console.log("Game Saved")
 }
 
@@ -284,7 +281,7 @@ function loadGame(start=true, gotNaN=false) {
 		for (let y in UPGS[x].ctn) UPGS_SCOST[x][y] = UPGS[x].ctn[y].cost(0)
 	}
 
-	load(localStorage.getItem("rgci_aarex"))
+	load(localStorage.getItem("rgci_tb_test"))
 
 	setupHTML()
 	updateHTML()
@@ -305,7 +302,7 @@ function wipe() {
 function checkNaN() {
 	if (findNaN(player)) {
 		alert("Game Data got NaNed")
-		load(localStorage.getItem("rgci_aarex"))
+		load(localStorage.getItem("rgci_tb_test"))
 	}
 }
 

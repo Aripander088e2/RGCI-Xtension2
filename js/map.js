@@ -6,7 +6,7 @@ function resetMap() {
 	mapPos = {
 		dim: "earth",
 		earth: [1,1],
-		space: [3,3]
+		space: [1,1]
 	}
 
 	let pos = getMapPos()
@@ -23,24 +23,21 @@ window.addEventListener('keydown', e=>{
 
 const MAP = {
 	earth: [
-		[null,  'opt','stats','fd','rf'],
-		['upg', 'g',  'pc',   'gh','gal'],
-		['auto', null,'chal', 'dc', null],
+		[null,  'opt',   'stats','fd','rf' ],
+		['upg', 'g',     'pc',   'gh','gal'],
+		['auto','chrono','chal', 'dc',null ],
 	],
 	space: [
-		[null,null,null,null,null,null,null],
-		[null,null,null,null,null,null,null],
-		[null,null,null,'opt','stats',null,null],
-		[null,null,null,'sc','at',null,null],
-		[null,null,null,null,null,null,null],
-		[null,null,null,null,null,null,null],
-		[null,null,null,null,null,null,null],
+		['opt','stats', null ,null ],
+		['gal','sc',   'at'  ,'sac'],
+		[null , null  ,'chal',null ]
 	]
 }
 
 const MAP_UNLS = {
 	opt: _ => true,
 	stats: _ => player.pTimes > 0,
+	chrono: _ => player.grasshop > 0 || player.sTimes > 0,
 
 	//EARTH
 	g: _ => true,
@@ -57,6 +54,7 @@ const MAP_UNLS = {
 	//SPACE
 	sc: _ => true,
 	at: _ => true,
+	sac: _ => hasAGHMilestone(6),
 }
 
 const MAP_IDS = (_=>{
@@ -108,8 +106,8 @@ el.update.map = _=>{
 	updateMapButton("uMap", mx, my-1, dim)
 	updateMapButton("dMap", mx, my+1, dim)
 
-	tmp.el.spaceButton.setDisplay(player.gTimes > 0)
-	tmp.el.spaceButton.setTxt(inSpace() ? "Go to Ground" : "Go to Space")
+	tmp.el.spaceButton.setDisplay(galUnlocked())
+	tmp.el.spaceButton.setTxt("(Z) " + (inSpace() ? "Go to Ground" : "Go to Space"))
 }
 
 function updateMapButton(el, mx, my, dim) {
@@ -126,6 +124,7 @@ function updateMapButton(el, mx, my, dim) {
 const MAP_COLORS = {
 	opt: "misc",
 	stats: "misc",
+	chrono: "gh",
 
 	//EARTH
 	g: "grass",
@@ -141,7 +140,8 @@ const MAP_COLORS = {
 
 	//SPACE
 	sc: "gal",
-	at: "gal"
+	at: "gal",
+	sac: "gal"
 }
 
 el.update.map_ext = _ => {
@@ -173,6 +173,7 @@ el.update.map_ext = _ => {
 const MAP_LOCS = {
 	opt: "Misc",
 	stats: "Misc",
+	chrono: "Misc",
 
 	//EARTH
 	g: "Field",
@@ -189,6 +190,7 @@ const MAP_LOCS = {
 	gal: "Prestige",
 	sc: "Space",
 	at: "Space",
+	sac: "Space",
 }
 
 let locTimeout
@@ -207,6 +209,7 @@ function showLoc(x) {
 const GO_TO_NAMES = {
 	opt: "Options",
 	stats: "Stats",
+	chrono: "Chronology",
 
 	//EARTH
 	g: "Field",
@@ -222,7 +225,8 @@ const GO_TO_NAMES = {
 
 	//SPACE
 	sc: "Star Chart",
-	at: "Galactic",
+	at: "Astral",
+	sac: "Sacrifice",
 }
 
 let go_to = false
@@ -263,7 +267,7 @@ const MAP_NOTIFY = {
 	chal: _ => player.sTimes > 0 ? 2 :
 		player.cTimes > 0 ? 1 :
 		0,
-	gh: _ => galUnlocked() ? Infinity :
+	gh: _ => galUnlocked() ? 0 :
 		player.grasshop + (player.level >= MAIN.gh.req() ? 1 : 0),
 	fd: _ => galUnlocked() || hasUpgrade("factory", 2) ? 3 :
 		hasUpgrade("factory", 1) ? 2 :
@@ -278,6 +282,7 @@ const MAP_NOTIFY = {
 	//SPACE
 	sc: _ => 0,
 	at: _ => 0,
+	sac: _ => 0,
 }
 
 tmp_update.push(_=>{

@@ -11,6 +11,8 @@ MAIN.crystal = {
         x = x.mul(upgEffect('rocket',4))
         x = x.mul(upgEffect('momentum',5))
 
+        x = x.mul(upgEffect('dm',0))
+
         return x.floor()
     },
 }
@@ -44,7 +46,6 @@ RESET.crystal = {
     doReset(order="c") {
         player.cTime = 0
         player.pp = E(0)
-        player.bestPP = E(0)
         player.tp = E(0)
         player.tier = 0
         player.chal.c4 = true
@@ -181,184 +182,10 @@ UPGS.crystal = {
     ],
 }
 
-// Liquefy, Oil
-MAIN.oil = {
-    gain() {
-        let x = Decimal.pow(2, player.aRes.tier)
-
-        x = x.mul(upgEffect('plat',9))
-        x = x.mul(chalEff(8))
-
-        x = x.mul(upgEffect('rocket',8))
-        x = x.mul(upgEffect('momentum',9))
-
-        return x.floor()
-    },
-}
-
-RESET.oil = {
-    unl: _=> player.decel && player.aRes.aTimes > 0,
-
-    req: _=>player.aRes.level>=90,
-    reqDesc: _=>`Reach Level 90 to Liquefy.`,
-
-    resetDesc: `Liquefy resets everything Anonymity as well as your AP, Anonymity upgrades & tier for Oil.`,
-    resetGain: _=> `Gain <b>${tmp.oilGain.format(0)}</b> Oil`,
-
-    title: `Liquefy`,
-    resetBtn: `Liquefy?`,
-    hotkey: `C`,
-
-    reset(force=false) {
-        if (this.req()||force) {
-            if (!force) {
-                player.aRes.oil = player.aRes.oil.add(tmp.oilGain)
-                player.aRes.lTimes++
-            }
-
-            updateTemp()
-
-            this.doReset()
-        }
-    },
-
-    doReset(order="l") {
-        player.aRes.lTime = 0
-        player.aRes.tier = 0
-        player.aRes.tp = E(0)
-        player.aRes.ap = E(0)
-        player.aRes.bestAP = E(0)
-
-        resetUpgrades('ap')
-
-        RESET.ap.doReset(order)
-    },
-}
-
-UPGS.oil = {
-    unl: _=> player.decel && player.aRes.aTimes > 0,
-
-    title: "Oil Upgrades",
-
-    req: _=>player.aRes.lTimes > 0,
-    reqDesc: _=>`Liquefy once to unlock.`,
-
-    underDesc: _=>`You have ${format(player.aRes.oil,0)} Oil`+(tmp.oilGainP > 0 ? " <span class='smallAmt'>"+formatGain(player.aRes.oil,tmp.oilGain.mul(tmp.oilGainP))+"</span>" : ""),
-
-    autoUnl: _=>hasUpgrade('aAuto',3),
-
-    ctn: [
-        {
-            max: Infinity,
-
-            title: "Oily Grass Value",
-            tier: 3,
-            desc: `Increase grass gain by <b class="green">25%</b> compounding per level.`,
-        
-            res: "oil",
-            icon: ["Curr/Grass"],
-                        
-            cost: i => Decimal.pow(1.75,i).mul(50).ceil(),
-            bulk: i => i.div(50).max(1).log(1.75).floor().toNumber()+1,
-        
-            effect(i) {
-                return E(1.25).pow(i)
-            },
-            effDesc: x => format(x)+"x",
-        },{
-            max: Infinity,
-
-            title: "Oily XP",
-            tier: 3,
-            desc: `Increase XP gain by <b class="green">25%</b> compounding per level.`,
-        
-            res: "oil",
-            icon: ['Icons/XP'],
-
-            cost: i => Decimal.pow(1.75,i).mul(10).ceil(),
-            bulk: i => i.div(10).max(1).log(1.75).floor().toNumber()+1,
-
-            effect(i) {
-                return E(1.25).pow(i)
-            },
-            effDesc: x => format(x)+"x",
-        },{
-            max: Infinity,
-
-            title: "Oily TP",
-            tier: 2,
-            desc: `Increase TP gain by <b class="green">25%</b> compounding per level.`,
-        
-            res: "oil",
-            icon: ['Icons/TP'],
-            
-            cost: i => Decimal.pow(2,i).mul(1e3).ceil(),
-            bulk: i => i.div(1e3).max(1).log(2).floor().toNumber()+1,
-
-            effect(i) {
-                return E(1.25).pow(i)
-            },
-            effDesc: x => x.format()+"x",
-        },{
-            max: Infinity,
-
-            title: "Oily AP",
-            desc: `Increase AP gain by <b class="green">30%</b> compounding per level.`,
-
-            res: "oil",
-            icon: ['Curr/Anonymity'],
-            
-            cost: i => Decimal.pow(1.2,i**0.8).mul(200).ceil(),
-            bulk: i => i.div(200).max(1).log(1.2).root(0.8).floor().toNumber()+1,
-
-            effect(i) {
-                return E(1.3).pow(i)
-            },
-            effDesc: x => x.format()+"x",
-        },{
-            max: Infinity,
-
-            title: "Oily Steel",
-            tier: 2,
-            desc: `Steel gain is <b class="green">doubled</b> per level.`,
-        
-            res: "oil",
-            icon: ['Curr/Steel2'],
-            
-            cost: i => Decimal.pow(4,i**0.8).mul(100).ceil(),
-            bulk: i => i.div(100).max(1).log(4).root(0.8).floor().toNumber()+1,
-
-            effect(i) {
-                let x = Decimal.pow(2,i)
-
-                return x
-            },
-            effDesc: x => format(x)+"x",
-        },{
-            max: Infinity,
-
-            title: "Oily Charge",
-            tier: 3,
-            desc: `Charge rate is increased by <b class="green">30%</b> compounding per level.`,
-        
-            res: "oil",
-            icon: ['Curr/Charge'],
-            
-            cost: i => Decimal.pow(1.5,i).mul(20).ceil(),
-            bulk: i => i.div(20).max(1).log(1.5).floor().toNumber()+1,
-
-            effect(i) {
-                return E(1.3).pow(i)
-            },
-            effDesc: x => format(x)+"x",
-        },
-    ],
-}
-
 tmp_update.push(_=>{
     tmp.crystalGain = MAIN.crystal.gain()
-    tmp.crystalGainP = (upgEffect('auto',9,0)+upgEffect('gen',1,0))*upgEffect('factory',1,1)
+    tmp.crystalGainP = (upgEffect('auto',9,0)+upgEffect('gen',1,0)+starTreeEff("qol",0,0))*upgEffect('factory',1,1)
 
-    tmp.oilGain = MAIN.oil.gain()
-    tmp.oilGainP = upgEffect('aAuto',5,0)
+    tmp.aRes.oilGain = MAIN.oil.gain()
+    tmp.aRes.oilGainP = upgEffect('aAuto',5,0)+starTreeEff("qol",3,0)
 })

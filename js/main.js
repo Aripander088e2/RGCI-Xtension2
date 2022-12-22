@@ -21,8 +21,10 @@ const MAIN = {
         if (player.decel && hasUpgrade('aGrass', 3)) x = x.mul(upgEffect('aGrass',3))
         x = x.mul(upgEffect('ap',0))
         x = x.mul(upgEffect('oil',0))
+        if (player.decel && hasGSMilestone(0)) x = x.mul(3)
 
         x = x.mul(upgEffect('rocket',0))
+        x = x.mul(upgEffect('rocket',17))
         x = x.mul(upgEffect('momentum',0))
 
         return x
@@ -37,8 +39,9 @@ const MAIN = {
         let x = 2
         x /= upgEffect('grass',2,1)
         x /= upgEffect('perk',2,1)
-        x /= upgEffect('aGrass',1,1)
+        if (player.decel) x /= upgEffect('aGrass',1,1)
         x /= upgEffect('momentum',1)
+        if (hasUpgrade('rocket',16)) x = 1 / (1 / x + upgEffect('rocket', 16))
         return x
     },
     xpGain() {
@@ -54,12 +57,17 @@ const MAIN = {
         if (player.grasshop >= 7) x = x.mul(2)
 
         if (player.decel) x = x.div(1e5)
-        if (player.decel && hasUpgrade('aGrass', 4)) x = x.mul(upgEffect('aGrass', 4))
+        if (player.decel && hasUpgrade('aGrass',4)) x = x.mul(upgEffect('aGrass',4))
         x = x.mul(upgEffect('ap',2))
         x = x.mul(upgEffect('oil',1))
+        if (player.decel && hasGSMilestone(0)) x = x.mul(3)
 
         x = x.mul(upgEffect('rocket',1))
+        x = x.mul(upgEffect('rocket',10))
         x = x.mul(upgEffect('momentum',2))
+
+        if (player.decel) x = x.mul(E(getAstralEff('xp')).root(1.5))
+        if (!player.decel) x = x.mul(getAstralEff('xp'))
 
         if (x.lt(1)) return x
         return x
@@ -68,7 +76,7 @@ const MAIN = {
         if (inChal(2)) return E(0)
 
         let x = upgEffect('pp',2)
-
+        x = x.mul(upgEffect('pp',4))
         x = x.mul(upgEffect('crystal',2))
         x = x.mul(upgEffect('plat',4))
         x = x.mul(upgEffect('perk',7))
@@ -84,18 +92,14 @@ const MAIN = {
         x = x.mul(upgEffect('rocket',2))
         x = x.mul(upgEffect('momentum',3))
 
-        return x
-    },
-    spGain() {
-        let x = E(1)
-
-        if (player.grassskip>=2) x = x.add(getGSEffect(1,0))
+        x = x.mul(getAstralEff('tp'))
 
         return x
     },
     rangeCut: _=>70+upgEffect('grass',4,0)+upgEffect('perk',4,0)+upgEffect('aGrass',6,0),
     autoCut() {
 		let interval = 5-upgEffect('auto',0,0)-upgEffect('plat',0,0)
+		interval /= starTreeEff("auto",7)
 		if (player.decel) interval *= 10 / upgEffect('aAuto', 0)
 		return interval
 	},
@@ -121,8 +125,9 @@ const MAIN = {
         perk() {
             let x = chalEff(3)
             if (player.grasshop >= 4) x += getGHEffect(3, 0)
+            if (inChal(7)) x = 1
 
-            return x * player.level
+            return Math.floor(x * player.level)
         },
     },
     tier: {
@@ -143,27 +148,12 @@ const MAIN = {
 			let x = upgEffect('crystal',3)
 			if (player.grasshop >= 5) x += 0.1
 			x += E(tmp.chargeEff[4]||1).toNumber()
+			if (player.decel) x += E(tmp.chargeEff[10]||1).toNumber()
+			x += getAstralEff('tb', 0)
 			return x
         },
         mult(i) {
             return Decimal.pow(MAIN.tier.base(), i)
-        },
-    },
-    astral: {
-        req(i) {
-            let x = Decimal.pow(3,i).mul(100)
-
-            return x.ceil()
-        },
-        bulk(i) {
-            let x = i.div(100)
-            if (x.lt(1)) return 0
-            x = x.log(3)
-
-            return Math.floor(x.toNumber()+1)
-        },
-        cur(i) {
-            return i > 0 ? this.req(i-1) : E(0) 
         },
     },
     checkCutting() {
@@ -172,9 +162,6 @@ const MAIN = {
         }
         if (tmp.realmSrc.tp.gte(tmp.tier.next)) {
             tmp.realmSrc.tier = Math.max(tmp.realmSrc.tier, tmp.tier.bulk)
-        }
-        if (player.sp.gte(tmp.astral.next)) {
-            player.astral = Math.max(player.astral, tmp.astral.bulk)
         }
     }, 
 }
@@ -189,21 +176,14 @@ el.update.main = _=>{
 	tmp.el.level.setDisplay(level_unl && !inSpace())
 	if (level_unl) {
 		tmp.el.level_top_bar.changeStyle("width",tmp.level.percent*100+"%")
-		tmp.el.level_top_info.setHTML(`Level <b class="cyan">${format(tmp.realmSrc.level,0)}</b> (${formatPercent(tmp.level.percent)})`)
+		tmp.el.level_top_info.setHTML(`Level <b class="cyan">${format(tmp.realmSrc.level,0)}</b>`)
 	}
 
 	let tier_unl = player.pTimes > 0
 	tmp.el.tier.setDisplay(tier_unl && !inSpace())
 	if (tier_unl) {
 		tmp.el.tier_top_bar.changeStyle("width",tmp.tier.percent*100+"%")
-		tmp.el.tier_top_info.setHTML(`Tier <b class="yellow">${format(tmp.realmSrc.tier,0)}</b> (${formatPercent(tmp.tier.percent)})`)
-	}
-
-	let astral_unl = player.gTimes > 0
-	tmp.el.astral.setDisplay(astral_unl && inSpace())
-	if (astral_unl) {
-		tmp.el.astral_top_bar.changeStyle("width",tmp.astral.percent*100+"%")
-		tmp.el.astral_top_info.setHTML(`Astral <b class="magenta">${format(player.astral,0)}</b> (${formatPercent(tmp.astral.percent)})`)
+		tmp.el.tier_top_info.setHTML(`Tier <b class="yellow">${format(tmp.realmSrc.tier,0)}</b>`)
 	}
 
 	if (mapID == 'g') {
@@ -223,14 +203,6 @@ el.update.main = _=>{
 			tmp.el.tier_bar.changeStyle("width",tmp.tier.percent*100+"%")
 			tmp.el.tier_cut.setTxt("+"+tmp.tpGain.format(1)+" TP/cut")
 			tmp.el.tier_mult.setTxt(formatMult(tmp.tier.mult,0)+" → "+formatMult(MAIN.tier.mult(tmp.realmSrc.tier+1),0)+" multiplier")
-		}
-
-		tmp.el.astral_div.setDisplay(astral_unl)
-		if (astral_unl) {
-			tmp.el.astral_amt.setTxt(format(player.astral,0))
-			tmp.el.astral_progress.setTxt(tmp.astral.progress.format(0)+" / "+tmp.astral.next.sub(tmp.astral.cur).format(0)+" SP")
-			tmp.el.astral_bar.changeStyle("width",tmp.astral.percent*100+"%")
-			tmp.el.astral_cut.setTxt("+"+tmp.SPGain.format(1)+" SP/cut")
 		}
 	}
 
@@ -253,7 +225,6 @@ tmp_update.push(_=>{
     tmp.grassGain = MAIN.grassGain()
     tmp.xpGain = MAIN.xpGain()
     tmp.tpGain = MAIN.tpGain()
-    tmp.spGain = MAIN.tpGain()
 
     tmp.perks = MAIN.level.perk()
     tmp.perkUnspent = Math.max(player.maxPerk-player.spentPerk,0)
@@ -273,19 +244,16 @@ tmp_update.push(_=>{
     tmp.tier.percent = tmp.tier.progress.div(tmp.tier.next.sub(tmp.tier.cur)).max(0).min(1).toNumber()
     tmp.tier.mult = MAIN.tier.mult(tier)
 
-    let astr = player.astral
-    tmp.astral.next = MAIN.astral.req(astr)
-    tmp.astral.bulk = MAIN.astral.bulk(player.sp)
-    tmp.astral.cur = MAIN.astral.cur(astr)
-    tmp.astral.progress = player.sp.sub(tmp.astral.cur).max(0).min(tmp.astral.next)
-    tmp.astral.percent = tmp.astral.progress.div(tmp.astral.next.sub(tmp.astral.cur)).max(0).min(1).toNumber()
-
     tmp.platChance = 0.001
     if (player.grasshop >= 6) tmp.platChance *= 2
+    if (!player.decel && hasGSMilestone(6)) tmp.platChance *= 2
+    tmp.platChance += upgEffect('rocket',16,0)
 
     tmp.platGain = 1
     tmp.platGain += chalEff(5,0)
     if (player.grasshop >= 3) tmp.platGain += getGHEffect(2, 0)
+    tmp.platGain += upgEffect('moonstone', 0)
+	tmp.platGain *= upgEffect('dm', 2)
 })
 
 let shiftDown = false
@@ -307,10 +275,17 @@ window.addEventListener('keydown', function(event) {
 			else RESET.gh.reset();
 			break;
 		case "s":
-			if (shiftDown) RESET.steel.reset();
+			if (shiftDown && player.decel) RESET.fun.reset();
+			else if (shiftDown) RESET.steel.reset();
 			break;
 		case "f":
 			ROCKET.create()
+			break;
+		case "t":
+			RESET.decel.reset()
+			break;
+		case "z":
+			goToSpace()
 			break;
 	}
 }, false);

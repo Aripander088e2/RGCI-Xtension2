@@ -114,43 +114,81 @@ const CHALS = [
         eff: i=>i,
         effDesc: x=>format(x,1)+"x",
     },{
-        unl: _=>player.sTimes>=1,
+        unl: _=>player.grasshop >= 15,
 
-        max: 10,
+        max: 6,
         id: 'steel',
 
         title: `Clear Crystal`,
         desc: `You can't buy Crystal Upgrades.`,
         cond: _=>!hasUpgrades("crystal"),
-        reward: `Steel gain is <b class='green'>doubled</b> each completion.`,
+        reward: `Steel gain is <b class='green'>tripled</b> each completion.`,
 
-        goal: i=>8+i*2,
-        bulk: i=>Math.floor((i-8)/2+1),
+        goal: i=>11+i*5,
+        bulk: i=>Math.floor((i-11)/5+1),
 
         goalDesc: x=>"Tier "+format(x,0),
         goalAmt: _=>player.tier,
 
-        eff: i=>Decimal.pow(2,i),
+        eff: i=>Decimal.pow(3,i),
         effDesc: x=>format(x,1)+"x",
     },{
-        unl: _=>hasUpgrade('factory',2),
+        unl: _=>player.grasshop >= 18,
 
-        max: 8,
+        max: 4,
         id: 'steel',
 
         title: `Empower`,
-        desc: `Non-Steelie Challenge Rewards do nothing.`,
+        desc: `Non-Steelie Challenge Rewards do nothing. Additionally, you gain 1 Perk per level.`,
         cond: _=>false,
         reward: `Charge gain is increased by <b class='green'>5x</b> each completion.`,
 
-        goal: i=>25+i*2,
-        bulk: i=>Math.floor((i-25)/2+1),
+        goal: i=>25+i*3,
+        bulk: i=>Math.floor((i-25)/3+1),
 
         goalDesc: x=>"Tier "+format(x,0),
         goalAmt: _=>player.tier,
 
         eff: i=>Decimal.pow(5,i),
         effDesc: x=>format(x,1)+"x",
+    },{
+        unl: _=>hasStarTree("progress", 6),
+
+        max: 11,
+        id: 'gal',
+
+        title: `Sleepy Hop`,
+        desc: `You must grasshop at least as you can. Getting 10 Rocket Parts will complete it.`,
+        cond: _=>galUnlocked()&&tmp.chal.goal[8]>=player.grasshop,
+        reward: `Nothing.`,
+
+        goal: i=>Math.max(30-i*3,0),
+        bulk: i=>Math.floor((30-i)/3+1),
+
+        goalDesc: x=>"Grasshop "+format(x,0),
+        goalAmt: _=>player.rocket.part==10?player.grasshop:1/0,
+
+        eff: i=>i,
+        effDesc: x=>"however, you will feel a sense of accomplishment",
+    },{
+        unl: _=>player.chal.comp[8] == 12,
+
+        max: Infinity,
+        id: 'gal',
+
+        title: `Walk On Grass`,
+        desc: `You can't grasshop.`,
+        cond: _=>player.grasshop==0,
+        reward: `Nothing.`,
+
+        goal: i=>i*3,
+        bulk: i=>Math.floor(i/3+1),
+
+        goalDesc: x=>"Grass-Skip "+format(x,0),
+        goalAmt: _=>player.aRes.grassskip,
+
+        eff: i=>i,
+        effDesc: x=>"however, you will feel a sense of accomplishment",
     }
 ]
 
@@ -187,6 +225,12 @@ function enterChal(x) {
 
 function chalEff(x,def=E(1)) { return tmp.chal.eff[x] || def }
 
+function autoChalTime() {
+	let r = upgEffect("assembler", 8)
+	r /= starTreeEff("auto", 3)
+	return r
+}
+
 tmp_update.push(_=>{
 	for (let i in CHALS) {
 		let c = player.chal.comp[i] || 0
@@ -197,7 +241,7 @@ tmp_update.push(_=>{
 			let c = CHALS[i]
 			let a = c.goalAmt()
 			tmp.chal.amt[i] = a
-			tmp.chal.bulk[i] = a >= chalSGoal[i] ? Math.min(c.bulk(a), c.max) : 0
+			tmp.chal.bulk[i] = Math.max(Math.min(c.bulk(a), c.max), 0)
 		}
 	}
 })
@@ -213,13 +257,14 @@ el.setup.chal = _=>{
         <div class="chal_div ${c.id}" id="chal_div_${i}" onclick="enterChal(${i})">
             <h3>${c.title}</h3><br>
             <b class="yellow" id="chal_comp_${i}">0 / 0</b><br><br>
-            ${c.desc}<br>
+            ${c.desc}<br><br>
+
             Reward: ${c.reward}<br>
-            Effect: <b class="cyan" id="chal_eff_${i}">???</b>
+            (<b class="cyan" id="chal_eff_${i}"></b>)
 
             <div style="position:absolute; bottom:7px; width:100%;">
-                Status: <b class="red" id="chal_pro_${i}">Inactive</b><br>
-                <b class="white" id="chal_goal_${i}">Goal: ???</b>
+                <b id="chal_pro_${i}"></b><br>
+                <b class="white" id="chal_goal_${i}"></b>
             </div>
         </div>
         `
@@ -229,8 +274,6 @@ el.setup.chal = _=>{
 }
 
 el.update.chal = _=>{
-	if (player.decel) player.chal.progress = {}
-
 	if (mapID == 'chal') {
 		let unl = player.cTimes > 0
 
@@ -238,12 +281,12 @@ el.update.chal = _=>{
 		tmp.el.chal_div.setDisplay(unl)
 
 		if (unl) {
-			tmp.el.chal_top.setHTML(player.decel ? "You can't complete Challenges in Anti-Realm!" : `
+			tmp.el.chal_top.setHTML(player.decel ? "<b class='red'>You can't complete Challenges in Anti-Realm!</b>" : `
 				Click any challenge to start! Click again to exit.<br>
 				You can complete Challenges without entering if you satisfy a condition.
 			`)
 			tmp.el.chal_auto.setDisplay(hasUpgrade("assembler", 8))
-			tmp.el.chal_auto.setTxt("Auto-completing in " + format((1 - player.chal.time) * upgEffect("assembler", 8), 1) + "s")
+			tmp.el.chal_auto.setTxt("Auto-completing in " + format((1 - player.chal.time) * autoChalTime(), 1) + "s")
 
 			for (let i in CHALS) {
 				let c = CHALS[i]
@@ -253,13 +296,16 @@ el.update.chal = _=>{
 
 				if (unl2) {
 					let completed = l >= c.max
+					let progressing = inChal(i)
+					let active = inChalCond(i)
 
-					tmp.el["chal_comp_"+i].setTxt(format(l,0) + " / " + format(c.max,0))
+					tmp.el["chal_comp_"+i].setTxt(completed ? "Completed" : format(l,0) + " / " + format(c.max,0))
+					tmp.el["chal_comp_"+i].setClasses({[completed ? "pink" : "yellow"]: true})
 					tmp.el["chal_eff_"+i].setHTML(c.effDesc(tmp.chal.eff[i]))
-					tmp.el["chal_pro_"+i].setTxt(completed ? "Completed" : inChal(i) ? "Progress" : inChalCond(i) ? "Active" : "Inactive")
-					tmp.el["chal_pro_"+i].setClasses({[completed ? "pink" : inChal(i) ? "yellow" : inChalCond(i) ? "green" : "red"]: true})
 
-					tmp.el["chal_goal_"+i].setTxt("Goal: "+c.goalDesc(tmp.chal.goal[i]))
+					tmp.el["chal_pro_"+i].setTxt(completed ? "" : progressing ? "Progress" : active ? "Active" : "Inactive")
+					tmp.el["chal_pro_"+i].setClasses({[completed ? "pink" : progressing ? "yellow" : active ? "green" : "red"]: true})
+					tmp.el["chal_goal_"+i].setTxt(completed ? "" : "Goal: "+c.goalDesc(tmp.chal.goal[i]) + (progressing || active ? " (" + format(c.goalAmt(), 0) + ")" : ""))
 				}
 			}
 		}
