@@ -17,13 +17,15 @@ const UPG_RES = {
     fun: ["Fun",_=>[player.aRes,"fun"],'FunBase'],
     SFRGT: ["SFRGT",_=>[player.aRes,"sfrgt"],'FunBase'],
     dm: ["Dark Matter",_=>[player.gal,"dm"],'DarkMatterBase'],
+    unGrass: ["Un-Grass",_=>[player.unRes,"unGrass"],'UnnaturalBase'],
+    np: ["NP",_=>[player.unRes,"np"],'NormalityBase'],
 }
 
 const isResNumber = ['perk','plat','rf','momentum','moonstone']
 
 const UPGS = {
     grass: {
-        unl: _=> !player.decel,
+        unl: _=> player.decel == 0,
 
         cannotBuy: _=>inChal(0) || inChal(5),
 
@@ -1042,6 +1044,27 @@ el.update.upgs = _=>{
     if (mapID == 'g') {
         updateUpgradesHTML('grass')
         updateUpgradesHTML('aGrass')
+		//updateUpgradesHTML('unGrass')
+	}
+	if (mapID == 'p') {
+		updateUpgradesHTML('perk')
+		updateUpgradesHTML('plat')
+		tmp.el.losePerksBtn.setDisplay(hasUpgrade('auto', 4))
+		tmp.el.losePerks.setTxt(player.options.losePerks ? "OFF" : "ON")
+	}
+	if (mapID == 'auto') updateUpgradesHTML('auto')
+	if (mapID == 'pc') {
+		updateUpgradesHTML('pp')
+		updateUpgradesHTML('crystal')
+
+		updateUpgradesHTML('ap')
+		updateUpgradesHTML('oil')
+
+		//updateUpgradesHTML('np')
+	}
+	if (mapID == 'gh') {
+        updateUpgradesHTML('factory')
+        updateUpgradesHTML('funMachine')
     }
     if (mapID == 'upg') {
         updateUpgradesHTML('perk')
@@ -1084,30 +1107,41 @@ el.update.upgs = _=>{
 		tmp.el.hideMilestoneBtn.setDisplay(player.grasshop > 0 || player.sTimes > 0)
 		tmp.el.hideMilestone.setTxt(player.options.hideMilestone?"At last obtained":"All")
 	}
-	if (mapID == 'stats') {
+	if (mapID == 'time') {
 		tmp.el.time.setHTML("Time: " + formatTime(player.time))
 
-		let stats = !player.decel && !inSpace()
+		let stats = player.decel == 0 && !inSpace()
 		tmp.el.stats.setDisplay(stats || player.options.allStats)
 		if (stats || player.options.allStats) {
-			tmp.el.pTimes.setHTML((player.pTimes ? "You have done " + player.pTimes + " <b style='color: #5BFAFF'>Prestige</b> resets." : "") + (!player.decel && player.pTimes ? "<br>Time: " + formatTime(player.pTime) : ""))
-			tmp.el.cTimes.setHTML((player.cTimes ? "You have done " + player.cTimes + " <b style='color: #FF84F6'>Crystalize</b> resets." : "") + (!player.decel && player.cTimes ? "<br>Time: " + formatTime(player.cTime) : ""))
-			tmp.el.sTimes.setHTML(player.sTimes ? "You have done " + player.sTimes + " <b style='color: #c5c5c5'>Steelie</b> resets.<br>Time: " + formatTime(player.sTime) : "")
+			tmp.el.statsHeader.setDisplay(player.options.allStats)
+			tmp.el.pTimes.setHTML(player.pTimes ? "You have done " + player.pTimes + " <b style='color: #5BFAFF'>Prestige</b> resets." + (tmp.outsideNormal ? "" : "<br>Time: " + formatTime(player.pTime)) : "")
+			tmp.el.cTimes.setHTML(player.cTimes ? "You have done " + player.cTimes + " <b style='color: #FF84F6'>Crystalize</b> resets." + (tmp.outsideNormal ? "" : "<br>Time: " + formatTime(player.cTime)) : "")
+			tmp.el.sTimes.setHTML(player.sTimes ? "You have done " + player.sTimes + " <b style='color: #c5c5c5'>Steelie</b> resets." + (tmp.outsideNormal ? "" : "<br>Time: " + formatTime(player.sTime)) : "")
 		}
 
-		let aStats = player.decel && !inSpace()
+		let aStats = player.decel == 1 && !inSpace()
+		let aStatsUnl = hasUpgrade("factory", 4) && aStats
 		tmp.el.aStats.setDisplay(aStats || player.options.allStats)
 		if (aStats || player.options.allStats) {
 			tmp.el.aTimes.setHTML(player.aRes.aTimes ? "You have done " + player.aRes.aTimes + " <b style='color: #FF4E4E'>Anonymity</b> resets.<br>Time: " + formatTime(player.aRes.aTime) : "")
 			tmp.el.lTimes.setHTML(player.aRes.lTimes ? "You have done " + player.aRes.lTimes + " <b style='color: #2b2b2b'>Liquefy</b> resets.<br>Time: " + formatTime(player.aRes.lTime) : "")
 		}
 
+		let unStats = player.decel == 2 && !inSpace()
+		let unStatsUnl = hasUpgrade("funMachine", 3) && unStats
+		tmp.el.unStats.setDisplay(unStatsUnl)
+		if (unStatsUnl) {
+			tmp.el.unStatsHeader.setDisplay(player.options.allStats)
+			tmp.el.nTimes.setHTML(player.nTimes ? "You have done " + player.nTimes + " <b style='color: #8fcc00'>Normality</b> resets." + (!player.recel ? "" : "<br>Time: " + formatTime(player.nTime)) : "")
+		}
+
 		let gStats = inSpace()
-		let gStatsUnl = galUnlocked()
-		tmp.el.gStats.setDisplay(gStatsUnl && (gStats || player.options.allStats))
-		if (gStatsUnl && (gStats || player.options.allStats)) {
-			tmp.el.gTimes.setHTML(player.gal.times ? "You have done " + player.gal.times + " <b style='color: #bf00ff'>Galactic</b> resets.<br>Time: " + formatTime(player.gal.time) : "")
-			tmp.el.sacTimes.setHTML(player.gal.sacTimes ? "You have done " + player.gal.sacTimes + " <b style='color: #bf00ff'>Sacrifice</b> resets.<br>Time: " + formatTime(player.gal.sacTime) : "")
+		let gStatsUnl = galUnlocked() && gStats
+		tmp.el.gStats.setDisplay(gStatsUnl)
+		if (gStatsUnl) {
+			tmp.el.gStatsHeader.setDisplay(player.options.allStats)
+			tmp.el.gTimes.setHTML(player.gal.gTimes ? "You have done " + player.gal.gTimes + " <b style='color: #bf00ff'>Galactic</b> resets.<br>Time: " + formatTime(player.gal.gTime) + "<br>" : "")
+			tmp.el.sacTimes.setHTML(player.gal.sacTimes ? "You have done " + player.gal.sacTimes + " <b style='color: #305'>Sacrifice</b> resets.<br>Time: " + formatTime(player.gal.sacTime) + "<br>" : "")
 		}
 
 		tmp.el.allStatsBtn.setDisplay(hasUpgrade('factory', 4) || galUnlocked())

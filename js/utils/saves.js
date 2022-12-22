@@ -108,8 +108,8 @@ function safecheckSave(data) {
 	return true
 }
 
-const VER = 0.042
-const EX_COMMIT = 11.05
+const VER = 0.0421
+const EX_COMMIT = 11.06
 const TB_VER = 1.03
 function loadPlayer(data) {
 	player = deepUndefinedAndDecimal(data, getPlayerData())

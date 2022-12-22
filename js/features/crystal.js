@@ -18,7 +18,7 @@ MAIN.crystal = {
 }
 
 RESET.crystal = {
-    unl: _=>player.pTimes>0 && !player.decel,
+    unl: _=>player.pTimes>0 && player.decel == 0,
 
     req: _=>player.level>=90,
     reqDesc: _=>`Reach Level 90 to Crystalize.`,
@@ -61,7 +61,7 @@ UPGS.crystal = {
 
     cannotBuy: _=>inChal(6),
 
-    unl: _=>player.pTimes > 0 && !player.decel,
+    unl: _=>player.pTimes > 0 && player.decel == 0,
 
     req: _=>player.cTimes > 0,
     reqDesc: _=>`Crystalize once to unlock.`,
@@ -123,69 +123,11 @@ UPGS.crystal = {
                 return E(1.25).pow(i)
             },
             effDesc: x => format(x)+"x",
-        },{
-            max: 10,
-
-            title: "Tiered Boost",
-            desc: `Tiers are more effective. (<b class='green'>+0.1x</b> multiplier per Tier)`,
-        
-            res: "crystal",
-            icon: ["Icons/TP", "Icons/StarSpeed"],
-
-            cost: i => Decimal.pow(20,i/2.5).mul(100).ceil(),
-            bulk: i => i.div(100).max(1).log(20).mul(2.5).floor().toNumber()+1,
-        
-            effect(i) {
-                let x = i/10+2.25
-        
-                return x
-            },
-            effDesc: x => format(x,2)+"x per Tier ("+format(E(MAIN.tier.base()).pow(player.tier),0)+"x -> "+format(E(MAIN.tier.base()+.1).pow(player.tier),0)+"x)",
-        },{
-            max: 60,
-
-            title: "Prestiged Synergy",
-            desc: `Grass Upgrade's "PP" is <b class='green'>+0.033x</b> more effective.`,
-        
-            res: "crystal",
-            icon: ["Curr/Prestige", "Icons/StarSpeed"],
-
-            cost: i => Decimal.pow(10,i/2).mul(50).ceil(),
-            bulk: i => i.div(50).max(1).log(10).mul(2).floor().toNumber()+1,
-        
-            effect(i) {
-                let x = i/30+1
-        
-                return x
-            },
-            effDesc: x => format(x,3)+"x effective",
-        },{
-            max: 3,
-
-            title: "Grow Amount II",
-            tier: 2,
-            desc: `Increase grass grow amount by <b class="green">1</b>.`,
-        
-            res: "crystal",
-            icon: ["Icons/MoreGrass", "Icons/StarSpeed"],
-
-            cost: i => Decimal.pow(3,i).mul(500).ceil(),
-            bulk: i => i.div(500).max(1).log(3).floor().toNumber()+1,
-        
-            effect(i) {
-                let x = i
-        
-                return x
-            },
-            effDesc: x => "+"+format(x,0),
-        }
+        },
     ],
 }
 
 tmp_update.push(_=>{
     tmp.crystalGain = MAIN.crystal.gain()
     tmp.crystalGainP = (upgEffect('auto',9,0)+upgEffect('gen',1,0)+starTreeEff("qol",0,0))*upgEffect('factory',1,1)
-
-    tmp.aRes.oilGain = MAIN.oil.gain()
-    tmp.aRes.oilGainP = upgEffect('aAuto',5,0)+starTreeEff("qol",3,0)
 })

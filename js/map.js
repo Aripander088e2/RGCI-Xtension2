@@ -23,20 +23,21 @@ window.addEventListener('keydown', e=>{
 
 const MAP = {
 	earth: [
-		[null,  'opt',   'stats','fd','rf' ],
-		['upg', 'g',     'pc',   'gh','gal'],
-		['auto','chrono','chal', 'dc',null ],
+		['stats','opt',   'time','fd','rf' ],
+		['upg',  'g',     'pc',  'gh','gal'],
+		['auto', 'chrono','chal','dc',null ],
 	],
 	space: [
-		['opt','stats', null ,null ],
-		['gal','sc',   'at'  ,'sac'],
-		[null , null  ,'chal',null ]
+		['opt','time',null ,null ],
+		['gal','sc',  'at'  ,'sac'],
+		[null , null, 'chal',null ]
 	]
 }
 
 const MAP_UNLS = {
 	opt: _ => true,
-	stats: _ => player.pTimes > 0,
+	stats: _ => true,
+	time: _ => player.pTimes > 0,
 	chrono: _ => player.grasshop > 0 || player.sTimes > 0,
 
 	//EARTH
@@ -124,6 +125,7 @@ function updateMapButton(el, mx, my, dim) {
 const MAP_COLORS = {
 	opt: "misc",
 	stats: "misc",
+	time: "misc",
 	chrono: "gh",
 
 	//EARTH
@@ -173,6 +175,7 @@ el.update.map_ext = _ => {
 const MAP_LOCS = {
 	opt: "Misc",
 	stats: "Misc",
+	time: "Misc",
 	chrono: "Misc",
 
 	//EARTH
@@ -209,6 +212,7 @@ function showLoc(x) {
 const GO_TO_NAMES = {
 	opt: "Options",
 	stats: "Stats",
+	time: "Time Stats",
 	chrono: "Chronology",
 
 	//EARTH
@@ -251,7 +255,7 @@ el.setup.go_to = _ => {
 //Notifications
 const MAP_NOTIFY = {
 	opt: _ => 0,
-	stats: _ => player.pTimes > 0 ? 1 : 0,
+	time: _ => player.pTimes > 0 ? 1 : 0,
 
 	//EARTH
 	g: _ => 0,

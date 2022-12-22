@@ -7,24 +7,29 @@ function calc(dt) {
 		dt *= player.ch.speed
 	}
 
-	//ANTI-REALM
-	player.aRes.aTime += dt
-	player.aRes.lTime += dt
-	player.aRes.fTime += dt
+	//UNNATURAL REALM
+	player.aRes.nTime += dt
 
-	if (tmp.aRes.apGainP > 0 && player.aRes.level >= 30) player.aRes.ap = player.aRes.ap.add(tmp.aRes.apGain.mul(dt*tmp.aRes.apGainP))
-	if (tmp.aRes.oilGainP > 0 && player.aRes.level >= 100) player.aRes.oil = player.aRes.oil.add(tmp.aRes.oilGain.mul(dt*tmp.aRes.oilGainP))
+	//ANTI-REALM
+	if (true) { //if (!inRecel()) {
+		player.aRes.aTime += dt
+		player.aRes.lTime += dt
+		player.aRes.fTime += dt
+
+		if (tmp.aRes.apGainP > 0 && player.aRes.level >= 30) player.aRes.ap = player.aRes.ap.add(tmp.aRes.apGain.mul(dt*tmp.aRes.apGainP))
+		if (tmp.aRes.oilGainP > 0 && player.aRes.level >= 100) player.aRes.oil = player.aRes.oil.add(tmp.aRes.oilGain.mul(dt*tmp.aRes.oilGainP))
+		if (hasStarTree('auto',10)) ROCKET.create()
+	}
 
 	if (hasUpgrade('funMachine',1)) {
 		player.aRes.sfrgt = player.aRes.sfrgt.add(tmp.aRes.SFRGTgain.mul(dt))
 	}
 
-	if (hasStarTree('auto',10)) ROCKET.create()
-
 	//STEELIE
-	player.sTime += dt
-
-	if (tmp.steelGainP > 0 && player.level >= 240) player.steel = player.steel.add(tmp.steelGain.mul(tmp.steelGainP*dt))
+	if (!inDecel()) {
+		player.sTime += dt
+		if (tmp.steelGainP > 0 && player.level >= 240) player.steel = player.steel.add(tmp.steelGain.mul(tmp.steelGainP*dt))
+	}
 
 	if (hasUpgrade('factory',2)) player.chargeRate = player.chargeRate.add(tmp.chargeGain.mul(dt))
 	player.bestCharge = player.bestCharge.max(player.chargeRate)

@@ -150,7 +150,7 @@ RESET.steel = {
     unl: _=>(player.grasshop >= 10 || galUnlocked()) && !tmp.gs.shown,
 
     req: _=>!player.decel && player.level>=240,
-    reqDesc: _=>player.decel ? `You can't Steelie in Anti-Realm!` : `Reach Level 240.`,
+    reqDesc: _=>player.decel ? `You can't Steelie until you Accelerate!` : `Reach Level 240.`,
 
     resetDesc: `Reset everything grasshop does, but it benefits from the milestones for grasshop.`,
     resetGain: _=> `Gain <b>${tmp.steelGain.format(0)}</b> Steel`,

@@ -21,6 +21,7 @@
 
 	<script src="js/calc.js"></script>
 	<script src="js/main.js"></script>
+    <!-- <script src="js/stats.js"></script> -->
 
 	<script src="js/features/grass.js"></script>
 	<script src="js/features/pp.js"></script>
@@ -34,6 +35,7 @@
 
 	<script src="js/features/realms/decel.js"></script>
 	<script src="js/features/realms/funify.js"></script>
+	<!-- <script src="js/features/realms/recel.js"></script> -->
 
 	<script src="js/features/gal/main.js"></script>
 	<script src="js/features/gal/star_chart.js"></script>
@@ -108,6 +110,7 @@
 					</div><div style="height: 50%;">
 						<div class="upgs_div" id="upgs_div_grass"></div>
 						<div class="upgs_div" id="upgs_div_aGrass"></div>
+						<!-- <div class="upgs_div" id="upgs_div_unGrass"></div> -->
 					</div>
 				</div>
 			</div><div id="map_div_opt">
@@ -123,7 +126,7 @@
 
 				<b style="color: #ffffbf">RGCI: Thunderized Balance</b> - <a href="http://aarextiaokhiao.github.io">By TehAarex</a><br>
 				<span style="font-size: 16px">
-					Version β4a α5
+					Version β4b α0
 				</span><br>
 				<span style="font-size: 12px">
 					Inspired by <a href="http://www.roblox.com/games/9292879820">Grass Cutting Incremental</a>,
@@ -138,10 +141,20 @@
 				Hint: Use arrow keys / WASD keys to move through the map. Hold shift to upgrade instantly.<br>
 				Endgame: ???<br>
 			</div><div id="map_div_stats">
-				<span id="time"></span><br>
+				<b class="red">Soon.</b>
+				<!--<div id="stats_div">
+					<div id="stats_tab_div"></div>
+					<div id="stats_desc_div">
+						<h2 id="stats_title">???</h2><br><br>
+						<div id="stats_desc"></div>
+					</div>
+				</div>-->
+			</div><div id="map_div_time">
+				<span id="time"></span><br><br>
 				<h1>Reset Layers</h1>
 				<button id="allStatsBtn" onclick="toggleOption('allStats')">Show: <span id="allStats">OFF</span></button>
 				<div id="stats">
+					<h2 id="statsHeader">Normal Realm<br></h2>
 					<span id="pTimes"></span><br>
 					<span id="cTimes"></span><br>
 					<span id="sTimes"></span><br>
@@ -150,6 +163,9 @@
 					<span id="aTimes"></span><br>
 					<span id="lTimes"></span><br>
 					<span id="fTimes"></span>
+				</div><div id="unStats">
+					<h2 id="unStatsHeader">Unnatural Realm<br></h2>
+					<span id="nTimes"></span>
 				</div><div id="gStats">
 					<h2 id="gStatsHeader">Space<br></h2>
 					<span id="gTimes"></span><br>
@@ -173,9 +189,11 @@
 					<div style="width: 33%; height: 100%;">
 						<div class="reset_div" id="reset_div_pp"></div>
 						<div class="reset_div" id="reset_div_ap"></div>
+						<!-- <div class="reset_div" id="reset_div_np"></div> -->
 					</div><div style="width: 67%; height: 100%;">
 						<div class="upgs_div" id="upgs_div_pp"></div>
 						<div class="upgs_div" id="upgs_div_ap"></div>
+						<!-- <div class="upgs_div" id="upgs_div_np"></div> -->
 					</div>
 				</div><div style="width: 100%; height: 50%;" class="table_center">
 					<div style="width: 33%; height: 100%;">

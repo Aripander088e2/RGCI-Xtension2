@@ -29,7 +29,7 @@ el.update.decel = _=>{
     tmp.el.grass_div.changeStyle("background-color", player.decel ? "#242697" : "")
     tmp.el.grass.changeStyle("background-color", player.decel ? "#002D9F" : "")
     tmp.el.fog.setDisplay(player.decel && !inSpace())
-    if (mapID == "dc") tmp.el.reset_btn_decel.setTxt(player.decel ? "Accelerate" : "Decelerate")
+    if (mapID == "dc") tmp.el.reset_btn_decel.setTxt(player.decel == 1 ? "Accelerate" : "Decelerate")
 }
 
 UPGS.aGrass = {
@@ -454,7 +454,7 @@ MAIN.oil = {
 }
 
 RESET.oil = {
-    unl: _=> player.decel && player.aRes.aTimes > 0,
+    unl: _=> player.decel == 1 && player.aRes.aTimes > 0,
 
     req: _=>player.aRes.level>=100,
     reqDesc: _=>`Reach Level 100 to Liquefy.`,
@@ -492,7 +492,7 @@ RESET.oil = {
 }
 
 UPGS.oil = {
-    unl: _=> player.decel && player.aRes.aTimes > 0,
+    unl: _=> player.decel == 1 && player.aRes.aTimes > 0,
 
     title: "Oil Upgrades",
 
@@ -769,7 +769,7 @@ RESET.gs = {
 }
 
 tmp_update.push(_=>{
-    tmp.gs.shown = galUnlocked() && player.decel
+    tmp.gs.shown = galUnlocked() && player.decel == 1
     tmp.gs.req = MAIN.gs.req()
 
     for (let x = 0; x < GS_MIL_LEN; x++) {
@@ -809,7 +809,7 @@ el.update.gs = _=>{
         tmp.el.reset_btn_gs.setClasses({locked: player.aRes.level < tmp.gs.req})
         tmp.el.milestone_div_gs.setDisplay(unl)
         if (unl) {
-            unl = player.aRes.grassskip > 0
+            unl = player.aRes.grassskip > 0 || player.gal.sacTimes
 
             tmp.el.multGSBtn.setDisplay(hasStarTree("qol", 7))
             tmp.el.multGSOption.setTxt(player.gsMult ? "ON" : "OFF")

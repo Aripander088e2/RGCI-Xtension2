@@ -25,9 +25,9 @@ MAIN.fun = {
 }
 
 RESET.fun = {
-	unl: _=>tmp.gs.shown&&player.aRes.grassskip>=8,
+	unl: _=> tmp.gs.shown && (player.aRes.grassskip >= 8 || player.gal.sacTimes),
 
-	req: _=>player.aRes.level>=270,
+	req: _=> player.aRes.level>=270,
 	reqDesc: _=>`Reach Level 270.`,
 
 	resetDesc: `Reset everything grass-skip does, but it benefits from the milestones for grass-skip.`,
@@ -58,7 +58,7 @@ RESET.fun = {
 tmp_update.push(_=>{
 	let mf = MAIN.fun
 	
-	tmp.aRes.funShown = player.decel && player.aRes.fTimes
+	tmp.aRes.funShown = player.decel == 1 && player.aRes.fTimes
 	tmp.aRes.SFRGTgain = mf.SFRGTgain()
 	tmp.aRes.funGain = mf.gain()
 })
@@ -66,7 +66,7 @@ tmp_update.push(_=>{
 UPGS.funMachine = {
 	title: "The Funny Machine",
 
-	unl: _ => player.aRes.grassskip >= 8 && tmp.gs.shown,
+	unl: _=> tmp.gs.shown && (player.aRes.grassskip >= 8 || player.gal.sacTimes),
 
 	req: _ => player.aRes.fTimes > 0,
 	reqDesc: _=>`Funify once to unlock.`,

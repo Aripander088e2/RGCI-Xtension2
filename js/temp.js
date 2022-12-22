@@ -7,12 +7,15 @@ function resetTemp() {
 		el: tmp.el,
 		map_notify: {},
 
+		stats_tab: 'grass',
+
 		spawn_time: 0,
 		rangeCut: 50,
 		autocut: 5,
 		autocutTime: 0,
 		autocutAmt: 1,
 		spawnAmt: 1,
+		compact: 1,
 
 		platChance: 0.001,
 		platGain: 1,

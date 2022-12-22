@@ -18,7 +18,7 @@ MAIN.pp = {
 }
 
 RESET.pp = {
-    unl: _=> !player.decel,
+    unl: _=> player.decel == 0,
 
     req: _=>player.level>=30,
     reqDesc: _=>`Reach Level 30 to Prestige.`,
@@ -69,7 +69,7 @@ RESET.pp = {
 }
 
 UPGS.pp = {
-    unl: _=> !player.decel,
+    unl: _=> player.decel == 0,
 
     title: "Prestige Upgrades",
 
