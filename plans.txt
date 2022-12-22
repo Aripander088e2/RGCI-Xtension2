@@ -1,45 +1,20 @@
--=-=- [ ROCKET FUEL ] -=-=-
-Rocket Fuel Upgrades:
-- [3 Tiers] Gain more Grass.
-- [3 Tiers] Gain more XP.
-- [1 Tier]  Gain more TP.
-- [2 Tiers] Gain more SP.
-- [1 Tier]  Gain more Crystals.
-- [1 Tier]  Gain more Oil.
-- [1 Tier]  Increase the Platinum chance.
+Galactic Content:
+- Upgrade: Potential Grasshops are more efficient.
+- Upgrade: Lose less Negative Energy from Grasshops.
+- AGH Milestone: 10% Per 25 Factory Levels.
 
-ROCKET PART RESET WILL RESET STEEL AND UPGRADES IN FACTORY!
+Grass-Skip Milestones:
+- Boost Steel per Grass-Skip. (additive)
 
--=-=- [ STAR CHART ] -=-=-
-QoL Chart:
-- Passively generate 0.1% of Reset resources.
-- You can bulk buy Grasshops and Grass-skips.
-- Keep Assembler on Galactic.
-- Save Normal Realm progress on Decelerating.
-- Liquefy doesn't reset Anonymity.
-- Rocket Part doesn't reset Anonymity.
+-=-=- RECELERATOR -=-=-
+Recelerator Perks:
+- Each Exterior Level makes scalings scale later.
+- At base, each Level gives 1 Recelerator Perk. (can't be reversed)
+- Each Recelerator Perk boosts something.
 
-- Foundry multiplier increases faster.
-- Automate "Automation Upgrades."
-- Automate Challenges. [+1 per time, faster per level]
-- Automate the Factory.
-- Prestige & Anonymity Automation is cheaper. [3x per level]
-- Crystalize & Liquefy Automation is cheaper. [3x per level]
+Unhabitability:
+- Grass automatically cuts in 0.1 seconds.
 
-Progression Chart:
-- Increase the caps of Rocket Fuel Upgrades. [+1x per level]
-- Unlock "Weaker TP" in Prestige Upgrades.
-- Unlock "Steel Charge" in Generator.
-- Unlock "Space Power" Boost in Charger.
-- Unlock "Star Accumulator" Building.
-
-- Add Tier Multiplier base.
-- "Tier Buildup I": Make Tier boosts PP.
-- "Tier Buildup II": Make Tier boosts Space Power.
-- Gain more Platinum on auto-cut. (based on auto-Value)
-
--=-=- [ MOONSTONE UPGRADES ] -=-=-
-- Gain more Rocket Fuel.
-- Gain more Space Power.
-- Gain more Charge.
-- Gain more Oil.
+Sunlight:
+- Touching makes grass survives and boosts over time.
+- There are multiple placeable selections.
