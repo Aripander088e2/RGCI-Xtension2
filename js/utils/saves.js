@@ -110,7 +110,7 @@ function safecheckSave(data) {
 
 const VER = 0.043
 const EX_COMMIT = 11.06
-const TB_VER = 1.03
+const TB_VER = 1.04
 function loadPlayer(data) {
 	player = deepUndefinedAndDecimal(data, getPlayerData())
 	convertStringToDecimal()
@@ -158,15 +158,14 @@ function loadPlayer(data) {
 		player.rocket.momentum = player.momentum
 		delete player.rocket.momentum
 	}
-	if (player.tb_ver < 1.03) {
-		if (galUnlocked() && player.gal.neg > 21) {
-			player.gal.neg = 21
-			player.gal.dm = E(10)
-			player.gal.sacTimes = 1
+	if (player.tb_ver < 1.04) {
+		if (galUnlocked() && player.gal.neg > 3) {
+			player.gal.neg = 3
+			player.gal.stars = E(1e5)
 			resetTemp()
 			RESET.sac.doReset(true)
 
-			alert("You are forced to do a Sacrifice with 10 Dark Matter due to exploit reasons!")
+			alert("You are forced to do a Sacrifice due to exploit reasons! You will get 100 K Stars in comprehension.")
 		}
 		player.decel = player.decel ? 1 : 0
 	}
