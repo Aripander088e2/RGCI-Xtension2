@@ -67,7 +67,7 @@ function updateAGHTemp() {
 	let data = tmp.gal.agh || {}
 	if (!tmp.gal.agh) tmp.gal.agh = data
 
-	data.neg = 30 - player.grasshop + Math.floor(player.aRes.level / 10)
+	data.neg = 30 - player.grasshop + player.gal.gsPotential
 	data.eff = {}
     for (let x = 0; x < AGH_MIL_LEN; x++) {
         let m = MAIN.agh_milestone[x]

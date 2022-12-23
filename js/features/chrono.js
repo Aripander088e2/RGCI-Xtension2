@@ -20,7 +20,7 @@ MAIN.chrono = {
 	}
 }
 
-el.update.chal = _=>{
+el.update.chrono = _=>{
 	if (mapID == 'chrono') {
 		let unl = player.sTimes > 0
 
