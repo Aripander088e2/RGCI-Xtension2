@@ -35,12 +35,14 @@
 
 	<script src="js/features/realms/decel.js"></script>
 	<script src="js/features/realms/funify.js"></script>
-	<!-- <script src="js/features/realms/recel.js"></script> -->
+	<script src="js/features/realms/recel.js"></script>
 
 	<script src="js/features/gal/main.js"></script>
 	<script src="js/features/gal/star_chart.js"></script>
 	<script src="js/features/gal/agh.js"></script>
 	<script src="js/features/gal/sacrifice.js"></script>
+
+	<script src="js/features/realms/planetoid.js"></script>
 
 	<link rel="stylesheet" href="style.css">
 </head>
@@ -110,7 +112,7 @@
 					</div><div style="height: 50%;">
 						<div class="upgs_div" id="upgs_div_grass"></div>
 						<div class="upgs_div" id="upgs_div_aGrass"></div>
-						<!-- <div class="upgs_div" id="upgs_div_unGrass"></div> -->
+						<div class="upgs_div" id="upgs_div_unGrass"></div>
 					</div>
 				</div>
 			</div><div id="map_div_opt">
@@ -126,7 +128,7 @@
 
 				<b style="color: #ffffbf">RGCI: Thunderized Balance</b> - <a href="http://aarextiaokhiao.github.io">By TehAarex</a><br>
 				<span style="font-size: 16px">
-					Version β4b α0
+					Version β4b α1
 				</span><br>
 				<span style="font-size: 12px">
 					Inspired by <a href="http://www.roblox.com/games/9292879820">Grass Cutting Incremental</a>,
@@ -134,7 +136,8 @@
 					Original by <a href="http://mrredshark77.github.io/Really-Grass-Cutting-Incremental/">MrRedShark77</a>
 				</span><br><br>
 
-				<button onclick="window.open('https://discord.gg/Ekp8FsSwzR')">Discord</button>
+				<button onclick="window.open('http://aarextiaokhiao.github.io/chat.html')">Discord</button>
+				<button onclick="window.open('http://discord.gg/Ekp8FsSwzR')">RGCI Discord</button>
 				<button onclick="window.open('http://aarextiaokhiao.github.io')">Home</button><br><br>
 
 				<b class="red">Recommended size is 1920x1080! You may change zoom!</b><br>
@@ -189,11 +192,11 @@
 					<div style="width: 33%; height: 100%;">
 						<div class="reset_div" id="reset_div_pp"></div>
 						<div class="reset_div" id="reset_div_ap"></div>
-						<!-- <div class="reset_div" id="reset_div_np"></div> -->
+						<div class="reset_div" id="reset_div_np"></div>
 					</div><div style="width: 67%; height: 100%;">
 						<div class="upgs_div" id="upgs_div_pp"></div>
 						<div class="upgs_div" id="upgs_div_ap"></div>
-						<!-- <div class="upgs_div" id="upgs_div_np"></div> -->
+						<div class="upgs_div" id="upgs_div_np"></div>
 					</div>
 				</div><div style="width: 100%; height: 50%;" class="table_center">
 					<div style="width: 33%; height: 100%;">
@@ -252,7 +255,7 @@
 			</div><div id="map_div_dc">
 				<div style="width: 100%; height: 50%;" class="table_center">
 					<div style="width: 50%; height: 100%;"><div class="reset_div" id="reset_div_decel"></div></div>
-					<!--<div style="width: 50%; height: 100%;"><div class="reset_div" id="reset_div_recel"></div></div>-->
+					<div style="width: 50%; height: 100%;"><div class="reset_div" id="reset_div_recel"></div></div>
 				</div>
 			</div><div id="map_div_rf">
 				<div style="width: 100%; height: 50%;" class="table_center">
@@ -303,14 +306,14 @@
 					<div id="sc_desc_div">
 						<div id="sc_title"></div>
 						<div id="sc_desc"></div><br>
-						<button onclick="tmp.gal.star_chart.choosed = [null,null]">Close</button>
-						<button id="sc_upg_buy" onclick="buySCUpgrade(tmp.gal.star_chart.choosed[0],tmp.gal.star_chart.choosed[1])">Buy 1</button>
-						<button id="sc_upg_next" onclick="buyNextSCUpgrade(tmp.gal.star_chart.choosed[0],tmp.gal.star_chart.choosed[1])">Buy Next</button>
-						<button id="sc_upg_max" onclick="buyMaxSCUpgrade(tmp.gal.star_chart.choosed[0],tmp.gal.star_chart.choosed[1])">Buy Max</button>
+						<button onclick="tmp.gal.sc.choosed = [null,null]">Close</button>
+						<button id="sc_upg_buy" onclick="buySCUpgrade(tmp.gal.sc.choosed[0],tmp.gal.sc.choosed[1])">Buy 1</button>
+						<button id="sc_upg_next" onclick="buyNextSCUpgrade(tmp.gal.sc.choosed[0],tmp.gal.sc.choosed[1])">Buy Next</button>
+						<button id="sc_upg_max" onclick="buyMaxSCUpgrade(tmp.gal.sc.choosed[0],tmp.gal.sc.choosed[1])">Buy Max</button>
 					</div><div>
-						<button onclick="tmp.gal.star_chart.tab = 'qol'">QoL</button>
-						<button onclick="tmp.gal.star_chart.tab = 'auto'">Auto</button>
-						<button onclick="tmp.gal.star_chart.tab = 'progress'">Progress</button>
+						<button onclick="tmp.gal.sc.tab = 'qol'">QoL</button>
+						<button onclick="tmp.gal.sc.tab = 'auto'">Auto</button>
+						<button onclick="tmp.gal.sc.tab = 'progress'">Progress</button>
 					</div>
 				</div><div style="position: absolute; right: 5px; top: 5px;">
 					<span id="starAmt">0</span> Stars
@@ -331,7 +334,10 @@
                 <div style="width: 100%; height: 50%;" class="table_center">
                     <div style="width: 33%; height: 100%;"><div class="reset_div" id="reset_div_sac"></div></div>
                     <div style="width: 67%; height: 100%;"><div class="upgs_div" id="upgs_div_dm" style="display: none;"></div></div>
-                </div>
+                </div><div style="width: 100%; height: 50%;" class="table_center">
+					<div style="width: 50%; height: 100%;"><div class="reset_div" id="reset_div_planetoid"></div></div>
+					<div style="width: 50%; height: 100%;"></div>
+				</div>
             </div>
 		</div>
 

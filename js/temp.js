@@ -43,11 +43,12 @@ function resetTemp() {
 		gh: {
 			eff: {}
 		},
-
-		aRes: {},
-		gs: {
-			eff: {}
+		aRes: {
+			gs: {
+				eff: {}
+			}
 		},
+		unRes: {},
 
 		gSpeed: 1,
 		gJump: 0,
@@ -68,6 +69,6 @@ function resetTemp() {
 }
 
 function updateTemp() {
-	tmp.realmSrc = player.decel ? player.aRes : player
+	tmp.realmSrc = [player, player.aRes, player.unRes][player.decel]
 	for (let x = 0; x < tmp_update.length; x++) tmp_update[x]()
 }

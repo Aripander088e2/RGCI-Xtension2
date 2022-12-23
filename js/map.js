@@ -48,14 +48,14 @@ const MAP_UNLS = {
 	chal: _ => player.pTimes > 0,
 	gh: _ => player.cTimes > 0,
 	fd: _ => hasUpgrade("factory", 0),
-	dc: _ => hasUpgrade("factory", 4),
+	dc: _ => hasUpgrade("factory", 4) || (MAIN.sac.did()),
 	rf: _ => hasUpgrade("factory", 5) || galUnlocked(),
 	gal: _ => player.rocket.part > 0 || galUnlocked(),
 
 	//SPACE
 	sc: _ => true,
 	at: _ => true,
-	sac: _ => hasAGHMilestone(6),
+	sac: _ => hasAGHMilestone(0),
 }
 
 const MAP_IDS = (_=>{
@@ -277,7 +277,9 @@ const MAP_NOTIFY = {
 		hasUpgrade("factory", 1) ? 2 :
 		hasUpgrade("factory", 0) ? 1 :
 		0,
-	dc: _ => galUnlocked() || hasUpgrade("factory", 4) ? 1 : 0,
+	dc: _ => hasUpgrade("funMachine", 3) ? 2 : 
+		galUnlocked() || hasUpgrade("factory", 4) ? 1 : 
+		0,
 	rf: _ => galUnlocked() || hasUpgrade("factory", 6) ? 2 :
 		hasUpgrade("factory", 5) ? 1 :
 		0,
@@ -286,7 +288,7 @@ const MAP_NOTIFY = {
 	//SPACE
 	sc: _ => 0,
 	at: _ => 0,
-	sac: _ => 0,
+	sac: _ => hasAGHMilestone(7) ? 1 : 0,
 }
 
 tmp_update.push(_=>{

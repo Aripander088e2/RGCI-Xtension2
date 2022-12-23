@@ -281,7 +281,7 @@ el.update.chal = _=>{
 		tmp.el.chal_div.setDisplay(unl)
 
 		if (unl) {
-			tmp.el.chal_top.setHTML(player.decel ? "<b class='red'>You can't complete Challenges in Anti-Realm!</b>" : `
+			tmp.el.chal_top.setHTML(player.decel ? "<b class='red'>You can't complete Challenges here!</b>" : `
 				Click any challenge to start! Click again to exit.<br>
 				You can complete Challenges without entering if you satisfy a condition.
 			`)

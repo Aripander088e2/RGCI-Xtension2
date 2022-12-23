@@ -1,4 +1,4 @@
-MAIN.fun = {
+aMAIN.fun = {
 	gain() {
 		let x = E(1)
 		x = x.mul(tmp.chargeEff[8] || 1)
@@ -25,7 +25,7 @@ MAIN.fun = {
 }
 
 RESET.fun = {
-	unl: _=> tmp.gs.shown && (player.aRes.grassskip >= 8 || player.gal.sacTimes),
+	unl: _=> tmp.aRes.gs.shown && (player.aRes.grassskip >= 8 || player.gal.sacTimes),
 
 	req: _=> player.aRes.level>=270,
 	reqDesc: _=>`Reach Level 270.`,
@@ -51,12 +51,13 @@ RESET.fun = {
 	},
 
 	doReset(order="fun") {
+		player.aRes.fTime = 0
 		RESET.gs.doReset(order)
 	},
 }
 
 tmp_update.push(_=>{
-	let mf = MAIN.fun
+	let mf = aMAIN.fun
 	
 	tmp.aRes.funShown = player.decel == 1 && player.aRes.fTimes
 	tmp.aRes.SFRGTgain = mf.SFRGTgain()
@@ -66,7 +67,7 @@ tmp_update.push(_=>{
 UPGS.funMachine = {
 	title: "The Funny Machine",
 
-	unl: _=> tmp.gs.shown && (player.aRes.grassskip >= 8 || player.gal.sacTimes),
+	unl: _=> tmp.aRes.gs.shown && (player.aRes.grassskip >= 8 || player.gal.sacTimes),
 
 	req: _ => player.aRes.fTimes > 0,
 	reqDesc: _=>`Funify once to unlock.`,
@@ -126,7 +127,7 @@ UPGS.funMachine = {
 
 			unl: _ => hasAGHMilestone(8),
 			title: "Recelerator",
-			desc: `Unlock Recelerator realm, where you can slow time further. Soon!`,
+			desc: `Unlock Recelerator realm, where you can slow time further.`,
 		
 			res: "fun",
 			icon: ["Icons/Recelerator"],
@@ -300,7 +301,7 @@ UPGS.sfrgt = {
 			},
 			effDesc: x => format(E(10).pow(x),0)+"x",
 		}, {
-			max: 20,
+			max: 10,
 
 			title: "Funny Steel",
 			desc: `<b class="green">Strengthen</b> Steel Steel upgrade.`,

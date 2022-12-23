@@ -22,7 +22,7 @@ MAIN.gal = {
 
 RESET.gal = {
 	unl: _=>true,
-	req: _=>player.rocket.part==10,
+	req: _=>player.rocket.part==10||ROCKET_PART.upgraded(),
 	reqDesc: _=>`Get 10 Rocket Parts to unlock.`,
 
 	resetDesc: `Galactic will reset <b class="red">EVERYTHING prior</b> except Rocket Fuel upgrades! Last chance before departure...`,
@@ -55,8 +55,8 @@ RESET.gal = {
 		player.grasshop = 0
 		player.steel = E(0)
 		player.bestCharge = E(0)
-		/*if (!inRecel())*/ player.decel = 0
-		player.rocket = { total_fp: 0, amount: hasStarTree("qol", 9) ? player.rocket.amount : 0, part: 0, momentum: 0 }
+		if (!inRecel()) player.decel = 0
+		player.rocket = { total_fp: 0, amount: hasStarTree("qol", 9) ? player.rocket.amount : 0, part: 0, momentum: ROCKET_PART.upgraded() ? player.rocket.momentum : 0 }
 		resetAntiRealm()
 
 		if (!hasStarTree("qol", 0)) resetUpgrades("auto")
@@ -111,9 +111,11 @@ function galTick(dt) {
 	if (player.gal.sp.gte(tmp.gal.astral.req)) player.gal.astral = ASTRAL.bulk()
 
 	player.gal.ghPotential = Math.max(player.gal.ghPotential, MAIN.gh.bulk())
-	player.gal.gsPotential = Math.max(player.gal.gsPotential, MAIN.gs.bulk())
+	player.gal.gsPotential = Math.max(player.gal.gsPotential, aMAIN.gs.bulk())
 	if (player.rocket.part == 10) player.gal.neg = Math.max(player.gal.neg, tmp.gal.agh.neg)
 
+	if (player.ghAuto && player.grasshop < player.gal.ghPotential) player.grasshop = player.gal.ghPotential
+	if (player.gsAuto && player.aRes.grassskip < player.gal.gsPotential) player.aRes.grassskip = player.gal.gsPotential
 }
 
 function galUnlocked() {
@@ -186,7 +188,9 @@ el.update.space = _=>{
 		updateUpgradesHTML('moonstone')
 	}
 	if (mapID == 'sac') {
+        updateResetHTML('sac')
 		updateUpgradesHTML('dm')
+        updateResetHTML('planetoid')
 	}
 }
 
@@ -228,9 +232,10 @@ const ASTRAL = {
 		if (hasAGHMilestone(4)) x.xp = E(1.3).pow(a-10).max(1)
 		if (hasAGHMilestone(5)) x.fu = E(2).pow(a/2-10).max(1)
 		if (hasAGHMilestone(6)) x.sf = E(2).pow(a/5-4).max(1)
-		//if (hasAGHMilestone(9)) x.tb = a/50
-		//if (hasAGHMilestone(10)) x.ap = Math.min(1+a/200,1.5)
-		//if (hasAGHMilestone(11)) x.fc = Math.min(1+a/1e4,1.1)
+		if (hasAGHMilestone(9)) x.tb = Math.max(a/50-1,0)
+		if (hasAGHMilestone(10)) x.uh = Math.max(a-50,0)
+		if (hasAGHMilestone(11)) x.ap = Math.min(Math.max(0.7+a/200,1),1.25)
+		if (hasAGHMilestone(12)) x.fc = Math.min(Math.max(0.7+a/200,1),1.15)
 
 		return x
 	},
@@ -247,8 +252,9 @@ const ASTRAL = {
 		if (e.fu) x += `<b class="magenta">${format(e.fu)}x</b> to Fun gain<br>`
 		if (e.sf) x += `<b class="magenta">${format(e.sf,0)}x</b> to SFRGT gain<br>`
 		if (e.tb) x += `<b class="magenta">+${format(e.tb,3)}x</b> to Tier multiplier base<br>`
-		if (e.ap) x += `<b class="magenta">+${format(e.ap,3)}x</b> to some effects for each 25 AP upgrades<br>`
-		if (e.fc) x += `<b class="magenta">+${format(e.fc,3)}x</b> to charge bonuses for each 25 Factory upgrades<br>`
+		if (e.uh) x += `<b class="magenta">+${format(e.uh,0)}x</b> to Unnatural Healing<br>`
+		if (e.ap) x += `<b class="magenta">${format(e.ap,3)}x</b> to some bonuses for each 25 AP upgrades<br>`
+		if (e.fc) x += `<b class="magenta">${format(e.fc,3)}x</b> to charge bonuses for each 25 Factory upgrades<br>`
 
 		return x
 	},

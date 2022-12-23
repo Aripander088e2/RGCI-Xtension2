@@ -108,7 +108,7 @@ function safecheckSave(data) {
 	return true
 }
 
-const VER = 0.0421
+const VER = 0.043
 const EX_COMMIT = 11.06
 const TB_VER = 1.03
 function loadPlayer(data) {
@@ -201,7 +201,10 @@ function deepUndefinedAndDecimal(obj, data) {
 }
 
 function convertStringToDecimal() {
-	if (player.gal) player.gal = deepUndefinedAndDecimal(player.gal, setupGal())
+	if (player.gal) {
+		player.gal = deepUndefinedAndDecimal(player.gal, setupGal())
+		if (player.gal.sacTimes) player.unRes = deepUndefinedAndDecimal(player.unRes, setupRecel())
+	}
 }
 
 function cannotSave() { return false }

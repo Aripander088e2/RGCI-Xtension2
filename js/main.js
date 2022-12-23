@@ -17,11 +17,7 @@ const MAIN = {
         x = x.mul(upgEffect('plat',2))
         x = x.mul(chalEff(0))
 
-        if (player.decel) x = x.div(1e4)
-        if (player.decel && hasUpgrade('aGrass', 3)) x = x.mul(upgEffect('aGrass',3))
-        x = x.mul(upgEffect('ap',0))
-        x = x.mul(upgEffect('oil',0))
-        if (player.decel && hasGSMilestone(0)) x = x.mul(3)
+		if (player.sTimes) x = x.mul(aMAIN.grassGain())
 
         x = x.mul(upgEffect('rocket',0))
         x = x.mul(upgEffect('rocket',17))
@@ -44,58 +40,6 @@ const MAIN = {
         if (hasUpgrade('rocket',16)) x = 1 / (1 / x + upgEffect('rocket', 16))
         return x
     },
-    xpGain() {
-        let x = E(tmp.tier.mult)
-
-        x = x.mul(upgEffect('grass',3))
-        x = x.mul(upgEffect('perk',3))
-        x = x.mul(upgEffect('pp',1))
-        x = x.mul(upgEffect('crystal',1))
-        x = x.mul(upgEffect('plat',1))
-        x = x.mul(chalEff(1))
-
-        if (player.grasshop >= 7) x = x.mul(2)
-
-        if (player.decel) x = x.div(1e5)
-        if (player.decel && hasUpgrade('aGrass',4)) x = x.mul(upgEffect('aGrass',4))
-        x = x.mul(upgEffect('ap',2))
-        x = x.mul(upgEffect('oil',1))
-        if (player.decel && hasGSMilestone(0)) x = x.mul(3)
-
-        x = x.mul(upgEffect('rocket',1))
-        x = x.mul(upgEffect('rocket',10))
-        x = x.mul(upgEffect('momentum',2))
-
-        if (player.decel) x = x.mul(E(getAstralEff('xp')).root(1.5))
-        if (!player.decel) x = x.mul(getAstralEff('xp'))
-
-        if (x.lt(1)) return x
-        return x
-    },
-    tpGain() {
-        if (inChal(2)) return E(0)
-
-        let x = upgEffect('pp',2)
-        x = x.mul(upgEffect('pp',4))
-        x = x.mul(upgEffect('crystal',2))
-        x = x.mul(upgEffect('plat',4))
-        x = x.mul(upgEffect('perk',7))
-        x = x.mul(chalEff(2))
-
-        if (player.grasshop >= 1) x = x.mul(4)
-
-        if (player.decel) x = x.div(100)
-        if (player.decel) x = x.mul(tmp.chargeEff[5]||1)
-        x = x.mul(upgEffect('ap',3))
-        x = x.mul(upgEffect('oil',2))
-
-        x = x.mul(upgEffect('rocket',2))
-        x = x.mul(upgEffect('momentum',3))
-
-        x = x.mul(getAstralEff('tp'))
-
-        return x
-    },
     rangeCut: _=>70+upgEffect('grass',4,0)+upgEffect('perk',4,0)+upgEffect('aGrass',6,0),
     autoCut() {
 		let interval = 5-upgEffect('auto',0,0)-upgEffect('plat',0,0)
@@ -105,6 +49,28 @@ const MAIN = {
 	},
 
     level: {
+		gain(i) {
+			let x = E(tmp.tier.mult)
+
+			x = x.mul(upgEffect('grass',3))
+			x = x.mul(upgEffect('perk',3))
+			x = x.mul(upgEffect('pp',1))
+			x = x.mul(upgEffect('crystal',1))
+			x = x.mul(upgEffect('plat',1))
+			x = x.mul(chalEff(1))
+
+			if (player.grasshop >= 7) x = x.mul(2)
+			if (player.sTimes) x = x.mul(aMAIN.xpGain())
+
+			x = x.mul(upgEffect('rocket',1))
+			x = x.mul(upgEffect('rocket',10))
+			x = x.mul(upgEffect('momentum',2))
+
+			if (!player.decel) x = x.mul(getAstralEff('xp'))
+
+			if (x.lt(1)) return x
+			return x
+		},
         req(i) {
             if (player.decel) i /= tmp.chargeEff[3]||1
             let x = Decimal.pow(1.4,i).mul(50)
@@ -131,6 +97,26 @@ const MAIN = {
         },
     },
     tier: {
+		gain(i) {
+			if (inChal(2)) return E(0)
+
+			let x = upgEffect('pp',2)
+			x = x.mul(upgEffect('pp',4))
+			x = x.mul(upgEffect('crystal',2))
+			x = x.mul(upgEffect('plat',4))
+			x = x.mul(upgEffect('perk',7))
+			x = x.mul(chalEff(2))
+
+			if (player.grasshop >= 1) x = x.mul(4)
+			if (player.sTimes) x = x.mul(aMAIN.tpGain())
+
+			x = x.mul(upgEffect('rocket',2))
+			x = x.mul(upgEffect('momentum',3))
+
+			x = x.mul(getAstralEff('tp'))
+
+			return x
+		},
         req(i) {
             let x = Decimal.pow(4,i).mul(500)
             return x
@@ -167,7 +153,7 @@ const MAIN = {
 }
 
 el.update.main = _=>{
-	let g = player.decel ? player.aRes.grass : player.grass
+	let g = tmp.realmSrc.grass
 
 	tmp.el.grassAmt.setHTML(g.format(0))
 	tmp.el.grassGain.setHTML(tmp.autoCutUnlocked ? formatGain(g,tmp.grassGain.div(tmp.autocut).mul(tmp.autocutBonus).mul(tmp.autocutAmt)) : "")
@@ -193,7 +179,7 @@ el.update.main = _=>{
 			tmp.el.level_amt.setTxt(format(tmp.realmSrc.level,0))
 			tmp.el.level_progress.setTxt(tmp.level.progress.format(0)+" / "+tmp.level.next.sub(tmp.level.cur).format(0)+" XP")
 			tmp.el.level_bar.changeStyle("width",tmp.level.percent*100+"%")
-			tmp.el.level_cut.setTxt("+"+tmp.xpGain.format(1)+" XP/cut")
+			tmp.el.level_cut.setTxt("+"+tmp.level.gain.format(1)+" XP/cut")
 		}
 
 		tmp.el.tier_div.setDisplay(tier_unl)
@@ -201,7 +187,7 @@ el.update.main = _=>{
 			tmp.el.tier_amt.setTxt(format(tmp.realmSrc.tier,0))
 			tmp.el.tier_progress.setTxt(tmp.tier.progress.format(0)+" / "+tmp.tier.next.sub(tmp.tier.cur).format(0)+" TP")
 			tmp.el.tier_bar.changeStyle("width",tmp.tier.percent*100+"%")
-			tmp.el.tier_cut.setTxt("+"+tmp.tpGain.format(1)+" TP/cut")
+			tmp.el.tier_cut.setTxt("+"+tmp.tier.gain.format(1)+" TP/cut")
 			tmp.el.tier_mult.setTxt(formatMult(tmp.tier.mult,0)+" → "+formatMult(MAIN.tier.mult(tmp.realmSrc.tier+1),0)+" multiplier")
 		}
 	}
@@ -223,13 +209,12 @@ tmp_update.push(_=>{
     tmp.spawnAmt = 1+upgEffect('perk',5,0)+upgEffect('crystal',5,0)
 
     tmp.grassGain = MAIN.grassGain()
-    tmp.xpGain = MAIN.xpGain()
-    tmp.tpGain = MAIN.tpGain()
 
     tmp.perks = MAIN.level.perk()
     tmp.perkUnspent = Math.max(player.maxPerk-player.spentPerk,0)
 
     let lvl = tmp.realmSrc.level
+    tmp.level.gain = MAIN.level.gain()
     tmp.level.next = MAIN.level.req(lvl)
     tmp.level.bulk = MAIN.level.bulk(tmp.realmSrc.xp)
     tmp.level.cur = MAIN.level.cur(lvl)
@@ -237,6 +222,7 @@ tmp_update.push(_=>{
     tmp.level.percent = tmp.level.progress.div(tmp.level.next.sub(tmp.level.cur)).max(0).min(1).toNumber()
 
     let tier = tmp.realmSrc.tier
+    tmp.tier.gain = MAIN.tier.gain()
     tmp.tier.next = MAIN.tier.req(tier)
     tmp.tier.bulk = MAIN.tier.bulk(tmp.realmSrc.tp)
     tmp.tier.cur = MAIN.tier.cur(tier)
@@ -262,7 +248,8 @@ window.addEventListener('keydown', function(event) {
 	switch (event.key.toLowerCase()) {
 		case "p":
 			if (shiftDown) RESET.rocket_part.reset();
-			else if (player.decel) RESET.ap.reset();
+			else if (player.decel == 2) RESET.np.reset();
+			else if (player.decel == 1) RESET.ap.reset();
 			else RESET.pp.reset();
 			break;
 		case "c":
@@ -282,7 +269,8 @@ window.addEventListener('keydown', function(event) {
 			ROCKET.create()
 			break;
 		case "t":
-			RESET.decel.reset()
+			if (shiftDown) RESET.recel.reset()
+			else RESET.decel.reset()
 			break;
 		case "z":
 			goToSpace()

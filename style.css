@@ -462,7 +462,12 @@ button:not(.locked):hover {
 .reset_req.np,
 .upg_desc.np,
 .upgs_div.np {
-    background-color: #8fcc00;
+    background-color: #bf3;
+}
+
+.reset_div.planetoid {
+    background: linear-gradient(#b3f, #37f);
+    border-color: #bbbb
 }
 
 .upgs_ctn {
@@ -684,8 +689,7 @@ button:not(.locked):hover {
 }
 
 .upg_desc.sfrgt,
-.upgs_div.sfrgt,
-.reset_div.recel {
+.upgs_div.sfrgt {
     background-color: #bfff79;
 }
 

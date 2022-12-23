@@ -1,7 +1,3 @@
-function inDecel() {
-	return player.decel >= 1
-}
-
 RESET.decel = {
     unl: _=>hasUpgrade('factory',4),
 
@@ -18,22 +14,71 @@ RESET.decel = {
 
     reset(force=false) {
         if (hasUpgrade("factory", 4)) {
-            if (player.decel == 1) player.decel = 0
-            else if (player.decel != 1) player.decel = 1
-            RESET.steel.reset(true)
+            if (player.decel >= 1) player.decel = 0
+            else if (player.decel < 1) player.decel = 1
+            RESET.steel.doReset(true)
         }
     },
 }
 
 el.update.decel = _=>{
-    tmp.el.grass_div.changeStyle("background-color", player.decel ? "#242697" : "")
-    tmp.el.grass.changeStyle("background-color", player.decel ? "#002D9F" : "")
+    tmp.el.grass_div.changeStyle("background-color", ["", "#242697", "#549e00"][player.decel])
+    tmp.el.grass.changeStyle("background-color", ["", "#002D9F", "#549e00"][player.decel])
+    tmp.el.fog.changeStyle("background-color", ["", "#001c3b", "#ff03"][player.decel])
     tmp.el.fog.setDisplay(player.decel && !inSpace())
-    if (mapID == "dc") tmp.el.reset_btn_decel.setTxt(player.decel == 1 ? "Accelerate" : "Decelerate")
+    if (mapID == "dc") tmp.el.reset_btn_decel.setTxt(player.decel >= 1 ? "Accelerate" : "Decelerate")
+}
+
+function inDecel() {
+	return player.decel >= 1
+}
+
+aMAIN = {
+	grassGain() {
+        let x = E(1)
+        x = x.mul(upgEffect('ap',0))
+        x = x.mul(upgEffect('oil',0))
+		if (player.decel == 1) {
+			x = x.div(1e4)
+			if (hasUpgrade('aGrass', 3)) x = x.mul(upgEffect('aGrass',3))
+			if (hasGSMilestone(0)) x = x.mul(3)
+		}
+		return x
+	},
+	xpGain() {
+        let x = E(1)
+        x = x.mul(upgEffect('ap',2))
+        x = x.mul(upgEffect('oil',1))
+        if (player.decel == 1) {
+			x = x.div(1e5)
+			if (hasUpgrade('aGrass',4)) x = x.mul(upgEffect('aGrass',4))
+			if (hasGSMilestone(0)) x = x.mul(3)
+			x = x.mul(E(getAstralEff('xp')).root(1.5))
+		}
+		return x
+	},
+	tpGain() {
+        let x = E(1)
+        x = x.mul(upgEffect('ap',3))
+        x = x.mul(upgEffect('oil',2))
+        if (player.decel == 1) {
+			x = x.div(100)
+			x = x.mul(tmp.chargeEff[5]||1)
+		}
+		return x
+	},
+	chargeGain() {
+        let x = E(1)
+		x = x.mul(upgEffect('aGrass',0))
+		x = x.mul(upgEffect('ap',1))
+		x = x.mul(upgEffect('oil',5))
+		if (player.decel) x = x.div(1e3)
+		return x
+	},
 }
 
 UPGS.aGrass = {
-    unl: _=> player.decel,
+    unl: _=> player.decel == 1,
 
     title: "Anti-Grass Upgrades",
     underDesc: _=>`Some upgrades affect the Normal Realm.`,
@@ -264,7 +309,7 @@ UPGS.aAuto = {
 }
 
 /* ANONYMITY */
-MAIN.ap = {
+aMAIN.ap = {
     gain() {
         let x = Decimal.pow(1.15,player.aRes.level)
 
@@ -282,12 +327,12 @@ MAIN.ap = {
 }
 
 RESET.ap = {
-    unl: _=> player.decel,
+	unl: _=>player.decel==1,
 
     req: _=>player.aRes.level>=30,
-    reqDesc: _=>`Reach Level 30 to Anonymity.`,
+    reqDesc: _=>`Reach Level 30.`,
 
-    resetDesc: `Anonymity resets your anti-grass, anti-grass upgrades, level, and charge for Anonymity Points (AP).`,
+    resetDesc: `Anonymity resets your anti-grass, level, and charge for Anonymity Points.`,
     resetGain: _=> `Gain <b>${tmp.aRes.apGain.format(0)}</b> Anonymity Points`,
 
     title: `Anonymity`,
@@ -323,7 +368,7 @@ RESET.ap = {
 }
 
 UPGS.ap = {
-    unl: _=> player.decel,
+    unl: _=> player.decel == 1,
 
     title: "Anonymity Upgrades",
 
@@ -432,12 +477,12 @@ UPGS.ap = {
 }
 
 tmp_update.push(_=>{
-    tmp.aRes.apGain = MAIN.ap.gain()
+    tmp.aRes.apGain = aMAIN.ap.gain()
     tmp.aRes.apGainP = upgEffect('aAuto',4,0)+starTreeEff("qol",3,0)
 })
 
 /* LIQUEFY */
-MAIN.oil = {
+aMAIN.oil = {
     gain() {
         let x = Decimal.pow(2, player.aRes.tier)
         x = x.mul(upgEffect('plat',9))
@@ -457,7 +502,7 @@ RESET.oil = {
     unl: _=> player.decel == 1 && player.aRes.aTimes > 0,
 
     req: _=>player.aRes.level>=100,
-    reqDesc: _=>`Reach Level 100 to Liquefy.`,
+    reqDesc: _=>`Reach Level 100.`,
 
     resetDesc: `Liquefy resets everything Anonymity as well as your AP, Anonymity upgrades & tier for Oil.`,
     resetGain: _=> `Gain <b>${tmp.aRes.oilGain.format(0)}</b> Oil`,
@@ -613,7 +658,7 @@ UPGS.oil = {
 }
 
 tmp_update.push(_=>{
-    tmp.aRes.oilGain = MAIN.oil.gain()
+    tmp.aRes.oilGain = aMAIN.oil.gain()
     tmp.aRes.oilGainP = upgEffect('aAuto',5,0)+starTreeEff("qol",3,0)
 })
 
@@ -626,6 +671,8 @@ function resetAntiRealm() {
 	player.aRes.tier = 0
 	player.aRes.ap = E(0)
 	player.aRes.oil = E(0)
+	player.aRes.aTime = 0
+	player.aRes.lTime = 0
 
 	resetUpgrades('aGrass')
 	resetUpgrades('ap')
@@ -633,7 +680,7 @@ function resetAntiRealm() {
 }
 
 /* GRASS-SKIPS */
-MAIN.gs = {
+aMAIN.gs = {
     req: _ => 200+player.aRes.grassskip*10,
     bulk: _ => Math.floor((player.aRes.level-200)/10) + 1,
 
@@ -697,6 +744,13 @@ MAIN.gs = {
             effect: _ => E(2).pow(Math.max(player.aRes.grassskip - 11, 0)),
             effDesc: x => format(x, 0) + "x"
         },
+        {
+            unl: _ => hasAGHMilestone(9),
+            r: 15,
+            desc: `Each Grass-Skip gives <b class="green">+1</b> to Unnatural Healing. (starting at 15)`,
+            effect: _ => Math.max(player.aRes.grassskip - 14, 0),
+            effDesc: x => "+" + format(x, 0)
+        },
         /*{
             unl: _ => player.aRes.fTimes,
             r: 16,
@@ -707,46 +761,49 @@ MAIN.gs = {
     ],
 }
 
-const GS_MIL_LEN = MAIN.gs.milestone.length
+const GS_MIL_LEN = aMAIN.gs.milestone.length
 function hasGSMilestone(x) { return player.aRes.grassskip > x }
-function getGSEffect(x,def=1) { return tmp.gs.eff[x]||def }
+function getGSEffect(x,def=1) { return tmp.aRes.gs.eff[x]||def }
 
 RESET.gs = {
-	unl: _=>tmp.gs.shown,
+	unl: _=>tmp.aRes.gs.shown,
 	req: _=>player.aRes.level>=200,
 	reqDesc: _=>`Reach Level 200.`,
 
 	resetDesc: `Reset everything liquefy does as well as steel, foundry, charge upgrades, and oil. Grass-skips don't reset on Galactic!`,
-	resetGain: _=> `Reach Level <b>${format(tmp.gs.req,0)}</b> to Grass-skip`,
+	resetGain: _=> `Reach Level <b>${format(tmp.aRes.gs.req,0)}</b> to Grass-skip`,
 
 	title: `Grass-Skip`,
-	btns: `<button id="multGSBtn" onclick="player.gsMult = !player.gsMult">Multi: <span id="multGSOption">OFF</span></button>`,
+	btns: `
+		<button id="multGSBtn" onclick="player.gsMult = !player.gsMult">Multi: <span id="multGSOption">OFF</span></button>
+		<button id="autoGSBtn" onclick="player.gsAuto = !player.gsAuto">Auto: <span id="autoGSOption">OFF</span></button>
+	`,
 	resetBtn: `Grass-Skip?`,
 	hotkey: `G`,
 
 	reset(force=false) {
 		if (!force) {
 			if (!this.req()) return
-			if (player.aRes.level < MAIN.gs.req()) return
+			if (player.aRes.level < aMAIN.gs.req()) return
 		}
 
-		if (force) {
+		if (force || player.gal.sacTimes) {
 			this.gainAndReset()
-		} else if (!tmp.gs.running) {
-			tmp.gs.running = true
+		} else if (!tmp.aRes.gs.running) {
+			tmp.aRes.gs.running = true
 			document.body.style.animation = "implode 2s 1"
 			setTimeout(_=>{
 				this.gainAndReset()
 			},1000)
 			setTimeout(_=>{
 				document.body.style.animation = ""
-				tmp.gs.running = false
+				tmp.aRes.gs.running = false
 			},2000)
 		}
 	},
 
 	gainAndReset() {
-		let res = MAIN.gs.bulk()
+		let res = aMAIN.gs.bulk()
 		if (!player.gsMult) res = Math.min(res, player.aRes.grassskip + 1)
 
 		player.aRes.grassskip = res
@@ -769,12 +826,12 @@ RESET.gs = {
 }
 
 tmp_update.push(_=>{
-    tmp.gs.shown = galUnlocked() && player.decel == 1
-    tmp.gs.req = MAIN.gs.req()
+    tmp.aRes.gs.shown = galUnlocked() && player.decel == 1
+    tmp.aRes.gs.req = aMAIN.gs.req()
 
     for (let x = 0; x < GS_MIL_LEN; x++) {
-        let m = MAIN.gs.milestone[x]
-        if (m.effect) tmp.gs.eff[x] = m.effect()
+        let m = aMAIN.gs.milestone[x]
+        if (m.effect) tmp.aRes.gs.eff[x] = m.effect()
     }
 })
 
@@ -786,8 +843,8 @@ el.setup.gs = _=>{
         Grass-skip once to unlock.
     </div><div id="gs_mil_ctns">You have grass-skipped <b id="gs">0</b> times<div class="milestone_ctns">`
 
-    for (i in MAIN.gs.milestone) {
-        let m = MAIN.gs.milestone[i]
+    for (i in aMAIN.gs.milestone) {
+        let m = aMAIN.gs.milestone[i]
 
         h += `
         <div id="gs_mil_ctn${i}_div">
@@ -805,14 +862,17 @@ el.setup.gs = _=>{
 
 el.update.gs = _=>{
     if (mapID == 'gh') {
-        let unl = tmp.gs.shown
-        tmp.el.reset_btn_gs.setClasses({locked: player.aRes.level < tmp.gs.req})
+        let unl = tmp.aRes.gs.shown
+        tmp.el.reset_btn_gs.setClasses({locked: player.aRes.level < tmp.aRes.gs.req})
         tmp.el.milestone_div_gs.setDisplay(unl)
         if (unl) {
             unl = player.aRes.grassskip > 0 || player.gal.sacTimes
 
             tmp.el.multGSBtn.setDisplay(hasStarTree("qol", 7))
             tmp.el.multGSOption.setTxt(player.gsMult ? "ON" : "OFF")
+
+			tmp.el.autoGSBtn.setDisplay(hasStarTree("auto", 7))
+			tmp.el.autoGSOption.setTxt(player.gsAuto?"ON":"OFF")
 
             tmp.el.gs_mil_req.setDisplay(!unl)
             tmp.el.gs_mil_ctns.setDisplay(unl)
@@ -821,13 +881,13 @@ el.update.gs = _=>{
                 tmp.el.gs.setHTML(format(player.aRes.grassskip,0))
 
                 for (let x = 0; x < GS_MIL_LEN; x++) {
-                    let m = MAIN.gs.milestone[x]
+                    let m = aMAIN.gs.milestone[x]
                     let unl = m.unl ? m.unl() : true
                     let id = "gs_mil_ctn"+x
 
-                    tmp.el[id+"_div"].setDisplay(unl && (!player.options.hideMilestone || x+1 >= GS_MIL_LEN || player.aRes.grassskip < MAIN.gs.milestone[x+1].r))
+                    tmp.el[id+"_div"].setDisplay(unl && (!player.options.hideMilestone || x+1 >= GS_MIL_LEN || player.aRes.grassskip < aMAIN.gs.milestone[x+1].r))
                     tmp.el[id+"_div"].setClasses({bought: player.aRes.grassskip >= m.r})
-                    if (m.effDesc) tmp.el[id+"_eff"].setHTML(m.effDesc(tmp.gs.eff[x]))
+                    if (m.effDesc) tmp.el[id+"_eff"].setHTML(m.effDesc(tmp.aRes.gs.eff[x]))
                 }
             }
         }

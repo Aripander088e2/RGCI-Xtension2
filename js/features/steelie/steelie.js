@@ -36,11 +36,7 @@ MAIN.steel = {
             x = x.mul(getGHEffect(9, 1))
             x = x.mul(chalEff(7))
 
-            if (player.decel) x = x.div(1e3)
-            x = x.mul(upgEffect('aGrass',0))
-            x = x.mul(upgEffect('ap',1))
-            x = x.mul(upgEffect('oil',5))
-
+            x = x.mul(aMAIN.chargeGain())
             x = x.mul(upgEffect('rocket',6))
             x = x.mul(upgEffect('rocket',13))
             x = x.mul(upgEffect('rocket',19))
@@ -147,7 +143,7 @@ MAIN.steel = {
 }
 
 RESET.steel = {
-    unl: _=>(player.grasshop >= 10 || galUnlocked()) && !tmp.gs.shown,
+    unl: _=>(player.grasshop >= 10 || galUnlocked()) && !tmp.aRes.gs.shown,
 
     req: _=>!player.decel && player.level>=240,
     reqDesc: _=>player.decel ? `You can't Steelie until you Accelerate!` : `Reach Level 240.`,
@@ -181,7 +177,7 @@ RESET.steel = {
 UPGS.factory = {
     title: "The Factory",
 
-    unl: _=>(player.grasshop >= 10 || galUnlocked()) && !tmp.gs.shown,
+    unl: _=>(player.grasshop >= 10 || galUnlocked()) && !tmp.aRes.gs.shown,
     autoUnl: _=>hasStarTree('auto',0),
 
     req: _=>player.sTimes > 0,

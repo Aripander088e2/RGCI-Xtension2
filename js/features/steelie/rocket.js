@@ -469,8 +469,34 @@ UPGS.rocket = {
 				return x
 			},
 			effDesc: x => format(x)+"x",
-		}
+		},
 	],
+}
+
+let ROCKET_PART = {
+	can() {
+		let req = tmp.rp_req
+		return player.steel.gte(req.steel) && player.rocket.total_fp >= req.rf && (player.rocket.part < 10 || this.upgraded())
+	},
+	req(p = player.rocket.part) {
+		if (this.upgraded()) {
+			return {
+				steel: E(1e5).pow((p+1)**1.25).mul(1e18),
+				rf: E(10).pow(p+1)
+			}
+		} else {
+			return {
+				steel: E(100).pow(Math.log10(p+1)**1.25).mul(1e21),
+				rf: E(10).add(1).mul(p)
+			}
+		}
+	},
+	upgraded: _ => hasStarTree("progress", 11),
+
+	m_gain() {
+		if (this.upgraded() && player.rocket.part) return 10 ** (player.rocket.part - 1)
+		return 1
+	}
 }
 
 RESET.rocket_part = {
@@ -479,27 +505,24 @@ RESET.rocket_part = {
 	req: _=>true,
 	reqDesc: _=>``,
 
-	resetDesc: `<span style="font-size: 14px">Reset everything grasshop does as well as steel, foundry, charge upgrades, anti-realm, and total rocket fuel.
-	You will create a rocket part, earn one momentum, and reset the cost to make rocket fuel.</span>`,
-	resetGain: _=> player.rocket.part == 10 ? `<span class="pink">Maxed!</span>` :`
-		<span style="font-size: 14px">
+	resetDesc: `<span style="font-size: 14px">Reset everything steelie does, as well as steel, foundry, charger upgrades, anti-realm, and total fuel. You'll gain 1 Rocket Part and Momentum, and reset the cost of Rocket Fuels.</span>`,
+	resetGain: _=> player.rocket.part == 10 && !ROCKET_PART.upgraded() ? `<span class="pink">Maxed!</span>` :`<span style="font-size: 14px">
 		<b class="lightgray">Steel</b><br>
-		<span class="${player.steel.gte(tmp.rp_req[0])?"green":"red"}">${player.steel.format(0)} / ${tmp.rp_req[0].format(0)}</span><br><br>
+		<span class="${player.steel.gte(tmp.rp_req.steel)?"green":"red"}">${player.steel.format(0)} / ${tmp.rp_req.steel.format(0)}</span><br><br>
 		<b class="lightblue">Total Rocket Fuel</b><br>
-		<span class="${player.rocket.total_fp >= tmp.rp_req[1]?"green":"red"}">${format(player.rocket.total_fp,0)} / ${format(tmp.rp_req[1],0)}</span><br><br>
+		<span class="${player.rocket.total_fp >= tmp.rp_req.rf?"green":"red"}">${format(player.rocket.total_fp,0)} / ${format(tmp.rp_req.rf,0)}</span><br><br>
 		You have created ${format(player.rocket.part,0)} Rocket Parts
-		</span>
-	`,
+	</span>`,
 	hotkey: `Shift+P`,
 
 	title: `Rocket Part`,
 	resetBtn: `Create Rocket Part`,
 
 	reset(force=false) {
-		if ((player.steel.gte(tmp.rp_req[0]) && player.rocket.total_fp >= tmp.rp_req[1] && player.rocket.part < 10) || force) {
+		if (ROCKET_PART.can() || force) {
 			if (!force) {
 				player.rocket.part++
-				player.rocket.momentum++
+				player.rocket.momentum += ROCKET_PART.m_gain()
 			}
 
 			updateTemp()
@@ -528,11 +551,11 @@ RESET.rocket_part = {
 UPGS.momentum = {
 	title: "Momentum Upgrades",
 
-	unl: _=>hasUpgrade("factory",6),
-	req: _=>player.rocket.part>0,
+	unl: _=>hasUpgrade("factory",6)||hasStarTree("progress",10),
+	req: _=>player.rocket.part>0||hasStarTree("progress",10),
 	reqDesc: _=>`Get a Rocket Part to unlock.`,
 
-	underDesc: _=>`You have ${format(player.rocket.momentum,0)} Momentum`,
+	underDesc: _=>`You have ${format(player.rocket.momentum,0)} Momentum`+(tmp.m_prod > 0 ? " <span class='smallAmt'>"+formatGain(E(player.rocket.momentum),ROCKET_PART.m_gain()*tmp.m_prod)+"</span>" : ""),
 
     autoUnl: _=>hasStarTree('auto',2),
 
@@ -717,6 +740,40 @@ UPGS.momentum = {
 				return x
 			},
 			effDesc: x => format(x)+"x",
+		},{
+			title: "Unnatural Momentum",
+			desc: `<b class="green">+1</b> to Unnatural Healing.`,
+
+			res: "momentum",
+			icon: ['Curr/UnnaturalGrass'],
+			
+			unl: _ => ROCKET_PART.upgraded(),
+			cost: i => EINF,
+			bulk: i => 0,
+
+			effect(i) {
+				let x = i*2+1
+
+				return x
+			},
+			effDesc: x => format(x)+"x",
+		},{
+			title: "It Doesn't Matter",
+			desc: `<b class="green">Double</b> Dark Matters.`,
+
+			res: "momentum",
+			icon: ['Curr/DarkMatter'],
+			
+			unl: _ => ROCKET_PART.upgraded(),
+			cost: i => EINF,
+			bulk: i => 0,
+
+			effect(i) {
+				let x = i*2+1
+
+				return x
+			},
+			effDesc: x => format(x)+"x",
 		},
 	],
 }
@@ -737,7 +794,7 @@ el.update.rocket = _=>{
 		tmp.el.rf_craft_bulk.setTxt("(F) Craft to "+format(Math.max(tmp.rf_bulk-player.rocket.total_fp,0),0)+" Rocket Fuel")
 		tmp.el.rf_craft_bulk.setClasses({locked: tmp.rf_bulk<=player.rocket.total_fp })
 
-		tmp.el.reset_btn_rocket_part.setClasses({locked: player.rocket.total_fp < tmp.rp_req[1] || player.steel.lt(tmp.rp_req[0]) || player.rocket.part == 10})
+		tmp.el.reset_btn_rocket_part.setClasses({locked: !ROCKET_PART.can()})
 	}
 }
 
@@ -758,7 +815,8 @@ function updateRocketTemp() {
 	tmp.rf_bulk = Math.min(ROCKET.bulk(player.chargeRate, 1e20), ROCKET.bulk(player.aRes.oil, 100))
 
 	//Rocket Part
-	tmp.rp_req = [E(player.rocket.part).add(1).pow(2).mul(1e21),E(10*player.rocket.part+10)]
+	tmp.rp_req = ROCKET_PART.req()
+	tmp.m_prod = ROCKET_PART.upgraded() ? 0.01 : 0
 }
 
 tmp_update.push(_=>{

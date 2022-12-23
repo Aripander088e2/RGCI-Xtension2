@@ -8,10 +8,12 @@ function calc(dt) {
 	}
 
 	//UNNATURAL REALM
-	player.aRes.nTime += dt
+	if (player.unRes) {
+		player.unRes.nTime += dt
+	}
 
 	//ANTI-REALM
-	if (true) { //if (!inRecel()) {
+	if (!inRecel()) {
 		player.aRes.aTime += dt
 		player.aRes.lTime += dt
 		player.aRes.fTime += dt
@@ -20,6 +22,7 @@ function calc(dt) {
 		if (tmp.aRes.oilGainP > 0 && player.aRes.level >= 100) player.aRes.oil = player.aRes.oil.add(tmp.aRes.oilGain.mul(dt*tmp.aRes.oilGainP))
 		if (hasStarTree('auto',10)) ROCKET.create()
 	}
+	if (tmp.m_prod > 0) player.rocket.momentum += ROCKET_PART.m_gain()*dt*tmp.m_prod
 
 	if (hasUpgrade('funMachine',1)) {
 		player.aRes.sfrgt = player.aRes.sfrgt.add(tmp.aRes.SFRGTgain.mul(dt))

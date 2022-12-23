@@ -21,12 +21,12 @@ MAIN.gh = {
 		},{
 			r: 3,
 			desc: `Platinum worth <b class="green">+0.2</b> per Grasshop. (starting at 2)`,
-			effect: _=>Math.max(0,(player.grasshop-2)/5),
+			effect: _=>Math.max(0,(tmp.gh.eff-2)/5),
 			effDesc: x=> "+"+format(x,1),
 		},{
 			r: 4,
 			desc: `Perk worth <b class="green">+0.1</b> per Grasshop. (starting at 3)`,
-			effect: _=>Math.max(0,(player.grasshop-2)/10),
+			effect: _=>Math.max(0,(tmp.gh.eff-2)/10),
 			effDesc: x=> "+"+format(x,1),
 		},{
 			r: 5,
@@ -45,14 +45,14 @@ MAIN.gh = {
 
 			r: 11,
 			desc: `Gain <b class="green">2x</b> more Steel per Grasshop. (starting at 11)`,
-			effect: _=>E(2).pow(Math.max(0,player.grasshop-10)),
+			effect: _=>E(2).pow(Math.max(0,tmp.gh.eff-10)),
 			effDesc: x=> format(x,0)+"x",
 		},{
 			unl: _=>galUnlocked()||hasUpgrade('factory',2),
 
 			r: 12,
 			desc: `Gain <b class="green">2x</b> more Charge per Grasshop. (starting at 12 and ending at 30)`,
-			effect: _=>E(2).pow(Math.max(0,Math.min(player.grasshop,30)-11)),
+			effect: _=>E(2).pow(Math.max(0,Math.min(tmp.gh.eff,30)-11)),
 			effDesc: x=> format(x,0)+"x",
 		},{
 			unl: _=>galUnlocked()||hasUpgrade('factory',3),
@@ -64,7 +64,7 @@ MAIN.gh = {
 
 			r: 16,
 			desc: `Charge rate bonuses start 10x earlier per Grasshop. (starting at 16)`,
-			effect: _=>Math.max(0,player.grasshop-15),
+			effect: _=>Math.max(0,tmp.gh.eff-15),
 			effDesc: x=> format(E(10).pow(x),0)+"x",
 		},{
 			unl: _=>galUnlocked()||hasUpgrade('factory',4),
@@ -79,7 +79,7 @@ const GH_MIL_LEN = MAIN.gh.milestone.length
 function getGHEffect(x,def=1) { return tmp.gh.eff[x]||def }
 
 RESET.gh = {
-	unl: _=> player.cTimes > 0 && !tmp.gs.shown,
+	unl: _=> player.cTimes > 0 && !tmp.aRes.gs.shown,
 	req: _=> player.level >= 200 && !player.decel && !inChal(9),
 	reqDesc: _=> player.decel ? `You can't Grasshop until you Accelerate!` : `Reach Level 200.`,
 
@@ -141,6 +141,8 @@ RESET.gh = {
 
 tmp_update.push(_=>{
 	tmp.gh.req = MAIN.gh.req()
+	tmp.gh.eff = player.grasshop
+	if (galUnlocked()) tmp.gh.eff += (player.gal.ghPotential - player.grasshop) * (1 - starTreeEff("progress", 12, 0))
 
 	for (let x = 0; x < GH_MIL_LEN; x++) {
 		let m = MAIN.gh.milestone[x]
@@ -175,13 +177,13 @@ el.setup.milestones = _=>{
 
 el.update.milestones = _=>{
 	if (mapID == 'gh') {
-		let unl = player.cTimes > 0 && !tmp.gs.shown
+		let unl = player.cTimes > 0 && !tmp.aRes.gs.shown
 		tmp.el.reset_btn_gh.setClasses({locked: player.level < tmp.gh.req})
 
 		tmp.el.multGHBtn.setDisplay(hasStarTree("qol", 5))
 		tmp.el.multGHOption.setTxt(player.ghMult?"ON":"OFF")
 
-		tmp.el.autoGHBtn.setDisplay(false)
+		tmp.el.autoGHBtn.setDisplay(hasStarTree("auto", 7))
 		tmp.el.autoGHOption.setTxt(player.ghAuto?"ON":"OFF")
 
 		tmp.el.milestone_div_gh.setDisplay(unl)

@@ -3,19 +3,20 @@ const SC_IDS = {
 		[null,0,1,3],
 		[5,6,2,4],
 		[7,8,9,null],
-		[null,10,null,null]
+		[11,10,null,null]
 	],
 	auto: [
 		[4,0,1],
 		[2,3,5,6],
-		[7]
+		[7],
+		[8]
 	],
 	progress: [
 		[0],
 		[1,2],
 		[10,6,3],
-		[11,null,4,5],
-		[7,8,9]
+		[11,12,4,5],
+		[13,7,8,9]
 	],
 }
 
@@ -113,7 +114,7 @@ const STAR_CHART = {
 			cost: i => E(1e3),
 			bulk: i => 1
 		}, {
-			unl: _ => false,
+			unl: _ => player.gal.sacTimes,
 			max: 1,
 
 			title: "Bulk Skips",
@@ -122,7 +123,7 @@ const STAR_CHART = {
 			branch: 5,
 			icon: ['Icons/Grassskip','Icons/StarProgression'],
 
-			cost: i => E(1e10),
+			cost: i => E(1e13),
 			bulk: i => 1
 		}, {
 			max: 1,
@@ -147,7 +148,7 @@ const STAR_CHART = {
 			cost: i => E(1e6),
 			bulk: i => 1
 		}, {
-			unl: _ => false,
+			unl: _ => player.gal.sacTimes,
 			max: 1,
 
 			title: "Why Not Charge Again?",
@@ -155,6 +156,18 @@ const STAR_CHART = {
 
 			branch: 8,
 			icon: ['Curr/Charge','Icons/StarProgression'],
+
+			cost: i => E(1e3),
+			bulk: i => 1
+		}, {
+			unl: _ => player.gal.sacTimes,
+			max: 1,
+
+			title: "Challenging and Beyond",
+			desc: `Complete pre-Galactic challenges on 100 Levels or 3 Tiers ahead of a goal.`,
+
+			branch: 8,
+			icon: ['Icons/Challenge','Icons/StarProgression'],
 
 			cost: i => E(1e3),
 			bulk: i => 1
@@ -194,7 +207,7 @@ const STAR_CHART = {
 			cost: i => E(50),
 			bulk: i => 1
 		}, {
-			max: 20,
+			max: 100,
 
 			title: "Speedrun",
 			desc: `Auto-Challenge Timer is faster.`,
@@ -263,6 +276,18 @@ const STAR_CHART = {
 				return i/10+1
 			},
 			effDesc: x => format(x,1)+"x faster"
+		}, {
+			max: 1,
+
+			title: "Speedhop",
+			desc: `Automate Grasshops and Grass-Skips.`,
+
+			branch: 7,
+			icon: ['Icons/Grasshop','Icons/StarAuto'],
+
+			unl: _ => player.gal.sacTimes,
+			cost: i => E(1e15),
+			bulk: i => 1,
 		},
 	],
 	progress: [
@@ -335,7 +360,7 @@ const STAR_CHART = {
 			effect(i) {
 				return i * 5
 			},
-			effDesc: x => "+" + format(i, 0) + " levels"
+			effDesc: x => "+" + format(x, 0) + " levels"
 		}, {
 			max: 1,
 
@@ -351,18 +376,19 @@ const STAR_CHART = {
 			max: Infinity,
 
 			title: "Improved Factory",
-			desc: `Raise level caps for each Factory upgrade by +1 per level.`,
+			desc: `Raise level caps for each Factory upgrade by <b class="green">+5</b> per level.`,
 
 			branch: 4,
 			icon: ['Icons/Assembler','Icons/StarSpeed'],
-							
-			cost: i => EINF,
-			bulk: i => 0,
+
+			unl: _ => player.gal.sacTimes,
+			cost: i => E(10).pow(i+6),
+			bulk: i => E(i).log10().sub(5).floor().toNumber(),
 
 			effect(i) {
 				return i * 5
 			},
-			effDesc: x => "+" + format(i, 0) + " levels"
+			effDesc: x => "+" + format(x, 0) + " levels"
 		}, {
 			max: 1,
 
@@ -371,7 +397,8 @@ const STAR_CHART = {
 
 			branch: 5,
 			icon: ['Icons/SP','Icons/StarSpeed'],
-							
+
+			unl: _ => player.gal.sacTimes,
 			cost: i => EINF,
 			bulk: i => 0
 		}, {
@@ -382,31 +409,66 @@ const STAR_CHART = {
 
 			branch: 5,
 			icon: ['Icons/SP','Icons/StarSpeed'],
-							
-			cost: i => EINF,
+
+			unl: _ => player.gal.sacTimes,
+			cost: i => E(1e10),
 			bulk: i => 0
 		}, {
 			max: 1,
 
 			title: "Overpowerful Fuels",
-			desc: `Rocket Part scales faster and gives more Momentum. Galactic unlocks at 1 Part.`,
+			desc: `Rocket Part gives Momentum production, but scales faster. Galactic unlocks immediately and doesn't reset Momentum.`,
 
 			branch: 2,
 			icon: ['Curr/RocketFuel','Icons/StarSpeed'],
 
-			cost: i => E(1/0),
+			unl: _ => player.gal.sacTimes,
+			cost: i => E(1e13),
 			bulk: i => 1
 		}, {
 			max: 1,
 
 			title: "Momentum Towards Light",
-			desc: `Momentum Upgrades do not reset, unlock new Momentum Upgrades.`,
+			desc: `Unlock new Momentum Upgrades.`,
 
 			branch: 10,
-			icon: ['Curr/RocketFuel','Icons/StarSpeed'],
+			icon: ['Curr/Momentum','Icons/StarSpeed'],
 
-			cost: i => E(1/0),
+			cost: i => E(1e20),
 			bulk: i => 1
+		}, {
+			max: 10,
+
+			title: "Potential Grasshops",
+			desc: `Potential Grasshops (maximum grasshops you would get) are more efficient.`,
+
+			branch: 6,
+			icon: ['Icons/Grasshop','Icons/StarSpeed'],
+
+			unl: _ => true,
+			cost: i => E(10).pow((i+8)**1.25),
+			bulk: i => E(i).log10().root(1.25).sub(7).floor().toNumber(),
+
+			effect(i) {
+				return i/10
+			},
+			effDesc: x => "-" + format(x * 100, 0) + "%"
+		}, {
+			max: 10,
+
+			title: "Positivity",
+			desc: `Grasshops lose less Negative Energy.`,
+
+			branch: 12,
+			icon: ['Icons/Grasshop','Icons/StarSpeed'],
+
+			cost: i => E(10).pow((i+9)**1.25),
+			bulk: i => E(i).log10().root(1.25).sub(8).floor().toNumber(),
+
+			effect(i) {
+				return i/10
+			},
+			effDesc: x => "-" + format(x * 100, 0) + "%"
 		},
 	],
 	/*
@@ -435,8 +497,8 @@ function drawTree() {
 	treeCanvas()
 
 	tree_ctx.clearRect(0, 0, tree_canvas.width, tree_canvas.height);
-	for (let id in STAR_CHART) if (tmp.gal.star_chart.tab == id) {
-		let tt = tmp.gal.star_chart[id]
+	for (let id in STAR_CHART) if (tmp.gal.sc.tab == id) {
+		let tt = tmp.gal.sc[id]
 		for (let i = 0; i < STAR_CHART[id].length; i++) {
 			let tu = STAR_CHART[id][i]
 
@@ -529,11 +591,11 @@ el.setup.star_chart = _=>{
 const SC_SCOST = {}
 
 function hasStarTree(id,i) { return starTreeAmt(id,i)>0 }
-function starTreeEff(id,i,def=1) { return (tmp.gal && tmp.gal.star_chart[id].eff[i]) || def }
+function starTreeEff(id,i,def=1) { return (tmp.gal && tmp.gal.sc[id].eff[i]) || def }
 function starTreeAmt(id,i) { return (galUnlocked() && player.gal.star_chart[id][i]) || 0 }
 
 function updateSCTemp() {
-	let data = tmp.gal.star_chart || {
+	let data = tmp.gal.sc || {
 		qol: {
 			max: [],
 			cost: [],
@@ -558,7 +620,7 @@ function updateSCTemp() {
 		tab: "qol",
 		choosed: [null, null]
 	}
-	if (!tmp.gal.star_chart) tmp.gal.star_chart = data
+	if (!tmp.gal.sc) tmp.gal.sc = data
 
 	let star = player.gal.stars
 	for (let id in STAR_CHART) {
@@ -583,12 +645,12 @@ function updateSCTemp() {
 }
 
 function clickSCUpgrade(id,x) {
-	if (shiftDown || (tmp.gal.star_chart.choosed[0] == id && tmp.gal.star_chart.choosed[1] == x)) buyMaxSCUpgrade(id, x)
-	else tmp.gal.star_chart.choosed = [id, x]
+	if (shiftDown || (tmp.gal.sc.choosed[0] == id && tmp.gal.sc.choosed[1] == x)) buyMaxSCUpgrade(id, x)
+	else tmp.gal.sc.choosed = [id, x]
 }
 
 function buySCUpgrade(id,x) {
-	let tu = tmp.gal.star_chart[id]
+	let tu = tmp.gal.sc[id]
 
 	let amt = player.gal.star_chart[id]
 
@@ -602,7 +664,7 @@ function buySCUpgrade(id,x) {
 }
 
 function buyNextSCUpgrade(id,x) {
-	let tu = tmp.gal.star_chart[id]
+	let tu = tmp.gal.sc[id]
 
 	let upg = STAR_CHART[id][x]
 	let amt = player.gal.star_chart[id]
@@ -623,7 +685,7 @@ function buyNextSCUpgrade(id,x) {
 }
 
 function buyMaxSCUpgrade(id,x) {
-	let tu = tmp.gal.star_chart[id]
+	let tu = tmp.gal.sc[id]
 
 	let upg = STAR_CHART[id][x]
 
@@ -648,14 +710,14 @@ function buyMaxSCUpgrade(id,x) {
 
 function updateStarChart() {
 	let star = player.gal.stars
-	let ch = tmp.gal.star_chart.choosed
+	let ch = tmp.gal.sc.choosed
 
 	tmp.el.starAmt.setTxt(star.format(0))
 
 	tmp.el.sc_desc_div.setDisplay(ch[0])
 	if (ch[0]) {
 		let [id, i] = ch
-		let tt = tmp.gal.star_chart[id]
+		let tt = tmp.gal.sc[id]
 		let tu = STAR_CHART[id][i]
 		let amt = player.gal.star_chart[id][i]||0
 
@@ -694,8 +756,8 @@ function updateStarChart() {
 	}
 
 	for (let id in STAR_CHART) {
-		let d = tmp.gal.star_chart.tab == id
-		let tt = tmp.gal.star_chart[id]
+		let d = tmp.gal.sc.tab == id
+		let tt = tmp.gal.sc[id]
 
 		tmp.el["star_chart_"+id].setDisplay(d)
 
@@ -705,7 +767,7 @@ function updateStarChart() {
 
 			if (!ud) continue
 
-			let unl = tmp.gal.star_chart[id].unl[i]
+			let unl = tmp.gal.sc[id].unl[i]
 
 			tmp.el[id2].setClasses({sc_upg_ctn: true, choosed: ch[0] == id && ch[1] == i})
 			tmp.el[id2].setDisplay(unl)

@@ -1,7 +1,7 @@
 Galactic Content:
 - Upgrade: Potential Grasshops are more efficient.
 - Upgrade: Lose less Negative Energy from Grasshops.
-- AGH Milestone: 10% Per 25 Factory Levels.
+- AGH Milestone: 5% Per 25 Factory Levels.
 
 Grass-Skip Milestones:
 - Boost Steel per Grass-Skip. (additive)
