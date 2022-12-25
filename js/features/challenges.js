@@ -25,7 +25,7 @@ const CHALS = [
         id: 'pp',
 
         title: `Less Level`,
-        desc: `Prestige Upgrade's "XP II" does nothing`,
+        desc: `Prestige Upgrade's "XP II" does nothing.`,
         cond: _=>!hasUpgrade("pp",1),
         reward: `XP gain is <b class='green'>doubled</b> each completion.`,
 
@@ -213,7 +213,7 @@ function enterChal(x) {
 		return
 	}
 
-	if (player.decel) return
+	if (inDecel()) return
 	if (CHALS[x].cond()) return
 	if (player.chal.comp[x] == CHALS[x].max) return
 
@@ -235,7 +235,7 @@ tmp_update.push(_=>{
 	for (let i in CHALS) {
 		let c = player.chal.comp[i] || 0
 		tmp.chal.goal[i] = CHALS[i].goal(c)
-		tmp.chal.eff[i] = CHALS[i].eff(inChal(7) && CHALS[i].id != "steel" ? 0 : c)
+		tmp.chal.eff[i] = CHALS[i].eff((inChal(7) || inRecel()) && CHALS[i].id != "steel" ? 0 : c)
 
 		if (inChalCond(i)) {
 			let c = CHALS[i]

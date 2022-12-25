@@ -23,8 +23,8 @@ RESET.pp = {
     req: _=>player.level>=30,
     reqDesc: _=>`Reach Level 30.`,
 
-    resetDesc: `Prestiging resets your grass, grass upgrades, level and perks for Prestige Points.`,
-    resetGain: _=> `Gain <b>${tmp.ppGain.format(0)}</b> Prestige Points`,
+    resetDesc: `Reset your grass, upgrades, level, and perks.`,
+    resetGain: _=> `<b>+${tmp.ppGain.format(0)}</b> Prestige Points`,
 
     title: `Prestige`,
     resetBtn: `Prestige`,
@@ -51,19 +51,16 @@ RESET.pp = {
 
         let keep_perk = ((order == "p" && hasUpgrade('auto',4)) ||
 			(order == "c" && !inChal(3) && hasUpgrade('auto',6)) ||
-			(order == "gh" && !inChal(7) && hasUpgrade('assembler',4)))
+			(order == "gh" && !inChal(7) && hasUpgrade('assembler',4))) &&
 			!player.options.losePerks
-
         if (!keep_perk) {
-            player.maxPerk = 0
-            player.spentPerk = 0
-            resetUpgrades('perk')
-        }
+			resetUpgrades('perk')
+			player.maxPerk = 0
+			player.spentPerk = 0
+		}
 
         resetUpgrades('grass')
-
         resetGlasses()
-
         updateTemp()
     },
 }
@@ -81,7 +78,7 @@ UPGS.pp = {
     req: _=>player.pTimes > 0,
     reqDesc: _=>`Prestige once to unlock.`,
 
-    underDesc: _ => `You have ${format(player.pp,0)} Prestige Points` + (tmp.ppGainP > 0 ? " <span class='smallAmt'>"+formatGain(player.pp,tmp.ppGain.mul(tmp.ppGainP))+"</span>" : ""),
+    underDesc: _ => getUpgResTitle('pp') + (tmp.ppGainP > 0 ? " <span class='smallAmt'>"+formatGain(player.pp,tmp.ppGain.mul(tmp.ppGainP))+"</span>" : ""),
 
     ctn: [
         {

@@ -1,155 +1,163 @@
 function loop() {
-    diff = Date.now() - date
-    updateTemp()
-    updateHTML()
-    calc(diff/1000);
-    date = Date.now();
+	diff = Date.now() - date
+	updateTemp()
+	updateHTML()
+	calc(diff/1000);
+	date = Date.now();
 }
 
 var player = {}, date = Date.now(), diff = 0;
 const MAIN = {
-    grassGain() {
-        let x = upgEffect('grass',0).mul(tmp.tier.mult)
+	grassGain() {
+		let x = upgEffect('grass',0).mul(tmp.tier.mult)
+		if (inAccel()) {
+			x = x.mul(upgEffect('perk',0))
+			x = x.mul(upgEffect('pp',0))
+			x = x.mul(upgEffect('crystal',0))
+			x = x.mul(upgEffect('plat',2))
+		}
+		if (!inRecel()) x = x.mul(aMAIN.grassGain())
 
-        x = x.mul(upgEffect('perk',0))
-        x = x.mul(upgEffect('pp',0))
-        x = x.mul(upgEffect('crystal',0))
-        x = x.mul(upgEffect('plat',2))
-        x = x.mul(chalEff(0))
+		x = x.mul(chalEff(0))
+		x = x.mul(upgEffect('rocket',0))
+		x = x.mul(upgEffect('rocket',17))
+		x = x.mul(upgEffect('momentum',0))
 
-		if (player.sTimes) x = x.mul(aMAIN.grassGain())
+		return x
+	},
+	grassCap() {
+		let x = 10
+		if (inAccel()) x += upgEffect('grass',1,0)+upgEffect('perk',1,0)
+		if (!inRecel()) x += upgEffect('ap',4,0)
+		if (inRecel()) x = 250
+		if (player.options.lowGrass) x = Math.min(x, 250)
 
-        x = x.mul(upgEffect('rocket',0))
-        x = x.mul(upgEffect('rocket',17))
-        x = x.mul(upgEffect('momentum',0))
-
-        return x
-    },
-    grassCap() {
-        let x = 10+upgEffect('grass',1,0)+upgEffect('perk',1,0)+upgEffect('ap',4,0)
-        if (player.options.lowGrass) x = Math.min(x, 250)
-
-        return x
-    },
-    grassSpawn() {
-        let x = 2
-        x /= upgEffect('grass',2,1)
-        x /= upgEffect('perk',2,1)
-        if (player.decel) x /= upgEffect('aGrass',1,1)
-        x /= upgEffect('momentum',1)
-        if (hasUpgrade('rocket',16)) x = 1 / (1 / x + upgEffect('rocket', 16))
-        return x
-    },
-    rangeCut: _=>70+upgEffect('grass',4,0)+upgEffect('perk',4,0)+upgEffect('aGrass',6,0),
-    autoCut() {
+		return x
+	},
+	grassSpawn() {
+		let x = 2
+		if (inAccel()) {
+			x /= upgEffect('grass',2,1)
+			x /= upgEffect('perk',2,1)
+		}
+		if (inDecel()) x /= upgEffect('aGrass',1,1)
+		x /= upgEffect('momentum',1)
+		if (hasUpgrade('rocket',16)) x = 1 / (1 / x + upgEffect('rocket', 16))
+		if (inRecel()) x = 1/10
+		return x
+	},
+	rangeCut: _=>70+upgEffect('grass',4,0)+upgEffect('perk',4,0)+upgEffect('aGrass',6,0),
+	autoCut() {
 		let interval = 5-upgEffect('auto',0,0)-upgEffect('plat',0,0)
 		interval /= starTreeEff("auto",7)
-		if (player.decel) interval *= 10 / upgEffect('aAuto', 0)
+		if (inDecel()) interval *= 10 / upgEffect('aAuto', 0)
+		if (inRecel()) interval = 0.1
 		return interval
 	},
 
-    level: {
+	level: {
 		gain(i) {
 			let x = E(tmp.tier.mult)
-
-			x = x.mul(upgEffect('grass',3))
-			x = x.mul(upgEffect('perk',3))
-			x = x.mul(upgEffect('pp',1))
-			x = x.mul(upgEffect('crystal',1))
-			x = x.mul(upgEffect('plat',1))
-			x = x.mul(chalEff(1))
+			if (inAccel()) {
+				x = x.mul(upgEffect('grass',3))
+				x = x.mul(upgEffect('perk',3))
+				x = x.mul(upgEffect('pp',1))
+				x = x.mul(upgEffect('crystal',1))
+				x = x.mul(upgEffect('plat',1))
+				x = x.mul(getAstralEff('xp'))
+			}
+			if (!inRecel()) x = x.mul(aMAIN.xpGain())
 
 			if (player.grasshop >= 7) x = x.mul(2)
-			if (player.sTimes) x = x.mul(aMAIN.xpGain())
-
+			x = x.mul(chalEff(1))
 			x = x.mul(upgEffect('rocket',1))
 			x = x.mul(upgEffect('rocket',10))
 			x = x.mul(upgEffect('momentum',2))
 
-			if (!player.decel) x = x.mul(getAstralEff('xp'))
-
 			if (x.lt(1)) return x
 			return x
 		},
-        req(i) {
-            if (player.decel) i /= tmp.chargeEff[3]||1
-            let x = Decimal.pow(1.4,i).mul(50)
+		req(i) {
+			if (inDecel()) i /= tmp.chargeEff[3]||1
+			let x = Decimal.pow(1.4,i).mul(50)
 
-            return x.ceil()
-        },
-        bulk(i) {
-            let x = i.div(50)
-            if (x.lt(1)) return 0
+			return x.ceil()
+		},
+		bulk(i) {
+			let x = i.div(50)
+			if (x.lt(1)) return 0
 
-            x = x.log(1.4).toNumber()
-            if (player.decel) x *= tmp.chargeEff[3]||1
-            return Math.floor(x)+1
-        },
-        cur(i) {
-            return i > 0 ? this.req(i-1) : E(0) 
-        },
-        perk() {
-            let x = chalEff(3)
-            if (player.grasshop >= 4) x += getGHEffect(3, 0)
-            if (inChal(7)) x = 1
+			x = x.log(1.4).toNumber()
+			if (inDecel()) x *= tmp.chargeEff[3]||1
+			return Math.floor(x)+1
+		},
+		cur(i) {
+			return i > 0 ? this.req(i-1) : E(0) 
+		},
+		perk() {
+			let x = chalEff(3)
+			if (player.grasshop >= 4) x += getGHEffect(3, 0)
+			if (inChal(7)) x = 1
 
-            return Math.floor(x * player.level)
-        },
-    },
-    tier: {
+			return Math.floor(x * player.level)
+		},
+	},
+	tier: {
 		gain(i) {
 			if (inChal(2)) return E(0)
 
-			let x = upgEffect('pp',2)
-			x = x.mul(upgEffect('pp',4))
-			x = x.mul(upgEffect('crystal',2))
-			x = x.mul(upgEffect('plat',4))
-			x = x.mul(upgEffect('perk',7))
-			x = x.mul(chalEff(2))
+			let x = E(1)
+			if (inAccel()) {
+				x = x.mul(upgEffect('pp',2))
+				x = x.mul(upgEffect('pp',4))
+				x = x.mul(upgEffect('crystal',2))
+				x = x.mul(upgEffect('plat',4))
+				x = x.mul(upgEffect('perk',7))
+			}
+			if (!inRecel()) x = x.mul(aMAIN.tpGain())
 
 			if (player.grasshop >= 1) x = x.mul(4)
-			if (player.sTimes) x = x.mul(aMAIN.tpGain())
-
+			x = x.mul(chalEff(2))
 			x = x.mul(upgEffect('rocket',2))
 			x = x.mul(upgEffect('momentum',3))
-
 			x = x.mul(getAstralEff('tp'))
 
 			return x
 		},
-        req(i) {
-            let x = Decimal.pow(4,i).mul(500)
-            return x
-        },
-        bulk(i) {
-            let x = i.div(500)
-            if (x.lt(1)) return 0
-            x = x.log(4)
-            return Math.floor(x.toNumber()+1)
-        },
-        cur(i) {
-            return i > 0 ? this.req(i-1) : E(0) 
-        },
-        base() {
+		req(i) {
+			let x = Decimal.pow(4,i).mul(500)
+			return x
+		},
+		bulk(i) {
+			let x = i.div(500)
+			if (x.lt(1)) return 0
+			x = x.log(4)
+			return Math.floor(x.toNumber()+1)
+		},
+		cur(i) {
+			return i > 0 ? this.req(i-1) : E(0) 
+		},
+		base() {
 			let x = upgEffect('crystal',3)
 			if (player.grasshop >= 5) x += 0.1
 			x += E(tmp.chargeEff[4]||1).toNumber()
-			if (player.decel) x += E(tmp.chargeEff[10]||1).toNumber()
+			if (inDecel()) x += E(tmp.chargeEff[10]||1).toNumber()
 			x += getAstralEff('tb', 0)
 			return x
-        },
-        mult(i) {
-            return Decimal.pow(MAIN.tier.base(), i)
-        },
-    },
-    checkCutting() {
-        if (tmp.realmSrc.xp.gte(tmp.level.next)) {
-            tmp.realmSrc.level = Math.max(tmp.realmSrc.level, tmp.level.bulk)
-        }
-        if (tmp.realmSrc.tp.gte(tmp.tier.next)) {
-            tmp.realmSrc.tier = Math.max(tmp.realmSrc.tier, tmp.tier.bulk)
-        }
-    }, 
+		},
+		mult(i) {
+			return Decimal.pow(MAIN.tier.base(), i)
+		},
+	},
+	checkCutting() {
+		let src = getRealmSrc()
+		if (src.xp.gte(tmp.level.next)) {
+			src.level = Math.max(src.level, tmp.level.bulk)
+		}
+		if (src.tp.gte(tmp.tier.next)) {
+			src.tier = Math.max(src.tier, tmp.tier.bulk)
+		}
+	}, 
 }
 
 el.update.main = _=>{
@@ -197,48 +205,47 @@ el.update.main = _=>{
 }
 
 tmp_update.push(_=>{
-    tmp.grassCap = MAIN.grassCap()
-    tmp.grassSpawn = MAIN.grassSpawn()
-    tmp.rangeCut = MAIN.rangeCut()
-    tmp.autocut = MAIN.autoCut()
+	tmp.grassCap = MAIN.grassCap()
+	tmp.grassSpawn = MAIN.grassSpawn()
+	tmp.rangeCut = MAIN.rangeCut()
+	tmp.autocut = MAIN.autoCut()
 
-    tmp.autoCutUnlocked = hasUpgrade('auto',0)
+	tmp.autoCutUnlocked = hasUpgrade('auto',0)
 
-    tmp.autocutBonus = upgEffect('auto',1)
-    tmp.autocutAmt = 1+upgEffect('auto',2,0)
-    tmp.spawnAmt = 1+upgEffect('perk',5,0)+upgEffect('crystal',5,0)
+	tmp.autocutBonus = upgEffect('auto',1)
+	tmp.autocutAmt = 1+upgEffect('auto',2,0)
+	tmp.spawnAmt = 1+upgEffect('perk',5,0)+upgEffect('crystal',5,0)
 
-    tmp.grassGain = MAIN.grassGain()
+	tmp.grassGain = MAIN.grassGain()
 
-    tmp.perks = MAIN.level.perk()
-    tmp.perkUnspent = Math.max(player.maxPerk-player.spentPerk,0)
+	tmp.perks = MAIN.level.perk()
 
-    let lvl = tmp.realmSrc.level
-    tmp.level.gain = MAIN.level.gain()
-    tmp.level.next = MAIN.level.req(lvl)
-    tmp.level.bulk = MAIN.level.bulk(tmp.realmSrc.xp)
-    tmp.level.cur = MAIN.level.cur(lvl)
-    tmp.level.progress = tmp.realmSrc.xp.sub(tmp.level.cur).max(0).min(tmp.level.next)
-    tmp.level.percent = tmp.level.progress.div(tmp.level.next.sub(tmp.level.cur)).max(0).min(1).toNumber()
+	let lvl = tmp.realmSrc.level
+	tmp.level.gain = MAIN.level.gain()
+	tmp.level.next = MAIN.level.req(lvl)
+	tmp.level.bulk = MAIN.level.bulk(tmp.realmSrc.xp)
+	tmp.level.cur = MAIN.level.cur(lvl)
+	tmp.level.progress = tmp.realmSrc.xp.sub(tmp.level.cur).max(0).min(tmp.level.next)
+	tmp.level.percent = tmp.level.progress.div(tmp.level.next.sub(tmp.level.cur)).max(0).min(1).toNumber()
 
-    let tier = tmp.realmSrc.tier
-    tmp.tier.gain = MAIN.tier.gain()
-    tmp.tier.next = MAIN.tier.req(tier)
-    tmp.tier.bulk = MAIN.tier.bulk(tmp.realmSrc.tp)
-    tmp.tier.cur = MAIN.tier.cur(tier)
-    tmp.tier.progress = tmp.realmSrc.tp.sub(tmp.tier.cur).max(0).min(tmp.tier.next)
-    tmp.tier.percent = tmp.tier.progress.div(tmp.tier.next.sub(tmp.tier.cur)).max(0).min(1).toNumber()
-    tmp.tier.mult = MAIN.tier.mult(tier)
+	let tier = tmp.realmSrc.tier
+	tmp.tier.gain = MAIN.tier.gain()
+	tmp.tier.next = MAIN.tier.req(tier)
+	tmp.tier.bulk = MAIN.tier.bulk(tmp.realmSrc.tp)
+	tmp.tier.cur = MAIN.tier.cur(tier)
+	tmp.tier.progress = tmp.realmSrc.tp.sub(tmp.tier.cur).max(0).min(tmp.tier.next)
+	tmp.tier.percent = tmp.tier.progress.div(tmp.tier.next.sub(tmp.tier.cur)).max(0).min(1).toNumber()
+	tmp.tier.mult = MAIN.tier.mult(tier)
 
-    tmp.platChance = 0.001
-    if (player.grasshop >= 6) tmp.platChance *= 2
-    if (!player.decel && hasGSMilestone(6)) tmp.platChance *= 2
-    tmp.platChance += upgEffect('rocket',16,0)
+	tmp.platChance = 0.001
+	if (player.grasshop >= 6) tmp.platChance *= 2
+	if (!player.decel && hasGSMilestone(6)) tmp.platChance *= 2
+	tmp.platChance += upgEffect('rocket',16,0)
 
-    tmp.platGain = 1
-    tmp.platGain += chalEff(5,0)
-    if (player.grasshop >= 3) tmp.platGain += getGHEffect(2, 0)
-    tmp.platGain += upgEffect('moonstone', 0)
+	tmp.platGain = 1
+	tmp.platGain += chalEff(5,0)
+	if (player.grasshop >= 3) tmp.platGain += getGHEffect(2, 0)
+	tmp.platGain += upgEffect('moonstone', 0)
 	tmp.platGain *= upgEffect('dm', 2)
 })
 
@@ -253,12 +260,12 @@ window.addEventListener('keydown', function(event) {
 			else RESET.pp.reset();
 			break;
 		case "c":
-			if (player.decel) RESET.oil.reset();
+			if (inDecel()) RESET.oil.reset();
 			else RESET.crystal.reset();
 			break;
 		case "g":
 			if (shiftDown) RESET.gal.reset();
-			else if (player.decel) RESET.gs.reset();
+			else if (inDecel()) RESET.gs.reset();
 			else RESET.gh.reset();
 			break;
 		case "s":

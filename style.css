@@ -395,6 +395,13 @@ button:not(.locked):hover {
     background-color: #c5c5c5;
 }
 
+.reset_div.time,
+.reset_div.warp,
+.upg_desc.chrono,
+.upgs_div.chrono {
+    background-color: #30f;
+}
+
 .reset_div.decel,
 .reset_req.decel,
 .upg_desc.aGrass,
@@ -465,7 +472,8 @@ button:not(.locked):hover {
     background-color: #bf3;
 }
 
-.reset_div.planetoid {
+.reset_div.planetoid,
+.reset_div.planetoid_realm {
     background: linear-gradient(#b3f, #37f);
     border-color: #bbbb
 }

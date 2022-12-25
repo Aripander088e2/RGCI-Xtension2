@@ -30,7 +30,7 @@ UPGS.rocket = {
 
 	unl: _=>true,
 
-	underDesc: _=>`You have ${format(player.rocket.amount,0)} Rocket Fuel`,
+	underDesc: _=>getUpgResTitle('rf'),
 
 	ctn: [
 		//Tier 1
@@ -555,7 +555,7 @@ UPGS.momentum = {
 	req: _=>player.rocket.part>0||hasStarTree("progress",10),
 	reqDesc: _=>`Get a Rocket Part to unlock.`,
 
-	underDesc: _=>`You have ${format(player.rocket.momentum,0)} Momentum`+(tmp.m_prod > 0 ? " <span class='smallAmt'>"+formatGain(E(player.rocket.momentum),ROCKET_PART.m_gain()*tmp.m_prod)+"</span>" : ""),
+	underDesc: _=>getUpgResTitle('momentum')+(tmp.m_prod > 0 ? " <span class='smallAmt'>"+formatGain(E(player.rocket.momentum),ROCKET_PART.m_gain()*tmp.m_prod)+"</span>" : ""),
 
     autoUnl: _=>hasStarTree('auto',2),
 

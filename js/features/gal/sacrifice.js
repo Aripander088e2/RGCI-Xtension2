@@ -13,8 +13,8 @@ RESET.sac = {
 	req: _ => hasAGHMilestone(7) && player.gal.stars.gte(1e12),
 	reqDesc: _ => `Get 21 Negative Energy and ${format(1e12)} stars.`,
 
-	resetDesc: `Sacrifice resets everything that Galactic resets, as well as Stars, Astral, Grass-Skips, and Funify (except Fun Machine).`,
-	resetGain: _ => `Gain <b>${tmp.gal.dmGain.format(0)}</b> Dark Matters`,
+	resetDesc: `Reset everything Galactic does, as well as Stars, Astral, Grass-Skips, and Funify (except Fun Machine).`,
+	resetGain: _ => `<b>+${tmp.gal.dmGain.format(0)}</b> Dark Matters`,
 
 	title: `Dark Matter Plant`,
 	resetBtn: `Sacrifice!`,
@@ -61,7 +61,7 @@ UPGS.dm = {
 	req: _ => player.gal.sacTimes > 0,
 	reqDesc: _ => `Sacrifice once to unlock.`,
 
-	underDesc: _ => `You have ${format(player.gal.dm,0)} Dark Matters`,
+	underDesc: _ => getUpgResTitle('dm'),
 
 	ctn: [
 		{

@@ -14,3 +14,4 @@ RESET.planetoid = {
 		true
 	},
 }
+RESET.planetoid_realm = RESET.planetoid

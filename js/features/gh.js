@@ -14,10 +14,10 @@ MAIN.gh = {
 	milestone: [
 		{
 			r: 1,
-			desc: `Gain <b class="green">4x</b> more TP. Unlock new automation upgrades.`,
+			desc: `+<b class="green">4x</b> more TP. Unlock new automation upgrades.`,
 		},{
 			r: 2,
-			desc: `Gain <b class="green">2x</b> more Crystals.`,
+			desc: `+<b class="green">2x</b> more Crystals.`,
 		},{
 			r: 3,
 			desc: `Platinum worth <b class="green">+0.2</b> per Grasshop. (starting at 2)`,
@@ -36,7 +36,7 @@ MAIN.gh = {
 			desc: `Platinum is <b class="green">2x</b> more common.`,
 		},{
 			r: 8,
-			desc: `Gain <b class="green">2x</b> more XP.`,
+			desc: `+<b class="green">2x</b> more XP.`,
 		},{
 			r: 10,
 			desc: `Unlock Steelie reset.`,
@@ -44,14 +44,14 @@ MAIN.gh = {
 			unl: _=>player.sTimes,
 
 			r: 11,
-			desc: `Gain <b class="green">2x</b> more Steel per Grasshop. (starting at 11)`,
+			desc: `+<b class="green">2x</b> more Steel per Grasshop. (starting at 11)`,
 			effect: _=>E(2).pow(Math.max(0,tmp.gh.eff-10)),
 			effDesc: x=> format(x,0)+"x",
 		},{
 			unl: _=>galUnlocked()||hasUpgrade('factory',2),
 
 			r: 12,
-			desc: `Gain <b class="green">2x</b> more Charge per Grasshop. (starting at 12 and ending at 30)`,
+			desc: `+<b class="green">2x</b> more Charge per Grasshop. (starting at 12 and ending at 30)`,
 			effect: _=>E(2).pow(Math.max(0,Math.min(tmp.gh.eff,30)-11)),
 			effDesc: x=> format(x,0)+"x",
 		},{
@@ -83,7 +83,7 @@ RESET.gh = {
 	req: _=> player.level >= 200 && !player.decel && !inChal(9),
 	reqDesc: _=> player.decel ? `You can't Grasshop until you Accelerate!` : `Reach Level 200.`,
 
-	resetDesc: `Grasshopping resets everything Crystalize does, as well as crystals, crystal upgrades, and challenges.`,
+	resetDesc: `Reset everything Crystalize does, as well as crystals, crystal upgrades, and challenges.`,
 	resetGain: _ => galUnlocked() || player.grasshop ? `Reach Level <b>${format(tmp.gh.req,0)}</b> to Grasshop` : ``,
 
 	title: `Grasshop`,

@@ -1,12 +1,14 @@
 const U_STEP = [1,25,1/0]
 
+///[Name, Player Data, Base, Spent]
 const UPG_RES = {
     grass: ["Grass",_=>[player,"grass"],'GrassBase'],
-    perk: ["Perk",_=>[tmp,"perkUnspent"],'PerkBase'],
+    perk: ["Perk",_=>[player,"maxPerk","spentPerk"],'PerkBase'],
     pp: ["PP",_=>[player,"pp"],'PrestigeBase'],
     plat: ["Platinum",_=>[player,"plat"],"PlatBase"],
-    crystal: ["Crystal",_=>[player,"crystal"],"CrystalBase"],
+    crystal: ["Crystals",_=>[player,"crystal"],"CrystalBase"],
     steel: ["Steel",_=>[player,"steel"],"GrasshopBase"],
+    chrona: ["Chrona",_=>[player.ch,"chrona","spent"],'ChronoBase'],
     aGrass: ["Anti-Grass",_=>[player.aRes,"grass"],'AntiGrassBase'],
     ap: ["AP",_=>[player.aRes,"ap"],'AnonymityBase'],
     oil: ["Oil",_=>[player.aRes,"oil"],'LiquefyBase'],
@@ -15,13 +17,13 @@ const UPG_RES = {
     star: ["Stars",_=>[player.gal,"stars"],'SpaceBase'],
     moonstone: ["Moonstone",_=>[player.gal,"moonstone"],'MoonBase'],
     fun: ["Fun",_=>[player.aRes,"fun"],'FunBase'],
-    SFRGT: ["SFRGT",_=>[player.aRes,"sfrgt"],'FunBase'],
+    sfrgt: ["SFRGT",_=>[player.aRes,"sfrgt"],'FunBase'],
     dm: ["Dark Matter",_=>[player.gal,"dm"],'DarkMatterBase'],
     unGrass: ["Unnatural Grass",_=>[player.unRes,"grass"],'UnnaturalBase'],
     np: ["NP",_=>[player.unRes,"np"],'NormalityBase'],
 }
 
-const isResNumber = ['perk','plat','rf','momentum','moonstone']
+const isResNumber = ['perk','plat','chrona','rf','momentum','moonstone']
 
 const UPGS = {
     grass: {
@@ -32,7 +34,7 @@ const UPGS = {
         autoUnl: _=>hasUpgrade('auto',3),
         noSpend: _=>hasUpgrade('assembler',0),
 
-        title: "Grass Upgrades",
+        title: "Upgrades",
 
         ctn: [
             {
@@ -157,7 +159,7 @@ const UPGS = {
         req: _=>(player.level >= 1 || player.pTimes > 0)&&!player.decel,
         reqDesc: _=>player.decel?`You can't gain Perks!`:`Reach Level 1 to unlock.`,
 
-        underDesc: _=>`You have ${format(tmp.perkUnspent,0)} Perk`,
+        underDesc: _=>getUpgResTitle('perk'),
 
         autoUnl: _=>hasUpgrade('assembler',3),
 
@@ -520,7 +522,7 @@ const UPGS = {
         req: _=>player.tier >= 2 || player.cTimes > 0,
         reqDesc: _=>`Reach Tier 2 to unlock.`,
 
-        underDesc: _=>`You have ${format(player.plat,0)} Platinum (${formatPercent(tmp.platChance)} grow chance)`,
+        underDesc: _=>getUpgResTitle('plat')+` (${formatPercent(tmp.platChance)} grow chance)`,
 
         ctn: [
             {
@@ -787,12 +789,13 @@ function buyUpgrade(id, x, type = "once", amt) {
 	if (!tu.noSpend) {
 		let res = upg.res
 		let cost = upg.costOnce ? tu.cost[x] * (bulk - lvl) : upg.cost(bulk - 1)
+		let r = UPG_RES[res][1]()
 
-		if (res == 'perk') {
-			player.spentPerk += cost
-			tmp.perkUnspent = Math.max(player.maxPerk - player.spentPerk, 0)
+		if (r[2]) {
+			let [p,q] = [r[0], r[2]]
+			p[q] += cost
 		} else {
-			let [p,q] = UPG_RES[res][1]()
+			let [p,q] = r
 			p[q] = isResNumber.includes(res) ? Math.max(p[q]-cost, 0) : p[q].sub(cost).max(0)
 		}
 		updateUpgResource(res)
@@ -1021,12 +1024,19 @@ function hasUpgrades(id) {
 function upgEffect(id,x,def=1) { return tmp.upgs[id].eff[x] || def }
 
 function resetUpgrades(id) {
-    for (let x in UPGS[id].ctn) player.upgs[id][x] = 0
+    let u = UPGS[id]
+    for (let x in u.ctn) player.upgs[id][x] = 0
 }
 
 function updateUpgResource(id) {
-    let [p,q] = UPG_RES[id][1]()
-    tmp.upg_res[id] = p?.[q] || 0
+    let [p,q,u] = UPG_RES[id][1]()
+    tmp.upg_res[id] = p?.[q] ?? 0
+	if (u) tmp.upg_res[id] -= p?.[u] ?? 0
+}
+
+function getUpgResTitle(res) {
+	let amt = tmp.upg_res[res]
+	return (E(amt).lt(1e33) ? "You have " : "") + "<b>" + format(amt, 0) + "</b> " + UPG_RES[res][0]
 }
 
 function toggleOption(x) { player.options[x] = !player.options[x] }
@@ -1106,49 +1116,5 @@ el.update.upgs = _=>{
 		tmp.el.hideUpgOption.setTxt(player.options.hideUpgOption?"ON":"OFF")
 		tmp.el.hideMilestoneBtn.setDisplay(player.grasshop > 0 || player.sTimes > 0)
 		tmp.el.hideMilestone.setTxt(player.options.hideMilestone?"At last obtained":"All")
-	}
-	if (mapID == 'time') {
-		tmp.el.time.setHTML("Time: " + formatTime(player.time))
-
-		let stats = player.decel == 0 && !inSpace()
-		tmp.el.stats.setDisplay(stats || player.options.allStats)
-		if (stats || player.options.allStats) {
-			tmp.el.statsHeader.setDisplay(player.options.allStats)
-			tmp.el.pTimes.setHTML(player.pTimes ? "You did " + player.pTimes + " <b style='color: #5BFAFF'>Prestige</b> resets." + (inDecel() ? "" : "<br>Time: " + formatTime(player.pTime)) : "")
-			tmp.el.cTimes.setHTML(player.cTimes ? "You did " + player.cTimes + " <b style='color: #FF84F6'>Crystalize</b> resets." + (inDecel() ? "" : "<br>Time: " + formatTime(player.cTime)) : "")
-			tmp.el.sTimes.setHTML(player.sTimes ? "You did " + player.sTimes + " <b style='color: #c5c5c5'>Steelie</b> resets." + (inDecel() ? "" : "<br>Time: " + formatTime(player.sTime)) : "")
-		}
-
-		let aStats = player.decel == 1 && !inSpace()
-		let aStatsUnl = hasUpgrade("factory", 4) || galUnlocked()
-		let aStatsShown = aStatsUnl && (aStats || player.options.allStats)
-		tmp.el.aStats.setDisplay(aStatsShown)
-		if (aStatsShown) {
-			tmp.el.aTimes.setHTML(player.aRes.aTimes ? "You did " + player.aRes.aTimes + " <b style='color: #FF4E4E'>Anonymity</b> resets." + (inRecel() ? "" : "<br>Time: " + formatTime(player.aRes.aTime)) : "")
-			tmp.el.lTimes.setHTML(player.aRes.lTimes ? "You did " + player.aRes.lTimes + " <b style='color: #2b2b2b'>Liquefy</b> resets." + (inRecel() ? "" : "<br>Time: " + formatTime(player.aRes.lTime)) : "")
-			tmp.el.fTimes.setHTML(player.aRes.fTimes ? "You did " + player.aRes.fTimes + " <b style='color: #dfff79'>Funify</b> resets." + (inRecel() ? "" : "<br>Time: " + formatTime(player.aRes.fTime)) : "")
-		}
-
-		let unStats = player.decel == 2 && !inSpace()
-		let unStatsUnl = hasUpgrade("funMachine", 3)
-		let unStatsShown = unStatsUnl && (unStats || player.options.allStats)
-		tmp.el.unStats.setDisplay(unStatsShown)
-		if (unStatsShown) {
-			tmp.el.unStatsHeader.setDisplay(player.options.allStats)
-			tmp.el.nTimes.setHTML(player.unRes.nTimes ? "You did " + player.unRes.nTimes + " <b style='color: #bf3'>Normality</b> resets.<br>Time: " + formatTime(player.unRes.nTime) : "")
-		}
-
-		let gStats = inSpace()
-		let gStatsUnl = galUnlocked()
-		let gStatsShown = gStatsUnl && (gStats || player.options.allStats)
-		tmp.el.gStats.setDisplay(gStatsShown)
-		if (gStatsShown) {
-			tmp.el.gStatsHeader.setDisplay(player.options.allStats)
-			tmp.el.gTimes.setHTML("You did " + player.gal.times + " <b style='color: #bf00ff'>Galactic</b> resets.<br>Time: " + formatTime(player.gal.time))
-			tmp.el.sacTimes.setHTML(player.gal.sacTimes ? "You did " + player.gal.sacTimes + " <b style='color: #ffa4d9'>Sacrifice</b> resets.<br>Time: " + formatTime(player.gal.sacTime) : "")
-		}
-
-		tmp.el.allStatsBtn.setDisplay(hasUpgrade('factory', 4) || galUnlocked())
-		tmp.el.allStats.setTxt(player.options.allStats ? "All" : "This realm")
 	}
 }

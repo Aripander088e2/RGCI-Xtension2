@@ -1,15 +1,18 @@
-function calc(dt) {
-	if (galUnlocked()) galTick(dt)
-
-	//PRE-GALACTIC
-	if (MAIN.chrono.unl()) {
+function calc(dt, skip) {
+	//CHRONOLOGY
+	if (MAIN.chrono.unl() && !skip) {
 		MAIN.chrono.tick(dt)
 		dt *= player.ch.speed
 	}
 
+	//GALACTIC
+	player.time += dt
+	if (galUnlocked()) galTick(dt)
+
 	//UNNATURAL REALM
 	if (player.unRes) {
 		player.unRes.nTime += dt
+		if (inRecel()) MAIN.checkCutting(2)
 	}
 
 	//ANTI-REALM
@@ -21,6 +24,7 @@ function calc(dt) {
 		if (tmp.aRes.apGainP > 0 && player.aRes.level >= 30) player.aRes.ap = player.aRes.ap.add(tmp.aRes.apGain.mul(dt*tmp.aRes.apGainP))
 		if (tmp.aRes.oilGainP > 0 && player.aRes.level >= 100) player.aRes.oil = player.aRes.oil.add(tmp.aRes.oilGain.mul(dt*tmp.aRes.oilGainP))
 		if (hasStarTree('auto',10)) ROCKET.create()
+		MAIN.checkCutting(1)
 	}
 	if (tmp.m_prod > 0) player.rocket.momentum += ROCKET_PART.m_gain()*dt*tmp.m_prod
 
@@ -29,7 +33,7 @@ function calc(dt) {
 	}
 
 	//STEELIE
-	if (!inDecel()) {
+	if (inAccel()) {
 		player.sTime += dt
 		if (tmp.steelGainP > 0 && player.level >= 240) player.steel = player.steel.add(tmp.steelGain.mul(tmp.steelGainP*dt))
 	}
@@ -44,7 +48,7 @@ function calc(dt) {
 	if (tmp.ppGainP > 0 && player.level >= 30) player.pp = player.pp.add(tmp.ppGain.mul(dt*tmp.ppGainP))
 	if (tmp.crystalGainP > 0 && player.level >= 90) player.crystal = player.crystal.add(tmp.crystalGain.mul(dt*tmp.crystalGainP))
 
-	if (player.decel) player.chal.progress = {}
+	if (inDecel()) player.chal.progress = {}
 	for (var i in CHALS) {
 		if (inChalCond(i) && tmp.chal.bulk[i] > (player.chal.comp[i] || 0)) player.chal.comp[i] = tmp.chal.bulk[i]
 		if (player.chal.comp[i] == CHALS[i].max) delete player.chal.progress[i]
@@ -59,7 +63,6 @@ function calc(dt) {
 	}
 
 	//START
-	player.time += dt
 	tmp.spawn_time += dt
 	tmp.autocutTime += dt
 	if (tmp.spawn_time >= tmp.grassSpawn) {
@@ -76,7 +79,7 @@ function calc(dt) {
 		}
 		tmp.autocutTime = 0
 	}
-	MAIN.checkCutting()
+	if (inAccel()) MAIN.checkCutting(0)
 
 	for (let x in UPGS) if (tmp.upgs[x].autoUnl && player.autoUpg[x]) buyAllUpgrades(x,true)
 	player.maxPerk = Math.max(player.maxPerk, tmp.perks)

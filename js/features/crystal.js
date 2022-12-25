@@ -23,8 +23,8 @@ RESET.crystal = {
     req: _=>player.level>=90,
     reqDesc: _=>`Reach Level 90.`,
 
-    resetDesc: `Crystalizing resets everything that prestige does, as well as Tier and Prestige.`,
-    resetGain: _=>`Gain <b>${tmp.crystalGain.format(0)}</b> Crystals`,
+    resetDesc: `Reset everything Prestige does, as well as Tier and Prestige.`,
+    resetGain: _=>`<b>+${tmp.crystalGain.format(0)}</b> Crystals`,
 
     title: `Crystalize`,
     resetBtn: `Crystalize`,
@@ -66,7 +66,7 @@ UPGS.crystal = {
     req: _=>player.cTimes > 0,
     reqDesc: _=>`Crystalize once to unlock.`,
 
-    underDesc: _=>`You have ${format(player.crystal,0)} Crystal`+(tmp.crystalGainP > 0 ? " <span class='smallAmt'>"+formatGain(player.crystal,tmp.crystalGain.mul(tmp.crystalGainP))+"</span>" : ""),
+    underDesc: _=>getUpgResTitle('crystal')+(tmp.crystalGainP > 0 ? " <span class='smallAmt'>"+formatGain(player.crystal,tmp.crystalGain.mul(tmp.crystalGainP))+"</span>" : ""),
 
     autoUnl: _=>hasUpgrade('auto',7),
     noSpend: _=>hasUpgrade('assembler',2),

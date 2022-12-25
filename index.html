@@ -11,6 +11,8 @@
 	<script src="js/utils/Element.js"></script>
 	<script src="js/utils/format.js"></script>
 	<script src="js/utils/saves.js"></script>
+	<!-- <script src="js/utils/stats.js"></script> -->
+	<script src="js/utils/time.js"></script>
 	<script src="js/utils/utils.js"></script>
 
 	<script src="js/temp.js"></script>
@@ -21,7 +23,6 @@
 
 	<script src="js/calc.js"></script>
 	<script src="js/main.js"></script>
-    <!-- <script src="js/stats.js"></script> -->
 
 	<script src="js/features/grass.js"></script>
 	<script src="js/features/pp.js"></script>
@@ -128,7 +129,7 @@
 
 				<b style="color: #ffffbf">RGCI: Thunderized Balance</b> - <a href="http://aarextiaokhiao.github.io">By TehAarex</a><br>
 				<span style="font-size: 16px">
-					Version β4b α1
+					Version β4b α2
 				</span><br>
 				<span style="font-size: 12px">
 					Inspired by <a href="http://www.roblox.com/games/9292879820">Grass Cutting Incremental</a>,
@@ -257,6 +258,10 @@
 					<div style="width: 50%; height: 100%;"><div class="reset_div" id="reset_div_decel"></div></div>
 					<div style="width: 50%; height: 100%;"><div class="reset_div" id="reset_div_recel"></div></div>
 				</div>
+				<div style="width: 100%; height: 50%;" class="table_center">
+					<div style="width: 50%; height: 100%;"><div class="reset_div" id="reset_div_planetoid_realm"></div></div>
+					<div style="width: 50%; height: 100%;"></div>
+				</div>
 			</div><div id="map_div_rf">
 				<div style="width: 100%; height: 50%;" class="table_center">
 					<div style="width: 400px; height: 100%;"><div class="upgs_div rocket" id="refinery_div">
@@ -294,9 +299,17 @@
 				<div id="chrono_unl">
 					Steelie once to unlock.
 				</div><div id="chrono_div">
-					<b class="red">This is currently incomplete. Updates soon!</b><br><br>
-					<b>Time Capacity</b>: <span id="chrono_amt"></span>/1,000<br>
-					<button id="chrono_speed" onclick="MAIN.chrono.toggle()">x2 speed: OFF</button><br>
+					<div style="width: 100%; height: 50%;" class="table_center">
+						<div style="width: 33%; height: 100%;">
+							<h2>Next Chrona:</h2><br>
+							<b id="chrona_plat">??? Platinum</b><br>
+							<b id="chrona_moon">??? Moonstone</b>
+						</div>
+						<div style="width: 34%; height: 100%;"><div class="reset_div" id="reset_div_time"></div></div>
+						<div style="width: 33%; height: 100%;"><div class="reset_div" id="reset_div_warp"></div></div>
+					</div><div style="width: 100%; height: 50%;" class="table_center">
+						<div class="upgs_div" id="upgs_div_chrono"></div>
+					</div>
 				</div>
 			</div><div id="map_div_sc" style="position: relative;">
 				<div id="star_chart_div">

@@ -31,7 +31,7 @@ RESET.fun = {
 	reqDesc: _=>`Reach Level 270.`,
 
 	resetDesc: `Reset everything grass-skip does, but it benefits from the milestones for grass-skip.`,
-	resetGain: _=> `Gain <b>${tmp.aRes.funGain.format(0)}</b> Fun`,
+	resetGain: _=> `<b>+${tmp.aRes.funGain.format(0)}</b> Fun`,
 
 	title: `Funify`,
 	resetBtn: `Funify!`,
@@ -72,7 +72,7 @@ UPGS.funMachine = {
 	req: _ => player.aRes.fTimes > 0,
 	reqDesc: _=>`Funify once to unlock.`,
 
-	underDesc: _=>`You have ${format(player.aRes.fun,0)} Fun`,
+	underDesc: _=>getUpgResTitle('fun'),
 
 	ctn: [
 		{
@@ -188,7 +188,7 @@ UPGS.fundry = {
 			title: "SFRGT Fun",
 			desc: `Increase fun gain by <b class="green">+20%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
 		
-			res: "SFRGT",
+			res: "sfrgt",
 			icon: ["Curr/Fun"],
 						
 			cost: i => Decimal.pow(1.1,i).mul(100).ceil(),
@@ -227,7 +227,7 @@ UPGS.sfrgt = {
 
 	unl: _ => tmp.aRes.funShown && hasUpgrade('funMachine', 1),
 
-	underDesc: _=>`You have ${format(player.aRes.sfrgt,0)} SFRGT <span class='smallAmt'>${player.aRes.sfrgt.formatGain(tmp.aRes.SFRGTgain)}</span>`,
+	underDesc: _=>getUpgResTitle('sfrgt')+` <span class='smallAmt'>${player.aRes.sfrgt.formatGain(tmp.aRes.SFRGTgain)}</span>`,
 
 	ctn: [
 		{
@@ -254,7 +254,7 @@ UPGS.sfrgt = {
 			title: "Funny Stars",
 			desc: `<b class="green">Double</b> Star gain.`,
 		
-			res: "SFRGT",
+			res: "sfrgt",
 			icon: ["Curr/Star"],
 
 			cost: i => Decimal.pow(10,i).mul(1e4).ceil(),
@@ -272,7 +272,7 @@ UPGS.sfrgt = {
 			title: "Funny Astral",
 			desc: `<b class="green">Double</b> Space Power gain.`,
 		
-			res: "SFRGT",
+			res: "sfrgt",
 			icon: ["Icons/SP"],
 
 			cost: i => Decimal.pow(5,i).mul(500).ceil(),
@@ -290,7 +290,7 @@ UPGS.sfrgt = {
 			title: "Funny Charge",
 			desc: `Charge bonuses start <b class="green">10x</b> earlier.`,
 		
-			res: "SFRGT",
+			res: "sfrgt",
 			icon: ["Icons/Charge", "Icons/StarSpeed"],
 
 			cost: i => Decimal.pow(5,i).mul(300).ceil(),
@@ -306,7 +306,7 @@ UPGS.sfrgt = {
 			title: "Funny Steel",
 			desc: `<b class="green">Strengthen</b> Steel Steel upgrade.`,
 		
-			res: "SFRGT",
+			res: "sfrgt",
 			icon: ["Curr/Steel"],
 
 			cost: i => Decimal.pow(4,i**1.25).mul(1e5).ceil(),

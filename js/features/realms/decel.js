@@ -1,12 +1,24 @@
+function inAccel() {
+	return player.decel == 0
+}
+
+function inDecel() {
+	return player.decel >= 1
+}
+
+function getRealmSrc(type) {
+	if (type === undefined) return tmp.realmSrc
+	return [player, player.aRes, player.unRes][type]
+}
+
 RESET.decel = {
     unl: _=>hasUpgrade('factory',4),
 
     req: _=>true,
     reqDesc: _=>"",
 
-    resetDesc: `<span style="font-size: 14px;">Decelerating nerfs everything until you Accelerate. You'll be able to cut Anti-Grass for new upgrades.
-    </span>`,
-    resetGain: _=> `Decelerating will force a Steelie.`,
+    resetDesc: `Nerf everything until you Accelerate. You'll be able to cut Anti-Grass for new upgrades.`,
+    resetGain: _=> `This will force a Steelie.`,
 
     title: `Decelerator`,
     resetBtn: `Decelerate`,
@@ -14,8 +26,8 @@ RESET.decel = {
 
     reset(force=false) {
         if (hasUpgrade("factory", 4)) {
-            if (player.decel >= 1) player.decel = 0
-            else if (player.decel < 1) player.decel = 1
+            if (player.decel == 1) player.decel = 0
+            else player.decel = 1
             RESET.steel.doReset(true)
         }
     },
@@ -26,16 +38,14 @@ el.update.decel = _=>{
     tmp.el.grass.changeStyle("background-color", ["", "#002D9F", "#549e00"][player.decel])
     tmp.el.fog.changeStyle("background-color", ["", "#001c3b", "#ff03"][player.decel])
     tmp.el.fog.setDisplay(player.decel && !inSpace())
-    if (mapID == "dc") tmp.el.reset_btn_decel.setTxt(player.decel >= 1 ? "Accelerate" : "Decelerate")
-}
-
-function inDecel() {
-	return player.decel >= 1
+    if (mapID == "dc") tmp.el.reset_btn_decel.setTxt(player.decel == 1 ? "Accelerate" : "Decelerate")
 }
 
 aMAIN = {
 	grassGain() {
         let x = E(1)
+		if (!player.sTimes) return x
+
         x = x.mul(upgEffect('ap',0))
         x = x.mul(upgEffect('oil',0))
 		if (player.decel == 1) {
@@ -47,6 +57,8 @@ aMAIN = {
 	},
 	xpGain() {
         let x = E(1)
+		if (!player.sTimes) return x
+
         x = x.mul(upgEffect('ap',2))
         x = x.mul(upgEffect('oil',1))
         if (player.decel == 1) {
@@ -59,6 +71,8 @@ aMAIN = {
 	},
 	tpGain() {
         let x = E(1)
+		if (!player.sTimes) return x
+
         x = x.mul(upgEffect('ap',3))
         x = x.mul(upgEffect('oil',2))
         if (player.decel == 1) {
@@ -72,7 +86,7 @@ aMAIN = {
 		x = x.mul(upgEffect('aGrass',0))
 		x = x.mul(upgEffect('ap',1))
 		x = x.mul(upgEffect('oil',5))
-		if (player.decel) x = x.div(1e3)
+		if (inDecel()) x = x.div(1e3)
 		return x
 	},
 }
@@ -80,7 +94,7 @@ aMAIN = {
 UPGS.aGrass = {
     unl: _=> player.decel == 1,
 
-    title: "Anti-Grass Upgrades",
+    title: "Anti-Upgrades",
     underDesc: _=>`Some upgrades affect the Normal Realm.`,
 
     autoUnl: _=>hasUpgrade('aAuto', 1),
@@ -332,8 +346,8 @@ RESET.ap = {
     req: _=>player.aRes.level>=30,
     reqDesc: _=>`Reach Level 30.`,
 
-    resetDesc: `Anonymity resets your anti-grass, level, and charge for Anonymity Points.`,
-    resetGain: _=> `Gain <b>${tmp.aRes.apGain.format(0)}</b> Anonymity Points`,
+    resetDesc: `Reset your anti-grass, level, and charge.`,
+    resetGain: _=> `<b>+${tmp.aRes.apGain.format(0)}</b> Anonymity Points`,
 
     title: `Anonymity`,
     resetBtn: `Anonymity?`,
@@ -375,7 +389,7 @@ UPGS.ap = {
     req: _=>player.aRes.aTimes > 0,
     reqDesc: _=>`Anonymity once to unlock.`,
 
-    underDesc: _=>`You have ${format(player.aRes.ap,0)} Anonymity Points`+(tmp.aRes.apGainP > 0 ? " <span class='smallAmt'>"+formatGain(player.aRes.ap,tmp.aRes.apGain.mul(tmp.aRes.apGainP))+"</span>" : ""),
+    underDesc: _=>getUpgResTitle('ap')+(tmp.aRes.apGainP > 0 ? " <span class='smallAmt'>"+formatGain(player.aRes.ap,tmp.aRes.apGain.mul(tmp.aRes.apGainP))+"</span>" : ""),
 
     autoUnl: _=>hasUpgrade('aAuto',2),
     noSpend: _=>hasStarTree('qol', 3),
@@ -504,8 +518,8 @@ RESET.oil = {
     req: _=>player.aRes.level>=100,
     reqDesc: _=>`Reach Level 100.`,
 
-    resetDesc: `Liquefy resets everything Anonymity as well as your AP, Anonymity upgrades & tier for Oil.`,
-    resetGain: _=> `Gain <b>${tmp.aRes.oilGain.format(0)}</b> Oil`,
+    resetDesc: `Reset everything Anonymity does, as well as your AP, Anonymity, and tier.`,
+    resetGain: _=> `<b>+${tmp.aRes.oilGain.format(0)}</b> Oil`,
 
     title: `Liquefy`,
     resetBtn: `Liquefy?`,
@@ -544,7 +558,7 @@ UPGS.oil = {
     req: _=>player.aRes.lTimes > 0,
     reqDesc: _=>`Liquefy once to unlock.`,
 
-    underDesc: _=>`You have ${format(player.aRes.oil,0)} Oil`+(tmp.aRes.oilGainP > 0 ? " <span class='smallAmt'>"+formatGain(player.aRes.oil,tmp.aRes.oilGain.mul(tmp.aRes.oilGainP))+"</span>" : ""),
+    underDesc: _=>getUpgResTitle('oil')+(tmp.aRes.oilGainP > 0 ? " <span class='smallAmt'>"+formatGain(player.aRes.oil,tmp.aRes.oilGain.mul(tmp.aRes.oilGainP))+"</span>" : ""),
 
     autoUnl: _=>hasUpgrade('aAuto',3),
     noSpend: _=>hasStarTree('qol', 3),
@@ -687,7 +701,7 @@ aMAIN.gs = {
     milestone: [
         {
             r: 1,
-            desc: `Gain <b class="green">3x</b> more Grass and XP, only in Anti-Realm. Auto-value boosts Platinum.`
+            desc: `+<b class="green">3x</b> more Grass and XP, only in Anti-Realm. Auto-value boosts Platinum.`
         },
         {
             r: 2,

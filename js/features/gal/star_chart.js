@@ -3,7 +3,7 @@ const SC_IDS = {
 		[null,0,1,3],
 		[5,6,2,4],
 		[7,8,9,null],
-		[11,10,null,null]
+		[11,10,12,null]
 	],
 	auto: [
 		[4,0,1],
@@ -169,7 +169,19 @@ const STAR_CHART = {
 			branch: 8,
 			icon: ['Icons/Challenge','Icons/StarProgression'],
 
-			cost: i => E(1e3),
+			cost: i => E(1e6),
+			bulk: i => 1
+		}, {
+			unl: _ => player.gal.sacTimes,
+			max: 1,
+
+			title: "Realm Intergation",
+			desc: `Combine Grass and Anti-Grass in Normal Realm.`,
+
+			branch: 8,
+			icon: ['Curr/AntiGrass','Icons/StarProgression'],
+
+			cost: i => E(1e20),
 			bulk: i => 1
 		},
 	],

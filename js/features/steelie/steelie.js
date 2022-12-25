@@ -30,13 +30,17 @@ MAIN.steel = {
     },
     charger: {
         gain() {
-            let x = E(upgEffect('factory',2)).mul(upgEffect('factory',3)).mul(upgEffect('factory',4))
-            x = x.mul(upgEffect('gen',2)).mul(upgEffect('gen',3))
-            x = x.mul(upgEffect('plat',7))
-            x = x.mul(getGHEffect(9, 1))
-            x = x.mul(chalEff(7))
+			let x = E(1)
+			if (!inRecel()) {
+				x = E(upgEffect('factory',2)).mul(upgEffect('factory',3)).mul(upgEffect('factory',4))
+				x = x.mul(upgEffect('gen',2)).mul(upgEffect('gen',3))
+				x = x.mul(upgEffect('plat',7))
+				x = x.mul(getGHEffect(9, 1))
+				x = x.mul(chalEff(7))
 
-            x = x.mul(aMAIN.chargeGain())
+				x = x.mul(aMAIN.chargeGain())
+			}
+
             x = x.mul(upgEffect('rocket',6))
             x = x.mul(upgEffect('rocket',13))
             x = x.mul(upgEffect('rocket',19))
@@ -149,7 +153,7 @@ RESET.steel = {
     reqDesc: _=>player.decel ? `You can't Steelie until you Accelerate!` : `Reach Level 240.`,
 
     resetDesc: `Reset everything grasshop does, but it benefits from the milestones for grasshop.`,
-    resetGain: _=> `Gain <b>${tmp.steelGain.format(0)}</b> Steel`,
+    resetGain: _=> `<b>+${tmp.steelGain.format(0)}</b> Steel`,
 
     title: `Steelie`,
     resetBtn: `Steelie!`,
@@ -183,7 +187,7 @@ UPGS.factory = {
     req: _=>player.sTimes > 0,
     reqDesc: _=>`Steelie once to unlock.`,
 
-    underDesc: _=>`You have ${format(player.steel,0)} Steel`+(tmp.steelGainP > 0 ? " <span class='smallAmt'>"+formatGain(player.steel,tmp.steelGain.mul(tmp.steelGainP))+"</span>" : ""),
+    underDesc: _=>getUpgResTitle('steel')+(tmp.steelGainP > 0 ? " <span class='smallAmt'>"+formatGain(player.steel,tmp.steelGain.mul(tmp.steelGainP))+"</span>" : ""),
 
     ctn: [
         {

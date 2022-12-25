@@ -64,6 +64,7 @@ el.update.reset = _=> {
     if (mapID == 'dc') {
         updateResetHTML('decel')
         updateResetHTML('recel')
+        updateResetHTML('planetoid_realm')
     }
     if (mapID == 'rf') {
         updateResetHTML('rocket_part')

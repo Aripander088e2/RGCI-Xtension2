@@ -5,8 +5,8 @@ var mapPos
 function resetMap() {
 	mapPos = {
 		dim: "earth",
-		earth: [1,1],
-		space: [1,1]
+		earth: [1,2],
+		space: [1,2]
 	}
 
 	let pos = getMapPos()
@@ -23,20 +23,22 @@ window.addEventListener('keydown', e=>{
 
 const MAP = {
 	earth: [
-		['stats','opt',   'time','fd','rf' ],
-		['upg',  'g',     'pc',  'gh','gal'],
-		['auto', 'chrono','chal','dc',null ],
+		['stats'],
+		['time','opt',   null,  'fd','rf' ],
+		['upg', 'g',     'pc',  'gh','gal'],
+		['auto','chrono','chal','dc',null ],
 	],
 	space: [
-		['opt','time',null ,null ],
-		['gal','sc',  'at'  ,'sac'],
+		['stats'],
+		['time','opt',null ,null ],
+		['gal', 'sc',  'at'  ,'sac'],
 		[null , null, 'chal',null ]
 	]
 }
 
 const MAP_UNLS = {
 	opt: _ => true,
-	stats: _ => true,
+	stats: _ => player.pTimes > 0,
 	time: _ => player.pTimes > 0,
 	chrono: _ => player.grasshop > 0 || player.sTimes > 0,
 
@@ -211,8 +213,8 @@ function showLoc(x) {
 //Map
 const GO_TO_NAMES = {
 	opt: "Options",
-	stats: "Stats",
-	time: "Time Stats",
+	stats: "Multipliers",
+	time: "Stats",
 	chrono: "Chronology",
 
 	//EARTH
@@ -223,14 +225,14 @@ const GO_TO_NAMES = {
 	chal: "Challenges",
 	gh: "Grasshop",
 	fd: "Foundry",
-	dc: "Deceleration",
+	dc: "Realms",
 	rf: "Refinery",
 	gal: "Galactic",
 
 	//SPACE
 	sc: "Star Chart",
 	at: "Astral",
-	sac: "Sacrifice",
+	sac: "Dark Forest",
 }
 
 let go_to = false
@@ -255,7 +257,9 @@ el.setup.go_to = _ => {
 //Notifications
 const MAP_NOTIFY = {
 	opt: _ => 0,
+	stats: _ => player.pTimes > 0 ? 1 : 0,
 	time: _ => player.pTimes > 0 ? 1 : 0,
+	chrono: _ => player.sTimes > 0 ? 1 : 0,
 
 	//EARTH
 	g: _ => 0,
@@ -288,7 +292,7 @@ const MAP_NOTIFY = {
 	//SPACE
 	sc: _ => 0,
 	at: _ => 0,
-	sac: _ => hasAGHMilestone(7) ? 1 : 0,
+	sac: _ => hasAGHMilestone(13) ? 2 : hasAGHMilestone(7) ? 1 : 0,
 }
 
 tmp_update.push(_=>{

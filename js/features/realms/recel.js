@@ -27,8 +27,8 @@ RESET.recel = {
 	req: _=>hasUpgrade("funMachine", 3),
 	reqDesc: _=>"Get 33 Negative Energy and a new Upgrade in SFRGT.",
 
-	resetDesc: `<span style="font-size: 14px;">Recelerating nerfs everything until you Accelerate. You'll be able to cut Unnatural Grass for new upgrades.</span>`,
-	resetGain: _=> `Recelerating will force a Funify.`,
+	resetDesc: `Nullify boosts that Funify resets until you Accelerate.`,
+	resetGain: _=> `This will force a Steelie.`,
 
 	title: `Recelerator`,
 	resetBtn: `Recelerate`,
@@ -36,10 +36,9 @@ RESET.recel = {
 
 	reset(force=false) {
 		if (hasUpgrade("funMachine", 3)) {
-			if (player.decel >= 2) player.decel = 0
-			else if (player.decel < 2) player.decel = 2
+            if (player.decel == 2) player.decel = 0
+            else player.decel = 2
 			RESET.steel.doReset(true)
-			RESET.fun.doReset(true)
 		}
 	},
 }
@@ -51,7 +50,7 @@ el.update.recel = _=>{
 UPGS.unGrass = {
 	unl: _=> player.decel == 2,
 
-	title: "Unnatural Grass Upgrades",
+	title: "Unnatural Upgrades",
 
 	autoUnl: _=>false,
 
@@ -174,8 +173,8 @@ RESET.np = {
 	req: _=>player.unRes.level>=50,
 	reqDesc: _=>`Reach Level 50.`,
 
-	resetDesc: `Normality resets your unnatural grass, level, and astral for Normality Points.`,
-	resetGain: _=> `Gain <b>${tmp.unRes.npGain.format(0)}</b> Normality Points`,
+	resetDesc: `Reset your unnatural grass, level, and astral for Normality Points.`,
+	resetGain: _=> `<b>+${tmp.unRes.npGain.format(0)}</b> Normality Points`,
 
 	title: `Normality`,
 	resetBtn: `Normality...`,
@@ -216,7 +215,7 @@ UPGS.np = {
 	req: _=>player.unRes.nTimes > 0,
 	reqDesc: _=>`Normality once to unlock.`,
 
-	underDesc: _=>`You have ${format(player.unRes.np,0)} Normality Points`,
+	underDesc: _=>getUpgResTitle('np'),
 
 	autoUnl: _=>false,
 	noSpend: _=>false,

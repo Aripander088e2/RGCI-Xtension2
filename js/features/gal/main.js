@@ -26,7 +26,7 @@ RESET.gal = {
 	reqDesc: _=>`Get 10 Rocket Parts to unlock.`,
 
 	resetDesc: `Galactic will reset <b class="red">EVERYTHING prior</b> except Rocket Fuel upgrades! Last chance before departure...`,
-    resetGain: _=> galUnlocked() ? `Gain <b>${tmp.gal.star_gain.format(0)}</b> Stars` : `You'll also unlock <b>Grass-Skips</b>.`,
+    resetGain: _=> galUnlocked() ? `<b>+${tmp.gal.star_gain.format(0)}</b> Stars` : `You'll also unlock <b>Grass-Skips</b>.`,
 
 	title: `Galactic`,
 	resetBtn: `Galactic!`,
@@ -265,7 +265,7 @@ function getAstralEff(id, def = 1) { return (tmp.gal && tmp.gal.astral.eff[id]) 
 UPGS.moonstone = {
 	title: "Moonstone Upgrades",
 
-	underDesc: _=>`You have ${format(player.gal.moonstone,0)} Moonstone (${formatPercent(tmp.gal.ms.chance)} platinum grow chance)`,
+	underDesc: _=>getUpgResTitle('moonstone')+` (${formatPercent(tmp.gal.ms.chance)} platinum grow chance)`,
 
 	ctn: [
 		{
