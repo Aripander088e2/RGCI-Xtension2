@@ -16,7 +16,7 @@ aMAIN.fun = {
 	},
 	SFRGTgain() {
 		let r = E(1)
-		r = r.mul(getGSEffect(10))
+		r = r.mul(getGSEffect(11))
 		r = r.mul(upgEffect('funMachine', 1))
 		r = r.mul(upgEffect('sfrgt', 0))
         r = r.mul(getAstralEff('sf'))
@@ -68,7 +68,7 @@ tmp_update.push(_=>{
 UPGS.funMachine = {
 	title: "The Funny Machine",
 
-	unl: _=> tmp.aRes.gs.shown && (player.aRes.grassskip >= 8 || player.gal.sacTimes),
+	unl: _=> tmp.aRes.gs.shown && (player.aRes.grassskip >= 8 || MAIN.sac.did()),
 
 	req: _ => player.aRes.fTimes > 0,
 	reqDesc: _=>`Funify once to unlock.`,

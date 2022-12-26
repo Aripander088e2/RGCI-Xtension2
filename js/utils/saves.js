@@ -203,7 +203,7 @@ function deepUndefinedAndDecimal(obj, data) {
 function convertStringToDecimal() {
 	if (player.gal) {
 		player.gal = deepUndefinedAndDecimal(player.gal, setupGal())
-		if (player.gal.sacTimes) player.unRes = deepUndefinedAndDecimal(player.unRes, setupRecel())
+		if (MAIN.sac.did()) player.unRes = deepUndefinedAndDecimal(player.unRes, setupRecel())
 	}
 }
 

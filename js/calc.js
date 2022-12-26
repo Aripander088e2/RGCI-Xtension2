@@ -14,11 +14,12 @@ function calc(dt, skip) {
 	//UNNATURAL REALM
 	if (player.unRes) {
 		player.unRes.nTime += dt
-		if (inRecel()) MAIN.checkCutting(2)
+		if (inRecel()) MAIN.levelUp(2)
 	}
 	if (tmp.habit) unMAIN.habit.tick(dt)
 
 	//ANTI-REALM
+	if (inDecel()) MAIN.levelUp(1)
 	if (!inRecel()) {
 		player.aRes.aTime += dt
 		player.aRes.lTime += dt
@@ -27,7 +28,6 @@ function calc(dt, skip) {
 		if (tmp.aRes.apGainP > 0 && player.aRes.level >= 30) player.aRes.ap = player.aRes.ap.add(tmp.aRes.apGain.mul(dt*tmp.aRes.apGainP))
 		if (tmp.aRes.oilGainP > 0 && player.aRes.level >= 100) player.aRes.oil = player.aRes.oil.add(tmp.aRes.oilGain.mul(dt*tmp.aRes.oilGainP))
 		if (hasStarTree('auto',10)) ROCKET.create()
-		MAIN.checkCutting(1)
 	}
 	if (tmp.m_prod > 0) player.rocket.momentum += ROCKET_PART.m_gain()*dt*tmp.m_prod
 
@@ -41,7 +41,7 @@ function calc(dt, skip) {
 		if (tmp.steelGainP > 0 && player.level >= 240) player.steel = player.steel.add(tmp.steelGain.mul(tmp.steelGainP*dt))
 	}
 
-	if (hasUpgrade('factory',2)) player.chargeRate = player.chargeRate.add(tmp.chargeGain.mul(dt))
+	if (MAIN.steel.charger.unl()) player.chargeRate = player.chargeRate.add(tmp.chargeGain.mul(dt))
 	player.bestCharge = player.bestCharge.max(player.chargeRate)
 
 	//PRESTIGE
@@ -81,13 +81,13 @@ function calc(dt, skip) {
 			tmp.autocutTime -= tmp.autocut
 			for (let i = 0; i < tmp.autocutAmt; i++) {
 				let r = randint(0, grass.length-1)
-				let g = grass[x]
+				let g = grass[r]
 				if (g && !g.habit) removeGrass(r,true)
 			}
 		}
 		tmp.autocutTime = 0
 	}
-	if (inAccel()) MAIN.checkCutting(0)
+	if (inAccel()) MAIN.levelUp(0)
 
 	for (let x in UPGS) if (tmp.upgs[x].autoUnl && player.autoUpg[x]) buyAllUpgrades(x,true)
 	player.maxPerk = Math.max(player.maxPerk, tmp.perks)

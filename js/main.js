@@ -8,57 +8,10 @@ function loop() {
 
 var player = {}, date = Date.now(), diff = 0;
 const MAIN = {
-	grassGain() {
-		let x = upgEffect('grass',0).mul(tmp.tier.mult)
-		if (inAccel()) {
-			x = x.mul(upgEffect('perk',0))
-			x = x.mul(upgEffect('pp',0))
-			x = x.mul(upgEffect('crystal',0))
-			x = x.mul(upgEffect('plat',2))
-		}
-		if (!inRecel()) x = x.mul(aMAIN.grassGain())
-
-		x = x.mul(chalEff(0))
-		x = x.mul(upgEffect('rocket',0))
-		x = x.mul(upgEffect('rocket',17))
-		x = x.mul(upgEffect('momentum',0))
-
-		return x
-	},
-	grassCap() {
-		let x = 10
-		if (inAccel()) x += upgEffect('grass',1,0)+upgEffect('perk',1,0)
-		if (!inRecel()) x += upgEffect('ap',4,0)
-		if (inRecel()) x = 250
-		if (player.options.lowGrass) x = Math.min(x, 250)
-
-		return x
-	},
-	grassSpawn() {
-		let x = 2
-		if (inAccel()) {
-			x /= upgEffect('grass',2,1)
-			x /= upgEffect('perk',2,1)
-		}
-		if (inDecel()) x /= upgEffect('aGrass',1,1)
-		x /= upgEffect('momentum',1)
-		if (hasUpgrade('rocket',16)) x = 1 / (1 / x + upgEffect('rocket', 16))
-		if (inRecel()) x = 1/10
-		return x
-	},
-	rangeCut: _=>70+upgEffect('grass',4,0)+upgEffect('perk',4,0)+upgEffect('aGrass',6,0)+upgEffect("unGrass",2,0),
-	autoCut() {
-		let interval = 5-upgEffect('auto',0,0)-upgEffect('plat',0,0)
-		interval /= starTreeEff("auto",7)
-		if (inDecel()) interval *= 10 / upgEffect('aAuto', 0)
-		if (inRecel()) interval = 0.1
-		return interval
-	},
-
 	level: {
-		gain(i) {
+		gain(realm) {
 			let x = E(tmp.tier.mult)
-			if (inAccel()) {
+			if (realm == 0) {
 				x = x.mul(upgEffect('grass',3))
 				x = x.mul(upgEffect('perk',3))
 				x = x.mul(upgEffect('pp',1))
@@ -66,7 +19,7 @@ const MAIN = {
 				x = x.mul(upgEffect('plat',1))
 				x = x.mul(getAstralEff('xp'))
 			}
-			if (!inRecel()) x = x.mul(aMAIN.xpGain())
+			if (realm <= 1) x = x.mul(aMAIN.xpGain())
 
 			if (player.grasshop >= 7) x = x.mul(2)
 			x = x.mul(chalEff(1))
@@ -103,18 +56,18 @@ const MAIN = {
 		},
 	},
 	tier: {
-		gain(i) {
+		gain(realm) {
 			if (inChal(2)) return E(0)
 
 			let x = E(1)
-			if (inAccel()) {
+			if (realm == 0) {
 				x = x.mul(upgEffect('pp',2))
 				x = x.mul(upgEffect('pp',4))
 				x = x.mul(upgEffect('crystal',2))
 				x = x.mul(upgEffect('plat',4))
 				x = x.mul(upgEffect('perk',7))
 			}
-			if (!inRecel()) x = x.mul(aMAIN.tpGain())
+			if (realm <= 1) x = x.mul(aMAIN.tpGain())
 
 			if (player.grasshop >= 1) x = x.mul(4)
 			x = x.mul(chalEff(2))
@@ -149,14 +102,10 @@ const MAIN = {
 			return Decimal.pow(MAIN.tier.base(), i)
 		},
 	},
-	checkCutting() {
+	levelUp(realm) {
 		let src = getRealmSrc()
-		if (src.xp.gte(tmp.level.next)) {
-			src.level = Math.max(src.level, tmp.level.bulk)
-		}
-		if (src.tp.gte(tmp.tier.next)) {
-			src.tier = Math.max(src.tier, tmp.tier.bulk)
-		}
+		src.level = Math.max(src.level, tmp.level.bulk)
+		src.tier = Math.max(src.tier, tmp.tier.bulk)
 	}, 
 }
 
@@ -205,10 +154,10 @@ el.update.main = _=>{
 }
 
 tmp_update.push(_=>{
-	tmp.grassCap = MAIN.grassCap()
-	tmp.grassSpawn = MAIN.grassSpawn()
-	tmp.rangeCut = MAIN.rangeCut()
-	tmp.autocut = MAIN.autoCut()
+	tmp.grassCap = MAIN.grass.cap()
+	tmp.grassSpawn = MAIN.grass.spawn()
+	tmp.rangeCut = MAIN.grass.range()
+	tmp.autocut = MAIN.grass.auto()
 
 	tmp.autoCutUnlocked = hasUpgrade('auto',0)
 
@@ -216,7 +165,7 @@ tmp_update.push(_=>{
 	tmp.autocutAmt = 1+upgEffect('auto',2,0)
 	tmp.spawnAmt = 1+upgEffect('perk',5,0)+upgEffect('crystal',5,0)
 
-	tmp.grassGain = MAIN.grassGain()
+	tmp.grassGain = MAIN.grass.gain()
 
 	tmp.perks = MAIN.level.perk()
 

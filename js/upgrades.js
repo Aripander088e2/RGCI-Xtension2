@@ -1024,8 +1024,7 @@ function hasUpgrades(id) {
 function upgEffect(id,x,def=1) { return tmp.upgs[id].eff[x] || def }
 
 function resetUpgrades(id) {
-    let u = UPGS[id]
-    for (let x in u.ctn) player.upgs[id][x] = 0
+    player.upgs[id] = []
 }
 
 function updateUpgResource(id) {

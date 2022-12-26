@@ -8,7 +8,6 @@ MAIN.steel = {
         x = x.mul(getGHEffect(8, 1))
         x = x.mul(chalEff(6))
         x = x.mul(tmp.chargeEff[0]||1)
-		x = x.mul(tmp.chargeEff[9]||1)
 
         x = x.mul(upgEffect('aGrass',2))
         x = x.mul(upgEffect('oil',4))
@@ -29,6 +28,7 @@ MAIN.steel = {
         return x
     },
     charger: {
+        unl: _ => hasUpgrade("factory", 2) || hasGSMilestone(11),
         gain() {
 			let x = E(1)
 			if (!inRecel()) {
@@ -47,6 +47,7 @@ MAIN.steel = {
             x = x.mul(upgEffect('momentum',7))
 
             x = x.mul(getAstralEff('ch'))
+            x = x.mul(getGSEffect(10))
 
             return x
         },
@@ -122,9 +123,9 @@ MAIN.steel = {
 
                 req: E(1e45),
                 eff(c) {
-                    return c.div(1e40).add(1).log10().div(3).pow10()
+                    return c.div(inRecel() ? 1e3 : 1e40).add(1).log10().div(3).pow10()
                 },
-                effDesc: x => "Gain more "+format(x,3)+"x Steel.",
+                effDesc: x => "Gain more "+format(x,3)+"x Grass.",
             },{
                 unl: _ => hasUpgrade("funMachine", 2),
 
@@ -364,8 +365,8 @@ UPGS.foundry = {
             res: "grass",
             icon: ["Curr/Steel"],
                         
-            cost: i => Decimal.pow(1.5,i).mul(1e38).ceil(),
-            bulk: i => i.div(1e38).max(1).log(1.5).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.4,i).mul(1e38).ceil(),
+            bulk: i => i.div(1e38).max(1).log(1.4).floor().toNumber()+1,
         
             effect(i) {
                 let x = Decimal.pow(1.25, Math.floor(i/25)).mul(i/5+1)
@@ -710,7 +711,7 @@ el.setup.factory = _=>{
 
 el.update.factory = _=>{
     if (mapID == "fd") {
-        let unl = hasUpgrade('factory',2)
+        let unl = MAIN.steel.charger.unl()
 
         tmp.el.charger_div.setDisplay(unl)
 

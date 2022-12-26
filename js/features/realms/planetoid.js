@@ -1,5 +1,5 @@
 RESET.planetoid = {
-	unl: _=>MAIN.sac.did(),
+	unl: _=>hasAGHMilestone(8),
 
 	req: _=>hasAGHMilestone(13),
 	reqDesc: _=>"Get 45 Negative Energy.",

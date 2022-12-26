@@ -49,8 +49,8 @@ const MAP_UNLS = {
 	pc: _ => player.level > 5 || player.pTimes > 0,
 	chal: _ => player.pTimes > 0,
 	gh: _ => player.cTimes > 0,
-	fd: _ => hasUpgrade("factory", 0),
-	dc: _ => hasUpgrade("factory", 4) || (MAIN.sac.did()),
+	fd: _ => hasUpgrade("factory", 0) || MAIN.steel.charger.unl(),
+	dc: _ => hasUpgrade("factory", 4) || hasAGHMilestone(7),
 	rf: _ => hasUpgrade("factory", 5) || galUnlocked(),
 	gal: _ => player.rocket.part > 0 || galUnlocked(),
 

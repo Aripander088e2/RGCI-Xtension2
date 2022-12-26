@@ -51,14 +51,14 @@ RESET.gal = {
 		player.gal.time = 0
 
 		player.plat = 0
-		if (hasStarTree("qol", 11)) {
-			for (var i = 6; i < 8; i++) player.chal.comp[i] = 0
+		if (!hasStarTree("qol", 11)) {
+			for (var i = 0; i < 8; i++) player.chal.comp[i] = 0
 			for (var i = 0; i < 8; i++) player.chal.max[i] = 0
 		}
 		player.grasshop = 0
 		player.steel = E(0)
         player.sTime = 0
-		player.bestCharge = E(0)
+		if (!hasGSMilestone(11)) player.bestCharge = E(0)
 		if (!inRecel()) player.decel = 0
 		player.rocket = { total_fp: 0, amount: hasStarTree("qol", 9) ? player.rocket.amount : 0, part: 0, momentum: ROCKET_PART.upgraded() ? player.rocket.momentum : 0 }
 		resetAntiRealm()
@@ -112,7 +112,7 @@ tmp_update.push(_=>{
 function galTick(dt) {
 	player.gal.time += dt
 	player.gal.sacTime += dt
-	if (player.gal.sp.gte(tmp.gal.astral.req)) player.gal.astral = ASTRAL.bulk()
+	player.gal.astral = Math.max(player.gal.astral, ASTRAL.bulk())
 
 	player.gal.ghPotential = Math.max(player.gal.ghPotential, MAIN.gh.bulk())
 	player.gal.gsPotential = Math.max(player.gal.gsPotential, aMAIN.gs.bulk())

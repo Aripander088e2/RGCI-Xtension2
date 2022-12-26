@@ -232,10 +232,10 @@ function autoChalTime() {
 }
 
 tmp_update.push(_=>{
-	let work = inChal(7) || inRecel()
 	for (let [i, c] of Object.entries(CHALS)) {
-		tmp.chal.goal[i] = c.goal(player.chal.comp[i] || 0)
-		tmp.chal.eff[i] = c.eff(work && c.unl() && c.id != "steel" ? 0 : c)
+		let comp = player.chal.comp[i] || 0
+		tmp.chal.goal[i] = c.goal(comp)
+		tmp.chal.eff[i] = c.eff(c.unl() && !inRecel() && (!inChal(7) || c.id == "steel") ? comp : 0)
 
 		if (inChalCond(i)) {
 			let a = c.goalAmt()

@@ -41,8 +41,6 @@ function resetTemp() {
 		},
 		chargeEff: [],
 
-
-
 		realmSrc: player,
 		aRes: {
 			gs: {

@@ -8,10 +8,10 @@ MAIN.sac = {
 }
 
 RESET.sac = {
-	unl: _ => hasStarTree("progress", 6),
+	unl: _ => hasAGHMilestone(7),
 
-	req: _ => hasAGHMilestone(7) && player.gal.stars.gte(1e12),
-	reqDesc: _ => `Get 21 Negative Energy and ${format(1e12)} stars.`,
+	req: _ => player.gal.stars.gte(1e12),
+	reqDesc: _ => `Reach ${format(1e12)} stars.`,
 
 	resetDesc: `Reset everything Galactic does, and so Stars, Astral, Grass-Skips, and Funify (except Fun Machine).`,
 	resetGain: _ => `<b>+${tmp.gal.dmGain.format(0)}</b> Dark Matters`,

@@ -701,23 +701,23 @@ aMAIN.gs = {
     milestone: [
         {
             r: 1,
-            desc: `+<b class="green">3x</b> more Grass and XP, only in Anti-Realm. Auto-value boosts Platinum.`
+            desc: `Only in Anti-Realm, <b class="green">3x</b> Grass and XP. Auto-value boosts Platinum.`
         },
         {
             r: 2,
-            desc: `Each Grass-Skip gives <b class="green">2x</b> more SP. (starting at 2)`,
+            desc: `<b class="green">2x</b> Space Power per Grass-Skip. (starting at 9)`,
             effect: _ => E(2).pow(Math.max(player.aRes.grassskip - 1, 0)),
             effDesc: x => format(x, 0) + "x"
         },
         {
             r: 3,
-            desc: `Each Grass-Skip gives <b class="green">30%</b> more Stars.`,
+            desc: `<b class="green">30%</b> more Stars per Grass-Skip.`,
             effect: _ => E(1.3).pow(player.aRes.grassskip),
             effDesc: x => format(x) + "x"
         },
         {
             r: 4,
-            desc: `Each Grass-Skip gives <b class="green">+0.1x</b> more Rocket Fuel. (starting at 4)`,
+            desc: `<b class="green">+0.1x</b> Rocket Fuel per Grass-Skip. (starting at 4)`,
             effect: _ => Math.max(player.aRes.grassskip-3,0)/10,
             effDesc: x => "+" + format(x, 1) + "x"
         },
@@ -733,7 +733,7 @@ aMAIN.gs = {
         },
         {
             r: 7,
-            desc: `In Normal Realm, platinum chance is <b class="green">doubled</b> but moonstone chance is 10x lower.`
+            desc: `In Normal Realm: <b class="green">double</b> platinum chance, but moonstone chance is 10x lower.`
         },
         {
             r: 8,
@@ -742,36 +742,36 @@ aMAIN.gs = {
         {
             unl: _ => player.aRes.fTimes,
             r: 9,
-            desc: `Each Grass-Skip gives <b class="green">3x</b> more Fun. (starting at 9)`,
+            desc: `<b class="green">3x</b> Fun per Grass-Skip. (starting at 9)`,
             effect: _ => E(3).pow(Math.max(player.aRes.grassskip - 8, 0)),
             effDesc: x => format(x, 0) + "x"
         },
         {
             unl: _ => player.aRes.fTimes,
             r: 10,
-            desc: `Moonstone chance is <b class="green">doubled.</b>`
+            desc: `<b class="green">Double</b> Moonstone chance.`
+        },
+        {
+            unl: _ => player.aRes.fTimes,
+            r: 11,
+            desc: `Keep Charger on Galactic. <b class="green">5x</b> Charge per Grass-Skip. (starting at 11)`,
+            effect: _ => E(10).pow(Math.max(player.aRes.grassskip - 10, 0)),
+            effDesc: x => format(x, 0) + "x"
         },
         {
             unl: _ => player.aRes.fTimes,
             r: 12,
-            desc: `Each Grass-Skip gives <b class="green">2x</b> more SRFGT. (starting at 12)`,
+            desc: `<b class="green">Double</b> SRFGT per Grass-Skip. (starting at 12)`,
             effect: _ => E(2).pow(Math.max(player.aRes.grassskip - 11, 0)),
             effDesc: x => format(x, 0) + "x"
         },
         {
             unl: _ => hasAGHMilestone(9),
             r: 15,
-            desc: `Each Grass-Skip gives <b class="green">+1</b> to Unnatural Healing. (starting at 15)`,
+            desc: `<b class="green">+1</b> to Unnatural Healing per Grass-Skip. (starting at 15)`,
             effect: _ => Math.max(player.aRes.grassskip - 14, 0),
             effDesc: x => "+" + format(x, 0)
         },
-        /*{
-            unl: _ => player.aRes.fTimes,
-            r: 16,
-            desc: `Grass-Skips raise Stars. (starting at 16 and ending at 30)`,
-            effect: _ => Math.min(Math.max(player.aRes.grassskip / 15, 1), 2),
-            effDesc: x => "^" + format(x)
-        },*/
     ],
 }
 

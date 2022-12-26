@@ -1,3 +1,53 @@
+MAIN.grass = {
+	gain() {
+		let x = upgEffect('grass',0).mul(tmp.tier.mult)
+		if (inAccel()) {
+			x = x.mul(upgEffect('perk',0))
+			x = x.mul(upgEffect('pp',0))
+			x = x.mul(upgEffect('crystal',0))
+			x = x.mul(upgEffect('plat',2))
+		}
+		if (!inRecel()) x = x.mul(aMAIN.grassGain())
+
+		x = x.mul(chalEff(0))
+		x = x.mul(tmp.chargeEff[9]||1)
+		x = x.mul(upgEffect('rocket',0))
+		x = x.mul(upgEffect('rocket',17))
+		x = x.mul(upgEffect('momentum',0))
+
+		return x
+	},
+	cap() {
+		let x = 10
+		if (inAccel()) x += upgEffect('grass',1,0)+upgEffect('perk',1,0)
+		if (!inRecel()) x += upgEffect('ap',4,0)
+		if (inRecel()) x = 250
+		if (player.options.lowGrass) x = Math.min(x, 250)
+
+		return x
+	},
+	spawn() {
+		let x = 2
+		if (inAccel()) {
+			x /= upgEffect('grass',2,1)
+			x /= upgEffect('perk',2,1)
+		}
+		if (inDecel()) x /= upgEffect('aGrass',1,1)
+		x /= upgEffect('momentum',1)
+		if (hasUpgrade('rocket',16)) x = 1 / (1 / x + upgEffect('rocket', 16))
+		if (inRecel()) x = 1/10
+		return x
+	},
+	range: _=>70+upgEffect('grass',4,0)+upgEffect('perk',4,0)+upgEffect('aGrass',6,0)+upgEffect("unGrass",2,0),
+	auto() {
+		let interval = 5-upgEffect('auto',0,0)-upgEffect('plat',0,0)
+		interval /= starTreeEff("auto",7)
+		if (inDecel()) interval *= 10 / upgEffect('aAuto', 0)
+		if (inRecel()) interval = 0.1
+		return interval
+	},
+}
+
 const G_SIZE = 15
 const G_RANGE = 50
 

@@ -22,7 +22,7 @@ function setupRecel() {
 let unMAIN = {}
 
 RESET.recel = {
-	unl: _=>MAIN.sac.did(),
+	unl: _=>hasAGHMilestone(7),
 
 	req: _=>hasUpgrade("funMachine", 3),
 	reqDesc: _=>"Get 33 Negative Energy and a new Upgrade in SFRGT.",
