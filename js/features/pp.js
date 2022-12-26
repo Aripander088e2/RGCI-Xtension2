@@ -24,7 +24,10 @@ RESET.pp = {
     reqDesc: _=>`Reach Level 30.`,
 
     resetDesc: `Reset your grass, upgrades, level, and perks.`,
-    resetGain: _=> `<b>+${tmp.ppGain.format(0)}</b> Prestige Points`,
+    resetGain: _=> `
+        <b>+${tmp.ppGain.format(0)}</b> Prestige Points
+        ${player.pTimes ? '' : '<br><b class="cyan">Also unlock Tiers, which boosts sources on levelling!</b>'}
+    `,
 
     title: `Prestige`,
     resetBtn: `Prestige`,

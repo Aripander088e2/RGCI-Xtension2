@@ -33,11 +33,10 @@ el.update.stats = _=>{
 		let gStats = inSpace()
 		let gStatsUnl = galUnlocked()
 		let gStatsShown = gStatsUnl && (gStats || player.options.allStats)
-		tmp.el.gStats.setDisplay(gStatsShown)
-		if (gStatsShown) {
-			tmp.el.gStatsHeader.setDisplay(player.options.allStats)
+		tmp.el.gStats.setDisplay(gStatsUnl)
+		if (gStatsUnl) {
 			tmp.el.gTimes.setHTML("You did " + player.gal.times + " <b style='color: #bf00ff'>Galactic</b> resets.<br>Time: " + formatTime(player.gal.time))
-			tmp.el.sacTimes.setHTML(player.gal.sacTimes ? "You did " + player.gal.sacTimes + " <b style='color: #ffa4d9'>Sacrifice</b> resets.<br>Time: " + formatTime(player.gal.sacTime) : "")
+			tmp.el.sacTimes.setHTML(gStatsShown && player.gal.sacTimes ? "You did " + player.gal.sacTimes + " <b style='color: #ffa4d9'>Sacrifice</b> resets.<br>Time: " + formatTime(player.gal.sacTime) : "")
 		}
 
 		tmp.el.allStatsBtn.setDisplay(hasUpgrade('factory', 4) || galUnlocked())

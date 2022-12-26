@@ -518,7 +518,7 @@ RESET.oil = {
     req: _=>player.aRes.level>=100,
     reqDesc: _=>`Reach Level 100.`,
 
-    resetDesc: `Reset everything Anonymity does, as well as your AP, Anonymity, and tier.`,
+    resetDesc: `Reset everything Anonymity does, and so Anonymity and Tier.`,
     resetGain: _=> `<b>+${tmp.aRes.oilGain.format(0)}</b> Oil`,
 
     title: `Liquefy`,
@@ -784,7 +784,7 @@ RESET.gs = {
 	req: _=>player.aRes.level>=200,
 	reqDesc: _=>`Reach Level 200.`,
 
-	resetDesc: `Reset everything liquefy does as well as steel, foundry, charge upgrades, and oil. Grass-skips don't reset on Galactic!`,
+	resetDesc: `Reset everything Liquefy does and so Steel, Foundry, Charger upgrades, and Oil. Grass-skips don't reset on Galactic!`,
 	resetGain: _=> `Reach Level <b>${format(tmp.aRes.gs.req,0)}</b> to Grass-skip`,
 
 	title: `Grass-Skip`,
@@ -899,7 +899,7 @@ el.update.gs = _=>{
                     let unl = m.unl ? m.unl() : true
                     let id = "gs_mil_ctn"+x
 
-                    tmp.el[id+"_div"].setDisplay(unl && (!player.options.hideMilestone || x+1 >= GS_MIL_LEN || player.aRes.grassskip < aMAIN.gs.milestone[x+1].r))
+                    tmp.el[id+"_div"].setDisplay(unl && (!player.options.hideMilestone || player.aRes.grassskip < aMAIN.gs.milestone[x].r))
                     tmp.el[id+"_div"].setClasses({bought: player.aRes.grassskip >= m.r})
                     if (m.effDesc) tmp.el[id+"_eff"].setHTML(m.effDesc(tmp.aRes.gs.eff[x]))
                 }

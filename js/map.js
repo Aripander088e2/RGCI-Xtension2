@@ -38,9 +38,9 @@ const MAP = {
 
 const MAP_UNLS = {
 	opt: _ => true,
-	stats: _ => player.pTimes > 0,
+	stats: _ => false, //player.pTimes > 0,
 	time: _ => player.pTimes > 0,
-	chrono: _ => player.grasshop > 0 || player.sTimes > 0,
+	chrono: _ => grassHopped(),
 
 	//EARTH
 	g: _ => true,
@@ -66,9 +66,18 @@ const MAP_IDS = (_=>{
 	return x
 })()
 
-function unlockedMap(dx,dy,dim) {
-	let i = MAP?.[dim]?.[dy]?.[dx] 
+function unlockedMapId(i) {
 	return MAP_UNLS[i] && MAP_UNLS[i]()
+}
+
+function getMapPosId(x, y, dim) {
+	return MAP?.[dim]?.[y]?.[x]
+}
+
+function switchMapId(id) {
+	mapID = id
+	delete player.map_notify[id]
+	if (tmp.el) showLoc(MAP_CATEGORIES[id])
 }
 
 function getMapPos() {
@@ -81,16 +90,12 @@ function moveMap(dx,dy) {
 }
 
 function switchMapPos(mx,my,dim) {
-	if (unlockedMap(mx,my,dim)) {
+	let mapId = getMapPosId(mx,my,dim)
+	if (unlockedMapId(mapId)) {
+		mapPos.dim = dim
 		mapPos[dim] = [mx, my]
-		if (mapPos.dim == dim) switchMapId(MAP[dim][my][mx])
+		if (mapPos.dim == dim) switchMapId(mapId)
 	}
-}
-
-function switchMapId(id) {
-	mapID = id
-	delete player.map_notify[id]
-	if (tmp.el) showLoc(MAP_LOCS[id])
 }
 
 el.update.map = _=>{
@@ -103,24 +108,47 @@ el.update.map = _=>{
 
 	let dim = mapPos.dim
 	let [mx,my] = getMapPos()
+	let mapId = MAP[mapPos.dim][my][mx]
+	tmp.el.position.setTxt(`(${mx+1},${my+1}) ${MAP_CATEGORIES[mapId]}: ${GO_TO_NAMES[mapId]}`)
+	tmp.el.position.changeStyle("color", inSpace() ? "#b0f" : "")
 
-	updateMapButton("lMap", mx-1, my, dim)
-	updateMapButton("rMap", mx+1, my, dim)
-	updateMapButton("uMap", mx, my-1, dim)
-	updateMapButton("dMap", mx, my+1, dim)
+	tmp.el.map_ctrl.setDisplay(!player.options.pin_bottom)
+	if (!player.options.pin_bottom) {
+		updateMapButton("lMap", mx-1, my, dim)
+		updateMapButton("rMap", mx+1, my, dim)
+		updateMapButton("uMap", mx, my-1, dim)
+		updateMapButton("dMap", mx, my+1, dim)
 
-	tmp.el.spaceButton.setDisplay(galUnlocked())
-	tmp.el.spaceButton.setTxt("(Z) " + (inSpace() ? "Go to Ground" : "Go to Space"))
+		tmp.el.spaceButton.setDisplay(galUnlocked())
+		tmp.el.spaceButton.setTxt("(Z) To " + (inSpace() ? "Ground" : "Space"))
+	}
 }
 
 function updateMapButton(el, mx, my, dim) {
-	const mapId = MAP?.[dim]?.[my]?.[mx]
+	const mapId = getMapPosId(mx, my, dim)
+	const unl = unlockedMapId(mapId)
 	tmp.el[el].setClasses({
 		map_btn: true,
-		locked: !unlockedMap(mx, my, dim),
-		[MAP_COLORS[mapId]]: unlockedMap(mx, my, dim) && !player.map_notify[mapId],
+		locked: !unl,
+		[MAP_COLORS[mapId]]: unl && !player.map_notify[mapId],
 		notify: player.map_notify[mapId],
 	})
+}
+
+//Dimensions
+function inSpace() {
+	return mapPos.dim == "space"
+}
+
+function goToSpace() {
+	switchDim(mapPos.dim == "space" ? "earth" : "space")
+}
+
+function switchDim(id) {
+	mapPos.dim = id
+
+	let pos = getMapPos()
+	switchMapId(MAP[mapPos.dim][pos[1]][pos[0]])
 }
 
 /* EXTENSION */
@@ -148,33 +176,8 @@ const MAP_COLORS = {
 	sac: "gal"
 }
 
-el.update.map_ext = _ => {
-	let pos = getMapPos()
-	let mapId = MAP[mapPos.dim][pos[1]][pos[0]]
-	tmp.el.position.setTxt(`(${pos[0]},${pos[1]}) ${MAP_LOCS[mapId]}: ${GO_TO_NAMES[mapId]}`)
-
-	tmp.el.mapBtn.setClasses({ notify: Object.keys(player.map_notify).length > 0 })
-	tmp.el.map_div.setDisplay(go_to)
-	if (go_to) {
-		for (const [dim, d_dim] of Object.entries(MAP)) {
-			tmp.el[`map_div_${dim}`].setDisplay(mapPos.dim == dim)
-			if (mapPos.dim != dim) continue
-
-			for (const [y, dy] of Object.entries(d_dim)) {
-				for (const [x, dx] of Object.entries(dy)) {
-					if (dx !== null) {
-						const unl = MAP_UNLS[dx]()
-						tmp.el[`map_btn_${dim}_${dx}`].setDisplay(unl)
-						if (unl) updateMapButton(`map_btn_${dim}_${dx}`, x, y, dim)
-					}
-				}
-			}
-		}
-	}
-}
-
 //Locations
-const MAP_LOCS = {
+const MAP_CATEGORIES = {
 	opt: "Misc",
 	stats: "Misc",
 	time: "Misc",
@@ -231,15 +234,19 @@ const GO_TO_NAMES = {
 
 	//SPACE
 	sc: "Star Chart",
-	at: "Astral",
+	at: "Star Platform",
 	sac: "Dark Forest",
 }
 
-let go_to = false
+function openMap() {
+	go_to = go_to == "map" ? "" : "map"
+}
+
+let go_to = ''
 el.setup.go_to = _ => {
 	let html = ""
 	for (const [dim, d_dim] of Object.entries(MAP)) {
-		html += `<table id="map_div_${dim}">`
+		html += `<table class="map_div" id="map_div_${dim}">`
 		for (const [y, dy] of Object.entries(d_dim)) {
 			html += "<tr>"
 			for (const [x, dx] of Object.entries(dy)) {
@@ -251,7 +258,30 @@ el.setup.go_to = _ => {
 		}
 		html += "</table>"
 	}
+	html += `<button onclick="go_to = ''">Close</button>`
 	new Element("map_div").setHTML(html)
+}
+
+el.update.go_to = _ => {
+	let shown = go_to == "map"
+	tmp.el.map_btn.setClasses({ notify: Object.keys(player.map_notify).length > 0 })
+	tmp.el.map_div.setDisplay(shown)
+	if (shown) {
+		for (const [dim, d_dim] of Object.entries(MAP)) {
+			tmp.el[`map_div_${dim}`].setDisplay(mapPos.dim == dim)
+			if (mapPos.dim != dim) continue
+
+			for (const [y, dy] of Object.entries(d_dim)) {
+				for (const [x, dx] of Object.entries(dy)) {
+					if (dx !== null) {
+						const unl = MAP_UNLS[dx]()
+						tmp.el[`map_btn_${dim}_${dx}`].setDisplay(unl)
+						if (unl) updateMapButton(`map_btn_${dim}_${dx}`, x, y, dim)
+					}
+				}
+			}
+		}
+	}
 }
 
 //Notifications
@@ -259,7 +289,7 @@ const MAP_NOTIFY = {
 	opt: _ => 0,
 	stats: _ => player.pTimes > 0 ? 1 : 0,
 	time: _ => player.pTimes > 0 ? 1 : 0,
-	chrono: _ => player.sTimes > 0 ? 1 : 0,
+	chrono: _ => galUnlocked() ? 2 : player.sTimes ? 1 : 0,
 
 	//EARTH
 	g: _ => 0,
@@ -306,18 +336,87 @@ tmp_update.push(_=>{
 	}
 })
 
-//Dimensions
-function inSpace() {
-	return mapPos.dim == "space"
+//Pins
+function goToWhere(id, dim) {
+	let [mx, my] = findPosition(id, dim)
+	switchMapPos(mx, my, dim)
 }
 
-function goToSpace() {
-	switchDim(mapPos.dim == "space" ? "earth" : "space")
+function findPosition(id, dim) {
+	for ([my, y] of Object.entries(MAP[dim])) {
+		for ([mx, x] of Object.entries(y)) {
+			if (x == id) return [parseInt(mx), parseInt(my)]
+		}
+	}
 }
 
-function switchDim(id) {
-	mapPos.dim = id
-
-	let pos = getMapPos()
-	switchMapId(MAP[mapPos.dim][pos[1]][pos[0]])
+function openPins() {
+	go_to = go_to == "pin" ? "" : "pin"
 }
+
+function createPin() {
+	if (player.pins.length == 8) return
+	for (let [_, loc] of player.pins) if (loc == mapID) return
+	player.pins.push([mapPos.dim, mapID])
+}
+
+function deletePin(i) {
+	let newPins = []
+	for (let [j, p] of Object.entries(player.pins)) if (j != i) newPins.push(p)
+	player.pins = newPins
+}
+
+function goToPin(i) {
+	let pin = player.pins[i]
+	goToWhere(pin[1], pin[0])
+}
+
+el.setup.pin = _ => {
+	let html = ``
+	let html_bottom = ``
+	for (var i = 0; i < 8; i++) {
+		html += `<tr id='pin_row_${i}'>
+			<td><button id='pin_go_${i}' onclick='goToPin(${i})'>Testing</button></td>
+			<td><button class='notify' onclick='deletePin(${i})'>X</button></td>
+		</tr>`
+		html_bottom += `<button id='pin_bottom_${i}' onclick='goToPin(${i})'>Testing</button>`
+	}
+	new Element("pin_table").setHTML(html)
+	new Element("pin_bottom").setHTML(html_bottom)
+}
+
+el.update.pin = _ => {
+	tmp.el.pin_btn.setDisplay(player.sTimes)
+
+	let shown = go_to == "pin"
+	tmp.el.pin_div.setDisplay(shown)
+	if (shown) {
+		tmp.el.pin_bottom_opt.setTxt(player.options.pin_bottom ? "ON" : "OFF")
+		for (var i = 0; i < 8; i++) {
+			let added = player.pins[i]
+			tmp.el["pin_row_"+i].setDisplay(added)
+
+			if (!added) continue
+			let shown2 = unlockedMapId(added[1])
+			tmp.el["pin_go_"+i].setClasses({ locked: !shown2 })
+			tmp.el["pin_go_"+i].setHTML(GO_TO_NAMES[added[1]])
+		}
+	}
+
+	let bottom = player.options.pin_bottom
+	tmp.el.pin_bottom.setDisplay(bottom)
+	if (bottom) {
+		tmp.el.pin_bottom_opt.setTxt(player.options.pin_bottom ? "ON" : "OFF")
+		for (var i = 0; i < 8; i++) {
+			let added = player.pins[i]
+			tmp.el["pin_bottom_"+i].setDisplay(added)
+
+			if (!added) continue
+			let shown2 = unlockedMapId(added[1])
+			tmp.el["pin_bottom_"+i].setDisplay(shown2)
+			tmp.el["pin_bottom_"+i].setHTML(GO_TO_NAMES[added[1]])
+		}
+	}
+}
+
+//maybe looking for positions to avoid bugs with map repositions...

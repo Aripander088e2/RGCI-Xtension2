@@ -18,15 +18,16 @@ MAIN.gal = {
 
 		return r
 	},
+	part_req: _ => ROCKET_PART.upgraded() ? 1 : 10
 }
 
 RESET.gal = {
 	unl: _=>true,
-	req: _=>player.rocket.part==10||ROCKET_PART.upgraded(),
-	reqDesc: _=>`Get 10 Rocket Parts to unlock.`,
+	req: _=>player.rocket.part==MAIN.gal.part_req(),
+	reqDesc: _=>`Get ${MAIN.gal.part_req()} Rocket Parts to unlock.`,
 
-	resetDesc: `Galactic will reset <b class="red">EVERYTHING prior</b> except Rocket Fuel upgrades! Last chance before departure...`,
-    resetGain: _=> galUnlocked() ? `<b>+${tmp.gal.star_gain.format(0)}</b> Stars` : `You'll also unlock <b>Grass-Skips</b>.`,
+	resetDesc: `Galactic will reset <b class="red">EVERYTHING prior</b> except Refinery and Chronology! Last chance before departure...`,
+    resetGain: _=> galUnlocked() ? `<b>+${tmp.gal.star_gain.format(0)}</b> Stars<br><b class='red'>Max Star Accumulator first!</b>` : `<b class='cyan'>Also unlock Grass-Skips, Star Accumulator upgrade, and Astral!</b>`,
 
 	title: `Galactic`,
 	resetBtn: `Galactic!`,
@@ -50,10 +51,13 @@ RESET.gal = {
 		player.gal.time = 0
 
 		player.plat = 0
-		for (var i = 0; i < 8; i++) player.chal.comp[i] = 0
-		for (var i = 0; i < 8; i++) player.chal.max[i] = 0
+		if (hasStarTree("qol", 11)) {
+			for (var i = 6; i < 8; i++) player.chal.comp[i] = 0
+			for (var i = 0; i < 8; i++) player.chal.max[i] = 0
+		}
 		player.grasshop = 0
 		player.steel = E(0)
+        player.sTime = 0
 		player.bestCharge = E(0)
 		if (!inRecel()) player.decel = 0
 		player.rocket = { total_fp: 0, amount: hasStarTree("qol", 9) ? player.rocket.amount : 0, part: 0, momentum: ROCKET_PART.upgraded() ? player.rocket.momentum : 0 }
@@ -70,7 +74,7 @@ RESET.gal = {
 		resetUpgrades("star")
 		resetGHPotential()
 
-		RESET.steel.doReset(order)
+		RESET.gh.doReset(order)
 	},
 }
 
@@ -203,8 +207,9 @@ const ASTRAL = {
 		r = r.mul(tmp.chargeEff[7] || 1)
 		r = r.mul(upgEffect('moonstone', 2))
         r = r.mul(getGSEffect(1))
-		r = r.mul(2)
 		r = r.mul(upgEffect('sfrgt', 2))
+		r = r.mul(upgEffect("unGrass", 1))
+		r = r.mul(upgEffect("unGrass", 3))
 
 		return r
 	},

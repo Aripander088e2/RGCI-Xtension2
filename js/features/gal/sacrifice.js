@@ -13,7 +13,7 @@ RESET.sac = {
 	req: _ => hasAGHMilestone(7) && player.gal.stars.gte(1e12),
 	reqDesc: _ => `Get 21 Negative Energy and ${format(1e12)} stars.`,
 
-	resetDesc: `Reset everything Galactic does, as well as Stars, Astral, Grass-Skips, and Funify (except Fun Machine).`,
+	resetDesc: `Reset everything Galactic does, and so Stars, Astral, Grass-Skips, and Funify (except Fun Machine).`,
 	resetGain: _ => `<b>+${tmp.gal.dmGain.format(0)}</b> Dark Matters`,
 
 	title: `Dark Matter Plant`,
@@ -99,10 +99,10 @@ UPGS.dm = {
 			},
 			effDesc: x => format(x, 0)+"x",
 		},{
-			max: Infinity,
+			max: 25,
 
 			title: "Dark Platinum",
-			desc: `Increase Platinum gain by <b class="green">+1x</b> per level. This effect is increased by <b class="green">50%</b> for every <b class="yellow">25</b> levels.`,
+			desc: `Increase Platinum gain by <b class="green">+0.5x</b> per level. This effect is increased by <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
 		
 			res: "dm",
 			icon: ["Curr/Platinum"],
@@ -111,14 +111,14 @@ UPGS.dm = {
 			bulk: i => i.div(3).max(1).log(1.5).floor().toNumber()+1,
 		
 			effect(i) {
-				return i+1
+				return (i/2+1)*2**Math.floor(i/25)
 			},
 			effDesc: x => format(x, 0)+"x",
 		},{
-			max: Infinity,
+			max: 10,
 
 			title: "Dark Moonstone",
-			desc: `Increase Moonstone gain by <b class="green">+1x</b> per level. This effect is increased by <b class="green">50%</b> for every <b class="yellow">25</b> levels.`,
+			desc: `Increase Moonstone gain by <b class="green">+0.5x</b> per level.`,
 		
 			res: "dm",
 			icon: ["Curr/Moonstone"],
@@ -127,7 +127,7 @@ UPGS.dm = {
 			bulk: i => i.div(5).max(1).log(2).floor().toNumber()+1,
 		
 			effect(i) {
-				return i+1
+				return i/2+1
 			},
 			effDesc: x => format(x, 0)+"x",
 		}, {

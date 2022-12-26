@@ -505,8 +505,8 @@ RESET.rocket_part = {
 	req: _=>true,
 	reqDesc: _=>``,
 
-	resetDesc: `<span style="font-size: 14px">Reset everything steelie does, as well as steel, foundry, charger upgrades, anti-realm, and total fuel. You'll gain 1 Rocket Part and Momentum, and reset the cost of Rocket Fuels.</span>`,
-	resetGain: _=> player.rocket.part == 10 && !ROCKET_PART.upgraded() ? `<span class="pink">Maxed!</span>` :`<span style="font-size: 14px">
+	resetDesc: `<span style="font-size: 14px">Reset everything Steelie does, and so Steel, Foundry, Charger upgrades, Anti-Realm, and total Fuel. You'll gain 1 Rocket Part and Momentum, and reset the cost of Rocket Fuels.</span>`,
+	resetGain: _=> player.rocket.part == 10 && !ROCKET_PART.upgraded() ? `<span class="pink">${galUnlocked() ? "Maxed!" : "Do a Galactic reset immediately!"}</span>` :`<span style="font-size: 14px">
 		<b class="lightgray">Steel</b><br>
 		<span class="${player.steel.gte(tmp.rp_req.steel)?"green":"red"}">${player.steel.format(0)} / ${tmp.rp_req.steel.format(0)}</span><br><br>
 		<b class="lightblue">Total Rocket Fuel</b><br>

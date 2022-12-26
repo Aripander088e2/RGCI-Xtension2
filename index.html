@@ -80,7 +80,7 @@
 		<div id="main_app">
 			<div id="map_div_g" class="table_center">
 				<div style="width: 50%; height: 100%;">
-					<canvas id="grass_canvas"></canvas>
+					<canvas id="grass_canvas" onclick="unMAIN.habit.destroy()"></canvas>
 					<div id="grass_cap_div">
 						<div class="table_between">
 							<div id="grass_cap" style="width: 50%;"></div>
@@ -124,12 +124,12 @@
 				<button onclick="wipe()">Hard Reset</button><br>
 				<button onclick="toggleOption('scientific')">Scientific: <span id="scientific"></span></button>
 				<button onclick="toggleLowGrass()">Grass cap: <span id="grassCap">Unlimited</span></button>
-				<button onclick="toggleOption('hideUpgOption')">Hide maxed: <span id="hideUpgOption"></span></button>
-				<button id="hideMilestoneBtn" onclick="toggleOption('hideMilestone')">Show milestones: <span id="hideMilestone"></span></button><br><br>
+				<button onclick="toggleOption('hideUpgOption')">Hide max: <span id="hideUpgOption"></span></button>
+				<button id="hideMilestoneBtn" onclick="toggleOption('hideMilestone')">Milestones: <span id="hideMilestone"></span></button><br><br>
 
 				<b style="color: #ffffbf">RGCI: Thunderized Balance</b> - <a href="http://aarextiaokhiao.github.io">By TehAarex</a><br>
 				<span style="font-size: 16px">
-					Version β4b α2
+					Version β4b α3
 				</span><br>
 				<span style="font-size: 12px">
 					Inspired by <a href="http://www.roblox.com/games/9292879820">Grass Cutting Incremental</a>,
@@ -142,7 +142,7 @@
 				<button onclick="window.open('http://aarextiaokhiao.github.io')">Home</button><br><br>
 
 				<b class="red">Recommended size is 1920x1080! You may change zoom!</b><br>
-				Hint: Use arrow keys / WASD keys to move through the map. Hold shift to upgrade instantly.<br>
+				Hint: Use arrow keys / WASD to move through the map. Hold shift to quick upgrade.<br>
 				Endgame: ???<br>
 			</div><div id="map_div_stats">
 				<b class="red">Soon.</b>
@@ -324,9 +324,9 @@
 						<button id="sc_upg_next" onclick="buyNextSCUpgrade(tmp.gal.sc.choosed[0],tmp.gal.sc.choosed[1])">Buy Next</button>
 						<button id="sc_upg_max" onclick="buyMaxSCUpgrade(tmp.gal.sc.choosed[0],tmp.gal.sc.choosed[1])">Buy Max</button>
 					</div><div>
+						<button onclick="tmp.gal.sc.tab = 'progress'">Progress</button>
 						<button onclick="tmp.gal.sc.tab = 'qol'">QoL</button>
 						<button onclick="tmp.gal.sc.tab = 'auto'">Auto</button>
-						<button onclick="tmp.gal.sc.tab = 'progress'">Progress</button>
 					</div>
 				</div><div style="position: absolute; right: 5px; top: 5px;">
 					<span id="starAmt">0</span> Stars
@@ -355,16 +355,27 @@
 		</div>
 
 		<div id="loc"></div>
-		<div style="position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%);">
-			<button id="mapBtn" onclick="go_to = !go_to">Map</button>
-			<button id="lMap" onclick="moveMap(-1,0)" class="locked">◀</button>
-			<button id="rMap" onclick="moveMap(1,0)" class="locked">▶</button>
-			<button id="uMap" onclick="moveMap(0,-1)" class="locked">▲</button>
-			<button id="dMap" onclick="moveMap(0,1)" class="locked">▼</button>
-			<button id="spaceButton" onclick="goToSpace()">Go to Space</button>
+		<div style="position: absolute; bottom: 5px; width: 100%">
+			<button id="map_btn" onclick="openMap()">Map</button>
+			<button id="pin_btn" onclick="openPins()">Pins</button>
+			|
+			<span id="map_ctrl">
+				<button id="spaceButton" onclick="goToSpace()"></button>
+				<button id="lMap" onclick="moveMap(-1,0)" class="locked">◀</button>
+				<button id="rMap" onclick="moveMap(1,0)" class="locked">▶</button>
+				<button id="uMap" onclick="moveMap(0,-1)" class="locked">▲</button>
+				<button id="dMap" onclick="moveMap(0,1)" class="locked">▼</button>
+			</span>
+			<span id="pin_bottom"></span>
 			<div class="smallAmt" id="position"></div>
 		</div>
 		<div id="map_div">Hi</div>
+		<div id="pin_div">
+			<button onclick="createPin()">Pin current location</button><br>
+			<table id="pin_table"></table><br>
+			<button onclick="toggleOption('pin_bottom')">Pins on bottom: <span id='pin_bottom_opt'>OFF</span></button>
+			<button onclick='go_to=""'>Close</button>
+		</div>
 	</div>
 </body>
 </html>

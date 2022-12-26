@@ -147,17 +147,19 @@ button:not(.locked):hover {
 	transition-duration: 0.5s
 }
 
-#map_div {
+#map_div, #pin_div {
 	display: table;
 	position: absolute;
 	top: 50%;
 	left: 50%;
+	border: 6px solid #000b;
+	background: #0007;
 	transform: translate(-50%, -50%)
 }
-#map_div tr {
+.map_div tr {
 	display: table-row
 }
-#map_div button {
+.map_div button {
 	margin: 0;
 	padding: 0;
 	width: 120px;
@@ -597,6 +599,10 @@ button:not(.locked):hover {
 
 .green {
     color: lime;
+}
+
+.cyan {
+    color: #00ffff;
 }
 
 .pink,

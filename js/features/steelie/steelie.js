@@ -153,7 +153,7 @@ RESET.steel = {
     reqDesc: _=>player.decel ? `You can't Steelie until you Accelerate!` : `Reach Level 240.`,
 
     resetDesc: `Reset everything grasshop does, but it benefits from the milestones for grasshop.`,
-    resetGain: _=> `<b>+${tmp.steelGain.format(0)}</b> Steel`,
+    resetGain: _=> player.sTimes ? `<b>+${tmp.steelGain.format(0)}</b> Steel` : `<b class='cyan'>Also unlock Chronology and Pins!</b>`,
 
     title: `Steelie`,
     resetBtn: `Steelie!`,
@@ -181,7 +181,7 @@ RESET.steel = {
 UPGS.factory = {
     title: "The Factory",
 
-    unl: _=>(player.grasshop >= 10 || galUnlocked()) && !tmp.aRes.gs.shown,
+    unl: _=>(player.grasshop >= 10 || player.sTimes) && !tmp.aRes.gs.shown,
     autoUnl: _=>hasStarTree('auto',0),
 
     req: _=>player.sTimes > 0,

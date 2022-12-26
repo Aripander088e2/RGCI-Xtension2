@@ -102,9 +102,9 @@ UPGS.unGrass = {
 			bulk: i => i.div(1e3).max(1).log(1.75).floor().toNumber()+1,
 
 			effect(i) {
-				return E(1.2).pow(i)
+				return i*10
 			},
-			effDesc: x => format(x,1)+"x",
+			effDesc: x => "+"+format(x,1),
 		}, {
 			max: 1,
 
@@ -159,6 +159,41 @@ UPGS.unGrass = {
 		}*/
 	],
 }
+
+/* HABITABILITY */
+unMAIN.habit = {
+	max() {
+		return upgEffect("unGrass", 0)
+	},
+	progress(g) {
+		return (g.habit - 1) / (tmp.habitMax - 1)
+	},
+	grow(i, dt) {
+		let g = tmp.grasses[i]
+		if (!g) return
+
+		g.habit = Math.min(g.habit + dt * 2, tmp.habitMax)
+		if (g.habit == tmp.habitMax) removeGrass(i)
+	},
+	tick(dt) {
+		let grass = tmp.grasses
+		for (var [i, g] of Object.entries(grass)) if (g.habit) unMAIN.habit.grow(i, dt)
+	},
+	destroy() {
+		let grass = tmp.grasses
+		for (var [i, g] of Object.entries(grass)) if (g.habit) removeGrass(i)
+	}
+}
+
+tmp_update.push(_=>{
+	if (!player.unRes) return
+	tmp.habitMax = unMAIN.habit.max()
+	tmp.habit = tmp.habitMax > 1
+})
+
+tmp_update.push(_=>{
+	tmp.unRes.npGain = unMAIN.np.gain()
+})
 
 /* NORMALITY */
 unMAIN.np = {
@@ -308,3 +343,19 @@ UPGS.np = {
 tmp_update.push(_=>{
 	tmp.unRes.npGain = unMAIN.np.gain()
 })
+
+function resetUnnaturalRealm() {
+	player.unRes.grass = E(0)
+	resetUpgrades("unGrass")
+
+	player.unRes.xp = E(0)
+	player.unRes.level = 0
+	player.unRes.tp = E(0)
+	player.unRes.tier = 0
+
+	player.unRes.np = E(0)
+	player.unRes.nTime = 0
+	resetUpgrades("np")
+
+	//post-Vaporize goes here.
+}

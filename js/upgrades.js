@@ -451,7 +451,7 @@ const UPGS = {
                 cost: i => E(1e5),
                 bulk: i => 1,
             },{
-                unl: _=>player.grasshop>=1 || galUnlocked(),
+                unl: _=>grassHopped(),
 
                 title: "Perk Save C",
                 desc: `Keep perks on Crystalize.`,
@@ -462,7 +462,7 @@ const UPGS = {
                 cost: i => E(1e7),
                 bulk: i => 1,
             },{
-                unl: _=>player.grasshop>=1 || galUnlocked(),
+                unl: _=>grassHopped(),
 
                 title: "Crystal Upgrade Autobuy",
                 desc: `Automate Crystal Upgrades.`,
@@ -1112,9 +1112,9 @@ el.update.upgs = _=>{
 
 	if (mapID == 'opt') {
 		tmp.el.scientific.setTxt(player.options.scientific?"ON":"OFF")
-		tmp.el.grassCap.setTxt(player.options.lowGrass?250:"Unlimited")
+		tmp.el.grassCap.setTxt(player.options.lowGrass?250:"∞")
 		tmp.el.hideUpgOption.setTxt(player.options.hideUpgOption?"ON":"OFF")
-		tmp.el.hideMilestoneBtn.setDisplay(player.grasshop > 0 || player.sTimes > 0)
-		tmp.el.hideMilestone.setTxt(player.options.hideMilestone?"At last obtained":"All")
+		tmp.el.hideMilestoneBtn.setDisplay(grassHopped())
+		tmp.el.hideMilestone.setTxt(player.options.hideMilestone?"Unobtained":"All")
 	}
 }

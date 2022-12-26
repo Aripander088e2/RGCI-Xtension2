@@ -1,4 +1,6 @@
 function calc(dt, skip) {
+	let grass = tmp.grasses
+
 	//CHRONOLOGY
 	if (MAIN.chrono.unl() && !skip) {
 		MAIN.chrono.tick(dt)
@@ -14,6 +16,7 @@ function calc(dt, skip) {
 		player.unRes.nTime += dt
 		if (inRecel()) MAIN.checkCutting(2)
 	}
+	if (tmp.habit) unMAIN.habit.tick(dt)
 
 	//ANTI-REALM
 	if (!inRecel()) {
@@ -72,10 +75,15 @@ function calc(dt, skip) {
 		}
 		tmp.spawn_time = 0
 	}
+
 	if (tmp.autocutTime >= tmp.autocut && tmp.grasses.length > 0 && hasUpgrade('auto',0)) {
 		while (tmp.autocutTime >= tmp.autocut) {
 			tmp.autocutTime -= tmp.autocut
-			for (let i = 0; i < tmp.autocutAmt; i++) removeGrass(randint(0, tmp.grasses.length-1),true)
+			for (let i = 0; i < tmp.autocutAmt; i++) {
+				let r = randint(0, grass.length-1)
+				let g = grass[x]
+				if (g && !g.habit) removeGrass(r,true)
+			}
 		}
 		tmp.autocutTime = 0
 	}

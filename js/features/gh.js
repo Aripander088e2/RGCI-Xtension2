@@ -14,29 +14,29 @@ MAIN.gh = {
 	milestone: [
 		{
 			r: 1,
-			desc: `+<b class="green">4x</b> more TP. Unlock new automation upgrades.`,
+			desc: `<b class="green">4x</b> more TP. Unlock new automation upgrades.`,
 		},{
 			r: 2,
-			desc: `+<b class="green">2x</b> more Crystals.`,
+			desc: `<b class="green">Double</b> Crystals.`,
 		},{
 			r: 3,
-			desc: `Platinum worth <b class="green">+0.2</b> per Grasshop. (starting at 2)`,
+			desc: `<b class="green">+0.2</b> Platinum per Grasshop. (starting at 2)`,
 			effect: _=>Math.max(0,(tmp.gh.eff-2)/5),
 			effDesc: x=> "+"+format(x,1),
 		},{
 			r: 4,
-			desc: `Perk worth <b class="green">+0.1</b> per Grasshop. (starting at 3)`,
+			desc: `<b class="green">+0.1x</b> Perks per Grasshop. (starting at 3)`,
 			effect: _=>Math.max(0,(tmp.gh.eff-2)/10),
 			effDesc: x=> "+"+format(x,1),
 		},{
 			r: 5,
-			desc: `<b class="green">+0.1x</b> to Tier multiplier base.`,
+			desc: `<b class="green">+0.1x</b> Tier multiplier base.`,
 		},{
 			r: 6,
 			desc: `Platinum is <b class="green">2x</b> more common.`,
 		},{
 			r: 8,
-			desc: `+<b class="green">2x</b> more XP.`,
+			desc: `<b class="green">2x</b> more XP.`,
 		},{
 			r: 10,
 			desc: `Unlock Steelie reset.`,
@@ -44,14 +44,14 @@ MAIN.gh = {
 			unl: _=>player.sTimes,
 
 			r: 11,
-			desc: `+<b class="green">2x</b> more Steel per Grasshop. (starting at 11)`,
+			desc: `<b class="green">Double</b> Steel per Grasshop. (starting at 11)`,
 			effect: _=>E(2).pow(Math.max(0,tmp.gh.eff-10)),
 			effDesc: x=> format(x,0)+"x",
 		},{
 			unl: _=>galUnlocked()||hasUpgrade('factory',2),
 
 			r: 12,
-			desc: `+<b class="green">2x</b> more Charge per Grasshop. (starting at 12 and ending at 30)`,
+			desc: `<b class="green">Double</b> Charge per Grasshop. (starting at 12 and ending at 30)`,
 			effect: _=>E(2).pow(Math.max(0,Math.min(tmp.gh.eff,30)-11)),
 			effDesc: x=> format(x,0)+"x",
 		},{
@@ -76,14 +76,14 @@ MAIN.gh = {
 }
 
 const GH_MIL_LEN = MAIN.gh.milestone.length
-function getGHEffect(x,def=1) { return tmp.gh.eff[x]||def }
+function getGHEffect(x,def=1) { return tmp.gh.ms_eff[x]||def }
 
 RESET.gh = {
 	unl: _=> player.cTimes > 0 && !tmp.aRes.gs.shown,
 	req: _=> player.level >= 200 && !player.decel && !inChal(9),
 	reqDesc: _=> player.decel ? `You can't Grasshop until you Accelerate!` : `Reach Level 200.`,
 
-	resetDesc: `Reset everything Crystalize does, as well as crystals, crystal upgrades, and challenges.`,
+	resetDesc: `Reset everything Crystalize does, and so Crystalize and Challenges.`,
 	resetGain: _ => galUnlocked() || player.grasshop ? `Reach Level <b>${format(tmp.gh.req,0)}</b> to Grasshop` : ``,
 
 	title: `Grasshop`,
@@ -127,7 +127,8 @@ RESET.gh = {
 		player.crystal = E(0)
 		player.chargeRate = E(0)
 
-		if (!hasUpgrade('assembler', 7) || order !== "gh") {
+		let keep = hasStarTree("qol", 11) || (hasUpgrade('assembler', 7) && order == "gh")
+		if (!keep) {
 			tmp.chal.bulk = []
 			for (let i = 0; i < 2; i++) player.chal.comp[i] = Math.min(upgEffect('assembler', 5, 0), player.chal.comp[i])
 			for (let i = 2; i < 6; i++) player.chal.comp[i] = Math.min(upgEffect('assembler', 6, 0), player.chal.comp[i])
@@ -139,6 +140,10 @@ RESET.gh = {
 	},
 }
 
+function grassHopped() {
+	return player.grasshop || player.sTimes
+}
+
 tmp_update.push(_=>{
 	tmp.gh.req = MAIN.gh.req()
 	tmp.gh.eff = player.grasshop
@@ -146,7 +151,7 @@ tmp_update.push(_=>{
 
 	for (let x = 0; x < GH_MIL_LEN; x++) {
 		let m = MAIN.gh.milestone[x]
-		if (m.effect) tmp.gh.eff[x] = m.effect()
+		if (m.effect) tmp.gh.ms_eff[x] = m.effect()
 	}
 })
 
@@ -188,7 +193,7 @@ el.update.milestones = _=>{
 
 		tmp.el.milestone_div_gh.setDisplay(unl)
 		if (unl) {
-			unl = player.grasshop > 0 || galUnlocked()
+			unl = grassHopped()
 
 			tmp.el.gh_mil_req.setDisplay(!unl)
 			tmp.el.gh_mil_ctns.setDisplay(unl)
@@ -201,9 +206,9 @@ el.update.milestones = _=>{
 					let unl = m.unl ? m.unl() : true
 					let id = "gh_mil_ctn"+x
 
-					tmp.el[id+"_div"].setDisplay(unl && (!player.options.hideMilestone || x+1 >= GH_MIL_LEN || player.grasshop < MAIN.gh.milestone[x+1].r))
+					tmp.el[id+"_div"].setDisplay(unl && (!player.options.hideMilestone || player.grasshop < MAIN.gh.milestone[x].r))
 					tmp.el[id+"_div"].setClasses({bought: player.grasshop >= m.r})
-					if (m.effDesc) tmp.el[id+"_eff"].setHTML(m.effDesc(tmp.gh.eff[x]))
+					if (m.effDesc) tmp.el[id+"_eff"].setHTML(m.effDesc(tmp.gh.ms_eff[x]))
 				}
 			}
 		}

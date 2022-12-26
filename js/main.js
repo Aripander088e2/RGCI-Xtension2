@@ -46,7 +46,7 @@ const MAIN = {
 		if (inRecel()) x = 1/10
 		return x
 	},
-	rangeCut: _=>70+upgEffect('grass',4,0)+upgEffect('perk',4,0)+upgEffect('aGrass',6,0),
+	rangeCut: _=>70+upgEffect('grass',4,0)+upgEffect('perk',4,0)+upgEffect('aGrass',6,0)+upgEffect("unGrass",2,0),
 	autoCut() {
 		let interval = 5-upgEffect('auto',0,0)-upgEffect('plat',0,0)
 		interval /= starTreeEff("auto",7)

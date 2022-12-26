@@ -31,18 +31,21 @@ function removeGrass(i,auto=false) {
 	if (!tg) return
 
 	let v = 1
-	if (tg.nt) v = MAIN.tier.base()
+	if (tg.habit) v *= tg.habit
 
-	let av = 1
+	let av = v
 	if (auto) av *= tmp.autocutBonus
 
+	let tv = v
+	if (tg.nt) tv = MAIN.tier.base()
+
 	let src = getRealmSrc()
-	src.grass = src.grass.add(tmp.grassGain.mul(av).mul(v))
-	src.xp = src.xp.add(tmp.level.gain.mul(av).mul(v))
-	if (player.pTimes > 0) src.tp = src.tp.add(tmp.tier.gain.mul(av))
-	if (galUnlocked()) player.gal.sp = player.gal.sp.add(tmp.gal.astral.gain)
-	if (tg.pl) player.plat += tmp.platGain * (player.aRes.grassskip > 0 ? v : 1)
-	if (tg.ms) player.gal.moonstone += tmp.gal.ms.gain
+	src.grass = src.grass.add(tmp.grassGain.mul(tv))
+	src.xp = src.xp.add(tmp.level.gain.mul(tv))
+	if (player.pTimes > 0) src.tp = src.tp.add(tmp.tier.gain.mul(v))
+	if (galUnlocked()) player.gal.sp = player.gal.sp.add(tmp.gal.astral.gain.mul(v))
+	if (tg.pl) player.plat += tmp.platGain * (player.aRes.grassskip > 0 ? av : v)
+	if (tg.ms) player.gal.moonstone += tmp.gal.ms.gain * v
 
 	if (hasGSMilestone(4)) {
 		if (tg.ms) player.gal.msLuck = 1
@@ -59,7 +62,10 @@ el.update.grassCanvas = _=>{
         drawGrass()
 
         tmp.el.grass_cap.setHTML(`${format(tmp.grasses.length,0)} / ${format(tmp.grassCap,0)} <span class="smallAmt">(+${format(1/tmp.grassSpawn*tmp.spawnAmt)}/s)</span>`)
-        tmp.el.grass_cut.setHTML("+"+format(tmp.grassGain,1)+'<span class="smallAmt">/cut</span>')
+        tmp.el.grass_cut.setHTML(`
+			+${format(tmp.grassGain,1)}<span class="smallAmt">/cut</span><br>
+			<span class="cyan smallamt">${tmp.habit ? "(x"+format(tmp.habitMax,1)+")" : ''}</span>
+		`)
     }
 }
 
@@ -85,7 +91,8 @@ function drawGrass() {
         let g = gs[i]
 
         if (g) {
-            grass_ctx.fillStyle = g.ms?'#008DFF':g.pl?"#DDD":grassColor(g.tier+(g.nt?1:0))
+            let prog = 0
+            grass_ctx.fillStyle = g.habit?hueBright(90,1-unMAIN.habit.progress(g)):g.ms?'#008DFF':g.pl?"#DDD":grassColor(g.tier+(g.nt?1:0))
 
             let [x,y] = [Math.min(grass_canvas.width*g.x,grass_canvas.width-G_SIZE),Math.min(grass_canvas.height*g.y,grass_canvas.height-G_SIZE)]
 
@@ -94,8 +101,12 @@ function drawGrass() {
                     range_pos.x + tmp.rangeCut > x &&
                     range_pos.y < y + G_SIZE &&
                     tmp.rangeCut + range_pos.y > y) {
-                        removeGrass(i)
-                        i--
+                        if (tmp.habit) {
+							if (!g.habit) g.habit = 1
+                        } else {
+							removeGrass(i)
+							i--
+						}
         
                         continue
                     }
@@ -132,7 +143,7 @@ function grassCanvas() {
 
 const BASE_COLORS = ["#00AF00", "#7FBF7F", "#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#00FFFF", "#0000FF", "#7F00FF", "#FF00FF"]
 function grassColor(tier = 1) {
-	if (tier >= BASE_COLORS.length) return  hueBright((tier * 40) % 360, 0.25 + 0.5 * Math.sin(tier / 100))
+	if (tier >= BASE_COLORS.length) return hueBright((tier * 40) % 360, 0.25 + 0.5 * Math.sin(tier / 100))
 	return BASE_COLORS[tier]
 }
 

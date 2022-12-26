@@ -1,26 +1,27 @@
 aMAIN.fun = {
 	gain() {
-		let x = E(1)
-		x = x.mul(tmp.chargeEff[8] || 1)
-        x = x.mul(getAstralEff('fu'))
-		x = x.mul(upgEffect('moonstone', 4))
-		x = x.mul(getGSEffect(8))
-		x = x.mul(upgEffect('funMachine', 0))
-		x = x.mul(upgEffect('fundry', 0))
-		x = x.mul(upgEffect('fundry', 1))
-		x = x.mul(upgEffect('fundry', 2))
-		x = x.mul(upgEffect('fundry', 3))
+		let r = E(1)
+		r = r.mul(tmp.chargeEff[8] || 1)
+        r = r.mul(getAstralEff('fu'))
+		r = r.mul(upgEffect('moonstone', 4))
+		r = r.mul(getGSEffect(8))
+		r = r.mul(upgEffect('funMachine', 0))
+		r = r.mul(upgEffect('fundry', 0))
+		r = r.mul(upgEffect('fundry', 1))
+		r = r.mul(upgEffect('fundry', 2))
+		r = r.mul(upgEffect('fundry', 3))
+		r = r.mul(upgEffect("unGrass", 4))
 
-		return x
+		return r
 	},
 	SFRGTgain() {
-		let x = E(1)
-		x = x.mul(getGSEffect(10))
-		x = x.mul(upgEffect('funMachine', 1))
-		x = x.mul(upgEffect('sfrgt', 0))
-        x = x.mul(getAstralEff('sf'))
+		let r = E(1)
+		r = r.mul(getGSEffect(10))
+		r = r.mul(upgEffect('funMachine', 1))
+		r = r.mul(upgEffect('sfrgt', 0))
+        r = r.mul(getAstralEff('sf'))
 
-		return x
+		return r
 	},
 }
 

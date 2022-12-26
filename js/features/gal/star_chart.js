@@ -1,4 +1,11 @@
 const SC_IDS = {
+	progress: [
+		[0],
+		[1,2],
+		[10,6,3],
+		[11,12,4,5],
+		[13,7,8,9]
+	],
 	qol: [
 		[null,0,1,3],
 		[5,6,2,4],
@@ -11,297 +18,9 @@ const SC_IDS = {
 		[7],
 		[8]
 	],
-	progress: [
-		[0],
-		[1,2],
-		[10,6,3],
-		[11,12,4,5],
-		[13,7,8,9]
-	],
 }
 
 const STAR_CHART = {
-	qol: [
-		 {
-			max: 1,
-
-			title: "Auto-Automation",
-			desc: `Keep Automation Upgrades on Galactic except production.`,
-
-			icon: ['Curr/Grass','Icons/StarProgression'],
-							
-			cost: i => E(0),
-			bulk: i => 1,
-		}, {
-			max: 1,
-
-			title: "Anti-Anti-Auto-Automation",
-			desc: `Keep Anti-Automation Upgrades on Galactic except production.`,
-
-			branch: 0,
-			icon: ['Curr/AntiGrass','Icons/StarProgression'],
-
-			cost: i => E(20),
-			bulk: i => 1
-		}, {
-			max: 10,
-
-			title: "Resource Restoration",
-			desc: `Produce <b class="green">+0.1%</b> of pre-Steelie resources.`,
-
-			branch: 0,
-			icon: ['Curr/Prestige','Icons/StarProgression'],
-							
-			cost: i => E(3).pow(i).mul(30),
-			bulk: i => i.div(30).log(3).floor().toNumber() + 1,
-
-			effect(i) {
-				return i/1e3
-			},
-			effDesc: x => "+"+formatPercent(x)+"/s"
-		}, {
-			max: 10,
-
-			title: "Resource Restoration II",
-			desc: `Produce <b class="green">+0.1%</b> of Anti-Realm resources. Anti-Realm Upgrades don't spend anything.`,
-
-			branch: 2,
-			icon: ['Curr/Anonymity','Icons/StarProgression'],
-							
-			cost: i => E(3).pow(i).mul(1e4),
-			bulk: i => i.div(1e4).log(3).floor().toNumber() + 1,
-
-			effect(i) {
-				return i/1e3
-			},
-			effDesc: x => "+"+formatPercent(x)+"/s"
-		}, {
-			max: 10,
-
-			title: "Steel Labor",
-			desc: `Produce <b class="green">+0.1%</b> of Steel gain. Foundry and Generator don't spend anything.`,
-
-			branch: 2,
-			icon: ['Curr/Steel','Icons/StarProgression'],
-
-			cost: i => E(3).pow(i).mul(1e5),
-			bulk: i => i.div(1e5).log(3).floor().toNumber() + 1,
-
-			effect(i) {
-				return i/1e3
-			},
-			effDesc: x => "+"+formatPercent(x)+"/s"
-		}, {
-			max: 1,
-
-			title: "Bulk Hops",
-			desc: `Bulk Grasshops on one click.`,
-
-			branch: 0,
-			icon: ['Icons/Grasshop','Icons/StarProgression'],
-
-			cost: i => E(200),
-			bulk: i => 1
-		}, {
-			max: 1,
-
-			title: "Reassembled",
-			desc: `Keep Assembler. <b class="red">Challenges still reset on Galactic!</b>`,
-
-			branch: 5,
-			icon: ['Icons/Assembler','Icons/StarProgression'],
-	
-			cost: i => E(1e3),
-			bulk: i => 1
-		}, {
-			unl: _ => player.gal.sacTimes,
-			max: 1,
-
-			title: "Bulk Skips",
-			desc: `Bulk Grass-Skips on one click.`,
-
-			branch: 5,
-			icon: ['Icons/Grassskip','Icons/StarProgression'],
-
-			cost: i => E(1e13),
-			bulk: i => 1
-		}, {
-			max: 1,
-
-			title: "Why Not Charge?",
-			desc: `Keep Foundry and Generator on Rocket Part.`,
-
-			branch: 5,
-			icon: ['Curr/Charge','Icons/StarProgression'],
-
-			cost: i => E(1e5),
-			bulk: i => 1
-		}, {
-			max: 1,
-
-			title: "Unforgettable Fuel",
-			desc: `Keep Rocket Fuel on Galactic.`,
-
-			branch: 5,
-			icon: ['Curr/RocketFuel','Icons/StarProgression'],
-
-			cost: i => E(1e6),
-			bulk: i => 1
-		}, {
-			unl: _ => player.gal.sacTimes,
-			max: 1,
-
-			title: "Why Not Charge Again?",
-			desc: `Keep Foundry and Generator on Grass-Skip.`,
-
-			branch: 8,
-			icon: ['Curr/Charge','Icons/StarProgression'],
-
-			cost: i => E(1e3),
-			bulk: i => 1
-		}, {
-			unl: _ => player.gal.sacTimes,
-			max: 1,
-
-			title: "Challenging and Beyond",
-			desc: `Complete pre-Galactic challenges on 100 Levels or 3 Tiers ahead of a goal.`,
-
-			branch: 8,
-			icon: ['Icons/Challenge','Icons/StarProgression'],
-
-			cost: i => E(1e6),
-			bulk: i => 1
-		}, {
-			unl: _ => player.gal.sacTimes,
-			max: 1,
-
-			title: "Realm Intergation",
-			desc: `Combine Grass and Anti-Grass in Normal Realm.`,
-
-			branch: 8,
-			icon: ['Curr/AntiGrass','Icons/StarProgression'],
-
-			cost: i => E(1e20),
-			bulk: i => 1
-		},
-	],
-	auto: [
-		{
-			max: 1,
-
-			title: "Smart Factory",
-			desc: `Automate the Factory.`,
-
-			icon: ['Curr/Steel','Icons/StarAuto'],
-							
-			cost: i => E(0),
-			bulk: i => 1
-		}, {
-			max: 1,
-
-			title: "Self-Generator",
-			desc: `Automate the Generator.`,
-
-			branch: 0,
-			icon: ['Curr/Charge','Icons/StarAuto'],
-
-			cost: i => E(20),
-			bulk: i => 1
-		}, {
-			max: 1,
-
-			title: "Moving and Launch",
-			desc: `Automate the Refinery and Momentum Upgrades.`,
-
-			branch: 0,
-			icon: ['Curr/RocketFuel','Icons/StarAuto'],
-
-			cost: i => E(50),
-			bulk: i => 1
-		}, {
-			max: 100,
-
-			title: "Speedrun",
-			desc: `Auto-Challenge Timer is faster.`,
-
-			branch: 0,
-			icon: ['Icons/Challenge','Icons/StarAuto'],
-
-			cost: i => E(2).pow(i).mul(10),
-			bulk: i => i.div(10).log(2).floor().toNumber() + 1,
-
-			effect(i) {
-				return i/5+1
-			},
-			effDesc: x => format(x,1)+"x faster"
-		}, {
-			max: 1,
-
-			title: "Star Accelerator",
-			desc: `Automate Star Accumulator.`,
-
-			branch: 0,
-			icon: ['Icons/Assembler','Icons/StarAuto'],
-							
-			cost: i => E(1e4),
-			bulk: i => 1,
-		}, {
-			max: 10,
-
-			title: "Platinum Grinder",
-			desc: `Automate Platinum Upgrades.`,
-
-			branch: 0,
-			icon: ['Curr/Platinum','Icons/StarAuto'],
-
-			cost: i => E(3e3),
-			bulk: i => 1,
-		}, {
-			max: 10,
-
-			title: "Quickly Forgettable II",
-			desc: `Cheapen Non-Charger Generator Upgrades.`,
-
-			branch: 0,
-			icon: ['Icons/Assembler','Icons/StarAuto'],
-
-			cost: i => E(2).pow(i).mul(100),
-			bulk: i => i.div(100).log(2).floor().toNumber() + 1,
-
-			effect(i) {
-				return E(10).pow(i)
-			},
-			effDesc: x => "/"+format(x)
-		}, {
-			max: 15,
-
-			title: "Speedgrass",
-			desc: `Auto-Cutting is faster.`,
-
-			branch: 0,
-			icon: ['Curr/Grass','Icons/StarAuto'],
-
-			cost: i => EINF,
-			bulk: i => 1,
-
-			effect(i) {
-				return i/10+1
-			},
-			effDesc: x => format(x,1)+"x faster"
-		}, {
-			max: 1,
-
-			title: "Speedhop",
-			desc: `Automate Grasshops and Grass-Skips.`,
-
-			branch: 7,
-			icon: ['Icons/Grasshop','Icons/StarAuto'],
-
-			unl: _ => player.gal.sacTimes,
-			cost: i => E(1e15),
-			bulk: i => 1,
-		},
-	],
 	progress: [
 		{
 			max: 1,
@@ -483,26 +202,287 @@ const STAR_CHART = {
 			effDesc: x => "-" + format(x * 100, 0) + "%"
 		},
 	],
-	/*
-		{
+	qol: [
+		 {
+			max: 1,
+
+			title: "Auto-Automation",
+			desc: `Keep Automation Upgrades on Galactic except production.`,
+
+			icon: ['Curr/Grass','Icons/StarProgression'],
+							
+			cost: i => E(0),
+			bulk: i => 1,
+		}, {
+			max: 1,
+
+			title: "Anti-Anti-Auto-Automation",
+			desc: `Keep Anti-Automation Upgrades on Galactic except production.`,
+
+			branch: 0,
+			icon: ['Curr/AntiGrass','Icons/StarProgression'],
+
+			cost: i => E(20),
+			bulk: i => 1
+		}, {
 			max: 10,
 
-			title: "Stellar Grass Cap",
-			desc: `Increase grass cap by <span class="green">250</span> per level. <span class="lightblue">Unlock more upgrades.</span>`,
+			title: "Resource Restoration",
+			desc: `Produce <b class="green">+0.1%</b> of pre-Steelie resources.`,
 
-			icon: ['Icons/MoreGrass','Icons/StarProgression'],
+			branch: 0,
+			icon: ['Curr/Prestige','Icons/StarProgression'],
 							
-			cost: i => Math.ceil(5*300**i),
-			bulk: i => i.div(5).max(1).log(300).floor().toNumber()+1,
+			cost: i => E(3).pow(i).mul(30),
+			bulk: i => i.div(30).log(3).floor().toNumber() + 1,
 
 			effect(i) {
-				let x = 250*i
-		
-				return x
+				return i/1e3
 			},
-			effDesc: x => "+"+format(x,0),
+			effDesc: x => "+"+formatPercent(x)+"/s"
+		}, {
+			max: 10,
+
+			title: "Resource Restoration II",
+			desc: `Produce <b class="green">+0.1%</b> of Anti-Realm resources. Anti-Realm Upgrades don't spend anything.`,
+
+			branch: 2,
+			icon: ['Curr/Anonymity','Icons/StarProgression'],
+							
+			cost: i => E(3).pow(i).mul(1e4),
+			bulk: i => i.div(1e4).log(3).floor().toNumber() + 1,
+
+			effect(i) {
+				return i/1e3
+			},
+			effDesc: x => "+"+formatPercent(x)+"/s"
+		}, {
+			max: 10,
+
+			title: "Steel Labor",
+			desc: `Produce <b class="green">+0.1%</b> of Steel gain. Foundry and Generator don't spend anything.`,
+
+			branch: 2,
+			icon: ['Curr/Steel','Icons/StarProgression'],
+
+			cost: i => E(3).pow(i).mul(1e5),
+			bulk: i => i.div(1e5).log(3).floor().toNumber() + 1,
+
+			effect(i) {
+				return i/1e3
+			},
+			effDesc: x => "+"+formatPercent(x)+"/s"
+		}, {
+			max: 1,
+
+			title: "Bulk Hops",
+			desc: `Bulk Grasshops on one click.`,
+
+			branch: 0,
+			icon: ['Icons/Grasshop','Icons/StarProgression'],
+
+			cost: i => E(200),
+			bulk: i => 1
+		}, {
+			max: 1,
+
+			title: "Reassembled",
+			desc: `Keep Assembler. <b class="red">Challenges still reset on Galactic!</b>`,
+
+			branch: 5,
+			icon: ['Icons/Assembler','Icons/StarProgression'],
+	
+			cost: i => E(1e3),
+			bulk: i => 1
+		}, {
+			unl: _ => player.gal.sacTimes,
+			max: 1,
+
+			title: "Bulk Skips",
+			desc: `Bulk Grass-Skips on one click.`,
+
+			branch: 5,
+			icon: ['Icons/Grassskip','Icons/StarProgression'],
+
+			cost: i => E(1e13),
+			bulk: i => 1
+		}, {
+			max: 1,
+
+			title: "Why Not Charge?",
+			desc: `Keep Foundry and Generator on Rocket Part.`,
+
+			branch: 5,
+			icon: ['Curr/Charge','Icons/StarProgression'],
+
+			cost: i => E(1e5),
+			bulk: i => 1
+		}, {
+			max: 1,
+
+			title: "Unforgettable Fuel",
+			desc: `Keep Rocket Fuel on Galactic.`,
+
+			branch: 5,
+			icon: ['Curr/RocketFuel','Icons/StarProgression'],
+
+			cost: i => E(1e6),
+			bulk: i => 1
+		}, {
+			unl: _ => player.gal.sacTimes,
+			max: 1,
+
+			title: "Why Not Charge Again?",
+			desc: `Keep Foundry and Generator on Grass-Skip.`,
+
+			branch: 8,
+			icon: ['Curr/Charge','Icons/StarProgression'],
+
+			cost: i => E(1e3),
+			bulk: i => 1
+		}, {
+			unl: _ => player.gal.sacTimes,
+			max: 1,
+
+			title: "Challenging and Beyond",
+			desc: `Pre-Galactic Challenges don't reset on Galactic. <b class='red'>Locked Challenges do nothing.</b>`,
+
+			branch: 8,
+			icon: ['Icons/Challenge','Icons/StarProgression'],
+
+			cost: i => E(1e6),
+			bulk: i => 1
+		}, {
+			unl: _ => player.gal.sacTimes,
+			max: 1,
+
+			title: "Realm Intergation",
+			desc: `Combine Grass and Anti-Grass in Normal Realm.`,
+
+			branch: 8,
+			icon: ['Curr/AntiGrass','Icons/StarProgression'],
+
+			cost: i => E(1e20),
+			bulk: i => 1
 		},
-	*/
+	],
+	auto: [
+		{
+			max: 1,
+
+			title: "Smart Factory",
+			desc: `Automate the Factory.`,
+
+			icon: ['Curr/Steel','Icons/StarAuto'],
+							
+			cost: i => E(0),
+			bulk: i => 1
+		}, {
+			max: 1,
+
+			title: "Self-Generator",
+			desc: `Automate the Generator.`,
+
+			branch: 0,
+			icon: ['Curr/Charge','Icons/StarAuto'],
+
+			cost: i => E(20),
+			bulk: i => 1
+		}, {
+			max: 1,
+
+			title: "Moving and Launch",
+			desc: `Automate the Refinery and Momentum Upgrades.`,
+
+			branch: 0,
+			icon: ['Curr/RocketFuel','Icons/StarAuto'],
+
+			cost: i => E(50),
+			bulk: i => 1
+		}, {
+			max: 100,
+
+			title: "Speedrun",
+			desc: `Auto-Challenge Timer is faster.`,
+
+			branch: 0,
+			icon: ['Icons/Challenge','Icons/StarAuto'],
+
+			cost: i => E(2).pow(i).mul(10),
+			bulk: i => i.div(10).log(2).floor().toNumber() + 1,
+
+			effect(i) {
+				return i/5+1
+			},
+			effDesc: x => format(x,1)+"x faster"
+		}, {
+			max: 1,
+
+			title: "Star Accelerator",
+			desc: `Automate Star Accumulator.`,
+
+			branch: 0,
+			icon: ['Icons/Assembler','Icons/StarAuto'],
+							
+			cost: i => E(1e4),
+			bulk: i => 1,
+		}, {
+			max: 10,
+
+			title: "Platinum Grinder",
+			desc: `Automate Platinum Upgrades.`,
+
+			branch: 0,
+			icon: ['Curr/Platinum','Icons/StarAuto'],
+
+			cost: i => E(3e3),
+			bulk: i => 1,
+		}, {
+			max: 10,
+
+			title: "Quickly Forgettable II",
+			desc: `Cheapen Non-Charger Generator Upgrades.`,
+
+			branch: 0,
+			icon: ['Icons/Assembler','Icons/StarAuto'],
+
+			cost: i => E(2).pow(i).mul(100),
+			bulk: i => i.div(100).log(2).floor().toNumber() + 1,
+
+			effect(i) {
+				return E(10).pow(i)
+			},
+			effDesc: x => "/"+format(x)
+		}, {
+			max: 15,
+
+			title: "Speedgrass",
+			desc: `Auto-Cutting is faster.`,
+
+			branch: 0,
+			icon: ['Curr/Grass','Icons/StarAuto'],
+
+			cost: i => EINF,
+			bulk: i => 1,
+
+			effect(i) {
+				return i/10+1
+			},
+			effDesc: x => format(x,1)+"x faster"
+		}, {
+			max: 1,
+
+			title: "Speedhop",
+			desc: `Automate Grasshops and Grass-Skips.`,
+
+			branch: 7,
+			icon: ['Icons/Grasshop','Icons/StarAuto'],
+
+			unl: _ => player.gal.sacTimes,
+			cost: i => E(1e15),
+			bulk: i => 1,
+		},
+	],
 }
 
 function drawTree() {
@@ -629,7 +609,7 @@ function updateSCTemp() {
 			eff: [],
 			unl: [],
 		},
-		tab: "qol",
+		tab: "progress",
 		choosed: [null, null]
 	}
 	if (!tmp.gal.sc) tmp.gal.sc = data

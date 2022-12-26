@@ -23,8 +23,11 @@ RESET.crystal = {
     req: _=>player.level>=90,
     reqDesc: _=>`Reach Level 90.`,
 
-    resetDesc: `Reset everything Prestige does, as well as Tier and Prestige.`,
-    resetGain: _=>`<b>+${tmp.crystalGain.format(0)}</b> Crystals`,
+    resetDesc: `Reset everything Prestige does, and so Prestige and Tier.`,
+    resetGain: _=>`
+        <b>+${tmp.crystalGain.format(0)}</b> Crystals
+        ${player.cTimes ? '' : '<br><b class="cyan">Also unlock Challenges!</b>'}
+    `,
 
     title: `Crystalize`,
     resetBtn: `Crystalize`,

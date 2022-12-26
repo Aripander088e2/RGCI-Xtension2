@@ -7,6 +7,7 @@ function getPlayerData() {
 		ch: MAIN.chrono.setup(),
 		map_notify: {},
 		options: {},
+		pins: [],
 		version: VER,
 		tb_ver: TB_VER,
 

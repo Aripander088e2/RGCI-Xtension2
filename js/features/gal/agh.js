@@ -128,7 +128,7 @@ el.update.agh = _=>{
 		let unl = m.unl ? m.unl() : true
 		let id = "agh_mil_ctn"+x
 
-		tmp.el[id+"_div"].setDisplay(unl && (!player.options.hideMilestone || x+1 >= AGH_MIL_LEN || !hasAGHMilestone(x+1)))
+		tmp.el[id+"_div"].setDisplay(unl && (!player.options.hideMilestone || !hasAGHMilestone(x)))
 		tmp.el[id+"_div"].setClasses({bought: hasAGHMilestone(x)})
 		if (m.effDesc) tmp.el[id+"_eff"].setHTML(m.effDesc(getAGHEffect(x)))
 	}

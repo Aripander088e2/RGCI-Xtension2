@@ -9,6 +9,7 @@ function resetTemp() {
 
 		stats_tab: 'grass',
 
+		grasses: [],
 		spawn_time: 0,
 		rangeCut: 50,
 		autocut: 5,
@@ -20,13 +21,13 @@ function resetTemp() {
 		platChance: 0.001,
 		platGain: 1,
 
-		grasses: [],
 		level: {},
 		tier: {},
 
 		upgs: {},
 		upg_res: {},
 		upg_ch: {},
+		perks: 0,
 
 		chal: {
 			bulk: [],
@@ -35,13 +36,14 @@ function resetTemp() {
 			eff: [],
 		},
 
+		gh: {
+			ms_eff: {}
+		},
 		chargeEff: [],
 
-		perks: 0,
 
-		gh: {
-			eff: {}
-		},
+
+		realmSrc: player,
 		aRes: {
 			gs: {
 				eff: {}
@@ -68,6 +70,6 @@ function resetTemp() {
 }
 
 function updateTemp() {
-	tmp.realmSrc = [player, player.aRes, player.unRes][player.decel]
+	tmp.realmSrc = getRealmSrc(player.decel || 0)
 	for (let x = 0; x < tmp_update.length; x++) tmp_update[x]()
 }
