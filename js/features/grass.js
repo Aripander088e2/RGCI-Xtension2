@@ -1,13 +1,13 @@
 MAIN.grass = {
-	gain() {
+	gain(realm = player.decel) {
 		let x = upgEffect('grass',0).mul(tmp.tier.mult)
-		if (inAccel()) {
+		if (realm == 0) {
 			x = x.mul(upgEffect('perk',0))
 			x = x.mul(upgEffect('pp',0))
 			x = x.mul(upgEffect('crystal',0))
 			x = x.mul(upgEffect('plat',2))
 		}
-		if (!inRecel()) x = x.mul(aMAIN.grassGain())
+		if (realm <= 1) x = x.mul(aMAIN.grassGain())
 
 		x = x.mul(chalEff(0))
 		x = x.mul(tmp.chargeEff[9]||1)

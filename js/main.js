@@ -9,7 +9,7 @@ function loop() {
 var player = {}, date = Date.now(), diff = 0;
 const MAIN = {
 	level: {
-		gain(realm) {
+		gain(realm = player.decel) {
 			let x = E(tmp.tier.mult)
 			if (realm == 0) {
 				x = x.mul(upgEffect('grass',3))
@@ -56,7 +56,7 @@ const MAIN = {
 		},
 	},
 	tier: {
-		gain(realm) {
+		gain(realm = player.decel) {
 			if (inChal(2)) return E(0)
 
 			let x = E(1)
