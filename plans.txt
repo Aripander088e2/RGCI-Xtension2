@@ -1,20 +1,10 @@
-Galactic Content:
-- Upgrade: Potential Grasshops are more efficient.
-- Upgrade: Lose less Negative Energy from Grasshops.
-- AGH Milestone: 5% Per 25 Factory Levels.
+Remaining content:
+- Charge boosts Grass (instead of Steel)
 
-Grass-Skip Milestones:
-- Boost Steel per Grass-Skip. (additive)
+Thinking for scalings, which cap the levels:
+- Grass PP
+- Crystal TP
+- PP XP
+- PP Grass
 
--=-=- RECELERATOR -=-=-
-Recelerator Perks:
-- Each Exterior Level makes scalings scale later.
-- At base, each Level gives 1 Recelerator Perk. (can't be reversed)
-- Each Recelerator Perk boosts something.
-
-Unhabitability:
-- Grass automatically cuts in 0.1 seconds.
-
-Sunlight:
-- Touching makes grass survives and boosts over time.
-- There are multiple placeable selections.
+Other Crystal Upgrades will recieve cap because it becomes too weak.

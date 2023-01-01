@@ -146,7 +146,7 @@ UPGS.chrono = {
 			max: Infinity,
 
 			title: "Chrono-Resistence",
-			desc: `Time Speed loses <b class="green">+1%</b> less Time Fluxes.`,
+			desc: `Time Speed loses <b class="green">+20%</b> less Time Fluxes.`,
 
 			res: "chrona",
 			icon: ["Curr/Chrona"],
@@ -155,7 +155,7 @@ UPGS.chrono = {
 			bulk: i => Math.floor(i**(2/3)),
 
 			effect(i) {
-				return i/100+1
+				return i/5+1
 			},
 			effDesc: x => format(x)+"x",
 		},{

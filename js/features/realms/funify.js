@@ -77,7 +77,7 @@ UPGS.funMachine = {
 
 	ctn: [
 		{
-			max: Infinity,
+			max: 50,
 
 			title: "Fundry",
 			desc: `Unlock a building where you can upgrade fun production. Each level increases fun by <b class="green">+25%</b>.`,
@@ -95,7 +95,7 @@ UPGS.funMachine = {
 			},
 			effDesc: x => format(x)+"x",
 		},{
-			max: Infinity,
+			max: 100,
 
 			title: "Super Fun Real Good Time Generator",
 			desc: `Unlock a building where you can generate SFRGT and spend them on powerful upgrades. Each level increases SFRGT generation by <b class="green">+10%</b>.`,
@@ -276,8 +276,8 @@ UPGS.sfrgt = {
 			res: "sfrgt",
 			icon: ["Icons/SP"],
 
-			cost: i => Decimal.pow(5,i).mul(500).ceil(),
-			bulk: i => i.div(500).max(1).log(5).floor().toNumber()+1,
+			cost: i => Decimal.pow(10,i).mul(500).ceil(),
+			bulk: i => i.div(500).max(1).log(10).floor().toNumber()+1,
 		
 			effect(i) {
 				let x = Decimal.pow(2,i)
@@ -286,7 +286,7 @@ UPGS.sfrgt = {
 			},
 			effDesc: x => format(x,0)+"x",
 		}, {
-			max: 10,
+			max: 40,
 
 			title: "Funny Charge",
 			desc: `Charge bonuses start <b class="green">10x</b> earlier.`,

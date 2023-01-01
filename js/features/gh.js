@@ -188,7 +188,7 @@ el.update.milestones = _=>{
 		tmp.el.multGHBtn.setDisplay(hasStarTree("qol", 5))
 		tmp.el.multGHOption.setTxt(player.ghMult?"ON":"OFF")
 
-		tmp.el.autoGHBtn.setDisplay(hasStarTree("auto", 7))
+		tmp.el.autoGHBtn.setDisplay(hasStarTree("auto", 8))
 		tmp.el.autoGHOption.setTxt(player.ghAuto?"ON":"OFF")
 
 		tmp.el.milestone_div_gh.setDisplay(unl)

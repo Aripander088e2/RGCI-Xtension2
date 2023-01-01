@@ -53,7 +53,7 @@ const STAR_CHART = {
 			icon: ['Icons/TP','Icons/StarSpeed'],
 
 			cost: i => E(1e3),
-			bulk: i => 0
+			bulk: i => 1
 		}, {
 			max: 1,
 
@@ -64,7 +64,7 @@ const STAR_CHART = {
 			icon: ['Curr/Charge','Icons/StarSpeed'],
 
 			cost: i => E(1e4),
-			bulk: i => 0
+			bulk: i => 1
 		}, {
 			max: 1,
 
@@ -75,7 +75,7 @@ const STAR_CHART = {
 			icon: ['Icons/SP','Icons/StarSpeed'],
 
 			cost: i => E(1e5),
-			bulk: i => 0
+			bulk: i => 1
 		}, {
 			max: Infinity,
 
@@ -102,7 +102,7 @@ const STAR_CHART = {
 			icon: ['Icons/Challenge','Icons/StarSpeed'],
 
 			cost: i => E(1e4),
-			bulk: i => 0
+			bulk: i => 1
 		}, {
 			max: Infinity,
 
@@ -130,20 +130,30 @@ const STAR_CHART = {
 			icon: ['Icons/SP','Icons/StarSpeed'],
 
 			unl: _ => player.gal.sacTimes,
-			cost: i => EINF,
-			bulk: i => 0
+			cost: i => E(1e13),
+			bulk: i => 1,
+
+			effect(i) {
+				return E(1.2).pow(Math.max(player.grasshop - 49, 0))
+			},
+			effDesc: x => format(x) + "x"
 		}, {
 			max: 1,
 
 			title: "Tiered Space",
-			desc: `Each Tier increases Space Power by 50%, starting at 50.`,
+			desc: `Each Anti-Realm Tier increases Space Power by 50%, starting at 14.`,
 
 			branch: 5,
 			icon: ['Icons/SP','Icons/StarSpeed'],
 
 			unl: _ => player.gal.sacTimes,
-			cost: i => E(1e10),
-			bulk: i => 0
+			cost: i => E(1e9),
+			bulk: i => 1,
+
+			effect(i) {
+				return E(1.5).pow(Math.max(player.aRes.tier - 13, 0))
+			},
+			effDesc: x => format(x) + "x"
 		}, {
 			max: 1,
 
@@ -154,7 +164,7 @@ const STAR_CHART = {
 			icon: ['Curr/RocketFuel','Icons/StarSpeed'],
 
 			unl: _ => player.gal.sacTimes,
-			cost: i => E(1e13),
+			cost: i => E(1e20),
 			bulk: i => 1
 		}, {
 			max: 1,
@@ -427,7 +437,7 @@ const STAR_CHART = {
 			cost: i => E(1e4),
 			bulk: i => 1,
 		}, {
-			max: 10,
+			max: 1,
 
 			title: "Platinum Grinder",
 			desc: `Automate Platinum Upgrades.`,
@@ -462,8 +472,8 @@ const STAR_CHART = {
 			branch: 0,
 			icon: ['Curr/Grass','Icons/StarAuto'],
 
-			cost: i => EINF,
-			bulk: i => 1,
+			cost: i => E(10).pow((i+2)**0.8),
+			bulk: i => E(i).log10().sub(2).root(0.8).floor().toNumber()+1,
 
 			effect(i) {
 				return i/10+1
@@ -479,7 +489,7 @@ const STAR_CHART = {
 			icon: ['Icons/Grasshop','Icons/StarAuto'],
 
 			unl: _ => player.gal.sacTimes,
-			cost: i => E(1e15),
+			cost: i => E(1e6),
 			bulk: i => 1,
 		},
 	],
@@ -583,7 +593,7 @@ el.setup.star_chart = _=>{
 const SC_SCOST = {}
 
 function hasStarTree(id,i) { return starTreeAmt(id,i)>0 }
-function starTreeEff(id,i,def=1) { return (tmp.gal && tmp.gal.sc[id].eff[i]) || def }
+function starTreeEff(id,i,def=1) { return (tmp?.gal?.sc && tmp.gal.sc[id].eff[i]) || def }
 function starTreeAmt(id,i) { return (galUnlocked() && player.gal.star_chart[id][i]) || 0 }
 
 function updateSCTemp() {

@@ -1,6 +1,6 @@
 MAIN.sac = {
 	dmGain() {
-		return player.gal.stars.div(1e12).sqrt().mul(10).floor()
+		return player.gal.stars.div(1e8).cbrt().floor()
 	},
 	did() {
 		return player?.gal?.sacTimes
@@ -10,8 +10,8 @@ MAIN.sac = {
 RESET.sac = {
 	unl: _ => hasAGHMilestone(7),
 
-	req: _ => player.gal.stars.gte(1e12),
-	reqDesc: _ => `Reach ${format(1e12)} stars.`,
+	req: _ => player.gal.stars.gte(1e10),
+	reqDesc: _ => `Reach ${format(1e10)} stars.`,
 
 	resetDesc: `Reset everything Galactic does, and so Stars, Astral, Grass-Skips, and Funify (except Fun Machine).`,
 	resetGain: _ => `<b>+${tmp.gal.dmGain.format(0)}</b> Dark Matters`,
@@ -73,8 +73,8 @@ UPGS.dm = {
 			res: "dm",
 			icon: ["Curr/Crystal"],
 
-			cost: i => Decimal.pow(1.3,i**1.25).ceil(),
-			bulk: i => i.max(1).log(1.2).root(1.25).floor().toNumber()+1,
+			cost: i => Decimal.pow(2,i**1.25).ceil(),
+			bulk: i => i.max(1).log(2).root(1.25).floor().toNumber()+1,
 		
 			effect(i) {
 				let x = Decimal.pow(1.25, Math.floor(i/25)).mul(i+1)
@@ -91,15 +91,15 @@ UPGS.dm = {
 			res: "dm",
 			icon: ["Curr/Oil"],
 
-			cost: i => Decimal.pow(1.3,i**1.25).ceil(),
-			bulk: i => i.max(1).log(1.3).root(1.25).floor().toNumber()+1,
+			cost: i => Decimal.pow(1.5,i**1.25/2).ceil(),
+			bulk: i => i.max(1).log(1.5).mul(2).root(1.25).floor().toNumber()+1,
 		
 			effect(i) {
 				return i+1
 			},
 			effDesc: x => format(x, 0)+"x",
 		},{
-			max: 25,
+			max: 100,
 
 			title: "Dark Platinum",
 			desc: `Increase Platinum gain by <b class="green">+0.5x</b> per level. This effect is increased by <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
@@ -107,8 +107,8 @@ UPGS.dm = {
 			res: "dm",
 			icon: ["Curr/Platinum"],
 						
-			cost: i => Decimal.pow(1.5,i).mul(3).ceil(),
-			bulk: i => i.div(3).max(1).log(1.5).floor().toNumber()+1,
+			cost: i => Decimal.pow(3,i).mul(2).ceil(),
+			bulk: i => i.div(2).max(1).log(3).floor().toNumber()+1,
 		
 			effect(i) {
 				return (i/2+1)*2**Math.floor(i/25)
@@ -118,18 +118,18 @@ UPGS.dm = {
 			max: 10,
 
 			title: "Dark Moonstone",
-			desc: `Increase Moonstone gain by <b class="green">+0.5x</b> per level.`,
+			desc: `Increase Moonstone gain by <b class="green">+1</b> per level.`,
 		
 			res: "dm",
 			icon: ["Curr/Moonstone"],
 						
-			cost: i => Decimal.pow(2,i).mul(5).ceil(),
-			bulk: i => i.div(5).max(1).log(2).floor().toNumber()+1,
+			cost: i => Decimal.pow(5,i).mul(3).ceil(),
+			bulk: i => i.div(3).max(1).log(5).floor().toNumber()+1,
 		
 			effect(i) {
-				return i/2+1
+				return i
 			},
-			effDesc: x => format(x, 0)+"x",
+			effDesc: x => "+"+format(x,0),
 		}, {
 			max: Infinity,
 

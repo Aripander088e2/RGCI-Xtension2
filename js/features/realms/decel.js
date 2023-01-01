@@ -6,6 +6,12 @@ function inDecel() {
 	return player.decel >= 1
 }
 
+function getRealmGrasses() {
+	let r = [player.decel]
+	if (hasUpgrade('factory',4) && hasStarTree("qol", 12) && (player.decel == 0 || player.decel == 1)) r = [0,1]
+	return r
+}
+
 function getRealmSrc(type) {
 	if (type === undefined) return tmp.realmSrc
 	return [player, player.aRes, player.unRes][type]
@@ -749,17 +755,19 @@ aMAIN.gs = {
         {
             unl: _ => player.aRes.fTimes,
             r: 10,
-            desc: `<b class="green">Double</b> Moonstone chance.`
-        },
-        {
-            unl: _ => player.aRes.fTimes,
-            r: 11,
-            desc: `Keep Charger on Galactic. <b class="green">5x</b> Charge per Grass-Skip. (starting at 11)`,
-            effect: _ => E(10).pow(Math.max(player.aRes.grassskip - 10, 0)),
+            desc: `Keep Charger on Galactic. <b class="green">5x</b> Charge per Grass-Skip. (starting at 10)`,
+            effect: _ => E(5).pow(Math.max(player.aRes.grassskip - 9, 0)),
             effDesc: x => format(x, 0) + "x"
         },
         {
-            unl: _ => player.aRes.fTimes,
+            unl: _ => hasAGHMilestone(9),
+            r: 11,
+            desc: `<b class="green">+1</b> to Unnatural Healing per Grass-Skip. (starting at 11)`,
+            effect: _ => Math.max(player.aRes.grassskip - 10, 0),
+            effDesc: x => "+" + format(x, 0)
+        },
+        {
+            unl: _ => hasAGHMilestone(9),
             r: 12,
             desc: `<b class="green">Double</b> SRFGT per Grass-Skip. (starting at 12)`,
             effect: _ => E(2).pow(Math.max(player.aRes.grassskip - 11, 0)),
@@ -768,9 +776,7 @@ aMAIN.gs = {
         {
             unl: _ => hasAGHMilestone(9),
             r: 15,
-            desc: `<b class="green">+1</b> to Unnatural Healing per Grass-Skip. (starting at 15)`,
-            effect: _ => Math.max(player.aRes.grassskip - 14, 0),
-            effDesc: x => "+" + format(x, 0)
+            desc: `<b class="green">Double</b> Moonstone chance.`
         },
     ],
 }
@@ -885,7 +891,7 @@ el.update.gs = _=>{
             tmp.el.multGSBtn.setDisplay(hasStarTree("qol", 7))
             tmp.el.multGSOption.setTxt(player.gsMult ? "ON" : "OFF")
 
-			tmp.el.autoGSBtn.setDisplay(hasStarTree("auto", 7))
+			tmp.el.autoGSBtn.setDisplay(hasStarTree("auto", 8))
 			tmp.el.autoGSOption.setTxt(player.gsAuto?"ON":"OFF")
 
             tmp.el.gs_mil_req.setDisplay(!unl)

@@ -47,7 +47,7 @@ MAIN.steel = {
             x = x.mul(upgEffect('momentum',7))
 
             x = x.mul(getAstralEff('ch'))
-            x = x.mul(getGSEffect(10))
+            x = x.mul(getGSEffect(9))
 
             return x
         },
@@ -77,7 +77,7 @@ MAIN.steel = {
                 eff(c) {
                     return E(2).sub(E(1).div(c.add(1).log10().div(15).add(1))).min(1.5).toNumber()
                 },
-                effDesc: x => "Gain " + format(x) + "x Levels in Anti-Realm",
+                effDesc: x => "Gain " + format(x) + "x Levels in Anti-Realm.",
             },{
                 unl: _ => hasUpgrade("factory", 4) || galUnlocked(),
 
@@ -115,7 +115,7 @@ MAIN.steel = {
 
                 req: E(1e42),
                 eff(c) {
-                    return c.div(1e40).add(1).log10().div(5).pow10()
+                    return c.div(1e30).add(1).log10().div(15).pow10()
                 },
                 effDesc: x => "Gain more "+format(x,3)+"x Fun.",
             },{
@@ -123,7 +123,7 @@ MAIN.steel = {
 
                 req: E(1e45),
                 eff(c) {
-                    return c.div(inRecel() ? 1e3 : 1e40).add(1).log10().div(3).pow10()
+                    return c.div(inRecel() ? 1e3 : 1e35).add(1).log10().div(3).pow10()
                 },
                 effDesc: x => "Gain more "+format(x,3)+"x Grass.",
             },{
@@ -131,17 +131,9 @@ MAIN.steel = {
 
                 req: E(1e50),
                 eff(c) {
-                    return c.div(1e50).add(1).log10().div(20)
+                    return c.div(1e40).add(1).log10().div(20)
                 },
                 effDesc: x => "Increase Tier base by +"+format(x,3)+"x in Anti-Realm.",
-            },{
-                unl: _ => hasUpgrade("funMachine", 2),
-
-                req: E(1e55),
-                eff(c) {
-                    return c.div(1e55).add(1).log10().div(20).pow10()
-                },
-                effDesc: x => "Gain more "+format(x,3)+"x Stars.",
             },
         ],
     },

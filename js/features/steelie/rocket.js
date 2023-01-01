@@ -491,7 +491,7 @@ let ROCKET_PART = {
 			}
 		}
 	},
-	upgraded: _ => hasStarTree("progress", 11),
+	upgraded: _ => hasStarTree("progress", 10),
 
 	m_gain() {
 		if (this.upgraded() && player.rocket.part) return 10 ** (player.rocket.part - 1)

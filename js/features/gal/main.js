@@ -13,8 +13,8 @@ MAIN.gal = {
 		r = r.mul(getAstralEff("st"))
 		r = r.mul(upgEffect('moonstone', 3))
 		r = r.mul(upgEffect('sfrgt', 1))
-		if (hasStarTree("progress", 8) && player.grasshop >= 50) r = r.mul(E(1.2).pow(player.grasshop - 49))
-		if (hasStarTree("progress", 9) && player.tier >= 50) r = r.mul(E(1.2).pow(player.tier - 49))
+		if (hasStarTree("progress", 8)) r = r.mul(starTreeEff("progress", 8))
+		if (hasStarTree("progress", 9)) r = r.mul(starTreeEff("progress", 9))
 
 		return r
 	},
@@ -100,10 +100,10 @@ tmp_update.push(_=>{
 	data.ms.chance = 1/200
 	if (hasGSMilestone(5)) data.ms.chance *= player.gal.msLuck
 	if (hasGSMilestone(6) && !player.decel) data.ms.chance /= 10
-	if (hasGSMilestone(9)) data.ms.chance *= 2
+	if (hasGSMilestone(12)) data.ms.chance *= 2
 	if (hasAGHMilestone(7)) data.ms.chance *= 2
 	data.ms.gain = 1
-	data.ms.gain *= upgEffect('dm', 3)
+	data.ms.gain += upgEffect('dm', 3)
 
 	//updateChronoTemp()
 	updateSCTemp()
@@ -274,7 +274,7 @@ UPGS.moonstone = {
 
 	ctn: [
 		{
-			max: Infinity,
+			max: 20,
 
 			costOnce: true,
 
@@ -290,7 +290,7 @@ UPGS.moonstone = {
 			effect(i) {
 				return i
 			},
-			effDesc: x => "+"+format(x),
+			effDesc: x => format(x,0)+"x",
 		}, {
 			max: 10,
 
@@ -308,7 +308,7 @@ UPGS.moonstone = {
 			effect(i) {
 				return i/2
 			},
-			effDesc: x => "+"+format(x)+"x",
+			effDesc: x => format(x,0)+"x",
 		}, {
 			max: 4,
 
@@ -326,7 +326,7 @@ UPGS.moonstone = {
 			effect(i) {
 				return i+1
 			},
-			effDesc: x => format(x)+"x",
+			effDesc: x => format(x,0)+"x",
 		}, {
 			max: 4,
 
@@ -344,10 +344,10 @@ UPGS.moonstone = {
 			effect(i) {
 				return i+1
 			},
-			effDesc: x => format(x)+"x",
+			effDesc: x => format(x,0)+"x",
 		}, {
 			unl: _ => player.aRes.fTimes,
-			max: 5,
+			max: 15,
 
 			costOnce: true,
 
@@ -363,7 +363,7 @@ UPGS.moonstone = {
 			effect(i) {
 				return i+1
 			},
-			effDesc: x => format(x)+"x",
+			effDesc: x => format(x,0)+"x",
 		}, {
 			unl: _ => player.aRes.fTimes,
 			max: 5,
@@ -382,7 +382,7 @@ UPGS.moonstone = {
 			effect(i) {
 				return i+1
 			},
-			effDesc: x => format(x)+"x",
+			effDesc: x => format(x,0)+"x",
 		}, {
 			unl: _ => hasAGHMilestone(7),
 			max: 5,
@@ -390,7 +390,7 @@ UPGS.moonstone = {
 			costOnce: true,
 
 			title: "Moon Steel",
-			desc: `Boost Steel by <b class="green">+100%</b> per level.`,
+			desc: `Boost Steel by <b class="green">+1x</b> per level.`,
 
 			res: "moonstone",
 			icon: ["Curr/Steel"],
@@ -401,7 +401,7 @@ UPGS.moonstone = {
 			effect(i) {
 				return i+1
 			},
-			effDesc: x => format(x)+"x",
+			effDesc: x => format(x,0)+"x",
 		}
 	],
 }

@@ -69,5 +69,6 @@ function resetTemp() {
 
 function updateTemp() {
 	tmp.realmSrc = getRealmSrc(player.decel || 0)
+	tmp.realmGrasses = getRealmGrasses()
 	for (let x = 0; x < tmp_update.length; x++) tmp_update[x]()
 }
