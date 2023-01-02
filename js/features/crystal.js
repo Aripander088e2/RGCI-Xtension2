@@ -76,7 +76,7 @@ UPGS.crystal = {
 
     ctn: [
         {
-            max: 75,
+            max: 60,
 
             title: "Grass Value III",
             tier: 3,
@@ -93,7 +93,7 @@ UPGS.crystal = {
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 75,
+            max: 60,
 
             title: "XP III",
             tier: 3,
@@ -110,7 +110,7 @@ UPGS.crystal = {
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 75,
+            max: Infinity,
 
             title: "TP II",
             tier: 2,

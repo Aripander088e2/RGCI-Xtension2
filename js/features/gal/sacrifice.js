@@ -68,7 +68,7 @@ UPGS.dm = {
 			max: Infinity,
 
 			title: "Dark Crystal",
-			desc: `Increase Crystal gain by <b class="green">+1x</b> per level. This effect is increased by <b class="green">50%</b> for every <b class="yellow">25</b> levels.`,
+			desc: `Increase Crystal gain by <b class="green">30%</b> compounding per level.`,
 		
 			res: "dm",
 			icon: ["Curr/Crystal"],
@@ -77,32 +77,30 @@ UPGS.dm = {
 			bulk: i => i.max(1).log(2).root(1.25).floor().toNumber()+1,
 		
 			effect(i) {
-				let x = Decimal.pow(1.25, Math.floor(i/25)).mul(i+1)
-		
-				return x
+				return E(1.3).pow(i)
 			},
-			effDesc: x => format(x, 0)+"x",
+			effDesc: x => format(x)+"x",
 		},{
 			max: Infinity,
 
 			title: "Dark Oil",
-			desc: `Increase Oil gain by <b class="green">+1x</b> per level. This effect is increased by <b class="green">50%</b> for every <b class="yellow">25</b> levels.`,
+			desc: `Increase Oil gain by <b class="green">30%</b> compounding per level.`,
 		
 			res: "dm",
 			icon: ["Curr/Oil"],
 
-			cost: i => Decimal.pow(1.5,i**1.25/2).ceil(),
-			bulk: i => i.max(1).log(1.5).mul(2).root(1.25).floor().toNumber()+1,
+			cost: i => Decimal.pow(2,i**1.25/2).ceil(),
+			bulk: i => i.max(1).log(2).mul(2).root(1.25).floor().toNumber()+1,
 		
 			effect(i) {
-				return i+1
+				return E(1.3).pow(i)
 			},
-			effDesc: x => format(x, 0)+"x",
+			effDesc: x => format(x)+"x",
 		},{
 			max: 100,
 
 			title: "Dark Platinum",
-			desc: `Increase Platinum gain by <b class="green">+0.5x</b> per level. This effect is increased by <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
+			desc: `Increase Platinum gain by <b class="green">+0.5x</b> per level.`,
 		
 			res: "dm",
 			icon: ["Curr/Platinum"],
@@ -111,9 +109,9 @@ UPGS.dm = {
 			bulk: i => i.div(2).max(1).log(3).floor().toNumber()+1,
 		
 			effect(i) {
-				return (i/2+1)*2**Math.floor(i/25)
+				return i/2+1
 			},
-			effDesc: x => format(x, 0)+"x",
+			effDesc: x => format(x, 1)+"x",
 		},{
 			max: 10,
 
@@ -143,26 +141,10 @@ UPGS.dm = {
 			bulk: i => i.div(1e5).max(1).log(4).root(1.25).floor().toNumber()+1,
 		
 			effect(i) {
-				return i/10+1
+				return 2**i
 			},
 			effDesc: x => format(x)+"x",
-		}, {
-			max: 25,
-
-			title: "Dark Grassy Efficient",
-			desc: `"Grass Steel" upgrade is <b class="green">+1% more efficent.</b>`,
-
-			res: "dm",
-			icon: ["Curr/Steel", "Icons/StarSpeed"],
-			
-			cost: i => Decimal.pow(1.75,i).mul(1e3).ceil(),
-			bulk: i => i.div(1e3).max(1).log(1.75).floor().toNumber()+1,
-
-			effect(i) {
-				return i/20+1
-			},
-			effDesc: x => format(x,0)+"x",
-		},
+		}
 	]
 }
 

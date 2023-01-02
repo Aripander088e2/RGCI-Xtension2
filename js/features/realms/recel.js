@@ -289,22 +289,6 @@ UPGS.np = {
 			},
 			effDesc: x => format(x,1)+"x",
 		}, {
-			max: 10,
-
-			title: "NP Grassy Efficient",
-			desc: `"Grass Steel" upgrade is <b class="green">+1% more efficent.</b>`,
-
-			res: "np",
-			icon: ["Curr/Steel", "Icons/StarSpeed"],
-			
-			cost: i => Decimal.pow(1.75,i).mul(1e3).ceil(),
-			bulk: i => i.div(1e3).max(1).log(1.75).floor().toNumber()+1,
-
-			effect(i) {
-				return i/10+1
-			},
-			effDesc: x => format(x,0)+"x",
-		}, {
 			max: Infinity,
 
 			title: "NP Dark Matter",

@@ -46,7 +46,7 @@ const CHALS = [
         title: `No Tiers`,
         desc: `You can't tier up.`,
         cond: _=>player.tier==0,
-        reward: `TP gain is increased by <b class='green'>doubled</b> each completion.`,
+        reward: `TP gain is <b class='green'>doubled</b> each completion.`,
 
         goal: i=>Math.ceil(50+15*i),
         bulk: i=>Math.floor((i-50)/15+1),

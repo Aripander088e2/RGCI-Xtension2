@@ -192,8 +192,8 @@ UPGS.fundry = {
 			res: "sfrgt",
 			icon: ["Curr/Fun"],
 						
-			cost: i => Decimal.pow(1.1,i).mul(100).ceil(),
-			bulk: i => i.div(100).max(1).log(1.1).floor().toNumber()+1,
+			cost: i => Decimal.pow(1.15,i).mul(50).ceil(),
+			bulk: i => i.div(50).max(1).log(1.15).floor().toNumber()+1,
 		
 			effect(i) {
 				let x = Decimal.pow(1.25, Math.floor(i/25)).mul(i/5+1)

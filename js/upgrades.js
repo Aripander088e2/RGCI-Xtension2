@@ -128,7 +128,7 @@ const UPGS = {
                 },
                 effDesc: x => "+"+format(x,0),
             },{
-                max: Infinity,
+                max: 1e3,
 
                 unl: _=>player.pTimes>0,
 

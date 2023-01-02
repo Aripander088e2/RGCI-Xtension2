@@ -85,7 +85,7 @@ UPGS.pp = {
 
     ctn: [
         {
-            max: Infinity,
+            max: 1500,
 
             title: "Grass Value II",
             tier: 2,
@@ -104,7 +104,7 @@ UPGS.pp = {
             },
             effDesc: x => format(x)+"x",
         },{
-            max: Infinity,
+            max: 1500,
 
             title: "XP II",
             tier: 2,
