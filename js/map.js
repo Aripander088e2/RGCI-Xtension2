@@ -37,16 +37,16 @@ const MAP = {
 }
 
 const MAP_UNLS = {
-	opt: _ => true,
+	opt: _ => player.xp.gte(10) || player.pTimes,
 	stats: _ => false, //player.pTimes > 0,
 	time: _ => player.pTimes > 0,
 	chrono: _ => grassHopped(),
 
 	//EARTH
 	g: _ => true,
-	upg: _ => true,
-	auto: _ => player.level > 1 || player.pTimes > 0,
-	pc: _ => player.level > 5 || player.pTimes > 0,
+	upg: _ => player.xp.gte(10) || player.pTimes,
+	auto: _ => player.level > 5 || player.pTimes,
+	pc: _ => player.level > 5 || player.pTimes,
 	chal: _ => player.pTimes > 0,
 	gh: _ => player.cTimes > 0,
 	fd: _ => hasUpgrade("factory", 0) || MAIN.steel.charger.unl(),
@@ -112,6 +112,7 @@ el.update.map = _=>{
 	tmp.el.position.setTxt(`(${mx+1},${my+1}) ${MAP_CATEGORIES[mapId]}: ${GO_TO_NAMES[mapId]}`)
 	tmp.el.position.changeStyle("color", inSpace() ? "#b0f" : "")
 
+	tmp.el.map_footer.setDisplay(player.xp.gte(10) || player.pTimes)
 	tmp.el.map_ctrl.setDisplay(!player.options.pin_bottom)
 	if (!player.options.pin_bottom) {
 		updateMapButton("lMap", mx-1, my, dim)
@@ -294,7 +295,7 @@ const MAP_NOTIFY = {
 	//EARTH
 	g: _ => 0,
 	auto: _ => galUnlocked() || hasUpgrade("factory", 3) ? 2 :
-		player.pTimes > 0 || player.level >= 5 ? 1 :
+		player.pTimes > 0 ? 1 :
 		0,
 	upg: _ => player.cTimes > 0 || player.tier >= 2 ? 2 :
 		player.pTimes > 0 || player.level >= 1 ? 1 :

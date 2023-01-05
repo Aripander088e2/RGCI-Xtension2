@@ -13,7 +13,7 @@ RESET.sac = {
 	req: _ => player.gal.stars.gte(1e10),
 	reqDesc: _ => `Reach ${format(1e10)} stars.`,
 
-	resetDesc: `Reset everything Galactic does, and so Stars, Astral, Grass-Skips, and Funify (except Fun Machine).`,
+	resetDesc: `Reset everything Galactic does, and so Rocket Fuel, Stars, Astral, Grass-Skips, and Funify (except Fun Machine).`,
 	resetGain: _ => `<b>+${tmp.gal.dmGain.format(0)}</b> Dark Matters`,
 
 	title: `Dark Matter Plant`,
@@ -41,6 +41,7 @@ RESET.sac = {
 		resetUpgrades('fundry')
 		resetUpgrades('sfrgt')
 
+		player.rocket.amt = 0
 		player.gal.sp = E(0)
 		player.gal.astral = 0
 		player.gal.stars = E(0)

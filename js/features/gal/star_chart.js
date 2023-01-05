@@ -158,7 +158,7 @@ const STAR_CHART = {
 			max: 1,
 
 			title: "Overpowerful Fuels",
-			desc: `Rocket Part gives Momentum production, but scales faster. Galactic unlocks immediately and doesn't reset Momentum.`,
+			desc: `Rocket Part gives Momentum production, but scales faster. Galactic unlocks at 1 Part and doesn't reset Momentum. Unlock a new Momentum Upgrade.`,
 
 			branch: 2,
 			icon: ['Curr/RocketFuel','Icons/StarSpeed'],
@@ -170,7 +170,7 @@ const STAR_CHART = {
 			max: 1,
 
 			title: "Momentum Towards Light",
-			desc: `Unlock new Momentum Upgrades.`,
+			desc: `Unlock a new Momentum Upgrade.`,
 
 			branch: 10,
 			icon: ['Curr/Momentum','Icons/StarSpeed'],

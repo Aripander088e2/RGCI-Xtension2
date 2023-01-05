@@ -32,12 +32,12 @@ const MAIN = {
 		},
 		req(i) {
 			if (inDecel()) i /= tmp.chargeEff[3]||1
-			let x = Decimal.pow(1.4,i).mul(50)
+			let x = Decimal.pow(1.4,i).mul(20)
 
 			return x.ceil()
 		},
 		bulk(i) {
-			let x = i.div(50)
+			let x = i.div(20)
 			if (x.lt(1)) return 0
 
 			x = x.log(1.4).toNumber()
@@ -69,7 +69,7 @@ const MAIN = {
 			}
 			if (realm <= 1) x = x.mul(aMAIN.tpGain())
 
-			if (player.grasshop >= 1) x = x.mul(4)
+			if (player.grasshop >= 1) x = x.mul(2)
 			x = x.mul(chalEff(2))
 			x = x.mul(upgEffect('rocket',2))
 			x = x.mul(upgEffect('momentum',3))
@@ -78,11 +78,11 @@ const MAIN = {
 			return x
 		},
 		req(i) {
-			let x = Decimal.pow(4,i).mul(500)
+			let x = Decimal.pow(4,i).mul(300)
 			return x
 		},
 		bulk(i) {
-			let x = i.div(500)
+			let x = i.div(300)
 			if (x.lt(1)) return 0
 			x = x.log(4)
 			return Math.floor(x.toNumber()+1)
@@ -115,7 +115,7 @@ el.update.main = _=>{
 	tmp.el.grassAmt.setHTML(g.format(0))
 	tmp.el.grassGain.setHTML(tmp.autoCutUnlocked ? formatGain(g,tmp.grassGain.div(tmp.autocut).mul(tmp.autocutBonus).mul(tmp.autocutAmt)) : "")
 
-	let level_unl = true
+	let level_unl = player.level || player.pTimes
 	tmp.el.level.setDisplay(level_unl && !inSpace())
 	if (level_unl) {
 		tmp.el.level_top_bar.changeStyle("width",tmp.level.percent*100+"%")
@@ -130,14 +130,10 @@ el.update.main = _=>{
 	}
 
 	if (mapID == 'g') {
-		tmp.el.level_div.setDisplay(tier_unl)
-		if (level_unl) {
-			tmp.el.level_div.setDisplay(level_unl)
-			tmp.el.level_amt.setTxt(format(tmp.realmSrc.level,0))
-			tmp.el.level_progress.setTxt(tmp.level.progress.format(0)+" / "+tmp.level.next.sub(tmp.level.cur).format(0)+" XP")
-			tmp.el.level_bar.changeStyle("width",tmp.level.percent*100+"%")
-			tmp.el.level_cut.setTxt("+"+tmp.level.gain.format(1)+" XP/cut")
-		}
+		tmp.el.level_amt.setTxt(format(tmp.realmSrc.level,0))
+		tmp.el.level_progress.setTxt(tmp.level.progress.format(0)+" / "+tmp.level.next.sub(tmp.level.cur).format(0)+" XP")
+		tmp.el.level_bar.changeStyle("width",tmp.level.percent*100+"%")
+		tmp.el.level_cut.setTxt("+"+tmp.level.gain.format(1)+" XP/cut")
 
 		tmp.el.tier_div.setDisplay(tier_unl)
 		if (tier_unl) {

@@ -100,8 +100,8 @@ const UPGS = {
                 res: "grass",
                 icon: ['Icons/XP'],
                 
-                cost: i => Decimal.pow(1.15,i).mul(100).ceil(),
-                bulk: i => i.div(100).max(1).log(1.15).floor().toNumber()+1,
+                cost: i => Decimal.pow(1.15,i).mul(50).ceil(),
+                bulk: i => i.div(50).max(1).log(1.15).floor().toNumber()+1,
 
                 effect(i) {
                     let x = Decimal.pow(2,Math.floor(i/25)).mul(i/2+1)
@@ -118,8 +118,8 @@ const UPGS = {
                 res: "grass",
                 icon: ['Icons/Range'],
                 
-                cost: i => Decimal.pow(15,i).mul(200).ceil(),
-                bulk: i => i.div(200).max(1).log(15).floor().toNumber()+1,
+                cost: i => Decimal.pow(5,i).mul(70).ceil(),
+                bulk: i => i.div(70).max(1).log(5).floor().toNumber()+1,
 
                 effect(i) {
                     let x = i*10
@@ -170,7 +170,7 @@ const UPGS = {
                 costOnce: true,
 
                 title: "Value Perk",
-                desc: `Increase Grass gain by <b class="green">+25%</b> per level, multiplied by experience level.`,
+                desc: `Increase Grass gain by <b class="green">+50%</b> per level.`,
 
                 res: "perk",
                 icon: ['Curr/Grass'],
@@ -179,11 +179,9 @@ const UPGS = {
                 bulk: i => i,
 
                 effect(i) {
-                    let x = Decimal.mul(player.level*i,0.25).add(1)
-
-                    return x
+                    return i/2+1
                 },
-                effDesc: x => x.format()+"x",
+                effDesc: x => format(x,1)+"x",
             },{
                 max: 10,
 
@@ -225,7 +223,7 @@ const UPGS = {
                 },
                 effDesc: x => format(x)+"x",
             },{
-                max: 100,
+                max: 50,
 
                 costOnce: true,
 
@@ -234,7 +232,8 @@ const UPGS = {
 
                 res: "perk",
                 icon: ['Icons/XP'],
-                
+
+                unl: _=>player.pTimes,
                 cost: i => 1,
                 bulk: i => i,
 
@@ -254,7 +253,8 @@ const UPGS = {
 
                 res: "perk",
                 icon: ['Icons/Range'],
-                
+
+                unl: _=>player.pTimes,
                 cost: i => 3,
                 bulk: i => Math.floor(i/3),
 
@@ -274,7 +274,8 @@ const UPGS = {
 
                 res: "perk",
                 icon: ['Icons/MoreGrass', "Icons/StarSpeed"],
-                
+ 
+                unl: _=>player.pTimes,
                 cost: i => 10,
                 bulk: i => Math.floor(i/10),
 
@@ -331,7 +332,7 @@ const UPGS = {
             },{
                 max: 50,
 
-                unl: _=>player.cTimes>0,
+                unl: _=>grassHopped(),
 
                 costOnce: true,
 
@@ -357,25 +358,24 @@ const UPGS = {
         title: "Automation Upgrades",
 
         unl: _=>!player.decel,
-        req: _=>player.level >= 5 || player.pTimes > 0,
-        reqDesc: _=>`Reach Level 5 to unlock.`,
+        req: _=>player.pTimes > 0,
+        reqDesc: _=>`Prestige once to unlock.`,
 
         ctn: [
             {
                 max: 5,
 
                 title: "Autocut",
-                desc: `Auto cuts grass every <b class="green">5</b> seconds. (-1s every level after the first)`,
+                desc: `Auto cuts grass every <b class="green">1.5</b> seconds. (-0.1s every level after the first)`,
             
                 res: "grass",
                 icon: ['Curr/Grass','Icons/Automation'],
                             
-                cost: i => Decimal.pow(100,i).mul(1e3).ceil(),
-                bulk: i => i.div(1e3).max(1).log(100).floor().toNumber()+1,
+                cost: i => Decimal.pow(10,i).mul(1e3).ceil(),
+                bulk: i => i.div(1e3).max(1).log(10).floor().toNumber()+1,
             
                 effect(i) {
-                    let x = Math.max(i-1,0)
-            
+                    let x = 1.5-Math.max(i-1,0)/10
                     return x
                 },
                 effDesc: x => format(tmp.autocut)+" seconds",
@@ -400,10 +400,10 @@ const UPGS = {
                 effDesc: x => format(x)+"x",
             },{
                 unl: _=>player.cTimes>0,
-                max: 5,
+                max: 10,
 
                 title: "Autocut Amount",
-                desc: `Increases auto cut amount by <b class="green">1</b>.`,
+                desc: `Increases auto cut amount by <b class="green">+1</b>.`,
             
                 res: "crystal",
                 icon: ['Icons/MoreGrass','Icons/StarSpeed'],
@@ -526,12 +526,12 @@ const UPGS = {
 
         ctn: [
             {
-                max: 8,
+                max: 20,
 
                 costOnce: true,
 
                 title: "Starter AC",
-                desc: `Decreases auto cut time by <b class="green">0.1</b> seconds per level.`,
+                desc: `Grass automatically cuts <b class="green">+0.1x</b> faster.`,
 
                 res: "plat",
                 icon: ['Curr/Grass','Icons/Automation'],
@@ -540,11 +540,10 @@ const UPGS = {
                 bulk: i => Math.floor(i/5),
 
                 effect(i) {
-                    let x = i/10
-
+                    let x = i/10+1
                     return x
                 },
-                effDesc: x => format(tmp.autocut)+" seconds",
+                effDesc: x => format(x, 1)+"x",
             },{
                 max: 10,
 
@@ -1110,9 +1109,13 @@ el.update.upgs = _=>{
     }
 
 	if (mapID == 'opt') {
+		tmp.el.wipeBtn.setDisplay(player.pTimes)
+		tmp.el.sciBtn.setDisplay(player.pTimes)
 		tmp.el.scientific.setTxt(player.options.scientific?"ON":"OFF")
-		tmp.el.grassCap.setTxt(player.options.lowGrass?250:"∞")
-		tmp.el.hideUpgOption.setTxt(player.options.hideUpgOption?"ON":"OFF")
+		tmp.el.hideCapBtn.setDisplay(player.cTimes)
+		tmp.el.capOpt.setTxt(player.options.lowGrass?250:"∞")
+		tmp.el.hideMaxBtn.setDisplay(player.cTimes)
+		tmp.el.hideMax.setTxt(player.options.hideUpgOption?"ON":"OFF")
 		tmp.el.hideMilestoneBtn.setDisplay(grassHopped())
 		tmp.el.hideMilestone.setTxt(player.options.hideMilestone?"Unobtained":"All")
 	}

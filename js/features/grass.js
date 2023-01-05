@@ -40,7 +40,7 @@ MAIN.grass = {
 	},
 	range: _=>70+upgEffect('grass',4,0)+upgEffect('perk',4,0)+upgEffect('aGrass',6,0)+upgEffect("unGrass",2,0),
 	auto() {
-		let interval = 5-upgEffect('auto',0,0)-upgEffect('plat',0,0)
+		let interval = upgEffect('auto',0,0)/upgEffect('plat',0,0)
 		interval /= starTreeEff("auto",7)
 		if (inDecel()) interval *= 10 / upgEffect('aAuto', 0)
 		if (inRecel()) interval = 0.1
@@ -111,11 +111,8 @@ el.update.grassCanvas = _=>{
         if (grass_canvas.width == 0 || grass_canvas.height == 0) resizeCanvas()
         drawGrass()
 
-        tmp.el.grass_cap.setHTML(`${format(tmp.grasses.length,0)} / ${format(tmp.grassCap,0)} <span class="smallAmt">(+${format(1/tmp.grassSpawn*tmp.spawnAmt)}/s)</span>`)
-        tmp.el.grass_cut.setHTML(`
-			+${format(tmp.grassGain,1)}<span class="smallAmt">/cut</span><br>
-			<span class="cyan smallamt">${tmp.habit ? "(x"+format(tmp.habitMax,1)+")" : ''}</span>
-		`)
+        tmp.el.grass_cap.setHTML(`${format(tmp.grasses.length,0)} / ${format(tmp.grassCap,0)}`)
+        tmp.el.habit.setHTML(tmp.habit ? "(x"+format(tmp.habitMax,1)+")" : '')
     }
 }
 

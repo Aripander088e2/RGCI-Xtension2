@@ -20,8 +20,8 @@ MAIN.pp = {
 RESET.pp = {
     unl: _=> player.decel == 0,
 
-    req: _=>player.level>=30,
-    reqDesc: _=>`Reach Level 30.`,
+    req: _=>player.level>=20,
+    reqDesc: _=>`Reach Level 20.`,
 
     resetDesc: `Reset your grass, upgrades, level, and perks.`,
     resetGain: _=> `
@@ -94,8 +94,8 @@ UPGS.pp = {
             res: "pp",
             icon: ["Curr/Grass"],
                         
-            cost: i => Decimal.pow(1.2,i).mul(30).ceil(),
-            bulk: i => i.div(30).max(1).log(1.2).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.2,i).mul(3).ceil(),
+            bulk: i => i.div(3).max(1).log(1.2).floor().toNumber()+1,
         
             effect(i) {
                 let x = Decimal.pow(2,Math.floor(i/25)).mul(i/4+1)
@@ -113,8 +113,8 @@ UPGS.pp = {
             res: "pp",
             icon: ["Icons/XP"],
                         
-            cost: i => Decimal.pow(1.2,i).mul(60).ceil(),
-            bulk: i => i.div(60).max(1).log(1.2).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.2,i).mul(5).ceil(),
+            bulk: i => i.div(5).max(1).log(1.2).floor().toNumber()+1,
 
             effect(i) {
                 let x = Decimal.pow(2,Math.floor(i/25)).mul(i/4+1)
@@ -131,8 +131,8 @@ UPGS.pp = {
             res: "pp",
             icon: ["Icons/TP"],
                         
-            cost: i => Decimal.pow(1.2,i**1.25).mul(100).ceil(),
-            bulk: i => i.div(100).max(1).log(1.2).root(1.25).floor().toNumber()+1,
+            cost: i => Decimal.pow(1.2,i**1.25).mul(20).ceil(),
+            bulk: i => i.div(20).max(1).log(1.2).root(1.25).floor().toNumber()+1,
         
             effect(i) {
                 let x = Decimal.pow(1.2,i)

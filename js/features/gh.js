@@ -14,14 +14,14 @@ MAIN.gh = {
 	milestone: [
 		{
 			r: 1,
-			desc: `<b class="green">4x</b> more TP. Unlock new automation upgrades.`,
+			desc: `<b class="green">Double</b> TP. Unlock new automation upgrades.`,
 		},{
 			r: 2,
 			desc: `<b class="green">Double</b> Crystals.`,
 		},{
 			r: 3,
-			desc: `<b class="green">+0.2</b> Platinum per Grasshop. (starting at 2)`,
-			effect: _=>Math.max(0,(tmp.gh.eff-2)/5),
+			desc: `<b class="green">+0.5</b> Platinum per Grasshop. (starting at 2 and ending at 10)`,
+			effect: _=>Math.max(Math.min(tmp.gh.eff,10)-1,0)/2,
 			effDesc: x=> "+"+format(x,1),
 		},{
 			r: 4,

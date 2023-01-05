@@ -67,12 +67,10 @@
 			<div id="level" style="margin: 10px;">
 				<div id="level_top_bar"></div>
 				<div id="level_top_info"></div>
-			</div>
-			<div id="tier" style="margin: 10px;">
+			</div><div id="tier" style="margin: 10px;">
 				<div id="tier_top_bar"></div>
 				<div id="tier_top_info"></div>
-			</div>
-			<div id="astral" style="margin: 10px;">
+			</div><div id="astral" style="margin: 10px;">
 				<div id="astral_top_bar"></div>
 				<div id="astral_top_info"></div>
 			</div>
@@ -82,10 +80,8 @@
 				<div style="width: 50%; height: 100%;">
 					<canvas id="grass_canvas" onclick="unMAIN.habit.destroy()"></canvas>
 					<div id="grass_cap_div">
-						<div class="table_between">
-							<div id="grass_cap" style="width: 50%;"></div>
-							<div id="grass_cut" style="width: 50%;"></div>
-						</div>
+						<div id="grass_cap"></div>
+						<div id="habit" class="cyan smallAmt"></div>
 					</div>
 				</div>
 				<div style="width: 50%; height: 100%;">
@@ -121,15 +117,15 @@
 				<button onclick="importy()">Import</button>
 				<button onclick="export_copy()">Export</button>
 				<button onclick="exporty()">Download</button>
-				<button onclick="wipe()">Hard Reset</button><br>
-				<button onclick="toggleOption('scientific')">Scientific: <span id="scientific"></span></button>
-				<button onclick="toggleLowGrass()">Grass cap: <span id="grassCap">Unlimited</span></button>
-				<button onclick="toggleOption('hideUpgOption')">Hide max: <span id="hideUpgOption"></span></button>
+				<button id="wipeBtn" onclick="wipe()">Hard Reset</button><br>
+				<button id="sciBtn" onclick="toggleOption('scientific')">Scientific: <span id="scientific"></span></button>
+				<button id="hideCapBtn" onclick="toggleLowGrass()">Grass cap: <span id="capOpt">Unlimited</span></button>
+				<button id="hideMaxBtn" onclick="toggleOption('hideUpgOption')">Hide max: <span id="hideMax"></span></button>
 				<button id="hideMilestoneBtn" onclick="toggleOption('hideMilestone')">Milestones: <span id="hideMilestone"></span></button><br><br>
 
 				<b style="color: #ffffbf">RGCI: Thunderized Balance</b> - <a href="http://aarextiaokhiao.github.io">By TehAarex</a><br>
 				<span style="font-size: 16px">
-					Version β4b α4.1
+					Version β4b α5
 				</span><br>
 				<span style="font-size: 12px">
 					Inspired by <a href="http://www.roblox.com/games/9292879820">Grass Cutting Incremental</a>,
@@ -355,7 +351,7 @@
 		</div>
 
 		<div id="loc"></div>
-		<div style="position: absolute; bottom: 5px; width: 100%">
+		<div id="map_footer" style="position: absolute; bottom: 5px; width: 100%">
 			<button id="map_btn" onclick="openMap()">Map</button>
 			<button id="pin_btn" onclick="openPins()">Pins</button>
 			|
