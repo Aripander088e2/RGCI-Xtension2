@@ -26,7 +26,7 @@ function resetTemp() {
 
 		upgs: {},
 		upg_res: {},
-		upg_ch: {},
+		upg_ch: [],
 		perks: 0,
 
 		chal: {
@@ -56,7 +56,6 @@ function resetTemp() {
 	for (let x in UPG_RES) tmp.upg_res[x] = E(0)
 
 	for (let x in UPGS) {
-		tmp.upg_ch[x] = -1
 		tmp.upgs[x] = {
 			unlLength: 0,
 			max: [],

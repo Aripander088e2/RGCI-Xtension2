@@ -32,7 +32,7 @@ const STATS = {
             if (player.gTimes>0) {
                 x = Decimal.mul(upgEffect('moonstone',0),starTreeEff('speed',3)*starTreeEff('speed',10)*starTreeEff('speed',15))
             
-                if (inAccel()) x = x.mul(starTreeEff('progress',6))
+                if (inAccel()) x = x.mul(starTreeEff("progress",6))
 
                 h += `<br>Space Multiplier: <b>${formatMult(x)}</b>`
             }
@@ -113,7 +113,7 @@ const STATS = {
             if (player.gTimes>0) {
                 x = Decimal.mul(upgEffect('moonstone',1),starTreeEff('speed',4)*starTreeEff('speed',11)*starTreeEff('speed',16)).mul(upgEffect('dm',2))
             
-                if (inAccel()) x = x.mul(starTreeEff('progress',6))
+                if (inAccel()) x = x.mul(starTreeEff("progress",6))
 
                 h += `<br>Space Multiplier: <b>${formatMult(x)}</b>`
             }
@@ -196,7 +196,7 @@ const STATS = {
             if (player.gTimes>0) {
                 x = Decimal.mul(upgEffect('moonstone',2),starTreeEff('speed',5)*starTreeEff('speed',12)*starTreeEff('speed',17)).mul(upgEffect('dm',0))
             
-                if (inAccel()) x = x.mul(starTreeEff('progress',6))
+                if (inAccel()) x = x.mul(starTreeEff("progress",6))
 
                 h += `<br>Space Multiplier: <b>${formatMult(x)}</b>`
             }
@@ -281,8 +281,8 @@ const STATS = {
             }
 
             if (player.gTimes>0) {
-                x = upgEffect('dm',3).mul(starTreeEff('progress',2)*starTreeEff('progress',5)*starTreeEff('progress',8)*starTreeEff('progress',10))
-                .mul(starTreeEff('progress',12))
+                x = upgEffect('dm',3).mul(starTreeEff("progress",2)*starTreeEff("progress",5)*starTreeEff("progress",8)*starTreeEff("progress",10))
+                .mul(starTreeEff("progress",12))
 
                 h += `<br>Space Multiplier: <b>${formatMult(x)}</b>`
             }

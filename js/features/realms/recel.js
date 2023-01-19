@@ -44,7 +44,8 @@ RESET.recel = {
 }
 
 el.update.recel = _=>{
-	if (mapID == "dc") tmp.el.reset_btn_recel.setTxt(player.decel >= 2 ? "Accelerate" : "Recelerate")
+	if (mapID == 'upg') tmp.el.unnatural_healing.setDisplay(inRecel())
+	if (mapID == "dc") tmp.el.reset_btn_recel.setTxt("(Shift+T) " + (player.decel == 2 ? "Accelerate" : "Recelerate"))
 }
 
 UPGS.unGrass = {
@@ -189,10 +190,12 @@ tmp_update.push(_=>{
 	if (!player.unRes) return
 	tmp.habitMax = unMAIN.habit.max()
 	tmp.habit = tmp.habitMax > 1
-})
 
-tmp_update.push(_=>{
-	tmp.unRes.npGain = unMAIN.np.gain()
+	let uh = {}
+	tmp.unRes.uh = uh
+	uh.lvl = 0
+	uh.cap = 10
+	uh.eff = Math.min(uh.lvl, uh.cap)
 })
 
 /* NORMALITY */

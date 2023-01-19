@@ -258,8 +258,8 @@ UPGS.sfrgt = {
 			res: "sfrgt",
 			icon: ["Curr/Star"],
 
-			cost: i => Decimal.pow(10,i).mul(1e4).ceil(),
-			bulk: i => i.div(1e4).max(1).log(10).floor().toNumber()+1,
+			cost: i => Decimal.pow(15,i).mul(1e4).ceil(),
+			bulk: i => i.div(1e4).max(1).log(15).floor().toNumber()+1,
 		
 			effect(i) {
 				let x = Decimal.pow(2,i)

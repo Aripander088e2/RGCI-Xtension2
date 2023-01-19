@@ -8,6 +8,7 @@ MAIN.grass = {
 			x = x.mul(upgEffect('plat',2))
 		}
 		if (realm <= 1) x = x.mul(aMAIN.grassGain())
+		if (realm == 2) x = x.div(1e6)
 
 		x = x.mul(chalEff(0))
 		x = x.mul(tmp.chargeEff[9]||1)

@@ -1,6 +1,9 @@
 MAIN.sac = {
 	dmGain() {
-		return player.gal.stars.div(1e8).cbrt().floor()
+		let x = player.gal.stars.div(1e8).cbrt().floor()
+
+        x = x.mul(upgEffect('moonstone',7))
+		return x
 	},
 	did() {
 		return player?.gal?.sacTimes
@@ -74,8 +77,8 @@ UPGS.dm = {
 			res: "dm",
 			icon: ["Curr/Crystal"],
 
-			cost: i => Decimal.pow(2,i**1.25).ceil(),
-			bulk: i => i.max(1).log(2).root(1.25).floor().toNumber()+1,
+			cost: i => Decimal.pow(4,i**1.25).ceil(),
+			bulk: i => i.max(1).log(4).root(1.25).floor().toNumber()+1,
 		
 			effect(i) {
 				return E(1.3).pow(i)
@@ -90,8 +93,8 @@ UPGS.dm = {
 			res: "dm",
 			icon: ["Curr/Oil"],
 
-			cost: i => Decimal.pow(2,i**1.25/2).ceil(),
-			bulk: i => i.max(1).log(2).mul(2).root(1.25).floor().toNumber()+1,
+			cost: i => Decimal.pow(4,i**1.25/1.5).ceil(),
+			bulk: i => i.max(1).log(4).mul(1.5).root(1.25).floor().toNumber()+1,
 		
 			effect(i) {
 				return E(1.3).pow(i)

@@ -123,10 +123,10 @@ UPGS.pp = {
             },
             effDesc: x => format(x)+"x",
         },{
-            max: _ => 125 + hasStarTree("progress", 5),
+            max: _ => 125 + starTreeEff("progress", 5, 0),
 
             title: "TP",
-            desc: `Increase Tier Points (TP) gain by <b class="green">25%</b> compounding per level.`,
+            desc: `Increase Tier Points (TP) gain by <b class="green">20%</b> compounding per level.`,
 
             res: "pp",
             icon: ["Icons/TP"],

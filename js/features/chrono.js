@@ -1,5 +1,5 @@
 MAIN.chrono = {
-	unl: () => player.sTimes,
+	unl: _ => player.sTimes,
 	setup() {
 		return {
 			chrona: 0,

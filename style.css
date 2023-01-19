@@ -28,6 +28,10 @@ table, tr {
     justify-content: center;
 }
 
+.table_fix tr {
+	display: table-row
+}
+
 h1 {
     display: inline;
     font-size: 40px;
@@ -137,7 +141,7 @@ button:not(.locked):hover {
 
 	position: absolute;
 	z-index: 1;
-	top: 10px;
+	top: 130px;
 	left: 0;
 
 	opacity: 0;
@@ -155,9 +159,6 @@ button:not(.locked):hover {
 	border: 6px solid #000b;
 	background: #0007;
 	transform: translate(-50%, -50%)
-}
-.map_div tr {
-	display: table-row
 }
 .map_div button {
 	margin: 0;
@@ -535,7 +536,7 @@ button:not(.locked):hover {
 
 .upg_tier {
     position: absolute;
-    top: 10%;
+    top: 15%;
     width: 100%;
     font-size: 2vw;
     font-weight: bold;

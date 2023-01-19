@@ -225,42 +225,69 @@ const ASTRAL = {
 		return player.gal.sp.div(1e3).log(2).floor().toNumber() + 1
 	},
 
+	effs: {
+		tp: {
+			unl: _ => true,
+			eff: a => a+1,
+			desc: x => `<b class="magenta">${format(x)}x</b> to TP`
+		},
+		fd: {
+			unl: _ => true,
+			eff: a => a/50+1,
+			desc: x => `<b class="magenta">^${format(x)}</b> to Foundry effect`
+		},
+		st: {
+			unl: _ => hasAGHMilestone(1),
+			eff: a => E(2).pow(a/4),
+			desc: x => `<b class="magenta">${format(x)}x</b> to Star`
+		},
+		rf: {
+			unl: _ => hasAGHMilestone(2),
+			eff: a => a/20,
+			desc: x => `<b class="magenta">+${format(x)}x</b> to Rocket Fuel`
+		},
+		ch: {
+			unl: _ => hasAGHMilestone(3),
+			eff: a => E(2).pow(a/3-3).max(1),
+			desc: x => `<b class="magenta">${format(x)}x</b> to Charge`
+		},
+		xp: {
+			unl: _ => hasAGHMilestone(4),
+			eff: a => E(2).pow(a/3-6).max(1),
+			desc: x => `<b class="magenta">${format(x)}x</b> to XP`
+		},
+		fu: {
+			unl: _ => hasAGHMilestone(5),
+			eff: a => E(2).pow(a/2-10).max(1),
+			desc: x => `<b class="magenta">${format(x)}x</b> to Fun`
+		},
+		sf: {
+			unl: _ => hasAGHMilestone(6),
+			eff: a => E(2).pow(a/5-4).max(1),
+			desc: x => `<b class="magenta">${format(x)}x</b> to SFRGT`
+		},
+		uh: {
+			unl: _ => hasAGHMilestone(9),
+			eff: a => Math.max(a-50,0),
+			desc: x => `<b class="magenta">+${format(x)}</b> to Unnatural Healing`
+		},
+		ap: {
+			unl: _ => hasAGHMilestone(10),
+			eff: a => Math.min(Math.max(0.7+a/200,1),1.25),
+			desc: x => `<b class="magenta">+${format(x)}</b> to AP per-25 multipliers`
+		}
+	},
+
 	eff() {
-		let a = player.gal.astral
+		const a = player.gal.astral
 		let x = {}
 
-		x.tp = a+1
-		x.fd = a/50+1
-		if (hasAGHMilestone(1)) x.st = E(2).pow(a/4)
-		if (hasAGHMilestone(2)) x.rf = a/20
-		if (hasAGHMilestone(3)) x.ch = E(2).pow(a/4-2).max(1)
-		if (hasAGHMilestone(4)) x.xp = E(1.3).pow(a-10).max(1)
-		if (hasAGHMilestone(5)) x.fu = E(2).pow(a/2-10).max(1)
-		if (hasAGHMilestone(6)) x.sf = E(2).pow(a/5-4).max(1)
-		if (hasAGHMilestone(9)) x.tb = Math.max(a/50-1,0)
-		if (hasAGHMilestone(10)) x.uh = Math.max(a-50,0)
-		if (hasAGHMilestone(11)) x.ap = Math.min(Math.max(0.7+a/200,1),1.25)
-		if (hasAGHMilestone(12)) x.fc = Math.min(Math.max(0.7+a/200,1),1.15)
-
+		for (const [id, data] of Object.entries(this.effs)) if (data.unl()) x[id] = data.eff(a)
 		return x
 	},
 	effDesc(e) {
 		let x = ''
-
-		if (e.tp) x += `<b class="magenta">${format(e.tp)}x</b> to TP gain<br>`
-		if (e.fd) x += `<b class="magenta">^${format(e.fd)}</b> to Foundry effect<br>`
-		if (e.st) x += `<b class="magenta">${format(e.st,0)}x</b> to Star gain<br>`
-		if (e.rf) x += `<b class="magenta">+${format(e.rf)}x</b> to Rocket Fuel gain<br>`
-		if (e.ch) x += `<b class="magenta">${format(e.ch)}x</b> to Charge gain<br>`
-		if (e.xp) x += `<b class="magenta">${format(e.xp)}x</b> to XP gain (in Normal Realm)<br>`
-		if (e.xp) x += `<b class="magenta">${format(e.xp.root(1.5))}x</b> to XP gain (in Anti-Realm)<br>`
-		if (e.fu) x += `<b class="magenta">${format(e.fu)}x</b> to Fun gain<br>`
-		if (e.sf) x += `<b class="magenta">${format(e.sf,0)}x</b> to SFRGT gain<br>`
-		if (e.tb) x += `<b class="magenta">+${format(e.tb,3)}x</b> to Tier multiplier base<br>`
-		if (e.uh) x += `<b class="magenta">+${format(e.uh,0)}x</b> to Unnatural Healing<br>`
-		if (e.ap) x += `<b class="magenta">${format(e.ap,3)}x</b> to some bonuses for each 25 AP upgrades<br>`
-		if (e.fc) x += `<b class="magenta">${format(e.fc,3)}x</b> to charge bonuses for each 25 Factory upgrades<br>`
-
+		for (const [id, eff] of Object.entries(e)) x += this.effs[id].desc(eff) + "<br>"
 		return x
 	},
 }
@@ -402,6 +429,25 @@ UPGS.moonstone = {
 				return i+1
 			},
 			effDesc: x => format(x,0)+"x",
+		}, {
+			unl: _ => hasAGHMilestone(7),
+			max: 5,
+
+			costOnce: true,
+
+			title: "Moon Dark Matters",
+			desc: `Boost Dark Matter by <b class="green">+1x</b> per level.`,
+
+			res: "moonstone",
+			icon: ["Curr/DarkMatter"],
+			
+			cost: i => 100,
+			bulk: i => Math.floor(i/100),
+
+			effect(i) {
+				return i+1
+			},
+			effDesc: x => format(x,0)+"x",
 		}
 	],
 }
@@ -447,9 +493,9 @@ UPGS.star = {
 			},
 			effDesc: x => format(x)+"x",
 		},{
-			max: Infinity,
+			max: 25,
 
-			title: "Thruster Stars",
+			title: "Launch Stars",
 			desc: `Increase star gain by <b class="green">20%</b> compounding per level.`,
 
 			res: "rf",

@@ -125,7 +125,7 @@
 
 				<b style="color: #ffffbf">RGCI: Thunderized Balance</b> - <a href="http://aarextiaokhiao.github.io">By TehAarex</a><br>
 				<span style="font-size: 16px">
-					Version β4b α5
+					Version β4b α6
 				</span><br>
 				<span style="font-size: 12px">
 					Inspired by <a href="http://www.roblox.com/games/9292879820">Grass Cutting Incremental</a>,
@@ -172,10 +172,22 @@
 					<span id="sacTimes"></span>
 				</div>
 			</div><div id="map_div_upg">
-				<div style="width: 100%; height: 50%;">
-					<div class="upgs_div" id="upgs_div_perk"></div>
-				</div><div style="width: 100%; height: 50%;">
-					<div class="upgs_div" id="upgs_div_plat"></div>
+				<div id="normal_upgs">
+					<div style="width: 100%; height: 50%;">
+						<div class="upgs_div" id="upgs_div_perk"></div>
+					</div><div style="width: 100%; height: 50%;">
+						<div class="upgs_div" id="upgs_div_plat"></div>
+					</div>
+				</div><div id="unnatural_healing">
+					<span style="font-size: 24px">
+						<b style="color: #bf7">Unnatural Healing: </b> 0 / 0
+					</span><br>
+					<span class="smallAmt">(capped on levels)</span><br>
+					<span class="smallAmt">Gain more Unnatural Healing by proceeding outside of Unnatural Realm.</span><br><br>
+
+					<b id="uh_xp" style="color: #bf7">1x</b> XP gain in Unnatural Realm<br>
+					<b id="uh_gxp" style="color: #bf7">1</b> max levels for "Gilded Experience"<br>
+					<b id="uh_gfu" style="color: #bf7">1</b> max levels "Gilded Fun"
 				</div>
 			</div><div id="map_div_auto">
 				<div style="width: 100%; height: 50%;">
@@ -356,7 +368,6 @@
 			<button id="pin_btn" onclick="openPins()">Pins</button>
 			|
 			<span id="map_ctrl">
-				<button id="spaceButton" onclick="goToSpace()"></button>
 				<button id="lMap" onclick="moveMap(-1,0)" class="locked">◀</button>
 				<button id="rMap" onclick="moveMap(1,0)" class="locked">▶</button>
 				<button id="uMap" onclick="moveMap(0,-1)" class="locked">▲</button>
@@ -365,10 +376,14 @@
 			<span id="pin_bottom"></span>
 			<div class="smallAmt" id="position"></div>
 		</div>
-		<div id="map_div">Hi</div>
+		<div id="map_div">
+			<span id="map_div_inner"></span>
+			<button id="spaceButton" onclick="goToSpace()"></button>
+			<button onclick="go_to = ''">Close</button>
+		</div>
 		<div id="pin_div">
 			<button onclick="createPin()">Pin current location</button><br>
-			<table id="pin_table"></table><br>
+			<table class="table_fix" id="pin_table"></table><br>
 			<button onclick="toggleOption('pin_bottom')">Pins on bottom: <span id='pin_bottom_opt'>OFF</span></button>
 			<button onclick='go_to=""'>Close</button>
 		</div>

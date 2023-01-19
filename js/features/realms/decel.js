@@ -44,7 +44,7 @@ el.update.decel = _=>{
     tmp.el.grass.changeStyle("background-color", ["", "#002D9F", "#549e00"][player.decel])
     tmp.el.fog.changeStyle("background-color", ["", "#001c3b", "#ff03"][player.decel])
     tmp.el.fog.setDisplay(player.decel && !inSpace())
-    if (mapID == "dc") tmp.el.reset_btn_decel.setTxt(player.decel == 1 ? "Accelerate" : "Decelerate")
+    if (mapID == "dc") tmp.el.reset_btn_decel.setTxt("(T) " + (player.decel == 1 ? "Accelerate" : "Decelerate"))
 }
 
 aMAIN = {
@@ -192,10 +192,10 @@ UPGS.aGrass = {
         },{
             unl: _ => player.aRes.aTimes > 0,
 
-            max: Infinity,
+            max: 400,
 
             title: "Anti-Grass AP",
-            desc: `Increase AP gain by <b class="green">+10%</b> compounding.`,
+            desc: `Increase AP gain by <b class="green">+15%</b> compounding.`,
 
             res: "aGrass",
             icon: ['Curr/Anonymity'],
@@ -204,7 +204,7 @@ UPGS.aGrass = {
             bulk: i => i.div(1e7).max(1).log(1.2).floor().toNumber()+1,
 
             effect(i) {
-                return E(1.1).pow(i)
+                return E(1.15).pow(i)
             },
             effDesc: x => x.format()+"x",
         },{
@@ -331,7 +331,7 @@ UPGS.aAuto = {
 /* ANONYMITY */
 aMAIN.ap = {
     gain() {
-        let x = Decimal.pow(1.15,player.aRes.level)
+        let x = Decimal.pow(1.1,player.aRes.level).mul(3)
 
         x = x.mul(upgEffect('aGrass',5))
         x = x.mul(upgEffect('plat',8))
@@ -571,7 +571,7 @@ UPGS.oil = {
 
     ctn: [
         {
-            max: Infinity,
+            max: 100,
 
             title: "Oily Grass Value",
             tier: 3,
@@ -588,7 +588,7 @@ UPGS.oil = {
             },
             effDesc: x => format(x)+"x",
         },{
-            max: Infinity,
+            max: 100,
 
             title: "Oily XP",
             tier: 3,
@@ -622,7 +622,7 @@ UPGS.oil = {
             },
             effDesc: x => x.format()+"x",
         },{
-            max: Infinity,
+            max: 100,
 
             title: "Oily AP",
             desc: `Increase AP gain by <b class="green">30%</b> compounding per level.`,
@@ -711,13 +711,13 @@ aMAIN.gs = {
         },
         {
             r: 2,
-            desc: `<b class="green">2x</b> Space Power per Grass-Skip. (starting at 9)`,
-            effect: _ => E(2).pow(Math.max(player.aRes.grassskip - 1, 0)),
+            desc: `<b class="green">1.5x</b> Space Power per Grass-Skip.`,
+            effect: _ => E(1.5).pow(player.aRes.grassskip),
             effDesc: x => format(x, 0) + "x"
         },
         {
             r: 3,
-            desc: `<b class="green">30%</b> more Stars per Grass-Skip.`,
+            desc: `<b class="green">1.3x</b> Stars per Grass-Skip.`,
             effect: _ => E(1.3).pow(player.aRes.grassskip),
             effDesc: x => format(x) + "x"
         },

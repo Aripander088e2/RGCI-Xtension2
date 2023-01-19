@@ -89,7 +89,7 @@ const STAR_CHART = {
 			bulk: i => E(i).log(5).sub(5).root(1.25).floor().toNumber() + 1,
 
 			effect(i) {
-				return i * 5
+				return i
 			},
 			effDesc: x => "+" + format(x, 0) + " levels"
 		}, {
@@ -104,7 +104,7 @@ const STAR_CHART = {
 			cost: i => E(1e4),
 			bulk: i => 1
 		}, {
-			max: Infinity,
+			max: 20,
 
 			title: "Improved Factory",
 			desc: `Raise level caps for each Factory upgrade by <b class="green">+5</b> per level.`,
@@ -722,26 +722,26 @@ function updateStarChart() {
 		let tt = tmp.gal.sc[id]
 		let tu = STAR_CHART[id][i]
 		let amt = player.gal.star_chart[id][i]||0
+		let max = tt.max[i]
 
 		tmp.el.sc_title.setHTML(`[${id}-${i+1}] <h3>${tu.title}</h3>`)
 
-		let h = `
-		Level <b class="yellow">${format(amt,0)}${tt.max[i] < Infinity ? ` / ${format(tt.max[i],0)}` : ""}</b><br>
-		${tu.desc}
-		`
+		let h = ''
+		if (max > 1 && max > amt) h += `Level <b class="yellow">${format(amt,0)}${max < Infinity ? ' / ' + max : ""}</b><br>`
 
+		h += tu.desc
 		if (tu.effDesc) h += '<br>Effect: <span class="cyan">'+tu.effDesc(tt.eff[i])+"</span>"
         h += '<br>'
 
 		let canBuy = Decimal.gte(star, tt.cost[i])
-		let hasBuy25 = (Math.floor(amt / 25) + 1) * 25 < tt.max[i]
-		let hasMax = amt + 1 < tt.max[i]
+		let hasBuy25 = (Math.floor(amt / 25) + 1) * 25 < max
+		let hasMax = amt + 1 < max
 
-		if (amt < tt.max[i]) {
+		if (amt < max) {
 			h += `<br><span class="${Decimal.gte(star,tt.cost[i])?"green":"red"}">Cost: ${format(tt.cost[i],0)} Stars</span>`
 
 			let cost2 = tu.costOnce?Decimal.mul(tt.cost[i],25-amt%25):tu.cost((Math.floor(amt/25)+1)*25-1)
-			let cost3 = tu.costOnce?Decimal.mul(tt.cost[i],tt.max[i]-amt):tu.cost(tt.max[i]-1)
+			let cost3 = tu.costOnce?Decimal.mul(tt.cost[i],max-amt):tu.cost(max-1)
 			if (hasBuy25) h += `<br><span class="${Decimal.gte(star,cost2)?"green":"red"}">Next 25: ${format(cost2,0)} Stars</span>`
 			else if (hasMax) h += `<br><span class="${Decimal.gte(star,cost3)?"green":"red"}">Max: ${format(cost3,0)} Stars</span>`
 		} else h += "<br><b class='pink'>Maxed!</b>"
@@ -749,7 +749,7 @@ function updateStarChart() {
 		tmp.el.sc_desc.setHTML(h)
 
 		tmp.el["sc_upg_buy"].setClasses({ locked: !canBuy })
-		tmp.el["sc_upg_buy"].setDisplay(amt < tt.max[i])
+		tmp.el["sc_upg_buy"].setDisplay(amt < max)
 		tmp.el["sc_upg_buy"].setTxt("Buy" + (hasMax ? " 1" : ""))
 		tmp.el["sc_upg_next"].setClasses({ locked: !canBuy })
 		tmp.el["sc_upg_next"].setDisplay(hasBuy25)

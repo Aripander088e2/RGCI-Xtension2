@@ -45,7 +45,7 @@ const MAP_UNLS = {
 	//EARTH
 	g: _ => true,
 	upg: _ => player.xp.gte(10) || player.pTimes,
-	auto: _ => player.level > 5 || player.pTimes,
+	auto: _ => (player.level > 5 || player.pTimes) && !inRecel(),
 	pc: _ => player.level > 5 || player.pTimes,
 	chal: _ => player.pTimes > 0,
 	gh: _ => player.cTimes > 0,
@@ -119,9 +119,6 @@ el.update.map = _=>{
 		updateMapButton("rMap", mx+1, my, dim)
 		updateMapButton("uMap", mx, my-1, dim)
 		updateMapButton("dMap", mx, my+1, dim)
-
-		tmp.el.spaceButton.setDisplay(galUnlocked())
-		tmp.el.spaceButton.setTxt("(Z) To " + (inSpace() ? "Ground" : "Space"))
 	}
 }
 
@@ -208,10 +205,10 @@ function showLoc(x) {
 	mapLoc = x
 
 	tmp.el.loc.setHTML(x)
-	tmp.el.loc.setOpacity(1)
+	tmp.el.loc.setOpacity(0.7)
 
 	clearTimeout(locTimeout)
-	locTimeout = setTimeout(() => tmp.el.loc.setOpacity(0), 3000)
+	locTimeout = setTimeout(_ => tmp.el.loc.setOpacity(0), 2000)
 }
 
 //Map
@@ -247,7 +244,7 @@ let go_to = ''
 el.setup.go_to = _ => {
 	let html = ""
 	for (const [dim, d_dim] of Object.entries(MAP)) {
-		html += `<table class="map_div" id="map_div_${dim}">`
+		html += `<table class="map_div table_fix" id="map_div_${dim}">`
 		for (const [y, dy] of Object.entries(d_dim)) {
 			html += "<tr>"
 			for (const [x, dx] of Object.entries(dy)) {
@@ -259,8 +256,7 @@ el.setup.go_to = _ => {
 		}
 		html += "</table>"
 	}
-	html += `<button onclick="go_to = ''">Close</button>`
-	new Element("map_div").setHTML(html)
+	new Element("map_div_inner").setHTML(html)
 }
 
 el.update.go_to = _ => {
@@ -282,6 +278,9 @@ el.update.go_to = _ => {
 				}
 			}
 		}
+
+		tmp.el.spaceButton.setDisplay(galUnlocked())
+		tmp.el.spaceButton.setTxt("(Z) To " + (inSpace() ? "Ground" : "Space"))
 	}
 }
 
@@ -323,7 +322,7 @@ const MAP_NOTIFY = {
 	//SPACE
 	sc: _ => 0,
 	at: _ => 0,
-	sac: _ => hasAGHMilestone(13) ? 2 : hasAGHMilestone(7) ? 1 : 0,
+	sac: _ => hasAGHMilestone(11) ? 2 : hasAGHMilestone(7) ? 1 : 0,
 }
 
 tmp_update.push(_=>{
@@ -377,10 +376,10 @@ el.setup.pin = _ => {
 	let html_bottom = ``
 	for (var i = 0; i < 8; i++) {
 		html += `<tr id='pin_row_${i}'>
-			<td><button id='pin_go_${i}' onclick='goToPin(${i})'>Testing</button></td>
+			<td><button id='pin_go_${i}' onclick='goToPin(${i})'style="width: 160px"></button></td>
 			<td><button class='notify' onclick='deletePin(${i})'>X</button></td>
 		</tr>`
-		html_bottom += `<button id='pin_bottom_${i}' onclick='goToPin(${i})'>Testing</button>`
+		html_bottom += `<button id='pin_bottom_${i}' onclick='goToPin(${i})'></button>`
 	}
 	new Element("pin_table").setHTML(html)
 	new Element("pin_bottom").setHTML(html_bottom)

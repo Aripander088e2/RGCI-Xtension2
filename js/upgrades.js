@@ -720,7 +720,7 @@ const UPGS = {
                 costOnce: true,
 
                 title: "Platinum Oil",
-                desc: `Increase Oil gain by <b class="green">+50%</b> per level.`,
+                desc: `Increase Oil gain by <b class="green">+20%</b> per level.`,
 
                 res: "plat",
                 icon: ['Curr/Oil'],
@@ -763,9 +763,14 @@ const UPGS = {
 
 const UPGS_SCOST = {}
 
+function chosenUpgrade(id, x) {
+	let ch = tmp.upg_ch
+	return ch[0] == id && ch[1] == x
+}
+
 function clickUpgrade(id, x) {
 	if (shiftDown) buyMaxUpgrade(id, x)
-	else tmp.upg_ch[id] = x
+	else tmp.upg_ch = [id, x]
 }
 
 function buyUpgrade(id, x, type = "once", amt) {
@@ -885,10 +890,10 @@ function setupUpgradesHTML(id) {
 			<div id="upg_desc_div_${id}" class="upg_desc ${id}">
 				<div id="upg_desc_${id}"></div>
 				<div style="position: absolute; bottom: 0; width: 100%;">
-					<button onclick="tmp.upg_ch.${id} = -1">Close</button>
-					<button id="upg_buy_${id}" onclick="buyUpgrade('${id}',tmp.upg_ch.${id})">Buy 1</button>
-					<button id="upg_buy_next_${id}" onclick="buyNextUpgrade('${id}',tmp.upg_ch.${id})">Buy Next</button>
-					<button id="upg_buy_max_${id}" onclick="buyMaxUpgrade('${id}',tmp.upg_ch.${id})">Buy Max</button>
+					<button onclick="tmp.upg_ch = []">Close</button>
+					<button id="upg_buy_${id}" onclick="buyUpgrade('${id}',tmp.upg_ch[1])">Buy 1</button>
+					<button id="upg_buy_next_${id}" onclick="buyNextUpgrade('${id}',tmp.upg_ch[1])">Buy Next</button>
+					<button id="upg_buy_max_${id}" onclick="buyMaxUpgrade('${id}',tmp.upg_ch[1])">Buy Max</button>
 				</div>
 			</div>
 			<div id="upg_req_div_${id}" class="upg_desc ${id}">
@@ -913,7 +918,7 @@ function setupUpgradesHTML(id) {
 			html += `
 				<img id="upg_ctn_${id}${x}_max_base"  draggable="false" src="${"images/max.png"}">
 				<div id="upg_ctn_${id}${x}_cost" class="upg_cost"></div>
-				<div class="upg_tier">${upg.tier ? upg.tier : ""}</div>
+				<div class="upg_tier">${upg.tier ? ['', '', 'II', 'III', 'IV', 'V'][upg.tier] : ""}</div>
 				<div id="upg_ctn_${id}${x}_amt" class="upg_amt">argh</div>
 				<div class="upg_max" id="upg_ctn_${id}${x}_max" class="upg_max">Maxed!</div>
 			</div>
@@ -928,7 +933,7 @@ function updateUpgradesHTML(id) {
     let upgs = UPGS[id]
     let height = document.getElementById(`upgs_ctn_${id}`).offsetHeight-25
     let tu = tmp.upgs[id]
-    let ch = tmp.upg_ch[id]
+    let ch = tmp.upg_ch[0] == id ? tmp.upg_ch[1] : -1
 
     let unl = upgs.unl?upgs.unl():true
     tmp.el["upgs_div_"+id].setDisplay(unl)
@@ -944,28 +949,27 @@ function updateUpgradesHTML(id) {
 
             if (ch > -1) {
                 let upg = UPGS[id].ctn[ch]
+                let max = tu.max[ch]
                 let amt = player.upgs[id][ch]||0
                 let res = tmp.upg_res[upg.res]
                 let dis = UPG_RES[upg.res][0]
 
-                let h = `
-                [#${ch+1}] <h2>${upg.title}</h2><br>
-                Level <b class="yellow">${format(amt,0)}${tu.max[ch] < Infinity ? ` / ${format(tu.max[ch],0)}` : ""}</b><br>
-                ${upg.desc}
-                `
+                let h = `<h2>${upg.title}</h2><br>`
+                if (max > 1 && max > amt) h += `Level <b class="yellow">${format(amt,0)} ${tu.max[ch] < Infinity ? " / " + max : ""}</b><br>`
 
+                h += upg.desc
                 if (upg.effDesc) h += '<br>Effect: <span class="cyan">'+upg.effDesc(tu.eff[ch])+"</span>"
                 h += '<br>'
 
                 let canBuy = Decimal.gte(tmp.upg_res[upg.res], tu.cost[ch])
-                let hasBuy25 = (Math.floor(amt / 25) + 1) * 25 < tu.max[ch]
-                let hasMax = amt + 1 < tu.max[ch]
+                let hasBuy25 = (Math.floor(amt / 25) + 1) * 25 < max
+                let hasMax = amt + 1 < max
 
-                if (amt < tu.max[ch]) {
+                if (amt < max) {
                     h += `<br><span class="${canBuy?"green":"red"}">Cost: ${format(tu.cost[ch],0)} ${dis}</span>`
 
                     let cost2 = upg.costOnce?Decimal.mul(tu.cost[ch],25-amt%25):upg.cost((Math.floor(amt/25)+1)*25-1)
-                    let cost3 = upg.costOnce?Decimal.mul(tu.cost[ch],tu.max[ch]-amt):upg.cost(tu.max[ch]-1)
+                    let cost3 = upg.costOnce?Decimal.mul(tu.cost[ch],max-amt):upg.cost(max-1)
                     if (hasBuy25) h += `<br><span class="${Decimal.gte(tmp.upg_res[upg.res],cost2)?"green":"red"}">Next 25: ${format(cost2,0)} ${dis}</span>`
                     else if (hasMax) h += `<br><span class="${Decimal.gte(tmp.upg_res[upg.res],cost3)?"green":"red"}">Max: ${format(cost3,0)} ${dis}</span>`
 
@@ -974,7 +978,7 @@ function updateUpgradesHTML(id) {
 
                 tmp.el["upg_desc_"+id].setHTML(h)
                 tmp.el["upg_buy_"+id].setClasses({ locked: !canBuy })
-                tmp.el["upg_buy_"+id].setDisplay(amt < tu.max[ch])
+                tmp.el["upg_buy_"+id].setDisplay(amt < max)
                 tmp.el["upg_buy_"+id].setTxt("Buy" + (hasMax ? " 1" : ""))
                 tmp.el["upg_buy_next_"+id].setClasses({ locked: !canBuy })
                 tmp.el["upg_buy_next_"+id].setDisplay(hasBuy25)
@@ -1054,13 +1058,19 @@ el.update.upgs = _=>{
         updateUpgradesHTML('aGrass')
 		updateUpgradesHTML('unGrass')
 	}
-	if (mapID == 'p') {
+	if (mapID == 'upg') {
 		updateUpgradesHTML('perk')
 		updateUpgradesHTML('plat')
+		tmp.el.normal_upgs.setDisplay(!inRecel())
 		tmp.el.losePerksBtn.setDisplay(hasUpgrade('auto', 4))
 		tmp.el.losePerks.setTxt(player.options.losePerks ? "OFF" : "ON")
 	}
-	if (mapID == 'auto') updateUpgradesHTML('auto')
+	if (mapID == 'auto') {
+		updateUpgradesHTML('auto')
+		updateUpgradesHTML('aAuto')
+
+		updateUpgradesHTML('assembler')
+	}
 	if (mapID == 'pc') {
 		updateUpgradesHTML('pp')
 		updateUpgradesHTML('crystal')
@@ -1071,28 +1081,6 @@ el.update.upgs = _=>{
 		updateUpgradesHTML('np')
 	}
 	if (mapID == 'gh') {
-        updateUpgradesHTML('factory')
-        updateUpgradesHTML('funMachine')
-    }
-    if (mapID == 'upg') {
-        updateUpgradesHTML('perk')
-        updateUpgradesHTML('plat')
-        tmp.el.losePerksBtn.setDisplay(hasUpgrade('auto', 5))
-        tmp.el.losePerks.setTxt(player.options.losePerks ? "OFF" : "ON")
-    }
-	if (mapID == 'auto') {
-		updateUpgradesHTML('auto')
-		updateUpgradesHTML('aAuto')
-		updateUpgradesHTML('assembler')
-	}
-    if (mapID == 'pc') {
-        updateUpgradesHTML('pp')
-        updateUpgradesHTML('crystal')
-
-        updateUpgradesHTML('ap')
-        updateUpgradesHTML('oil')
-    }
-    if (mapID == 'gh') {
         updateUpgradesHTML('factory')
         updateUpgradesHTML('funMachine')
     }

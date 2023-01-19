@@ -107,7 +107,7 @@ MAIN.steel = {
 
                 req: E(1e27),
                 eff(c) {
-                    return c.div(1e15).add(1).log10().div(15).pow10()
+                    return c.div(1e15).add(1).log10().div(25).pow10()
                 },
                 effDesc: x => "Gain more "+format(x,3)+"x Space Power.",
             },{
@@ -184,7 +184,7 @@ UPGS.factory = {
 
     ctn: [
         {
-            max: () => 100 + starTreeEff("progress", 7, 0),
+            max: _ => 100 + starTreeEff("progress", 7, 0),
 
             title: "Foundry",
             desc: `Unlock a building (above Steelie) where you can upgrade steel production. Each level increases foundry's effect by <b class="green">+10%</b>.`,
@@ -202,7 +202,7 @@ UPGS.factory = {
             },
             effDesc: x => format(x)+"x",
         },{
-            max: () => 100 + starTreeEff("progress", 7, 0),
+            max: _ => 100 + starTreeEff("progress", 7, 0),
 
             title: "Generator",
             desc: `Unlock a building (in Foundry) where you can upgrade prestige/crystal generation. Each level increases generator's effect by <b class="green">+1%</b>.`,
@@ -220,7 +220,7 @@ UPGS.factory = {
             },
             effDesc: x => format(x)+"x",
         },{
-            max: () => 100 + starTreeEff("progress", 7, 0),
+            max: _ => 100 + starTreeEff("progress", 7, 0),
 
             title: "Charger",
             desc: `Unlock a building (in Foundry) where you can boost production multipliers with charge. Each level increases charge rate by <b class="green">+10%</b>.`,
@@ -233,12 +233,11 @@ UPGS.factory = {
         
             effect(i) {
                 let r = E(i/10+1)
-                r = r.mul(E(getAstralEff('fc')).pow(Math.floor(i/25)))
                 return r
             },
             effDesc: x => format(x)+"x",
         },{
-            max: () => 100 + starTreeEff("progress", 7, 0),
+            max: _ => 100 + starTreeEff("progress", 7, 0),
 
             title: "Assembler",
             desc: `Unlock a building (in Automation) where you can get more QoL. Each level increases charge rate by <b class="green">+10%</b>.`,
@@ -251,12 +250,11 @@ UPGS.factory = {
         
             effect(i) {
                 let r = E(i/10+1)
-                r = r.mul(E(getAstralEff('fc')).pow(Math.floor(i/25)))
                 return r
             },
             effDesc: x => format(x)+"x",
         },{
-            max: () => 100 + starTreeEff("progress", 7, 0),
+            max: _ => 100 + starTreeEff("progress", 7, 0),
 
             title: "Decelerator",
             desc: `Unlock a building (below Steelie) where you can slow down time. Each level increases charge rate by <b class="green">+10%</b>.`,
@@ -269,12 +267,11 @@ UPGS.factory = {
         
             effect(i) {
                 let r = E(i/10+1)
-                r = r.mul(E(getAstralEff('fc')).pow(Math.floor(i/25)))
                 return r
             },
             effDesc: x => format(x)+"x",
         },{
-            max: () => 100 + starTreeEff("progress", 7, 0),
+            max: _ => 100 + starTreeEff("progress", 7, 0),
 
             title: "Refinery",
             desc: `Unlock a building (on the right of Foundry) where you can convert charge and oil into rocket fuel. Each level increases charge rate by <b class="green">+10%</b>.`,
@@ -287,12 +284,11 @@ UPGS.factory = {
         
             effect(i) {
                 let r = E(i/10+1)
-                r = r.mul(E(getAstralEff('fc')).pow(Math.floor(i/25)))
                 return r
             },
             effDesc: x => format(x)+"x",
         },{
-            max: () => 100 + starTreeEff("progress", 7, 0),
+            max: _ => 100 + starTreeEff("progress", 7, 0),
 
             title: "Rocket Launch Pad",
             desc: `Unlock a building (in Refinery) where you can build a rocket. Each level increases charge rate by <b class="green">+10%</b>.`,
@@ -305,12 +301,11 @@ UPGS.factory = {
         
             effect(i) {
                 let r = E(i/10+1)
-                r = r.mul(E(getAstralEff('fc')).pow(Math.floor(i/25)))
                 return r
             },
             effDesc: x => format(x)+"x",
         },{
-            max: () => 100 + starTreeEff("progress", 7, 0),
+            max: _ => 100 + starTreeEff("progress", 7, 0),
 
             unl: _=>galUnlocked(),
 
@@ -325,7 +320,6 @@ UPGS.factory = {
         
             effect(i) {
                 let r = E(i/10+1)
-                r = r.mul(E(getAstralEff('fc')).pow(Math.floor(i/25)))
                 return r
             },
             effDesc: x => format(x)+"x",
@@ -385,8 +379,6 @@ UPGS.foundry = {
             },
             effDesc: x => format(x)+"x",
         },{
-            max: Infinity,
-
             title: "Crystal Steel",
             desc: `Increase steel gain by <b class="green">+20%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
         
@@ -494,7 +486,7 @@ UPGS.gen = {
             },
             effDesc: x => format(x)+"x",
         },{
-            max: Infinity,
+            max: 1e3, //maybe cap this or leave it infinite?
 
             unl: _=>hasUpgrade("factory", 2),
 

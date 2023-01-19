@@ -6,73 +6,63 @@ function resetGHPotential() {
 
 MAIN.agh_milestone = [
     {
-        r: 3,
+        req: 3,
         desc: `<b class="green">Double</b> Space Power.`
     }, {
-        r: 6,
+        req: 6,
         desc: `Astral boosts Stars.`,
     }, {
-        r: 8,
+        req: 8,
         desc: `Astral boosts Rocket Fuel.`,
     }, {
-        r: 12,
+        req: 12,
         desc: `Astral boosts Charge.`,
     }, {
         unl: _ => player.aRes.fTimes,
 
-        r: 15,
+        req: 15,
         desc: `Astral boosts XP.`,
     }, {
         unl: _ => player.aRes.fTimes,
 
-        r: 18,
+        req: 18,
         desc: `Astral boosts Fun.`,
     }, {
         unl: _ => player.aRes.fTimes,
 
-        r: 20,
+        req: 20,
         desc: `Astral boosts SFRGT.`,
     }, {
         unl: _ => player.aRes.fTimes,
 
-        r: 21,
+        req: 21,
         desc: `Unlock the Dark Matter Plant reset. Moonstone chance is doubled.`,
     }, {
         unl: _ => player.gal.sacTimes,
 
-        r: 33,
+        req: 33,
         desc: `Unlock the Recelerator upgrade in Fun Machine.`,
-    }, {
-        unl: _ => player.gal.sacTimes,
-
-        r: 35,
-        desc: `Astral adds Tier multiplier base.`,
     }, {
         unl: _ => hasUpgrade("funMachine", 3),
 
-        r: 37,
+        req: 36,
         desc: `Astral adds Unnatural Healing.`,
     }, {
         unl: _ => hasUpgrade("funMachine", 3),
 
-        r: 39,
+        req: 39,
         desc: `Astral multiplies effects for each 25 levels of AP upgrade.`,
     }, {
         unl: _ => hasUpgrade("funMachine", 3),
 
-        r: 42,
-        desc: `Astral multiplies effects for each 25 levels of Factory upgrade.`,
-    }, {
-        unl: _ => hasUpgrade("funMachine", 3),
-
-        r: 45,
+        req: 45,
         desc: `Unlock the Planetoid. (Soon!)`,
     }
 ]
 
 const AGH_MIL_LEN = MAIN.agh_milestone.length
-function hasAGHMilestone(x,def=1) { return tmp.gal && player.gal.neg >= MAIN.agh_milestone[x].r }
-function getAGHEffect(x,def=1) { return (tmp.gal && tmp.gal.agh.eff[x]) || def }
+function hasAGHMilestone(x,def=1) { return player?.gal?.neg >= MAIN.agh_milestone[x].req }
+function getAGHEffect(x,def=1) { return tmp?.gal?.agh?.eff[x] || def }
 function updateAGHTemp() {
 	let data = tmp.gal.agh || {}
 	if (!tmp.gal.agh) tmp.gal.agh = data
@@ -104,7 +94,7 @@ el.setup.agh = _ => {
 
 		h += `
 		<div id="agh_mil_ctn${i}_div">
-			<h3>${m.r} Negative Energy</h3><br>
+			<h3>${m.req} Negative Energy</h3><br>
 			${m.desc}
 			${m.effDesc?`<br>Effect: <b class="cyan" id="agh_mil_ctn${i}_eff"></b>`:""}
 		</div>
