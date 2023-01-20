@@ -1,14 +1,15 @@
 MAIN.grass = {
 	gain(realm = player.decel) {
-		let x = upgEffect('grass',0).mul(tmp.tier.mult)
+		let x = E(tmp.tier.mult)
 		if (realm == 0) {
+			x = x.mul(upgEffect('grass',0))
 			x = x.mul(upgEffect('perk',0))
 			x = x.mul(upgEffect('pp',0))
 			x = x.mul(upgEffect('crystal',0))
 			x = x.mul(upgEffect('plat',2))
 		}
 		if (realm <= 1) x = x.mul(aMAIN.grassGain())
-		if (realm == 2) x = x.div(1e6)
+		if (realm == 2) x = x.div(1e4)
 
 		x = x.mul(chalEff(0))
 		x = x.mul(tmp.chargeEff[9]||1)
@@ -34,17 +35,23 @@ MAIN.grass = {
 			x /= upgEffect('perk',2,1)
 		}
 		if (inDecel()) x /= upgEffect('aGrass',1,1)
+		if (inRecel()) x = 1/10
 		x /= upgEffect('momentum',1)
 		if (hasUpgrade('rocket',16)) x = 1 / (1 / x + upgEffect('rocket', 16))
-		if (inRecel()) x = 1/10
 		return x
 	},
-	range: _=>70+upgEffect('grass',4,0)+upgEffect('perk',4,0)+upgEffect('aGrass',6,0)+upgEffect("unGrass",2,0),
+	range() {
+		let r = 70
+		if (inAccel()) r += upgEffect('grass',4,0) + upgEffect('perk',4,0)
+		if (!inRecel()) r += upgEffect('aGrass',6,0)
+		r += upgEffect("unGrass",2,0)
+		return r
+	},
 	auto() {
 		let interval = upgEffect('auto',0,0)/upgEffect('plat',0,0)
 		interval /= starTreeEff("auto",7)
 		if (inDecel()) interval *= 10 / upgEffect('aAuto', 0)
-		if (inRecel()) interval = 0.1
+		if (inRecel()) interval = 0.5
 		return interval
 	},
 }
@@ -57,24 +64,22 @@ var range_pos = {x:0,y:0}
 var mouse_in = false
 
 function createGrass() {
-    if (tmp.grasses.length < tmp.grassCap) {
+	if (tmp.grasses.length < tmp.grassCap) {
 		let rng = Math.random()
 
-        let nt = hasGSMilestone(5) && rng < 0.1
-        let pl = (player.tier >= 2 || player.cTimes > 0) && Math.random() < tmp.platChance
-        let ms = pl && galUnlocked() && Math.random() < tmp.gal.ms.chance
+		let nt = hasGSMilestone(5) && rng < 0.1
+		let pl = (player.tier >= 2 || player.cTimes > 0) && Math.random() < tmp.platChance
+		let ms = pl && galUnlocked() && Math.random() < tmp.gal.ms.chance
 
-        tmp.grasses.push({
-            x: Math.random(),
-            y: Math.random(),
+		tmp.grasses.push({
+			x: Math.random(),
+			y: Math.random(),
 
-            tier: player.tier,
-            nt: nt,
-
-            pl: pl,
-            ms: ms
-        })
-    }
+			nt: nt,
+			pl: pl,
+			ms: ms
+		})
+	}
 }
 
 function removeGrass(i,auto=false) {
@@ -85,9 +90,8 @@ function removeGrass(i,auto=false) {
 	if (tg.habit) v *= tg.habit
 
 	let av = v
-	if (auto) av *= tmp.autocutBonus
-
 	let tv = v
+	if (auto) av *= tmp.autocutBonus
 	if (tg.nt) tv = MAIN.tier.base()
 
 	let src = getRealmSrc()
@@ -95,9 +99,9 @@ function removeGrass(i,auto=false) {
 	src.xp = src.xp.add(tmp.level.gain.mul(tv))
 	if (player.pTimes > 0) src.tp = src.tp.add(tmp.tier.gain.mul(v))
 	if (galUnlocked()) player.gal.sp = player.gal.sp.add(tmp.gal.astral.gain.mul(v))
+
 	if (tg.pl) player.plat += tmp.platGain * (player.aRes.grassskip > 0 ? av : v)
 	if (tg.ms) player.gal.moonstone += tmp.gal.ms.gain * v
-
 	if (hasGSMilestone(4)) {
 		if (tg.ms) player.gal.msLuck = 1
 		else if (tg.pl) player.gal.msLuck += 0.05
@@ -108,85 +112,89 @@ function removeGrass(i,auto=false) {
 }
 
 el.update.grassCanvas = _=>{
-    if (mapID == 'g') {
-        if (grass_canvas.width == 0 || grass_canvas.height == 0) resizeCanvas()
-        drawGrass()
+	if (mapID == 'g') {
+		if (grass_canvas.width == 0 || grass_canvas.height == 0) resizeCanvas()
+		drawGrass()
 
-        tmp.el.grass_cap.setHTML(`${format(tmp.grasses.length,0)} / ${format(tmp.grassCap,0)}`)
-        tmp.el.habit.setHTML(tmp.habit ? "(x"+format(tmp.habitMax,1)+")" : '')
-    }
+		tmp.el.grass_cap.setHTML(`${format(tmp.grasses.length,0)} / ${format(tmp.grassCap,0)}`)
+		tmp.el.habit.setHTML(tmp.habit ? "(x"+format(tmp.habitMax,1)+")" : '')
+	}
 }
 
 function resetGlasses() {
-    tmp.grasses = []
-    tmp.spawn_time = 0
+	tmp.grasses = []
+	tmp.spawn_time = 0
 }
 
+let canvasTick = false
 function drawGrass() {
 	if (!retrieveCanvasData()) return;
+	if (canvasTick) return
+	canvasTick = true
 	grass_ctx.clearRect(0, 0, grass_canvas.width, grass_canvas.height);
-    let gs = tmp.grasses
 
-    if (mouse_in) {
-        grass_ctx.fillStyle = "#34AF7C77"
+	let gs = tmp.grasses
+	if (mouse_in) {
+		grass_ctx.fillStyle = "#34AF7C77"
 
-        grass_ctx.fillRect(range_pos.x,range_pos.y,tmp.rangeCut,tmp.rangeCut)
-    }
+		grass_ctx.fillRect(range_pos.x,range_pos.y,tmp.rangeCut,tmp.rangeCut)
+	}
 
-    grass_ctx.strokeStyle = "#0003"
+	grass_ctx.strokeStyle = "#0003"
 
-    for (let i = 0; i < gs.length; i++) {
-        let g = gs[i]
+	for (let i = 0; i < gs.length; i++) {
+		let g = gs[i]
 
-        if (g) {
-            let prog = 0
-            grass_ctx.fillStyle = g.habit?hueBright(90,1-unMAIN.habit.progress(g)):g.ms?'#008DFF':g.pl?"#DDD":grassColor(g.tier+(g.nt?1:0))
+		if (g) {
+			let prog = 0
+			grass_ctx.fillStyle = g.habit?hueBright(90,1-unMAIN.habit.progress(g)):g.ms?'#008DFF':g.pl?"#DDD":grassColor(getRealmSrc().tier+(g.nt?1:0))
 
-            let [x,y] = [Math.min(grass_canvas.width*g.x,grass_canvas.width-G_SIZE),Math.min(grass_canvas.height*g.y,grass_canvas.height-G_SIZE)]
+			let [x,y] = [Math.min(grass_canvas.width*g.x,grass_canvas.width-G_SIZE),Math.min(grass_canvas.height*g.y,grass_canvas.height-G_SIZE)]
 
-            if (mouse_in) {
-                if (range_pos.x < x + G_SIZE &&
-                    range_pos.x + tmp.rangeCut > x &&
-                    range_pos.y < y + G_SIZE &&
-                    tmp.rangeCut + range_pos.y > y) {
-                        if (tmp.habit) {
+			if (mouse_in) {
+				if (range_pos.x < x + G_SIZE &&
+					range_pos.x + tmp.rangeCut > x &&
+					range_pos.y < y + G_SIZE &&
+					tmp.rangeCut + range_pos.y > y) {
+						if (tmp.habit) {
 							if (!g.habit) g.habit = 1
-                        } else {
+						} else {
 							removeGrass(i)
 							i--
 						}
-        
-                        continue
-                    }
-            }
+		
+						continue
+					}
+			}
 
-            grass_ctx.fillRect(x,y,G_SIZE,G_SIZE)
-            grass_ctx.strokeRect(x,y,G_SIZE,G_SIZE)
-        }
-    }
+			grass_ctx.fillRect(x,y,G_SIZE,G_SIZE)
+			grass_ctx.strokeRect(x,y,G_SIZE,G_SIZE)
+		}
+	}
+	canvasTick = false
 }
 
 function grassCanvas() {
-    if (!retrieveCanvasData()) return
-    if (grass_canvas && grass_ctx) {
-        window.addEventListener("resize", resizeCanvas)
+	if (!retrieveCanvasData()) return
+	if (grass_canvas && grass_ctx) {
+		window.addEventListener("resize", resizeCanvas)
 
-        grass_canvas.width = grass_canvas.clientWidth
-        grass_canvas.height = grass_canvas.clientHeight
+		grass_canvas.width = grass_canvas.clientWidth
+		grass_canvas.height = grass_canvas.clientHeight
 
-        grass_canvas.addEventListener('mousemove', (event)=>{
-            mouse_in = true
-            mouse_pos.x = event.pageX - grass_rect.left
-            mouse_pos.y = event.pageY - grass_rect.top
+		grass_canvas.addEventListener('mousemove', (event)=>{
+			mouse_in = true
+			mouse_pos.x = event.pageX - grass_rect.left
+			mouse_pos.y = event.pageY - grass_rect.top
 
-            range_pos.x = mouse_pos.x - tmp.rangeCut/2
-            range_pos.y = mouse_pos.y - tmp.rangeCut/2
-        })
+			range_pos.x = mouse_pos.x - tmp.rangeCut/2
+			range_pos.y = mouse_pos.y - tmp.rangeCut/2
+		})
 
-        grass_canvas.addEventListener('mouseout', (event)=>{
-            mouse_in = false
-        })
-    }
+		grass_canvas.addEventListener('mouseout', (event)=>{
+			mouse_in = false
+		})
+	}
 }
 
 const BASE_COLORS = ["#00AF00", "#7FBF7F", "#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#00FFFF", "#0000FF", "#7F00FF", "#FF00FF"]

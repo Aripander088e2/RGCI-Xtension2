@@ -28,18 +28,14 @@ RESET.recel = {
 	reqDesc: _=>"Get 33 Negative Energy and a new Upgrade in SFRGT.",
 
 	resetDesc: `Nullify boosts that Funify resets until you Accelerate.`,
-	resetGain: _=> `This will force a Steelie.`,
+	resetGain: _ => keepAccelOnDecel() ? `Progress will be saved.` : `This will force a Steelie.`,
 
 	title: `Recelerator`,
 	resetBtn: `Recelerate`,
 	hotkey: `Shift+T`,
 
 	reset(force=false) {
-		if (hasUpgrade("funMachine", 3)) {
-            if (player.decel == 2) player.decel = 0
-            else player.decel = 2
-			RESET.steel.doReset(true)
-		}
+		if (hasUpgrade("funMachine", 3)) switchRealm(2)
 	},
 }
 
@@ -62,7 +58,7 @@ UPGS.unGrass = {
 			max: Infinity,
 
 			title: "Habitability",
-			desc: `Touching protecting cutting. Give a time boost to them which is automatically cutted later. Left-click to cut immediately!`,
+			desc: `Touching protects cutting. Give a time boost to them which is automatically cutted later. Left-click to cut immediately!`,
 
 			res: "unGrass",
 			icon: ['Icons/Compaction'],
@@ -173,7 +169,7 @@ unMAIN.habit = {
 		let g = tmp.grasses[i]
 		if (!g) return
 
-		g.habit = Math.min(g.habit + dt * 2, tmp.habitMax)
+		g.habit = Math.min(g.habit + dt * 10, tmp.habitMax)
 		if (g.habit == tmp.habitMax) removeGrass(i)
 	},
 	tick(dt) {

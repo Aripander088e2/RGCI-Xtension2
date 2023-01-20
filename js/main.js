@@ -20,7 +20,7 @@ const MAIN = {
 				x = x.mul(getAstralEff('xp'))
 			}
 			if (realm <= 1) x = x.mul(aMAIN.xpGain())
-			if (realm == 2) x = x.div(1e4)
+			if (realm == 2) x = x.div(1e5)
 
 			if (player.grasshop >= 7) x = x.mul(2)
 			x = x.mul(chalEff(1))
@@ -93,10 +93,11 @@ const MAIN = {
 			return i > 0 ? this.req(i-1) : E(0) 
 		},
 		base() {
-			let x = upgEffect('crystal',3)
+			let x = 2.25
+			if (inAccel()) x = upgEffect('crystal',3)
 			if (player.grasshop >= 5) x += 0.1
 			x += tmp.chargeEff[4]||1
-			if (inDecel()) x += tmp.chargeEff[10]||1
+			if (inDecel()) x += tmp.chargeEff[10]||0
 			return x
 		},
 		mult(i) {

@@ -879,6 +879,7 @@ function setupUpgradesHTML(id) {
 		let upgs = UPGS[id]
 		let html = ""
 
+		table.addClass("upgs_div")
 		table.addClass(id)
 
 		html += `
@@ -925,7 +926,8 @@ function setupUpgradesHTML(id) {
 			`
 		}
 
-		new Element(`upgs_ctn_${id}`).setHTML(html)
+		let el = new Element(`upgs_ctn_${id}`)
+		el.setHTML(html)
 	}
 }
 
@@ -955,7 +957,7 @@ function updateUpgradesHTML(id) {
                 let dis = UPG_RES[upg.res][0]
 
                 let h = `<h2>${upg.title}</h2><br>`
-                if (max > 1 && max > amt) h += `Level <b class="yellow">${format(amt,0)} ${tu.max[ch] < Infinity ? " / " + max : ""}</b><br>`
+                if (max > 1 && max > amt) h += `Level <b class="yellow">${format(amt,0)} ${tu.max[ch] < Infinity ? " / " + format(max, 0) : ""}</b><br>`
 
                 h += upg.desc
                 if (upg.effDesc) h += '<br>Effect: <span class="cyan">'+upg.effDesc(tu.eff[ch])+"</span>"

@@ -83,7 +83,7 @@ MAIN.steel = {
 
                 req: E(1e12),
                 eff(c) {
-                    return c.add(1).log10().div(40)
+                    return c.add(1).log10().div(40).toNumber()
                 },
                 effDesc: x => "Increase Tier base by +"+format(x,3)+"x.",
             },{
@@ -131,7 +131,7 @@ MAIN.steel = {
 
                 req: E(1e50),
                 eff(c) {
-                    return c.div(1e40).add(1).log10().div(20)
+                    return c.div(1e40).add(1).log10().div(20).toNumber()
                 },
                 effDesc: x => "Increase Tier base by +"+format(x,3)+"x in Anti-Realm.",
             },
@@ -143,7 +143,7 @@ RESET.steel = {
     unl: _=>(player.grasshop >= 10 || galUnlocked()) && !tmp.aRes.gs.shown,
 
     req: _=>!player.decel && player.level>=240,
-    reqDesc: _=>player.decel ? `You can't Steelie until you Accelerate!` : `Reach Level 240.`,
+    reqDesc: _=>player.decel ? `You can't Steelie!` : `Reach Level 240.`,
 
     resetDesc: `Reset everything grasshop does, but it benefits from the milestones for grasshop.`,
     resetGain: _=> player.sTimes ? `<b>+${tmp.steelGain.format(0)}</b> Steel` : `<b class='cyan'>Also unlock Chronology and Pins!</b>`,
@@ -176,6 +176,7 @@ UPGS.factory = {
 
     unl: _=>(player.grasshop >= 10 || player.sTimes) && !tmp.aRes.gs.shown,
     autoUnl: _=>hasStarTree('auto',0),
+    noSpend: _=>hasStarTree('qol', 4),
 
     req: _=>player.sTimes > 0,
     reqDesc: _=>`Steelie once to unlock.`,

@@ -532,19 +532,19 @@ RESET.rocket_part = {
 	},
 
 	doReset(order="rp") {
-		player.rocket.total_fp = 0
-
 		if (!hasStarTree("qol", 8)) {
 			player.steel = E(0)
 			player.chargeRate = E(0)
+			resetUpgrades('foundry')
 			delete player.upgs.gen[2]
 			delete player.upgs.gen[3]
 			delete player.upgs.gen[4]
-			resetUpgrades('foundry')
-		}
-		resetAntiRealm()
 
-		RESET.gh.doReset(order)
+			RESET.gh.doReset(order)
+			resetAntiRealm()
+		}
+
+		player.rocket.total_fp = 0
 	},
 }
 

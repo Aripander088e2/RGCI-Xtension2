@@ -10,13 +10,13 @@ const SC_IDS = {
 		[null,0,1,3],
 		[5,6,2,4],
 		[7,8,9,null],
-		[11,10,12,null]
+		[11,10,12,13]
 	],
 	auto: [
 		[4,0,1],
 		[2,3,5,6],
 		[7],
-		[8]
+		[8,9]
 	],
 }
 
@@ -270,7 +270,7 @@ const STAR_CHART = {
 			max: 10,
 
 			title: "Steel Labor",
-			desc: `Produce <b class="green">+0.1%</b> of Steel gain. Foundry and Generator don't spend anything.`,
+			desc: `Produce <b class="green">+0.1%</b> of Steel gain. Factory, Foundry, and Generator don't spend anything.`,
 
 			branch: 2,
 			icon: ['Curr/Steel','Icons/StarProgression'],
@@ -319,8 +319,8 @@ const STAR_CHART = {
 		}, {
 			max: 1,
 
-			title: "Why Not Charge?",
-			desc: `Keep Foundry and Generator on Rocket Part.`,
+			title: "Why Not Speed?",
+			desc: `Rocket Part only resets Rocket Fuel cost.`,
 
 			branch: 5,
 			icon: ['Curr/Charge','Icons/StarProgression'],
@@ -367,12 +367,24 @@ const STAR_CHART = {
 			max: 1,
 
 			title: "Realm Intergation",
-			desc: `Combine Grass and Anti-Grass in both Realms. (Soon)`,
+			desc: `Normal Realm progress saves on decelerating.`,
 
 			branch: 8,
 			icon: ['Curr/AntiGrass','Icons/StarProgression'],
 
-			cost: i => E(1e20),
+			cost: i => E(1e15),
+			bulk: i => 1
+		}, {
+			unl: _ => player.gal.sacTimes,
+			max: 1,
+
+			title: "Realm Simulataneous",
+			desc: `Combine Grass and Anti-Grass in both Realms. (Soon)`,
+
+			branch: 12,
+			icon: ['Curr/AntiGrass','Icons/StarProgression'],
+
+			cost: i => E(1e30),
 			bulk: i => 1
 		},
 	],
@@ -410,7 +422,7 @@ const STAR_CHART = {
 			cost: i => E(50),
 			bulk: i => 1
 		}, {
-			max: 100,
+			max: 40,
 
 			title: "Speedrun",
 			desc: `Auto-Challenge Timer is faster.`,
@@ -432,9 +444,10 @@ const STAR_CHART = {
 			desc: `Automate Star Accumulator.`,
 
 			branch: 0,
-			icon: ['Icons/Assembler','Icons/StarAuto'],
-							
-			cost: i => E(1e4),
+			icon: ['Icons/StarAccumulator','Icons/StarAuto'],
+
+			unl: _ => player.gal.sacTimes,
+			cost: i => E(1e6),
 			bulk: i => 1,
 		}, {
 			max: 1,
@@ -490,6 +503,18 @@ const STAR_CHART = {
 
 			unl: _ => player.gal.sacTimes,
 			cost: i => E(1e6),
+			bulk: i => 1,
+		}, {
+			max: 1,
+
+			title: "Boring as Dry",
+			desc: `Automate Fundry. Fundry don't spend anything.`,
+
+			branch: 7,
+			icon: ['Icons/Fundry','Icons/StarAuto'],
+
+			unl: _ => player.gal.sacTimes,
+			cost: i => E(1e20),
 			bulk: i => 1,
 		},
 	],

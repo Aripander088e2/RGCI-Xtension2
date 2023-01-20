@@ -305,7 +305,7 @@ const MAP_NOTIFY = {
 	chal: _ => player.sTimes > 0 ? 2 :
 		player.cTimes > 0 ? 1 :
 		0,
-	gh: _ => galUnlocked() ? 0 :
+	gh: _ => galUnlocked() ? player.aRes.grassskip + (player.aRes.level >= aMAIN.gs.req() ? 1 : 0) :
 		player.grasshop + (player.level >= MAIN.gh.req() ? 1 : 0),
 	fd: _ => galUnlocked() || hasUpgrade("factory", 2) ? 3 :
 		hasUpgrade("factory", 1) ? 2 :

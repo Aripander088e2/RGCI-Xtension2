@@ -133,7 +133,7 @@ UPGS.funMachine = {
 			res: "fun",
 			icon: ["Icons/Recelerator"],
 						
-			cost: i => EINF,
+			cost: i => E(1e20),
 			bulk: i => 1,
 		}
 	],
@@ -143,6 +143,8 @@ UPGS.fundry = {
 	title: "Fundry",
 
 	unl: _ => tmp.aRes.funShown && hasUpgrade('funMachine',0),
+	autoUnl: _ => hasStarTree("qol", 9),
+	noSpend: _ => hasStarTree("qol", 9),
 
 	ctn: [
 		{

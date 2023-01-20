@@ -16,7 +16,6 @@ function resetTemp() {
 		autocutTime: 0,
 		autocutAmt: 1,
 		spawnAmt: 1,
-		compact: 1,
 
 		platChance: 0.001,
 		platGain: 1,
@@ -36,16 +35,12 @@ function resetTemp() {
 			eff: [],
 		},
 
-		gh: {
-			ms_eff: {}
-		},
+		gh: {},
 		chargeEff: [],
 
 		realmSrc: player,
 		aRes: {
-			gs: {
-				eff: {}
-			}
+			gs: {}
 		},
 		unRes: {},
 

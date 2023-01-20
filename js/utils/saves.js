@@ -1,3 +1,8 @@
+const VER = 0.043
+const EX_COMMIT = 11.06
+const TB_VER = 1.04
+const TB_SAVE = "rgci_tb_test"
+
 function getPlayerData() {
 	let s = {
 		upgs: {},
@@ -109,9 +114,6 @@ function safecheckSave(data) {
 	return true
 }
 
-const VER = 0.043
-const EX_COMMIT = 11.06
-const TB_VER = 1.04
 function loadPlayer(data) {
 	player = deepUndefinedAndDecimal(data, getPlayerData())
 	convertStringToDecimal()

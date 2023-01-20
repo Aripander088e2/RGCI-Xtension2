@@ -22,6 +22,7 @@ el.setup.reset = _=>{
 
             resetTable.setHTML(html)
             resetTable.addClass(x)
+            resetTable.addClass("reset_div")
         }
     }
 }

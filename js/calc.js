@@ -36,10 +36,8 @@ function calc(dt, skip) {
 	}
 
 	//STEELIE
-	if (inAccel()) {
-		player.sTime += dt
-		if (tmp.steelGainP > 0 && player.level >= 240) player.steel = player.steel.add(tmp.steelGain.mul(tmp.steelGainP*dt))
-	}
+	player.sTime += dt
+	if (tmp.steelGainP > 0 && player.level >= 240) player.steel = player.steel.add(tmp.steelGain.mul(tmp.steelGainP*dt))
 
 	if (MAIN.steel.charger.unl()) player.chargeRate = player.chargeRate.add(tmp.chargeGain.mul(dt))
 	player.bestCharge = player.bestCharge.max(player.chargeRate)

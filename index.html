@@ -28,6 +28,7 @@
 	<script src="js/features/pp.js"></script>
 	<script src="js/features/crystal.js"></script>
 	<script src="js/features/challenges.js"></script>
+	<script src="js/features/milestones.js"></script>
 	<script src="js/features/gh.js"></script>
 	<script src="js/features/chrono.js"></script>
 
@@ -80,8 +81,8 @@
 				<div style="width: 50%; height: 100%;">
 					<canvas id="grass_canvas" onclick="unMAIN.habit.destroy()"></canvas>
 					<div id="grass_cap_div">
-						<div id="grass_cap"></div>
-						<div id="habit" class="cyan smallAmt"></div>
+						<span id="grass_cap"></span>
+						<span id="habit" class="cyan"></span>
 					</div>
 				</div>
 				<div style="width: 50%; height: 100%;">
@@ -125,7 +126,7 @@
 
 				<b style="color: #ffffbf">RGCI: Thunderized Balance</b> - <a href="http://aarextiaokhiao.github.io">By TehAarex</a><br>
 				<span style="font-size: 16px">
-					Version β4b α6
+					Version β4b α6a
 				</span><br>
 				<span style="font-size: 12px">
 					Inspired by <a href="http://www.roblox.com/games/9292879820">Grass Cutting Incremental</a>,
@@ -174,9 +175,9 @@
 			</div><div id="map_div_upg">
 				<div id="normal_upgs">
 					<div style="width: 100%; height: 50%;">
-						<div class="upgs_div" id="upgs_div_perk"></div>
+						<div id="upgs_div_perk"></div>
 					</div><div style="width: 100%; height: 50%;">
-						<div class="upgs_div" id="upgs_div_plat"></div>
+						<div id="upgs_div_plat"></div>
 					</div>
 				</div><div id="unnatural_healing">
 					<span style="font-size: 24px">
@@ -191,29 +192,29 @@
 				</div>
 			</div><div id="map_div_auto">
 				<div style="width: 100%; height: 50%;">
-					<div class="upgs_div" id="upgs_div_auto"></div>
-					<div class="upgs_div" id="upgs_div_aAuto"></div>
+					<div id="upgs_div_auto"></div>
+					<div id="upgs_div_aAuto"></div>
 				</div> <div style="width: 100%; height: 50%;">
-					<div class="upgs_div" id="upgs_div_assembler"></div>
+					<div id="upgs_div_assembler"></div>
 				</div>
 			</div><div id="map_div_pc">
 				<div style="width: 100%; height: 50%;" class="table_center">
 					<div style="width: 33%; height: 100%;">
-						<div class="reset_div" id="reset_div_pp"></div>
-						<div class="reset_div" id="reset_div_ap"></div>
-						<div class="reset_div" id="reset_div_np"></div>
+						<div id="reset_div_pp"></div>
+						<div id="reset_div_ap"></div>
+						<div id="reset_div_np"></div>
 					</div><div style="width: 67%; height: 100%;">
-						<div class="upgs_div" id="upgs_div_pp"></div>
-						<div class="upgs_div" id="upgs_div_ap"></div>
-						<div class="upgs_div" id="upgs_div_np"></div>
+						<div id="upgs_div_pp"></div>
+						<div id="upgs_div_ap"></div>
+						<div id="upgs_div_np"></div>
 					</div>
 				</div><div style="width: 100%; height: 50%;" class="table_center">
 					<div style="width: 33%; height: 100%;">
-						<div class="reset_div" id="reset_div_crystal"></div>
-						<div class="reset_div" id="reset_div_oil"></div>
+						<div id="reset_div_crystal"></div>
+						<div id="reset_div_oil"></div>
 					</div><div style="width: 67%; height: 100%;">
-						<div class="upgs_div" id="upgs_div_crystal"></div>
-						<div class="upgs_div" id="upgs_div_oil"></div>
+						<div id="upgs_div_crystal"></div>
+						<div id="upgs_div_oil"></div>
 					</div>
 				</div>
 			</div><div id="map_div_chal" style="overflow-y: auto;">
@@ -227,31 +228,31 @@
 			</div><div id="map_div_gh">
 				<div style="width: 100%; height: 50%;" class="table_center">
 					<div style="width: 33%; height: 100%;">
-						<div class="reset_div" id="reset_div_gh"></div>
-						<div class="reset_div" id="reset_div_gs"></div>
+						<div id="reset_div_gh"></div>
+						<div id="reset_div_gs"></div>
 					</div><div style="width: 67%; height: 100%;">
-						<div class="milestone_div" id="milestone_div_gh"></div>
-						<div class="milestone_div" id="milestone_div_gs"></div>
+						<div id="mil_div_gh"></div>
+						<div id="mil_div_gs"></div>
 					</div>
 				</div><div style="width: 100%; height: 50%;" class="table_center">
 					<div style="width: 33%; height: 100%;">
-						<div class="reset_div" id="reset_div_steel"></div>
-						<div class="reset_div" id="reset_div_fun"></div>
+						<div id="reset_div_steel"></div>
+						<div id="reset_div_fun"></div>
 					</div><div style="width: 67%; height: 100%;">
-						<div class="upgs_div" id="upgs_div_factory"></div>
-						<div class="upgs_div" id="upgs_div_funMachine"></div>
+						<div id="upgs_div_factory"></div>
+						<div id="upgs_div_funMachine"></div>
 					</div>
 				</div>
 			</div><div id="map_div_fd">
 				<div style="width: 100%; height: 50%;" class="table_center">
 					<div style="width: 100%; height: 100%;">
-						<div class="upgs_div" id="upgs_div_foundry"></div>
-						<div class="upgs_div" id="upgs_div_fundry"></div>
+						<div id="upgs_div_foundry"></div>
+						<div id="upgs_div_fundry"></div>
 					</div>
 				</div><div style="width: 100%; height: 50%;" class="table_center">
 					<div style="width: 50%; height: 100%;">
-						<div class="upgs_div" id="upgs_div_gen"></div>
-						<div class="upgs_div" id="upgs_div_sfrgt"></div>
+						<div id="upgs_div_gen"></div>
+						<div id="upgs_div_sfrgt"></div>
 					</div><div style="width: 50%; height: 100%;"><div id="charger_div">
 						<div style="height: 40px;" id="charge_upper">
 							
@@ -263,11 +264,11 @@
 				</div>
 			</div><div id="map_div_dc">
 				<div style="width: 100%; height: 50%;" class="table_center">
-					<div style="width: 50%; height: 100%;"><div class="reset_div" id="reset_div_decel"></div></div>
-					<div style="width: 50%; height: 100%;"><div class="reset_div" id="reset_div_recel"></div></div>
+					<div style="width: 50%; height: 100%;"><div id="reset_div_decel"></div></div>
+					<div style="width: 50%; height: 100%;"><div id="reset_div_recel"></div></div>
 				</div>
 				<div style="width: 100%; height: 50%;" class="table_center">
-					<div style="width: 50%; height: 100%;"><div class="reset_div" id="reset_div_planetoid_realm"></div></div>
+					<div style="width: 50%; height: 100%;"><div id="reset_div_planetoid_realm"></div></div>
 					<div style="width: 50%; height: 100%;"></div>
 				</div>
 			</div><div id="map_div_rf">
@@ -284,14 +285,14 @@
 							<button id="rf_craft_bulk" onclick="ROCKET.create()">Craft to ??? Rocket Fuel</button>
 						</div>
 					</div></div>
-					<div style="width: calc(100% - 400px); height: 100%;"><div class="upgs_div" id="upgs_div_rocket"></div></div>
+					<div style="width: calc(100% - 400px); height: 100%;"><div id="upgs_div_rocket"></div></div>
 				</div><div style="width: 100%; height: 50%;" class="table_center">
-					<div style="width: 500px; height: 100%;"><div class="reset_div" id="reset_div_rocket_part"></div></div>
-					<div style="width: calc(100% - 500px); height: 100%;"><div class="upgs_div" id="upgs_div_momentum"></div></div>
+					<div style="width: 500px; height: 100%;"><div id="reset_div_rocket_part"></div></div>
+					<div style="width: calc(100% - 500px); height: 100%;"><div id="upgs_div_momentum"></div></div>
 				</div>
 			</div><div id="map_div_gal">
 				<div style="width: 100%; height: 50%;" class="table_center">
-					<div style="width: 50%; height: 100%;"><div class="reset_div" id="reset_div_gal"></div></div>
+					<div style="width: 50%; height: 100%;"><div id="reset_div_gal"></div></div>
 					<div style="width: 50%; height: 100%;"><div id="to_space_div">
 						<h1>To Space</h1><br>
 						Clicking the button below will bring you into Space.<br>
@@ -302,7 +303,7 @@
 						<button onclick="goToSpace()">To Ground</button>
 					</div></div>
 				</div>
-				<div style="width: 100%; height: 50%;"><div class="upgs_div" id="upgs_div_star"></div></div>
+				<div style="width: 100%; height: 50%;"><div id="upgs_div_star"></div></div>
 			</div><div id="map_div_chrono">
 				<div id="chrono_unl">
 					Steelie once to unlock.
@@ -313,10 +314,10 @@
 							<b id="chrona_plat">??? Platinum</b><br>
 							<b id="chrona_moon">??? Moonstone</b>
 						</div>
-						<div style="width: 34%; height: 100%;"><div class="reset_div" id="reset_div_time"></div></div>
-						<div style="width: 33%; height: 100%;"><div class="reset_div" id="reset_div_warp"></div></div>
+						<div style="width: 34%; height: 100%;"><div id="reset_div_time"></div></div>
+						<div style="width: 33%; height: 100%;"><div id="reset_div_warp"></div></div>
 					</div><div style="width: 100%; height: 50%;" class="table_center">
-						<div class="upgs_div" id="upgs_div_chrono"></div>
+						<div id="upgs_div_chrono"></div>
 					</div>
 				</div>
 			</div><div id="map_div_sc" style="position: relative;">
@@ -347,16 +348,16 @@
 						<h3>Astral <span class="magenta" id="astral2">0</span></h3>
 						<div id="astral_eff"></div>
 					</div>
-					<div style="width: 50%; height: 100%;"><div class="milestone_div" id="milestone_div_agh"></div></div>
+					<div style="width: 50%; height: 100%;"><div id="mil_div_agh"></div></div>
 				</div><div style="width: 100%; height: 50%;" class="table_center">
-					<div class="upgs_div" id="upgs_div_moonstone"></div>
+					<div id="upgs_div_moonstone"></div>
 				</div>
 			</div><div id="map_div_sac">
                 <div style="width: 100%; height: 50%;" class="table_center">
-                    <div style="width: 33%; height: 100%;"><div class="reset_div" id="reset_div_sac"></div></div>
-                    <div style="width: 67%; height: 100%;"><div class="upgs_div" id="upgs_div_dm" style="display: none;"></div></div>
+                    <div style="width: 33%; height: 100%;"><div id="reset_div_sac"></div></div>
+                    <div style="width: 67%; height: 100%;"><div id="upgs_div_dm" style="display: none;"></div></div>
                 </div><div style="width: 100%; height: 50%;" class="table_center">
-					<div style="width: 50%; height: 100%;"><div class="reset_div" id="reset_div_planetoid"></div></div>
+					<div style="width: 50%; height: 100%;"><div id="reset_div_planetoid"></div></div>
 					<div style="width: 50%; height: 100%;"></div>
 				</div>
             </div>

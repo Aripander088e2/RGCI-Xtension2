@@ -136,17 +136,19 @@ button:not(.locked):hover {
 }
 
 #loc {
-	width: 100%;
-	height: 110px;
+	width: 240px;
+	height: 50px;
 
 	position: absolute;
 	z-index: 1;
-	top: 130px;
+	top: 10px;
 	left: 0;
+	padding-left: 10px;
 
 	opacity: 0;
-	background: linear-gradient(90deg, transparent, black, black, transparent);
+	background: linear-gradient(90deg, black, black, transparent);
 	font-size: 60px;
+	text-align: left;
 
 	transition-duration: 0.5s
 }
@@ -325,12 +327,7 @@ button:not(.locked):hover {
     padding: 0 10px;
 }
 
-#grass_cap_div > div {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: calc(100% - 20px);
-    align-items: center;
+#grass_cap_div > span {
     font-size: 28px;
 }
 
@@ -682,13 +679,13 @@ button:not(.locked):hover {
     padding: 10px;
 }
 
-#milestone_div_agh,
-#milestone_div_agh .milestone_ctns > div {
+#mil_div_agh,
+#mil_div_agh .milestone_ctns > div {
     background-color: #505;
 }
 
-#milestone_div_gs,
-#milestone_div_gs .milestone_ctns > div,
+#mil_div_gs,
+#mil_div_gs .milestone_ctns > div,
 .reset_div.gs,
 .reset_req.gs {
     background-color: #ffff79;
