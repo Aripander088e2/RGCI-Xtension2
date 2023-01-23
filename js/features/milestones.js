@@ -1,17 +1,18 @@
 let MILESTONE = {}
 
-tmp_update.push(_=>{
+function updateMilestoneTemp() {
 	tmp.milestone = {}
 	for (let [id, ms] of Object.entries(MILESTONE)) {
-		if (!ms.req()) return
+		if (!ms.req()) continue
 
 		let sub = {}
 		for (let [i, m] of Object.entries(ms.milestone)) if (m.eff) sub[i] = m.eff(ms.res())
 		tmp.milestone[id] = sub
 	}
-})
+}
+tmp_update.push(updateMilestoneTemp)
 
-function getMilestoneEff(id, x, def) {
+function getMilestoneEff(id, x, def = 1) {
 	return tmp.milestone?.[i]?.[x] || def
 }
 

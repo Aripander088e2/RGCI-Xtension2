@@ -379,7 +379,7 @@ const STAR_CHART = {
 			max: 1,
 
 			title: "Realm Simulataneous",
-			desc: `Combine Grass and Anti-Grass in both Realms. (Soon)`,
+			desc: `Combine Grass and Anti-Grass in both Realms.`,
 
 			branch: 12,
 			icon: ['Curr/AntiGrass','Icons/StarProgression'],

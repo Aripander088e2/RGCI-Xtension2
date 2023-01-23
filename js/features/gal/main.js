@@ -2,7 +2,7 @@ MAIN.gal = {
 	gain() {
 		let r = E(10)
 
-		r = r.mul(tmp.chargeEff[11] || 1)
+		r = r.mul(getChargeEff(11))
 
 		r = r.mul(upgEffect('star', 0))
 		r = r.mul(upgEffect('star', 1))
@@ -26,7 +26,7 @@ RESET.gal = {
 	req: _=>player.rocket.part==MAIN.gal.part_req(),
 	reqDesc: _=>`Get ${MAIN.gal.part_req()} Rocket Parts to unlock.`,
 
-	resetDesc: `Galactic will reset <b class="red">EVERYTHING prior</b> except Refinery and Chronology! Last chance before departure...`,
+	resetDesc: `Reset <b class="red">EVERYTHING prior</b> except Refinery and Chronology! Last chance before blast-off...`,
     resetGain: _=> galUnlocked() ? `<b>+${tmp.gal.star_gain.format(0)}</b> Stars<br><b class='red'>Max Star Accumulator first!</b>` : `<b class='cyan'>Also unlock Grass-Skips, Star Accumulator upgrade, and Astral!</b>`,
 
 	title: `Galactic`,
@@ -92,7 +92,6 @@ tmp_update.push(_=>{
 	data.astral.req = ASTRAL.req(player.gal.astral)
 	data.astral.curReq = E(data.astral.req).sub(data.astral.prevReq)
 	data.astral.progress = player.gal.sp.sub(tmp.gal.astral.prevReq).div(data.astral.curReq).max(0).min(1).toNumber()
-	data.astral.eff = ASTRAL.eff(player.gal.astral)
 
 	data.star_gain = MAIN.gal.gain()
 
@@ -175,8 +174,7 @@ el.update.space = _=>{
 		}
 	}
 	if (mapID == 'at') {
-		tmp.el.astral2.setTxt(format(player.gal.astral,0))
-		tmp.el.astral_eff.setHTML(ASTRAL.effDesc(tmp.gal.astral.eff))
+		updateEffectHTML('astral')
 	}
 
 	//Others
@@ -204,7 +202,7 @@ const ASTRAL = {
 	spGain() {
 		let r = E(1)
 
-		r = r.mul(tmp.chargeEff[7] || 1)
+		r = r.mul(getChargeEff(7))
 		r = r.mul(upgEffect('moonstone', 2))
         r = r.mul(getGSEffect(1))
 		r = r.mul(upgEffect('sfrgt', 2))
@@ -224,7 +222,12 @@ const ASTRAL = {
 		if (player.gal.sp.lt(1e3)) return 0
 		return player.gal.sp.div(1e3).log(2).floor().toNumber() + 1
 	},
+}
 
+EFFECT.astral = {
+	unl: _ => galUnlocked(),
+	title: r => `Astral <b class="magenta">${format(r, 0)}</b>`,
+	res: _ => player.gal.astral,
 	effs: {
 		tp: {
 			unl: _ => true,
@@ -277,22 +280,11 @@ const ASTRAL = {
 			desc: x => `<b class="magenta">+${format(x)}</b> to AP per-25 multipliers`
 		}
 	},
-
-	eff() {
-		const a = player.gal.astral
-		let x = {}
-
-		for (const [id, data] of Object.entries(this.effs)) if (data.unl()) x[id] = data.eff(a)
-		return x
-	},
-	effDesc(e) {
-		let x = ''
-		for (const [id, eff] of Object.entries(e)) x += this.effs[id].desc(eff) + "<br>"
-		return x
-	},
 }
 
-function getAstralEff(id, def = 1) { return (tmp.gal && tmp.gal.astral.eff[id]) || def }
+function getAstralEff(id, def) {
+	return getEffect("astral", id, def)
+}
 
 UPGS.moonstone = {
 	title: "Moonstone Upgrades",

@@ -1,6 +1,6 @@
 const VER = 0.043
 const EX_COMMIT = 11.06
-const TB_VER = 1.04
+const TB_VER = 1.05
 const TB_SAVE = "rgci_tb_test"
 
 function getPlayerData() {
@@ -115,6 +115,7 @@ function safecheckSave(data) {
 }
 
 function loadPlayer(data) {
+	let preTB = data.tb_ver == undefined
 	player = deepUndefinedAndDecimal(data, getPlayerData())
 	convertStringToDecimal()
 
@@ -132,17 +133,15 @@ function loadPlayer(data) {
 	player.version = VER
 
 	//Thunderized Balancing
-	if (player.ver !== undefined) {
-		player.tb_ver = player.ver
-		delete player.ver
-	}
-	if (player.tb_ver === undefined) {
+	if (preTB) {
+		player.tb_ver = 1
 		player.tp = E(0)
 		player.tier = 0
 		delete player.upgs.pp[2]
+		delete player.ver
 	}
 	if (player.tb_ver < 1.02) {
-		player.chal.progress = { }
+		player.chal.progress = {}
 
 		resetAntiRealm()
 		player.aRes.aTimes = player.aTimes
@@ -170,8 +169,8 @@ function loadPlayer(data) {
 
 			alert("You are forced to do a Sacrifice due to exploit reasons! You will get 100 K Stars in comprehension.")
 		}
-		player.decel = player.decel ? 1 : 0
 	}
+	if (player.tb_ver < 1.05) player.decel = whatRealm()
 	player.tb_ver = TB_VER
 }
 

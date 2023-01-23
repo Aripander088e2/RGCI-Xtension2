@@ -11,3 +11,11 @@ Math.logBase = function (value, base) {
 function randint(min, max) {
     return Math.floor(Math.random() * (max - min + 1) ) + min;
 }
+
+function compute(func, def) {
+	return typeof func == "function" ? func() : func || def 
+}
+
+function advCalc(func, main, sec) {
+	return func ? func(main, sec) : main
+}

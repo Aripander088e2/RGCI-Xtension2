@@ -1,23 +1,6 @@
 MAIN.grass = {
 	gain(realm = player.decel) {
-		let x = E(tmp.tier.mult)
-		if (realm == 0) {
-			x = x.mul(upgEffect('grass',0))
-			x = x.mul(upgEffect('perk',0))
-			x = x.mul(upgEffect('pp',0))
-			x = x.mul(upgEffect('crystal',0))
-			x = x.mul(upgEffect('plat',2))
-		}
-		if (realm <= 1) x = x.mul(aMAIN.grassGain())
-		if (realm == 2) x = x.div(1e4)
-
-		x = x.mul(chalEff(0))
-		x = x.mul(tmp.chargeEff[9]||1)
-		x = x.mul(upgEffect('rocket',0))
-		x = x.mul(upgEffect('rocket',17))
-		x = x.mul(upgEffect('momentum',0))
-
-		return x
+		return tmp.realm.gain[realm].grass
 	},
 	cap() {
 		let x = 10
@@ -94,10 +77,7 @@ function removeGrass(i,auto=false) {
 	if (auto) av *= tmp.autocutBonus
 	if (tg.nt) tv = MAIN.tier.base()
 
-	let src = getRealmSrc()
-	src.grass = src.grass.add(tmp.grassGain.mul(tv))
-	src.xp = src.xp.add(tmp.level.gain.mul(tv))
-	if (player.pTimes > 0) src.tp = src.tp.add(tmp.tier.gain.mul(v))
+	for (const i of tmp.realm.in) cutRealmGrass(i, v, tv)
 	if (galUnlocked()) player.gal.sp = player.gal.sp.add(tmp.gal.astral.gain.mul(v))
 
 	if (tg.pl) player.plat += tmp.platGain * (player.aRes.grassskip > 0 ? av : v)

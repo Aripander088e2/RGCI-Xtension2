@@ -248,8 +248,11 @@ el.setup.go_to = _ => {
 		for (const [y, dy] of Object.entries(d_dim)) {
 			html += "<tr>"
 			for (const [x, dx] of Object.entries(dy)) {
-				html += "<td>"
-				if (dx !== null) html += `<button id="map_btn_${dim}_${dx}" onclick="switchMapPos(${x}, ${y}, '${dim}')">${GO_TO_NAMES[dx]}</button>`
+				html += `<td id="map_div_${dim}_${dx}">`
+				if (dx !== null) {
+					html += `<button id="map_btn_${dim}_${dx}" onclick="switchMapPos(${x}, ${y}, '${dim}')">${GO_TO_NAMES[dx]}</button>`
+					html += `<button class="map_pin" id="map_pin_${dim}_${dx}" onclick="pinMap('${dim}', '${dx}')">Pin</button>`
+				}
 				html += "</td>"
 			}
 			html += "</tr>"
@@ -272,7 +275,7 @@ el.update.go_to = _ => {
 				for (const [x, dx] of Object.entries(dy)) {
 					if (dx !== null) {
 						const unl = MAP_UNLS[dx]()
-						tmp.el[`map_btn_${dim}_${dx}`].setDisplay(unl)
+						tmp.el[`map_div_${dim}_${dx}`].setDisplay(unl)
 						if (unl) updateMapButton(`map_btn_${dim}_${dx}`, x, y, dim)
 					}
 				}
@@ -366,6 +369,17 @@ function deletePin(i) {
 	player.pins = newPins
 }
 
+function pinMap(dim, loc) {
+	let newPins = []
+	let deleted = false
+	for (let p of player.pins) {
+		if (p[1] != loc) newPins.push(p)
+		else deleted = true
+	}
+	if (!deleted && player.pins.length < 8) newPins.push([dim, loc])
+	player.pins = newPins
+}
+
 function goToPin(i) {
 	let pin = player.pins[i]
 	goToWhere(pin[1], pin[0])
@@ -418,5 +432,3 @@ el.update.pin = _ => {
 		}
 	}
 }
-
-//maybe looking for positions to avoid bugs with map repositions...

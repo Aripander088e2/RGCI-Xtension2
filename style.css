@@ -162,12 +162,22 @@ button:not(.locked):hover {
 	background: #0007;
 	transform: translate(-50%, -50%)
 }
+.map_div td {
+	position: relative;
+}
 .map_div button {
 	margin: 0;
 	padding: 0;
 	width: 120px;
 	height: 120px;
 	font-size: 16px
+}
+.map_pin {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 36px !important;
+	width: 72px !important
 }
 .notify,
 .map_btn.notify {
@@ -731,7 +741,7 @@ button:not(.locked):hover {
     height: 100%;
 }
 
-#charge_mil {
+#eff_div_charger {
     width: calc(100% - 24px);
     height: calc(100% - 84px);
     border: solid 2px #0003;
@@ -741,12 +751,12 @@ button:not(.locked):hover {
     font-size: 16px;
 }
 
-#charge_mil > div {
+#eff_div_charger span {
     width: 100%;
     color: grey;
 }
 
-#charge_mil > div.green {
+#eff_div_charger span.green {
     color: lime;
 }
 

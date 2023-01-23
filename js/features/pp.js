@@ -7,7 +7,7 @@ MAIN.pp = {
         x = x.mul(upgEffect('perk',6))
         x = x.mul(chalEff(4))
 
-        x = x.mul(E(tmp.chargeEff[1]||1).pow(player.tier))
+        x = x.mul(E(getChargeEff(1)).pow(player.tier))
 
         x = x.mul(upgEffect('rocket',3))
         x = x.mul(upgEffect('rocket',11))
@@ -85,7 +85,7 @@ UPGS.pp = {
 
     ctn: [
         {
-            max: 1500,
+            max: 2e3,
 
             title: "Grass Value II",
             tier: 2,
@@ -104,7 +104,7 @@ UPGS.pp = {
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 1500,
+            max: 2e3,
 
             title: "XP II",
             tier: 2,

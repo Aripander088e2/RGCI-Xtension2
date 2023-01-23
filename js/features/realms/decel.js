@@ -6,25 +6,8 @@ function inDecel() {
 	return player.decel >= 1
 }
 
-function getRealmGrasses() {
-	let r = [player.decel]
-	if (hasUpgrade('factory',4) && hasStarTree("qol", 12) && (player.decel == 0 || player.decel == 1)) r = [0,1]
-	return r
-}
-
-function getRealmSrc(type) {
-	if (type === undefined) return tmp.realmSrc
-	return [player, player.aRes, player.unRes][type]
-}
-
 function keepAccelOnDecel() {
 	return hasStarTree('qol', 12)
-}
-
-function switchRealm(x) {
-	player.decel = player.decel == x ? 0 : x
-	if (keepAccelOnDecel()) player.chargeRate = E(0)
-	else RESET.steel.doReset(true)
 }
 
 RESET.decel = {
@@ -53,46 +36,7 @@ el.update.decel = _=>{
 	if (mapID == "dc") tmp.el.reset_btn_decel.setTxt("(T) " + (player.decel == 1 ? "Accelerate" : "Decelerate"))
 }
 
-aMAIN = {
-	grassGain() {
-		let x = E(1)
-		if (!player.sTimes) return x
-
-		x = x.mul(upgEffect('ap',0))
-		x = x.mul(upgEffect('oil',0))
-		if (player.decel == 1) {
-			x = x.div(1e4)
-			if (hasUpgrade('aGrass', 3)) x = x.mul(upgEffect('aGrass',3))
-			if (hasGSMilestone(0)) x = x.mul(3)
-		}
-		return x
-	},
-	xpGain() {
-		let x = E(1)
-		if (!player.sTimes) return x
-
-		x = x.mul(upgEffect('ap',2))
-		x = x.mul(upgEffect('oil',1))
-		if (player.decel == 1) {
-			x = x.div(1e5)
-			if (hasUpgrade('aGrass',4)) x = x.mul(upgEffect('aGrass',4))
-			if (hasGSMilestone(0)) x = x.mul(3)
-			x = x.mul(E(getAstralEff('xp')).root(1.5))
-		}
-		return x
-	},
-	tpGain() {
-		let x = E(1)
-		if (!player.sTimes) return x
-
-		x = x.mul(upgEffect('ap',3))
-		x = x.mul(upgEffect('oil',2))
-		if (player.decel == 1) {
-			x = x.div(100)
-			x = x.mul(tmp.chargeEff[5]||1)
-		}
-		return x
-	},
+let aMAIN = {
 	chargeGain() {
 		let x = E(1)
 		x = x.mul(upgEffect('aGrass',0))
@@ -101,6 +45,54 @@ aMAIN = {
 		if (inDecel()) x = x.div(1e3)
 		return x
 	},
+}
+
+REALMS.decel = {
+	on: r => r < 2,
+	grass() {
+		let x = E(1)
+		if (!player.sTimes) return x
+
+		x = x.mul(upgEffect('ap',0))
+		x = x.mul(upgEffect('oil',0))
+		return x
+	},
+	xp() {
+		let x = E(1)
+		if (!player.sTimes) return x
+
+		x = x.mul(upgEffect('ap',2))
+		x = x.mul(upgEffect('oil',1))
+		return x
+	},
+	tp() {
+		let x = E(1)
+		if (!player.sTimes) return x
+
+		x = x.mul(upgEffect('ap',3))
+		x = x.mul(upgEffect('oil',2))
+		return x
+	},
+}
+REALMS.decelOnly = {
+	on: r => r == 1,
+	grass() {
+		let x = E(1e-4)
+		if (hasUpgrade('aGrass', 3)) x = x.mul(upgEffect('aGrass',3))
+		if (hasGSMilestone(0)) x = x.mul(3)
+		return x
+	},
+	xp() {
+		let x = E(1e-5)
+		if (hasUpgrade('aGrass',4)) x = x.mul(upgEffect('aGrass',4))
+		if (hasGSMilestone(0)) x = x.mul(3)
+		return x
+	},
+	tp() {
+		let x = E(0.01)
+		x = x.mul(getChargeEff(5))
+		return x
+	}
 }
 
 UPGS.aGrass = {
@@ -239,7 +231,7 @@ UPGS.aAuto = {
 	req: _=>player.aRes.aTimes>0,
 	reqDesc: _=>`Anonymity once to unlock.`,
 
-	unl: _=>player.decel,
+	unl: _=> player.decel,
 
 	ctn: [
 		{
@@ -513,7 +505,7 @@ aMAIN.oil = {
 		let x = Decimal.pow(2, player.aRes.tier)
 		x = x.mul(upgEffect('plat',9))
 
-		x = x.mul(tmp.chargeEff[6]||1)
+		x = x.mul(getChargeEff(6))
 		x = x.mul(upgEffect('rocket',8))
 		x = x.mul(upgEffect('rocket',15))
 		x = x.mul(upgEffect('momentum',9))

@@ -1,7 +1,5 @@
 const CHALS = [
     {
-        unl: _=>true,
-
         max: 10,
         id: 'pp',
 
@@ -19,8 +17,6 @@ const CHALS = [
         eff: i=>Decimal.pow(2,i),
         effDesc: x=>format(x,0)+"x",
     },{
-        unl: _=>true,
-
         max: 10,
         id: 'pp',
 
@@ -38,8 +34,6 @@ const CHALS = [
         eff: i=>Decimal.pow(2,i),
         effDesc: x=>format(x,0)+"x",
     },{
-        unl: _=>true,
-
         max: 7,
         id: 'crystal',
 
@@ -57,8 +51,6 @@ const CHALS = [
         eff: i=>Decimal.pow(2,i),
         effDesc: x=>format(x,1)+"x",
     },{
-        unl: _=>true,
-
         max: 5,
         id: 'crystal',
 
@@ -76,8 +68,6 @@ const CHALS = [
         eff: i=>i/5+1,
         effDesc: x=>format(x,1)+"x",
     },{
-        unl: _=>true,
-
         max: 7,
         id: 'crystal',
 
@@ -95,8 +85,6 @@ const CHALS = [
         eff: i=>Decimal.pow(2,i),
         effDesc: x=>format(x,0)+"x",
     },{
-        unl: _=>true,
-
         max: 5,
         id: 'crystal',
 
@@ -235,7 +223,7 @@ tmp_update.push(_=>{
 	for (let [i, c] of Object.entries(CHALS)) {
 		let comp = player.chal.comp[i] || 0
 		tmp.chal.goal[i] = c.goal(comp)
-		tmp.chal.eff[i] = c.eff(c.unl() && !inRecel() && (!inChal(7) || c.id == "steel") ? comp : 0)
+		tmp.chal.eff[i] = c.eff(compute(c.unl, true) && (!inChal(7) || c.id == "steel") ? comp : 0)
 
 		if (inChalCond(i)) {
 			let a = c.goalAmt()
@@ -290,7 +278,7 @@ el.update.chal = _=>{
 			for (let i in CHALS) {
 				let c = CHALS[i]
 				let l = player.chal.comp[i] || 0
-				let unl2 = c.unl() && (!player.options.hideUpgOption || l < c.max || player.chal.progress == i)
+				let unl2 = compute(c.unl, true) && (!player.options.hideUpgOption || l < c.max || player.chal.progress == i)
 				tmp.el['chal_div_'+i].setDisplay(unl2)
 
 				if (unl2) {

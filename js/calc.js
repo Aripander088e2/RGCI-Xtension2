@@ -12,14 +12,10 @@ function calc(dt, skip) {
 	if (galUnlocked()) galTick(dt)
 
 	//UNNATURAL REALM
-	if (player.unRes) {
-		player.unRes.nTime += dt
-		if (inRecel()) MAIN.levelUp(2)
-	}
+	if (player.unRes) player.unRes.nTime += dt
 	if (tmp.habit) unMAIN.habit.tick(dt)
 
 	//ANTI-REALM
-	if (inDecel()) MAIN.levelUp(1)
 	if (!inRecel()) {
 		player.aRes.aTime += dt
 		player.aRes.lTime += dt
@@ -85,7 +81,8 @@ function calc(dt, skip) {
 		}
 		tmp.autocutTime = 0
 	}
-	if (inAccel()) MAIN.levelUp(0)
+
+	for (const i of tmp.realm.in) MAIN.levelUp(i)
 
 	for (let x in UPGS) if (tmp.upgs[x].autoUnl && player.autoUpg[x]) buyAllUpgrades(x,true)
 	player.maxPerk = Math.max(player.maxPerk, tmp.perks)

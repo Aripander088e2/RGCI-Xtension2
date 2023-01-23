@@ -143,7 +143,7 @@ const UPGS = {
 
                 effect(i) {
                     let x = Decimal.pow(2,Math.floor(i/25)).mul(i/2+1)
-                    x = x.pow(upgEffect('crystal',4)+(tmp.chargeEff[2]||0))
+                    x = x.pow(upgEffect('crystal',4)+getChargeEff(2,0))
                     return x
                 },
                 effDesc: x => x.format()+"x",
@@ -852,15 +852,13 @@ function updateUpgTemp(id) {
         let amt = player.upgs[id][x]||0
         let res = tmp.upg_res[upg.res]
         
-        tu.max[x] = (typeof upg.max == "function"?upg.max():upg.max)||1
-        if (upg.unl?upg.unl():true) if (amt < tu.max[x]) ul++
+        tu.max[x] = compute(upg.max, 1)
+        if (compute(upg.unl, true)) if (amt < tu.max[x]) ul++
 
         tu.cost[x] = upg.cost(amt)
         tu.bulk[x] = getUpgradeBulk(id, x)
 
-        if (upg.effect) {
-			tu.eff[x] = upg.effect(amt)
-		}
+        if (upg.effect) tu.eff[x] = upg.effect(amt)
     }
     if (upgs.cannotBuy) tu.cannotBuy = upgs.cannotBuy()
     if (upgs.noSpend) tu.noSpend = upgs.noSpend()
@@ -937,12 +935,11 @@ function updateUpgradesHTML(id) {
     let tu = tmp.upgs[id]
     let ch = tmp.upg_ch[0] == id ? tmp.upg_ch[1] : -1
 
-    let unl = upgs.unl?upgs.unl():true
+    let unl = compute(upgs.unl, true)
     tmp.el["upgs_div_"+id].setDisplay(unl)
 
     if (unl) {
-        let req = upgs.req?upgs.req():true
-
+        let req = compute(upgs.req, true)
         tmp.el["upg_req_div_"+id].setDisplay(!req)
 
         if (req) {
@@ -997,7 +994,7 @@ function updateUpgradesHTML(id) {
                     let div_id = "upg_ctn_"+id+x
                     let amt = player.upgs[id][x]||0
 
-                    let unlc = (upg.unl?upg.unl():true) && (player.options.hideUpgOption ? amt < tu.max[x] : true)
+                    let unlc = compute(upg.unl, true) && (player.options.hideUpgOption ? amt < tu.max[x] : true)
                     tmp.el[div_id].setDisplay(unlc)
 
                     if (!unlc) continue

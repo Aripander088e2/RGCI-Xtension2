@@ -1,8 +1,8 @@
 aMAIN.fun = {
 	gain() {
 		let r = E(1)
-		r = r.mul(tmp.chargeEff[8] || 1)
-        r = r.mul(getAstralEff('fu'))
+		r = r.mul(getChargeEff(8))
+		r = r.mul(getAstralEff('fu'))
 		r = r.mul(upgEffect('moonstone', 4))
 		r = r.mul(getGSEffect(8))
 		r = r.mul(upgEffect('funMachine', 0))

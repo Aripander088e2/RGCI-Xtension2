@@ -21,6 +21,13 @@ function setupRecel() {
 
 let unMAIN = {}
 
+REALMS.recelOnly = {
+	on: r => r == 2,
+	grass: _ => 1e-6,
+	xp: _ => 1e-7,
+	tp: _ => 1e-5,
+}
+
 RESET.recel = {
 	unl: _=>hasAGHMilestone(7),
 
@@ -87,7 +94,7 @@ UPGS.unGrass = {
 			},
 			effDesc: x => format(x,1)+"x",
 		}, {
-			max: Infinity,
+			max: 10,
 
 			title: "Ranged Out",
 			desc: `Increase range by <b class="green">+10</b>.`,
