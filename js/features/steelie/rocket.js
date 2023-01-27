@@ -494,8 +494,11 @@ let ROCKET_PART = {
 	upgraded: _ => hasStarTree("progress", 10),
 
 	m_gain() {
-		if (this.upgraded() && player.rocket.part) return 10 ** (player.rocket.part - 1)
-		return 1
+		if (!this.upgraded()) return 1
+		let r = 10 ** (player.rocket.part - 1)
+		r *= upgEffect('dm', 5)
+		r *= upgEffect('np', 3)
+		return r
 	}
 }
 
@@ -503,10 +506,10 @@ RESET.rocket_part = {
 	unl: _=> hasUpgrade('factory',6),
 
 	req: _=>true,
-	reqDesc: _=>``,
+	reqDesc: ``,
 
 	resetDesc: `<span style="font-size: 14px">Reset everything Steelie does, and so Steel, Foundry, Charger upgrades, Anti-Realm, and total Fuel. You'll gain 1 Rocket Part and Momentum, and reset the cost of Rocket Fuels.</span>`,
-	resetGain: _=> player.rocket.part == 10 && !ROCKET_PART.upgraded() ? `<span class="pink">${galUnlocked() ? "Maxed!" : "Do a Galactic reset immediately!"}</span>` :`<span style="font-size: 14px">
+	resetGain: _=> player.rocket.part == 10 && !tmp.rocket_upgraded ? `<span class="pink">${galUnlocked() ? "Maxed!" : "Do a Galactic reset immediately!"}</span>` :`<span style="font-size: 14px">
 		<b class="lightgray">Steel</b><br>
 		<span class="${player.steel.gte(tmp.rp_req.steel)?"green":"red"}">${player.steel.format(0)} / ${tmp.rp_req.steel.format(0)}</span><br><br>
 		<b class="lightblue">Total Rocket Fuel</b><br>
@@ -553,7 +556,7 @@ UPGS.momentum = {
 
 	unl: _=>hasUpgrade("factory",6)||hasStarTree("progress",10),
 	req: _=>player.rocket.part>0||hasStarTree("progress",10),
-	reqDesc: _=>`Get a Rocket Part to unlock.`,
+	reqDesc: `Get a Rocket Part to unlock.`,
 
 	underDesc: _=>getUpgResTitle('momentum')+(tmp.m_prod > 0 ? " <span class='smallAmt'>"+formatGain(E(player.rocket.momentum),ROCKET_PART.m_gain()*tmp.m_prod)+"</span>" : ""),
 
@@ -747,31 +750,42 @@ UPGS.momentum = {
 			res: "momentum",
 			icon: ['Curr/UnnaturalGrass'],
 			
-			unl: _ => ROCKET_PART.upgraded(),
-			cost: i => EINF,
-			bulk: i => 0,
+			unl: _ => tmp.rocket_upgraded,
+			cost: i => E(4).pow(i).mul(20),
+			bulk: i => E(i).div(20).log(4).floor().toNumber()+1,
 
 			effect(i) {
-				let x = i*2+1
-
-				return x
+				return i+1
 			},
-			effDesc: x => format(x)+"x",
+			effDesc: x => "+"+format(x),
 		},{
 			title: "It Doesn't Matter",
-			desc: `<b class="green">Double</b> Dark Matters.`,
+			desc: `<b class="green">Double</b> Dark Matter.`,
 
 			res: "momentum",
 			icon: ['Curr/DarkMatter'],
 			
-			unl: _ => ROCKET_PART.upgraded(),
-			cost: i => EINF,
-			bulk: i => 0,
+			unl: _ => tmp.rocket_upgraded,
+			cost: i => E(5).pow(i).mul(30),
+			bulk: i => E(i).div(30).log(5).floor().toNumber()+1,
 
 			effect(i) {
-				let x = i*2+1
+				return E(2).pow(i)
+			},
+			effDesc: x => format(x)+"x",
+		},{
+			title: "A New Star",
+			desc: `<b class="green">Double</b> Space Power.`,
 
-				return x
+			res: "momentum",
+			icon: ['Icons/SP'],
+			
+			unl: _ => hasStarTree("progress", 11),
+			cost: i => E(10).pow(i).mul(1e4),
+			bulk: i => E(i).div(1e4).log(10).floor().toNumber()+1,
+
+			effect(i) {
+				return E(2).pow(i)
 			},
 			effDesc: x => format(x)+"x",
 		},
@@ -809,16 +823,22 @@ function updateRocketTemp() {
 	tmp.rf_gain_mult += getAstralEff('rf', 0)
 	tmp.rf_gain_mult += upgEffect('moonstone', 1, 0)
 
-
 	let rf = player.rocket.total_fp
 	tmp.rf_cost = [ROCKET.cost(rf, 1e20), ROCKET.cost(rf, 100)]
 	tmp.rf_bulk = Math.min(ROCKET.bulk(player.chargeRate, 1e20), ROCKET.bulk(player.aRes.oil, 100))
 
 	//Rocket Part
+	if (tmp.rocket_upgraded !== undefined && ROCKET_PART.upgraded() && !tmp.rocket_upgraded) player.rocket.part = Math.min(player.rocket.part, 1)
+	tmp.rocket_upgraded = ROCKET_PART.upgraded()
+
 	tmp.rp_req = ROCKET_PART.req()
-	tmp.m_prod = ROCKET_PART.upgraded() ? 0.01 : 0
+	tmp.m_prod = tmp.rocket_upgraded ? 0.01 : 0
+}
+
+function fixRocket() {
 }
 
 tmp_update.push(_=>{
 	updateRocketTemp()
+	fixRocket()
 })

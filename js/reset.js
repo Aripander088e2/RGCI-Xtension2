@@ -38,7 +38,7 @@ function updateResetHTML(id) {
 
         tmp.el["reset_info_div_"+id].setDisplay(req)
         tmp.el["reset_req_div_"+id].setDisplay(!req)
-        tmp.el["reset_req_desc_"+id].setHTML(r.reqDesc())
+        tmp.el["reset_req_desc_"+id].setHTML(compute(r.reqDesc))
 
         if (req) {
             tmp.el["reset_gain_"+id].setHTML(r.resetGain())

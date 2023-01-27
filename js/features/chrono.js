@@ -2,13 +2,15 @@ MAIN.chrono = {
 	unl: _ => player.sTimes,
 	setup() {
 		return {
-			chrona: 0,
 			plat: 0,
 			moon: 0,
-
+			chrona: 0,
 			spent: 0,
-			speed: 1,
-			amt: 0
+
+			amt: 0,
+			offline: 0,
+
+			speed: 1
 		}
 	},
 
@@ -31,7 +33,7 @@ MAIN.chrono = {
 		if (!this.warpCan()) return
 
 		let power = this.warpPower()
-		player.ch.amt -= power
+		this.consume(power)
 		calc(power, true)
 	},
 	warpCan() {
@@ -43,12 +45,25 @@ MAIN.chrono = {
 		return true
 	},
 	warpPower() {
-		return parseFloat(document.getElementById("chrono_warp").value) * player.ch.amt / 100
+		return parseFloat(document.getElementById("chrono_warp").value) * this.totalAmt() / 100
+	},
+
+	totalAmt() {
+		return player.ch.amt + player.ch.offline
+	},
+	consume(x) {
+		if (player.ch.offline) {
+			player.ch.offline -= x
+			if (player.ch.offline < 0) x = -player.ch.offline
+			else return
+		}
+		player.ch.offline = 0
+		player.ch.amt -= x
 	},
 
 	tick(dt) {
 		if (player.ch.speed > 1) {
-			player.ch.amt = Math.max(player.ch.amt - dt * player.ch.speed / upgEffect('chrono', 1), 0)
+			this.consume(dt * player.ch.speed / upgEffect('chrono', 1))
 			if (player.ch.amt == 0) player.ch.speed = 1
 		} else {
 			player.ch.amt = Math.min(player.ch.amt + dt, this.fluxMax())
@@ -59,16 +74,16 @@ MAIN.chrono = {
 
 MAIN.chrona = {
 	platGain() {
-		return Math.max(Math.floor(Math.log10(Math.max(player.plat, 1) / 2e3) / Math.log10(3) + 1), 0)
+		return Math.max(Math.floor(Math.log10(Math.max(player.plat, 1) / 2e3) / Math.log10(2) + 1), 0)
 	},
 	platNext(p = player.ch.plat) {
-		return 3 ** p * 2e3
+		return 2 ** p * 2e3
 	},
 	moonGain() { 
-		return galUnlocked() ? Math.max(Math.floor(Math.log10(Math.max(player.gal.moonstone, 1) / 10) / Math.log10(3) * 2 + 1), 0) : 0
+		return galUnlocked() ? Math.max(Math.floor(Math.log10(Math.max(player.gal.moonstone, 1) / 10) / Math.log10(2) * 2 + 1), 0) : 0
 	},
 	moonNext(m = player.ch.moon) {
-		return galUnlocked() ? 3 ** (m / 2) * 10 : 10
+		return galUnlocked() ? 2 ** (m / 2) * 10 : 10
 	},
 
 	tick() {
@@ -86,6 +101,7 @@ RESET.time = {
 
     resetDesc: `Speed up game until you run out of Time Fluxes.`,
     resetGain: _=> `
+		<b>${format(player.ch.offline, 1)}</b> Offline Fluxes<br>
 		<b>${format(player.ch.amt, 1)} / ${format(MAIN.chrono.fluxMax(), 0)}</b> Time Fluxes<br>
 		<span class='smallAmt'>(${format(player.ch.speed, 1)}x speed)</span>
 		<b class='smallAmt red'>(${format(MAIN.chrono.max(), 1)}x maximum)</b>
@@ -139,7 +155,7 @@ UPGS.chrono = {
 			bulk: i => Math.floor(i**0.5),
 
 			effect(i) {
-				return i+2
+				return (i+2)**2
 			},
 			effDesc: x => format(x)+"x",
 		},{

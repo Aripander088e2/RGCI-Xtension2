@@ -25,7 +25,7 @@ REALMS.recelOnly = {
 	on: r => r == 2,
 	grass: _ => 1e-6,
 	xp: _ => 1e-7,
-	tp: _ => 1e-5,
+	tp: _ => 1e-6 * getEffect("uh", "tp"),
 }
 
 RESET.recel = {
@@ -47,7 +47,11 @@ RESET.recel = {
 }
 
 el.update.recel = _=>{
-	if (mapID == 'upg') tmp.el.unnatural_healing.setDisplay(inRecel())
+	if (mapID == 'g') tmp.el.habit.setHTML(tmp.unRes?.habit ? "(x"+format(tmp.unRes.habit.max,1)+")" : '')
+	if (mapID == 'upg') {
+		tmp.el.unnatural_healing.setDisplay(inRecel())
+		updateEffectHTML("uh")
+	}
 	if (mapID == "dc") tmp.el.reset_btn_recel.setTxt("(Shift+T) " + (player.decel == 2 ? "Accelerate" : "Recelerate"))
 }
 
@@ -65,34 +69,34 @@ UPGS.unGrass = {
 			max: Infinity,
 
 			title: "Habitability",
-			desc: `Touching protects cutting. Give a time boost to them which is automatically cutted later. Left-click to cut immediately!`,
+			desc: `Touching protects cutting and gives a passive growth to their values. Left-click to cut immediately!`,
 
 			res: "unGrass",
 			icon: ['Icons/Compaction'],
 			
-			cost: i => Decimal.pow(1.75,i).mul(1e3).ceil(),
-			bulk: i => i.div(1e3).max(1).log(1.75).floor().toNumber()+1,
+			cost: i => Decimal.pow(4,i).mul(1e3),
+			bulk: i => i.div(1e3).max(1).log(4).floor().toNumber()+1,
 
 			effect(i) {
 				return i+1
 			},
-			effDesc: x => format(x,1)+"x maximum",
+			effDesc: x => format(x,1)+"x value cap",
 		}, {
-			max: Infinity,
+			max: 100,
 
-			title: "Unnatural, Again?",
-			desc: `Increase Space Power gain by <b class="green">20%</b> compounding.`,
+			title: "Naturalness",
+			desc: `<b>Raise</b> Astral's XP effect in Normal Realm.`,
 
 			res: "unGrass",
-			icon: ['Icons/SP'],
+			icon: ['Icons/XP'],
 			
-			cost: i => Decimal.pow(1.75,i).mul(1e3).ceil(),
-			bulk: i => i.div(1e3).max(1).log(1.75).floor().toNumber()+1,
+			cost: i => Decimal.pow(1.3,(i+5)**1.25).ceil(),
+			bulk: i => i.log(1.3).root(1.25).sub(5).add(1).floor().toNumber(),
 
 			effect(i) {
-				return E(1.2).pow(i)
+				return i/100+1
 			},
-			effDesc: x => format(x,1)+"x",
+			effDesc: x => "^"+x,
 		}, {
 			max: 10,
 
@@ -102,45 +106,45 @@ UPGS.unGrass = {
 			res: "unGrass",
 			icon: ['Icons/Range'],
 			
-			cost: i => Decimal.pow(1.75,i).mul(1e3).ceil(),
-			bulk: i => i.div(1e3).max(1).log(1.75).floor().toNumber()+1,
+			cost: i => Decimal.pow(10,i).mul(1e3),
+			bulk: i => i.div(1e3).max(1).log10().floor().toNumber()+1,
 
 			effect(i) {
 				return i*10
 			},
 			effDesc: x => "+"+format(x,1),
 		}, {
-			max: 1,
+			max: _ => getEffect("uh", "sp", 0),
 
-			title: "Glided Experience",
-			desc: `<b class="green">Double</b> Space Power gain.`,
+			title: "Glided Power",
+			desc: `Gain <b class="green">20%</b> more Space Power compounding.`,
 
 			res: "unGrass",
 			icon: ['Icons/SP', 'Icons/Plus'],
 			
-			cost: i => Decimal.pow(1.75,i).mul(1e3).ceil(),
-			bulk: i => i.div(1e3).max(1).log(1.75).floor().toNumber()+1,
+			cost: i => Decimal.pow(5,i).mul(1e3),
+			bulk: i => i.div(1e3).max(1).log(25).floor().toNumber()+1,
 
 			effect(i) {
-				return E(2).pow(i)
+				return E(1.2).pow(i)
 			},
-			effDesc: x => format(x,1)+"x",
+			effDesc: x => format(x)+"x",
 		}, {
-			max: 1,
+			max: _ => getEffect("uh", "fun", 0),
 
 			title: "Glided Fun",
-			desc: `<b class="green">Double</b> fun gain.`,
+			desc: `Gain <b class="green">30%</b> more Fun compounding.`,
 
 			res: "unGrass",
 			icon: ['Curr/Fun', 'Icons/Plus'],
 			
-			cost: i => Decimal.pow(1.75,i).mul(1e3).ceil(),
-			bulk: i => i.div(1e3).max(1).log(1.75).floor().toNumber()+1,
+			cost: i => Decimal.pow(5,i).mul(1e3),
+			bulk: i => i.div(1e3).max(1).log(25).floor().toNumber()+1,
 
 			effect(i) {
-				return E(2).pow(i)
+				return E(1.3).pow(i)
 			},
-			effDesc: x => format(x,1)+"x",
+			effDesc: x => format(x)+"x",
 		},
 		/*{
 			max: 1000,
@@ -164,21 +168,72 @@ UPGS.unGrass = {
 	],
 }
 
+EFFECT.uh = {
+	unl: _ => player.unRes,
+	title: r => `<b style="color: #bf7">Unnatural Healing: </b> ${format(r, 0)}<br>
+		<span class="smallAmt">Gain more Unnatural Healing by proceeding outside of Unnatural Realm.</span><br>`,
+
+	res: _ => upgEffect('momentum', 10, 0) + getAstralEff("uh", 0) + getGSEffect(11, 0),
+	effs: {
+		sp: {
+			eff: x => x,
+			desc: x => `<b style="color: #bf7">${format(x, 0)}</b> max levels for "Gilded Power"`,
+		},
+		fun: {
+			eff: x => x,
+			desc: x => `<b style="color: #bf7">${format(x, 0)}</b> max levels for "Gilded Fun"`,
+		},
+		hb: {
+			eff: x => Math.cbrt(x / 2 + 1),
+			desc: x => `<b style="color: #bf7">${format(x)}x</b> to Habitability growth speed`,
+		},
+		hm: {
+			unl: _ => player.unRes.nTimes,
+			eff: x => Math.sqrt(x / 2 + 1),
+			desc: x => `<b style="color: #bf7">${format(x)}x</b> to Habitability starting value`,
+		},
+		tp: {
+			unl: _ => player.unRes.nTimes,
+			eff: x => x/2+1,
+			desc: x => `<b style="color: #bf7">${format(x)}x</b> to Tier Points in Unnatural Realm`,
+		},
+		np: {
+			unl: _ => player.unRes.nTimes,
+			eff: x => E(3).pow(x/10),
+			desc: x => `<b style="color: #bf7">${format(x)}x</b> to Normality Points`,
+		}
+	}
+}
+
 /* HABITABILITY */
 unMAIN.habit = {
-	max() {
-		return upgEffect("unGrass", 0)
-	},
-	progress(g) {
-		return (g.habit - 1) / (tmp.habitMax - 1)
-	},
 	grow(i, dt) {
 		let g = tmp.grasses[i]
 		if (!g) return
 
-		g.habit = Math.min(g.habit + dt * 10, tmp.habitMax)
-		if (g.habit == tmp.habitMax) removeGrass(i)
+		g.habit = Math.min(g.habit + dt * tmp.unRes.habit.speed, tmp.unRes.habit.max)
+		if (g.habit == tmp.unRes.habit.max) removeGrass(i)
 	},
+	speed() {
+		let r = 10
+		r *= getEffect("uh", "hb")
+		r *= upgEffect("np", 1)
+		return r
+	},
+	startingMult() {
+		let r = getEffect("uh", "hm")
+		return r
+	},
+
+	max() {
+		let r = upgEffect("unGrass", 0)
+		r *= upgEffect("np", 0)
+		return r
+	},
+	progress(g) {
+		return (g.habit - 1) / (tmp.unRes.habit.max - 1)
+	},
+
 	tick(dt) {
 		let grass = tmp.grasses
 		for (var [i, g] of Object.entries(grass)) if (g.habit) unMAIN.habit.grow(i, dt)
@@ -191,20 +246,24 @@ unMAIN.habit = {
 
 tmp_update.push(_=>{
 	if (!player.unRes) return
-	tmp.habitMax = unMAIN.habit.max()
-	tmp.habit = tmp.habitMax > 1
 
-	let uh = {}
-	tmp.unRes.uh = uh
-	uh.lvl = 0
-	uh.cap = 10
-	uh.eff = Math.min(uh.lvl, uh.cap)
+	let data = tmp.unRes
+	data.habit = {
+		on: unMAIN.habit.max() > 1,
+		start: unMAIN.habit.startingMult(),
+		speed: unMAIN.habit.max(),
+		max: unMAIN.habit.max(),
+	}
 })
 
 /* NORMALITY */
 unMAIN.np = {
 	gain() {
-		return E(1)
+		if (!player.unRes) return E(0)
+
+		let r = E(5).pow(player.unRes.level / 10 - 3).max(1)
+		r = r.mul(getEffect("uh", "np"))
+		return r.floor()
 	},
 }
 
@@ -212,7 +271,7 @@ RESET.np = {
 	unl: _=>player.decel==2,
 
 	req: _=>player.unRes.level>=50,
-	reqDesc: _=>`Reach Level 50.`,
+	reqDesc: `Reach Level 50.`,
 
 	resetDesc: `Reset your unnatural grass, level, and astral for Normality Points.`,
 	resetGain: _=> `<b>+${tmp.unRes.npGain.format(0)}</b> Normality Points`,
@@ -254,7 +313,7 @@ UPGS.np = {
 	title: "Normality Upgrades",
 
 	req: _=>player.unRes.nTimes > 0,
-	reqDesc: _=>`Normality once to unlock.`,
+	reqDesc: `Normality once to unlock.`,
 
 	underDesc: _=>getUpgResTitle('np'),
 
@@ -265,8 +324,9 @@ UPGS.np = {
 		{
 			max: Infinity,
 
-			title: "Habitability II",
-			desc: `Habitability is more efficient.`,
+			title: "Habited",
+			tier: 2,
+			desc: `Habitability grows higher.`,
 
 			res: "np",
 			icon: ['Icons/Compaction', "Icons/Plus"],
@@ -281,8 +341,8 @@ UPGS.np = {
 		}, {
 			max: Infinity,
 
-			title: "Habitability Speed",
-			desc: `Speed up the time speed for Habitability.`,
+			title: "Rapid Grow",
+			desc: `Habitability grows faster.`,
 
 			res: "np",
 			icon: ['Icons/Compaction', "Icons/StarSpeed"],
@@ -316,11 +376,12 @@ UPGS.np = {
 			title: "NP Momentum",
 			desc: `<b class="green">Double</b> Momentum.`,
 
+			unl: _ => ROCKET_PART.upgraded(),
 			res: "np",
 			icon: ["Curr/Momentum"],
 			
-			cost: i => Decimal.pow(1.75,i).mul(1e3).ceil(),
-			bulk: i => i.div(1e3).max(1).log(1.75).floor().toNumber()+1,
+			cost: i => Decimal.pow(1.75,i**1.25).mul(1e3).ceil(),
+			bulk: i => i.div(1e3).max(1).log(1.75).root(1.25).floor().toNumber()+1,
 
 			effect(i) {
 				return E(2).pow(i)

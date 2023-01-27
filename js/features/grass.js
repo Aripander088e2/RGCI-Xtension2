@@ -97,7 +97,6 @@ el.update.grassCanvas = _=>{
 		drawGrass()
 
 		tmp.el.grass_cap.setHTML(`${format(tmp.grasses.length,0)} / ${format(tmp.grassCap,0)}`)
-		tmp.el.habit.setHTML(tmp.habit ? "(x"+format(tmp.habitMax,1)+")" : '')
 	}
 }
 
@@ -136,8 +135,8 @@ function drawGrass() {
 					range_pos.x + tmp.rangeCut > x &&
 					range_pos.y < y + G_SIZE &&
 					tmp.rangeCut + range_pos.y > y) {
-						if (tmp.habit) {
-							if (!g.habit) g.habit = 1
+						if (tmp.unRes?.habit?.on) {
+							if (!g.habit) g.habit = tmp.unRes.habit.start
 						} else {
 							removeGrass(i)
 							i--

@@ -21,7 +21,7 @@ RESET.pp = {
     unl: _=> player.decel == 0,
 
     req: _=>player.level>=20,
-    reqDesc: _=>`Reach Level 20.`,
+    reqDesc: `Reach Level 20.`,
 
     resetDesc: `Reset your grass, upgrades, level, and perks.`,
     resetGain: _=> `
@@ -79,7 +79,7 @@ UPGS.pp = {
     noSpend: _=>hasUpgrade('assembler',1),
 
     req: _=>player.pTimes > 0,
-    reqDesc: _=>`Prestige once to unlock.`,
+    reqDesc: `Prestige once to unlock.`,
 
     underDesc: _ => getUpgResTitle('pp') + (tmp.ppGainP > 0 ? " <span class='smallAmt'>"+formatGain(player.pp,tmp.ppGain.mul(tmp.ppGainP))+"</span>" : ""),
 

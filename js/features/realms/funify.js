@@ -16,7 +16,7 @@ aMAIN.fun = {
 	},
 	SFRGTgain() {
 		let r = E(1)
-		r = r.mul(getGSEffect(11))
+		r = r.mul(getGSEffect(10))
 		r = r.mul(upgEffect('funMachine', 1))
 		r = r.mul(upgEffect('sfrgt', 0))
         r = r.mul(getAstralEff('sf'))
@@ -29,7 +29,7 @@ RESET.fun = {
 	unl: _=> tmp.aRes.gs.shown && (player.aRes.grassskip >= 8 || player.gal.sacTimes),
 
 	req: _=> player.aRes.level>=270,
-	reqDesc: _=>`Reach Level 270.`,
+	reqDesc: `Reach Level 270.`,
 
 	resetDesc: `Reset everything grass-skip does, but it benefits from the milestones for grass-skip.`,
 	resetGain: _=> `<b>+${tmp.aRes.funGain.format(0)}</b> Fun`,
@@ -71,7 +71,7 @@ UPGS.funMachine = {
 	unl: _=> tmp.aRes.gs.shown && (player.aRes.grassskip >= 8 || MAIN.sac.did()),
 
 	req: _ => player.aRes.fTimes > 0,
-	reqDesc: _=>`Funify once to unlock.`,
+	reqDesc: `Funify once to unlock.`,
 
 	underDesc: _=>getUpgResTitle('fun'),
 
@@ -242,8 +242,8 @@ UPGS.sfrgt = {
 			res: "fun",
 			icon: ["Curr/SuperFun"],
 
-			cost: i => Decimal.pow(10,i).mul(1e3).ceil(),
-			bulk: i => i.div(1e3).max(1).log(10).floor().toNumber()+1,
+			cost: i => Decimal.pow(15,i).mul(1e3).ceil(),
+			bulk: i => i.div(1e3).max(1).log(15).floor().toNumber()+1,
 		
 			effect(i) {
 				let x = Decimal.pow(2,i)
@@ -288,7 +288,7 @@ UPGS.sfrgt = {
 			},
 			effDesc: x => format(x,0)+"x",
 		}, {
-			max: 40,
+			max: 20,
 
 			title: "Funny Charge",
 			desc: `Charge bonuses start <b class="green">10x</b> earlier.`,
@@ -296,21 +296,21 @@ UPGS.sfrgt = {
 			res: "sfrgt",
 			icon: ["Icons/Charge", "Icons/StarSpeed"],
 
-			cost: i => Decimal.pow(5,i).mul(300).ceil(),
-			bulk: i => i.div(300).max(1).log(5).floor().toNumber()+1,
+			cost: i => Decimal.pow(4,i).mul(300).ceil(),
+			bulk: i => i.div(300).max(1).log(4).floor().toNumber()+1,
 
 			effect(i) {
 				return i
 			},
 			effDesc: x => format(E(10).pow(x),0)+"x",
 		}, {
-			max: 10,
+			max: 5,
 
-			title: "Funny Steel",
+			title: "Funny Foundry",
 			desc: `<b class="green">Strengthen</b> Steel Steel upgrade.`,
 		
 			res: "sfrgt",
-			icon: ["Curr/Steel"],
+			icon: ["Icons/Foundry"],
 
 			cost: i => Decimal.pow(4,i**1.25).mul(1e5).ceil(),
 			bulk: i => i.div(1e5).max(1).log(4).root(1.25).floor().toNumber()+1,

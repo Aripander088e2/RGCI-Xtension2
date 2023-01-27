@@ -13,18 +13,18 @@ MAIN.gal = {
 		r = r.mul(getAstralEff("st"))
 		r = r.mul(upgEffect('moonstone', 3))
 		r = r.mul(upgEffect('sfrgt', 1))
-		if (hasStarTree("progress", 8)) r = r.mul(starTreeEff("progress", 8))
-		if (hasStarTree("progress", 9)) r = r.mul(starTreeEff("progress", 9))
+		r = r.mul(upgEffect('dm', 5))
 
 		return r
-	},
-	part_req: _ => ROCKET_PART.upgraded() ? 1 : 10
+	}
 }
 
 RESET.gal = {
 	unl: _=>true,
-	req: _=>player.rocket.part==MAIN.gal.part_req(),
-	reqDesc: _=>`Get ${MAIN.gal.part_req()} Rocket Parts to unlock.`,
+
+	part_req: _=>ROCKET_PART.upgraded()?1:10,
+	req: _=>player.rocket.part>=RESET.gal.part_req(),
+	reqDesc: _=>`Get ${RESET.gal.part_req()} Rocket Parts to unlock.`,
 
 	resetDesc: `Reset <b class="red">EVERYTHING prior</b> except Refinery and Chronology! Last chance before blast-off...`,
     resetGain: _=> galUnlocked() ? `<b>+${tmp.gal.star_gain.format(0)}</b> Stars<br><b class='red'>Max Star Accumulator first!</b>` : `<b class='cyan'>Also unlock Grass-Skips, Star Accumulator upgrade, and Astral!</b>`,
@@ -58,7 +58,7 @@ RESET.gal = {
 		player.grasshop = 0
 		player.steel = E(0)
         player.sTime = 0
-		if (!hasGSMilestone(11)) player.bestCharge = E(0)
+		if (!hasGSMilestone(9)) player.bestCharge = E(0)
 		if (!inRecel()) player.decel = 0
 		player.rocket = { total_fp: 0, amount: hasStarTree("qol", 9) ? player.rocket.amount : 0, part: 0, momentum: ROCKET_PART.upgraded() ? player.rocket.momentum : 0 }
 		resetAntiRealm()
@@ -203,10 +203,12 @@ const ASTRAL = {
 		let r = E(1)
 
 		r = r.mul(getChargeEff(7))
+		r = r.mul(upgEffect('momentum', 12))
+		if (hasStarTree("progress", 8)) r = r.mul(starTreeEff("progress", 8))
+		if (hasStarTree("progress", 9)) r = r.mul(starTreeEff("progress", 9))
 		r = r.mul(upgEffect('moonstone', 2))
         r = r.mul(getGSEffect(1))
 		r = r.mul(upgEffect('sfrgt', 2))
-		r = r.mul(upgEffect("unGrass", 1))
 		r = r.mul(upgEffect("unGrass", 3))
 
 		return r
@@ -242,7 +244,7 @@ EFFECT.astral = {
 		st: {
 			unl: _ => hasAGHMilestone(1),
 			eff: a => E(2).pow(a/4),
-			desc: x => `<b class="magenta">${format(x)}x</b> to Star`
+			desc: x => `<b class="magenta">${format(x)}x</b> to Stars`
 		},
 		rf: {
 			unl: _ => hasAGHMilestone(2),
@@ -256,7 +258,7 @@ EFFECT.astral = {
 		},
 		xp: {
 			unl: _ => hasAGHMilestone(4),
-			eff: a => E(2).pow(a/3-6).max(1),
+			eff: a => E(1.25).pow(a/2-5).max(1),
 			desc: x => `<b class="magenta">${format(x)}x</b> to XP`
 		},
 		fu: {
@@ -266,19 +268,19 @@ EFFECT.astral = {
 		},
 		sf: {
 			unl: _ => hasAGHMilestone(6),
-			eff: a => E(2).pow(a/5-4).max(1),
+			eff: a => E(2).pow(a/2-10).max(1),
 			desc: x => `<b class="magenta">${format(x)}x</b> to SFRGT`
 		},
 		uh: {
 			unl: _ => hasAGHMilestone(9),
-			eff: a => Math.max(a-50,0),
+			eff: a => Math.floor(Math.max(a/5-5,0)),
 			desc: x => `<b class="magenta">+${format(x)}</b> to Unnatural Healing`
 		},
 		ap: {
 			unl: _ => hasAGHMilestone(10),
-			eff: a => Math.min(Math.max(0.7+a/200,1),1.25),
+			eff: a => 1+Math.min(Math.max(a-50,0)/200,.25),
 			desc: x => `<b class="magenta">+${format(x)}</b> to AP per-25 multipliers`
-		}
+		},
 	},
 }
 
@@ -395,8 +397,8 @@ UPGS.moonstone = {
 			res: "moonstone",
 			icon: ["Curr/SuperFun"],
 			
-			cost: i => 5,
-			bulk: i => Math.floor(i/5),
+			cost: i => 10,
+			bulk: i => Math.floor(i/10),
 
 			effect(i) {
 				return i+1
@@ -408,14 +410,14 @@ UPGS.moonstone = {
 
 			costOnce: true,
 
-			title: "Moon Steel",
-			desc: `Boost Steel by <b class="green">+1x</b> per level.`,
+			title: "Moon Foundry",
+			desc: `Foundry lapses <b class="green">+1x</b> faster per level.`,
 
 			res: "moonstone",
-			icon: ["Curr/Steel"],
+			icon: ["Icons/Foundry"],
 			
-			cost: i => 15,
-			bulk: i => Math.floor(i/15),
+			cost: i => 30,
+			bulk: i => Math.floor(i/30),
 
 			effect(i) {
 				return i+1
@@ -440,6 +442,24 @@ UPGS.moonstone = {
 				return i+1
 			},
 			effDesc: x => format(x,0)+"x",
+		}, {
+			unl: _ => hasAGHMilestone(7),
+			max: 10,
+
+			title: "Moon Platinum II",
+			tier: 3,
+			desc: `<b class="green">Double</b> Platinum per level.`,
+
+			res: "moonstone",
+			icon: ["Curr/Platinum"],
+			
+			cost: i => E(2).pow(i).mul(1e3),
+			bulk: i => E(i).div(1e3).log(2).floor().toNumber()+1,
+
+			effect(i) {
+				return 2**i
+			},
+			effDesc: x => format(x,1)+"x",
 		}
 	],
 }

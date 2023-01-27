@@ -359,7 +359,7 @@ const UPGS = {
 
         unl: _=>!player.decel,
         req: _=>player.pTimes > 0,
-        reqDesc: _=>`Prestige once to unlock.`,
+        reqDesc: `Prestige once to unlock.`,
 
         ctn: [
             {
@@ -520,7 +520,7 @@ const UPGS = {
         autoUnl: _=>hasStarTree('auto',6),
 
         req: _=>player.tier >= 2 || player.cTimes > 0,
-        reqDesc: _=>`Reach Tier 2 to unlock.`,
+        reqDesc: `Reach Tier 2 to unlock.`,
 
         underDesc: _=>getUpgResTitle('plat')+` (${formatPercent(tmp.platChance)} grow chance)`,
 
@@ -1012,7 +1012,7 @@ function updateUpgradesHTML(id) {
                     tmp.el[div_id+"_max_base"].setDisplay(amt >= tu.max[x])
                 }
             }
-        } else if (upgs.reqDesc) tmp.el["upg_req_desc_"+id].setHTML(upgs.reqDesc())
+        } else if (upgs.reqDesc) tmp.el["upg_req_desc_"+id].setHTML(compute(upgs.reqDesc))
     }
 }
 

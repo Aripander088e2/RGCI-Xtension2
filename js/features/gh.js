@@ -17,7 +17,7 @@ MILESTONE.gh = {
 	req: _ => grassHopped(),
 	reqDesc: "Grasshop to unlock.",
 
-	res: _ => player.grasshop,
+	res: _ => tmp.gh.eff || player.grasshop,
 	title: x => `You have grasshopped <b>${format(x, 0)}</b> times`,
 	title_ms: x => x + " Grasshops",
 
@@ -32,13 +32,13 @@ MILESTONE.gh = {
 			req: 3,
 			desc: `<b class="green">+0.5</b> Platinum per Grasshop. (starting at 2 and ending at 10)`,
 
-			eff: _=>Math.max(Math.min(tmp.gh.eff,10)-1,0)/2,
+			eff: x=>Math.max(Math.min(x,10)-1,0)/2,
 			effDesc: x=> "+"+format(x,1),
 		},{
 			req: 4,
 			desc: `<b class="green">+0.1x</b> Perks per Grasshop. (starting at 3)`,
 
-			eff: _=>Math.max(0,(tmp.gh.eff-2)/10),
+			eff: x=>Math.max(0,(x-2)/10),
 			effDesc: x=> "+"+format(x,1),
 		},{
 			req: 5,
@@ -57,14 +57,14 @@ MILESTONE.gh = {
 
 			req: 11,
 			desc: `<b class="green">Double</b> Steel per Grasshop. (starting at 11)`,
-			eff: _=>E(2).pow(Math.max(0,tmp.gh.eff-10)),
+			eff: x=>E(2).pow(Math.max(0,x-10)),
 			effDesc: x=> format(x,0)+"x",
 		},{
 			unl: _=>galUnlocked()||hasUpgrade('factory',2),
 
 			req: 12,
 			desc: `<b class="green">Double</b> Charge per Grasshop. (starting at 12 and ending at 30)`,
-			eff: _=>E(2).pow(Math.max(0,Math.min(tmp.gh.eff,30)-11)),
+			eff: x=>E(2).pow(Math.max(0,Math.min(x,30)-11)),
 			effDesc: x=> format(x,0)+"x",
 		},{
 			unl: _=>galUnlocked()||hasUpgrade('factory',3),
@@ -76,7 +76,7 @@ MILESTONE.gh = {
 
 			req: 16,
 			desc: `Charge rate bonuses start 10x earlier per Grasshop. (starting at 16)`,
-			eff: _=>Math.max(0,tmp.gh.eff-15),
+			eff: x=>Math.max(0,x-15),
 			effDesc: x=> format(E(10).pow(x),0)+"x",
 		},{
 			unl: _=>galUnlocked()||hasUpgrade('factory',4),
@@ -158,7 +158,7 @@ function grassHopped() {
 tmp_update.push(_=>{
 	tmp.gh.req = MAIN.gh.req()
 	tmp.gh.eff = player.grasshop
-	if (galUnlocked()) tmp.gh.eff += (player.gal.ghPotential - player.grasshop) * (1 - starTreeEff("progress", 12, 0))
+	if (galUnlocked()) tmp.gh.eff += (player.gal.ghPotential - player.grasshop) * starTreeEff("progress", 12, 0)
 })
 
 el.update.gh = _=>{

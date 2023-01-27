@@ -5,16 +5,19 @@ const TB_SAVE = "rgci_tb_test"
 
 function getPlayerData() {
 	let s = {
+		version: VER,
+		tb_ver: TB_VER,
+
 		upgs: {},
 		autoUpg: {},
 
+		lastTick: Date.now(),
 		time: 0,
 		ch: MAIN.chrono.setup(),
+
 		map_notify: {},
 		options: {},
 		pins: [],
-		version: VER,
-		tb_ver: TB_VER,
 
 		//RESOURCES
 		grass: E(0),
@@ -234,6 +237,8 @@ function load(str) {
 	resetMap()
 	resetTemp()
 	for (let x = 0; x < 50; x++) updateTemp()
+
+	if (MAIN.chrono.unl()) player.ch.offline += (Date.now() - player.lastTick) / 1e3
 }
 
 function exporty() {

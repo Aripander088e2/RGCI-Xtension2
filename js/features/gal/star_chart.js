@@ -124,47 +124,48 @@ const STAR_CHART = {
 			max: 1,
 
 			title: "Hopped Space",
-			desc: `Each Grass-Hop increases Space Power by 20%, starting at 50.`,
+			desc: `Each Grass-Hop increases Space Power by 10%, starting at 50.`,
 
 			branch: 5,
 			icon: ['Icons/SP','Icons/StarSpeed'],
 
 			unl: _ => player.gal.sacTimes,
-			cost: i => E(1e13),
+			cost: i => E(1e15),
 			bulk: i => 1,
 
 			effect(i) {
-				return E(1.2).pow(Math.max(player.grasshop - 49, 0))
+				return E(1.1).pow(Math.max(player.grasshop - 49, 0))
 			},
 			effDesc: x => format(x) + "x"
 		}, {
 			max: 1,
 
 			title: "Tiered Space",
-			desc: `Each Anti-Realm Tier increases Space Power by 50%, starting at 14.`,
+			desc: `Every 3 tiers, gain more Space Power by <b class="green">same tier multiplier</b>. (starting at 50)`,
 
 			branch: 5,
 			icon: ['Icons/SP','Icons/StarSpeed'],
 
 			unl: _ => player.gal.sacTimes,
-			cost: i => E(1e9),
+			cost: i => E(1e12),
 			bulk: i => 1,
 
 			effect(i) {
-				return E(1.5).pow(Math.max(player.aRes.tier - 13, 0))
+				if (player.tier < 50) return E(1)
+				return E(MAIN.tier.base(0)).pow(Math.floor((player.tier - 50) / 3 + 1))
 			},
 			effDesc: x => format(x) + "x"
 		}, {
 			max: 1,
 
 			title: "Overpowerful Fuels",
-			desc: `Rocket Part gives Momentum production, but scales faster. Galactic unlocks at 1 Part and doesn't reset Momentum. Unlock a new Momentum Upgrade.`,
+			desc: `Rocket Part is overpowered but scales faster. Galactic unlocks at 1 Part and doesn't reset Momentum. Unlock new upgrades.`,
 
 			branch: 2,
 			icon: ['Curr/RocketFuel','Icons/StarSpeed'],
 
 			unl: _ => player.gal.sacTimes,
-			cost: i => E(1e20),
+			cost: i => E(1e16),
 			bulk: i => 1
 		}, {
 			max: 1,
@@ -187,8 +188,8 @@ const STAR_CHART = {
 			icon: ['Icons/Grasshop','Icons/StarSpeed'],
 
 			unl: _ => true,
-			cost: i => E(10).pow((i+8)**1.25),
-			bulk: i => E(i).log10().root(1.25).sub(7).floor().toNumber(),
+			cost: i => E(1e4).pow((i+3)**1.25),
+			bulk: i => E(i).log(1e4).root(1.25).sub(3).floor().toNumber()+1,
 
 			effect(i) {
 				return i/10
@@ -203,8 +204,8 @@ const STAR_CHART = {
 			branch: 12,
 			icon: ['Icons/Grasshop','Icons/StarSpeed'],
 
-			cost: i => E(10).pow((i+9)**1.25),
-			bulk: i => E(i).log10().root(1.25).sub(8).floor().toNumber(),
+			cost: i => E(1e4).pow((i+3.5)**1.25),
+			bulk: i => E(i).log(1e4).root(1.25).sub(3.5).floor().toNumber()+1,
 
 			effect(i) {
 				return i/10
@@ -682,7 +683,6 @@ function buySCUpgrade(id,x) {
 	let amt = player.gal.star_chart[id]
 
 	if ((amt[x]||0) < tu.max[x]) if (Decimal.gte(player.gal.stars,tu.cost[x])) {
-
 		player.gal.stars = player.gal.stars.sub(tu.cost[x]).max(0)
 		amt[x] = amt[x] ? amt[x] + 1 : 1
 

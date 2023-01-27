@@ -2,7 +2,10 @@ MAIN.sac = {
 	dmGain() {
 		let x = player.gal.stars.div(1e8).cbrt().floor()
 
-        x = x.mul(upgEffect('moonstone',7))
+		x = x.mul(upgEffect('momentum', 11))
+		x = x.mul(upgEffect('moonstone', 7))
+		x = x.mul(upgEffect('np', 2))
+
 		return x
 	},
 	did() {
@@ -77,8 +80,8 @@ UPGS.dm = {
 			res: "dm",
 			icon: ["Curr/Crystal"],
 
-			cost: i => Decimal.pow(4,i**1.25).ceil(),
-			bulk: i => i.max(1).log(4).root(1.25).floor().toNumber()+1,
+			cost: i => Decimal.pow(2,i**1.25).ceil(),
+			bulk: i => i.log(2).root(1.25).floor().toNumber()+1,
 		
 			effect(i) {
 				return E(1.3).pow(i)
@@ -93,8 +96,8 @@ UPGS.dm = {
 			res: "dm",
 			icon: ["Curr/Oil"],
 
-			cost: i => Decimal.pow(4,i**1.25/1.5).ceil(),
-			bulk: i => i.max(1).log(4).mul(1.5).root(1.25).floor().toNumber()+1,
+			cost: i => Decimal.pow(2,i**1.25/1.5).ceil(),
+			bulk: i => i.log(2).mul(1.5).root(1.25).floor().toNumber()+1,
 		
 			effect(i) {
 				return E(1.3).pow(i)
@@ -104,35 +107,52 @@ UPGS.dm = {
 			max: 100,
 
 			title: "Dark Platinum",
-			desc: `Increase Platinum gain by <b class="green">+0.5x</b> per level.`,
-		
+			tier: 2,
+			desc: `Increase Platinum gain by <b class="green">+1x</b> per level.`,
+
 			res: "dm",
 			icon: ["Curr/Platinum"],
-						
+
 			cost: i => Decimal.pow(3,i).mul(2).ceil(),
-			bulk: i => i.div(2).max(1).log(3).floor().toNumber()+1,
+			bulk: i => i.div(2).log(3).floor().toNumber()+1,
 		
 			effect(i) {
-				return i/2+1
+				return i+1
 			},
-			effDesc: x => format(x, 1)+"x",
+			effDesc: x => format(x,0)+"x",
 		},{
-			max: 10,
+			max: 100,
 
 			title: "Dark Moonstone",
 			desc: `Increase Moonstone gain by <b class="green">+1</b> per level.`,
-		
+
 			res: "dm",
 			icon: ["Curr/Moonstone"],
-						
-			cost: i => Decimal.pow(5,i).mul(3).ceil(),
-			bulk: i => i.div(3).max(1).log(5).floor().toNumber()+1,
+
+			cost: i => Decimal.pow(9,i).mul(5).ceil(),
+			bulk: i => i.div(5).log(9).floor().toNumber()+1,
 		
 			effect(i) {
 				return i
 			},
 			effDesc: x => "+"+format(x,0),
-		}, {
+		},{
+			max: Infinity,
+
+			title: "Dark Star",
+			desc: `Increase Star gain by <b class="green">30%</b> compounding per level.`,
+		
+			res: "dm",
+			icon: ["Curr/Crystal"],
+
+			cost: i => Decimal.pow(2,i).mul(1e3),
+			bulk: i => i.div(1e3).log(2).floor().toNumber()+1,
+		
+			effect(i) {
+				return E(1.3).pow(i)
+			},
+			effDesc: x => format(x)+"x",
+		},{
 			max: Infinity,
 
 			title: "Dark Momentum",
@@ -141,13 +161,24 @@ UPGS.dm = {
 			res: "dm",
 			icon: ["Curr/Momentum"],
 
+			unl: _ => ROCKET_PART.upgraded(),
 			cost: i => Decimal.pow(4,i**1.25).mul(1e5).ceil(),
-			bulk: i => i.div(1e5).max(1).log(4).root(1.25).floor().toNumber()+1,
-		
+			bulk: i => i.div(1e5).log(4).root(1.25).floor().toNumber()+1,
+
 			effect(i) {
 				return 2**i
 			},
 			effDesc: x => format(x)+"x",
+		}, {
+			title: "Self-Charge",
+			desc: `Anti-Realm charge penalty is <b class="green">removed</b>.`,
+		
+			res: "dm",
+			icon: ["Curr/Charge", "Icons/StarProgression"],
+
+			unl: _ => ROCKET_PART.upgraded(),
+			cost: i => E(1e6),
+			bulk: i => 1,
 		}
 	]
 }

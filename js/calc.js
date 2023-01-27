@@ -13,7 +13,7 @@ function calc(dt, skip) {
 
 	//UNNATURAL REALM
 	if (player.unRes) player.unRes.nTime += dt
-	if (tmp.habit) unMAIN.habit.tick(dt)
+	if (tmp.unRes.habit) unMAIN.habit.tick(dt)
 
 	//ANTI-REALM
 	if (!inRecel()) {

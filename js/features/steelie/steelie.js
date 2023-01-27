@@ -1,7 +1,7 @@
 MAIN.steel = {
 	gain() {
 		let x = E(1)
-		if (hasUpgrade('factory',0)) x = x.mul(E(tmp.foundryEff).pow(getAstralEff('fd', 1)))
+		if (hasUpgrade('factory',0)) x = x.mul(tmp.foundryEff)
 		x = x.mul(upgEffect('foundry',0)).mul(upgEffect('foundry',1)).mul(upgEffect('foundry',2)).mul(upgEffect('foundry',3))
 
 		x = x.mul(upgEffect('plat',6))
@@ -17,18 +17,22 @@ MAIN.steel = {
 		x = x.mul(upgEffect('rocket',18))
 		x = x.mul(upgEffect('momentum',6))
 
-		x = x.mul(upgEffect('moonstone',6))
-
 		return x.floor()
 	},
 	foundryEff() {
 		let max = Decimal.mul(100,upgEffect('factory',0))
-		let x = max.mul(Math.min(player.sTime/3600,1)).max(1)
+
+		let time = player.sTime / 3600
+		time *= upgEffect('moonstone',6)
+		time = Math.min(time, 1)
+
+		let x = max.mul(Math.min(time,1)).max(1)
+		x = x.pow(getAstralEff('fd', 1))
 
 		return x
 	},
 	charger: {
-		unl: _ => hasUpgrade("factory", 2) || hasGSMilestone(11),
+		unl: _ => hasUpgrade("factory", 2) || hasGSMilestone(9),
 		gain() {
 			let x = E(1)
 			if (!inRecel()) {
@@ -61,10 +65,8 @@ EFFECT.charger = {
 	getEff(res, data) {
 		if (player.bestCharge.lt(data.req)) return E(0)
 
-		res = res.div(data.req)
-		res = res.mul(tmp.chargeOoMMul)
-		if (data.offsetOoM) res = res.div(E(10).pow(data.offsetOoM))
-		return res
+		let penalty = E(10).pow(data.offsetOoM).mul(data.req).div(tmp.chargeOoMMul)
+		return res.div(penalty.max(1))
 	},
 	effDesc(desc, data) {
 		desc = format(data.req, 0) + " - " + desc
@@ -113,31 +115,24 @@ EFFECT.charger = {
 			unl: _ => hasStarTree("progress", 4),
 
 			req: E(1e27),
-			offsetOoM: _ => 15,
+			offsetOoM: 15,
 			eff: c => c.add(1).log10().div(15).pow10(),
 			desc: x => "Gain more "+format(x,3)+"x Space Power.",
 		},{
 			unl: _ => hasUpgrade("funMachine", 2),
 
 			req: E(1e42),
-			offsetOoM: _ => 30,
+			offsetOoM: 30,
 			eff: c => c.add(1).log10().div(15).pow10(),
 			desc: x => "Gain more "+format(x,3)+"x Fun.",
 		},{
 			unl: _ => hasUpgrade("funMachine", 2),
 
 			req: E(1e45),
-			offsetOoM: _  =>inRecel() ? 3 : 35,
+			offsetOoM: 35,
 			eff: c => c.add(1).log10().div(3).pow10(),
 			desc: x => "Gain more "+format(x,3)+"x Grass.",
-		},{
-			unl: _ => hasUpgrade("funMachine", 2),
-
-			req: E(1e50),
-			offsetOoM: _ => 40,
-			eff: c => c.add(1).log10().div(20).toNumber(),
-			desc: x => "Increase Tier base by +"+format(x,3)+"x in Anti-Realm.",
-		},
+		}
 	],
 }
 
@@ -185,7 +180,7 @@ UPGS.factory = {
 	noSpend: _=>hasStarTree('qol', 4),
 
 	req: _=>player.sTimes > 0,
-	reqDesc: _=>`Steelie once to unlock.`,
+	reqDesc: `Steelie once to unlock.`,
 
 	underDesc: _=>getUpgResTitle('steel')+(tmp.steelGainP > 0 ? " <span class='smallAmt'>"+formatGain(player.steel,tmp.steelGain.mul(tmp.steelGainP))+"</span>" : ""),
 
@@ -345,7 +340,7 @@ UPGS.foundry = {
 		<b class="green">${tmp.foundryEff.format()}x</b>
 		<span style="font-size:14px;">Steel gain (based on time since last Steelie)</span>
 		<br>
-		<span class="smallAmt" style="font-size:8px;">(Max: ${format(Decimal.mul(100,upgEffect('factory',0)))}x)</span>
+		<span class="smallAmt" style="font-size:8px;">(Max: ${format(Decimal.mul(100,upgEffect('factory',0)).pow(getAstralEff('fd', 1)))}x)</span>
 	`,
 
 	ctn: [
@@ -386,6 +381,8 @@ UPGS.foundry = {
 			},
 			effDesc: x => format(x)+"x",
 		},{
+			max: 1e3,
+
 			title: "Crystal Steel",
 			desc: `Increase steel gain by <b class="green">+20%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
 		

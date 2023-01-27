@@ -29,6 +29,16 @@ let REALMS = {
 			return x
 		}
 	},
+	accelOnly: {
+		on: r => r == 0,
+		grass: _ => E(1),
+		xp() {
+			let r = E(1)
+			if (upgEffect("unGrass", 1) > 1) r = getAstralEff("xp").pow(upgEffect("unGrass", 1) - 1)
+			return r
+		},
+		tp: _ => E(1),
+	},
 	total: {
 		on: r => true,
 		grass() {
@@ -97,7 +107,7 @@ function updateRealmTemp() {
 			realmData.tp = realmData.tp.mul(subData.tp)
 		}
 
-		const tv = E(MAIN.tier.base(i)).pow(getRealmSrc(i).tier)
+		const tv = MAIN.tier.mult(getRealmSrc(i).tier, i)
 		realmData.grass = realmData.grass.mul(tv)
 		realmData.xp = realmData.xp.mul(tv)
 	}
@@ -130,6 +140,8 @@ function cutRealmGrass(type, v, tv) {
 
 function switchRealm(x) {
 	player.decel = player.decel == x ? 0 : x
-	if (keepAccelOnDecel()) player.chargeRate = E(0)
-	else RESET.steel.doReset(true)
+	if (keepAccelOnDecel()) {
+		player.chargeRate = E(0)
+		updateTemp()
+	} else RESET.steel.doReset(true)
 }

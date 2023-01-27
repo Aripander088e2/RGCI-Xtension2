@@ -13,7 +13,7 @@ function updateMilestoneTemp() {
 tmp_update.push(updateMilestoneTemp)
 
 function getMilestoneEff(id, x, def = 1) {
-	return tmp.milestone?.[i]?.[x] || def
+	return tmp.milestone?.[id]?.[x] || def
 }
 
 function hasMilestone(id, x) {

@@ -39,10 +39,10 @@ el.update.decel = _=>{
 let aMAIN = {
 	chargeGain() {
 		let x = E(1)
-		x = x.mul(upgEffect('aGrass',0))
-		x = x.mul(upgEffect('ap',1))
-		x = x.mul(upgEffect('oil',5))
-		if (inDecel()) x = x.div(1e3)
+		x = x.mul(upgEffect('aGrass', 0))
+		x = x.mul(upgEffect('ap', 1))
+		x = x.mul(upgEffect('oil', 5))
+		if (player.decel == 1 && !hasUpgrade('dm', 6)) x = x.div(1e3)
 		return x
 	},
 }
@@ -53,24 +53,24 @@ REALMS.decel = {
 		let x = E(1)
 		if (!player.sTimes) return x
 
-		x = x.mul(upgEffect('ap',0))
-		x = x.mul(upgEffect('oil',0))
+		x = x.mul(upgEffect('ap', 0))
+		x = x.mul(upgEffect('oil', 0))
 		return x
 	},
 	xp() {
 		let x = E(1)
 		if (!player.sTimes) return x
 
-		x = x.mul(upgEffect('ap',2))
-		x = x.mul(upgEffect('oil',1))
+		x = x.mul(upgEffect('ap', 2))
+		x = x.mul(upgEffect('oil', 1))
 		return x
 	},
 	tp() {
 		let x = E(1)
 		if (!player.sTimes) return x
 
-		x = x.mul(upgEffect('ap',3))
-		x = x.mul(upgEffect('oil',2))
+		x = x.mul(upgEffect('ap', 3))
+		x = x.mul(upgEffect('oil', 2))
 		return x
 	},
 }
@@ -106,7 +106,7 @@ UPGS.aGrass = {
 
 	ctn: [
 		{
-			max: Infinity,
+			max: 500,
 
 			title: "Anti-Grass Charge",
 			desc: `Increase charge rate by <b class="green">+25%</b> per level.<br>This effect is increased by <b class="green">50%</b> every <b class="yellow">25</b> levels.`,
@@ -229,7 +229,7 @@ UPGS.aGrass = {
 UPGS.aAuto = {
 	title: "Anti-Anti-Automation Upgrades",
 	req: _=>player.aRes.aTimes>0,
-	reqDesc: _=>`Anonymity once to unlock.`,
+	reqDesc: `Anonymity once to unlock.`,
 
 	unl: _=> player.decel,
 
@@ -348,7 +348,7 @@ RESET.ap = {
 	unl: _=>player.decel==1,
 
 	req: _=>player.aRes.level>=30,
-	reqDesc: _=>`Reach Level 30.`,
+	reqDesc: `Reach Level 30.`,
 
 	resetDesc: `Reset your anti-grass, level, and charge.`,
 	resetGain: _=> `<b>+${tmp.aRes.apGain.format(0)}</b> Anonymity Points`,
@@ -391,7 +391,7 @@ UPGS.ap = {
 	title: "Anonymity Upgrades",
 
 	req: _=>player.aRes.aTimes > 0,
-	reqDesc: _=>`Anonymity once to unlock.`,
+	reqDesc: `Anonymity once to unlock.`,
 
 	underDesc: _=>getUpgResTitle('ap')+(tmp.aRes.apGainP > 0 ? " <span class='smallAmt'>"+formatGain(player.aRes.ap,tmp.aRes.apGain.mul(tmp.aRes.apGainP))+"</span>" : ""),
 
@@ -520,7 +520,7 @@ RESET.oil = {
 	unl: _=> player.decel == 1 && player.aRes.aTimes > 0,
 
 	req: _=>player.aRes.level>=100,
-	reqDesc: _=>`Reach Level 100.`,
+	reqDesc: `Reach Level 100.`,
 
 	resetDesc: `Reset everything Anonymity does, and so Anonymity and Tier.`,
 	resetGain: _=> `<b>+${tmp.aRes.oilGain.format(0)}</b> Oil`,
@@ -560,7 +560,7 @@ UPGS.oil = {
 	title: "Oil Upgrades",
 
 	req: _=>player.aRes.lTimes > 0,
-	reqDesc: _=>`Liquefy once to unlock.`,
+	reqDesc: `Liquefy once to unlock.`,
 
 	underDesc: _=>getUpgResTitle('oil')+(tmp.aRes.oilGainP > 0 ? " <span class='smallAmt'>"+formatGain(player.aRes.oil,tmp.aRes.oilGain.mul(tmp.aRes.oilGainP))+"</span>" : ""),
 
@@ -578,8 +578,8 @@ UPGS.oil = {
 			res: "oil",
 			icon: ["Curr/Grass"],
 						
-			cost: i => Decimal.pow(1.5,i).mul(10).ceil(),
-			bulk: i => i.div(10).max(1).log(1.5).floor().toNumber()+1,
+			cost: i => Decimal.pow(2,i**0.8).mul(10).ceil(),
+			bulk: i => i.div(10).max(1).log(2).root(0.8).floor().toNumber()+1,
 		
 			effect(i) {
 				return E(1.1).pow(i)
@@ -595,8 +595,8 @@ UPGS.oil = {
 			res: "oil",
 			icon: ['Icons/XP'],
 
-			cost: i => Decimal.pow(1.5,i).mul(10).ceil(),
-			bulk: i => i.div(10).max(1).log(1.5).floor().toNumber()+1,
+			cost: i => Decimal.pow(2,i**0.8).mul(10).ceil(),
+			bulk: i => i.div(10).max(1).log(2).root(0.8).floor().toNumber()+1,
 
 			effect(i) {
 				return E(1.1).pow(i)
@@ -720,25 +720,25 @@ MILESTONE.gs = {
 		{
 			req: 2,
 			desc: `<b class="green">1.5x</b> Space Power per Grass-Skip.`,
-			effect: _ => E(1.5).pow(player.aRes.grassskip),
-			effDesc: x => format(x, 0) + "x"
+			eff: x => E(1.5).pow(x),
+			effDesc: x => format(x) + "x"
 		},
 		{
 			req: 3,
 			desc: `<b class="green">1.3x</b> Stars per Grass-Skip.`,
-			effect: _ => E(1.3).pow(player.aRes.grassskip),
+			eff: x => E(1.3).pow(x),
 			effDesc: x => format(x) + "x"
 		},
 		{
 			req: 4,
 			desc: `<b class="green">+0.1x</b> Rocket Fuel per Grass-Skip. (starting at 4)`,
-			effect: _ => Math.max(player.aRes.grassskip-3,0)/10,
+			eff: x => Math.max(x-3,0)/10,
 			effDesc: x => "+" + format(x, 1) + "x"
 		},
 		{
 			req: 5,
 			desc: `<b class="green">+0.01%</b> Moonstone luck on cutting Grass and <b class="green">+5%</b> Moonstone luck on cutting Platinum. Resets on cutting Moonstone.`,
-			effect: _ => galUnlocked() ? player.gal.msLuck : 1,
+			eff: _ => galUnlocked() ? player.gal.msLuck : 1,
 			effDesc: x => formatPercent(x-1)
 		},
 		{
@@ -756,33 +756,33 @@ MILESTONE.gs = {
 		{
 			unl: _ => player.aRes.fTimes,
 			req: 9,
-			desc: `<b class="green">3x</b> Fun per Grass-Skip. (starting at 9)`,
-			effect: _ => E(3).pow(Math.max(player.aRes.grassskip - 8, 0)),
+			desc: `<b class="green">Double</b> Fun per Grass-Skip. (starting at 9)`,
+			eff: x => E(2).pow(Math.max(x - 8, 0)),
 			effDesc: x => format(x, 0) + "x"
 		},
 		{
 			unl: _ => player.aRes.fTimes,
 			req: 10,
 			desc: `Keep Charger on Galactic. <b class="green">5x</b> Charge per Grass-Skip. (starting at 10)`,
-			effect: _ => E(5).pow(Math.max(player.aRes.grassskip - 9, 0)),
+			eff: x => E(5).pow(Math.max(x - 9, 0)),
 			effDesc: x => format(x, 0) + "x"
 		},
 		{
-			unl: _ => hasAGHMilestone(9),
-			req: 11,
-			desc: `<b class="green">+1</b> to Unnatural Healing per Grass-Skip. (starting at 11)`,
-			effect: _ => Math.max(player.aRes.grassskip - 10, 0),
+			unl: _ => player.aRes.fTimes,
+			req: 12,
+			desc: `<b class="green">+1x</b> SRFGT per Grass-Skip. (starting at 12)`,
+			eff: x => Math.max(x - 11, 0) + 1,
+			effDesc: x => format(x, 0) + "x"
+		},
+		{
+			unl: _ => hasAGHMilestone(8),
+			req: 14,
+			desc: `<b class="green">+1</b> to Unnatural Healing per Grass-Skip. (starting at 14)`,
+			eff: x => Math.max(x - 13, 0),
 			effDesc: x => "+" + format(x, 0)
 		},
 		{
-			unl: _ => hasAGHMilestone(9),
-			req: 12,
-			desc: `<b class="green">Double</b> SRFGT per Grass-Skip. (starting at 12)`,
-			effect: _ => E(2).pow(Math.max(player.aRes.grassskip - 11, 0)),
-			effDesc: x => format(x, 0) + "x"
-		},
-		{
-			unl: _ => hasAGHMilestone(9),
+			unl: _ => hasAGHMilestone(8),
 			req: 15,
 			desc: `<b class="green">Double</b> Moonstone chance.`
 		},
@@ -798,7 +798,7 @@ function getGSEffect(x,def=1) { return getMilestoneEff("gs", x, def) }
 RESET.gs = {
 	unl: _=>tmp.aRes.gs.shown,
 	req: _=>player.aRes.level>=200,
-	reqDesc: _=>`Reach Level 200.`,
+	reqDesc: `Reach Level 200.`,
 
 	resetDesc: `Reset everything Liquefy does, and so Steel, Foundry, Charger, and Liquefy.`,
 	resetGain: _ => grassSkipped() ? `Reach Level <b>${format(tmp.aRes.gs.req,0)}</b> to Grass-skip` : ``,

@@ -47,20 +47,20 @@ MILESTONE.agh = {
 			desc: `Unlock the Dark Matter Plant reset. Moonstone chance is doubled.`,
 		}, {
 			unl: _ => player.gal.sacTimes,
-			req: 33,
+			req: 30,
 			desc: `Unlock the Recelerator upgrade in Fun Machine.`,
 		}, {
 			unl: _ => hasUpgrade("funMachine", 3),
-			req: 36,
+			req: 33,
 			desc: `Astral adds Unnatural Healing.`,
 		}, {
 			unl: _ => hasUpgrade("funMachine", 3),
 
-			req: 39,
+			req: 36,
 			desc: `Astral multiplies effects for each 25 levels of AP upgrade.`,
 		}, {
 			unl: _ => hasUpgrade("funMachine", 3),
-			req: 45,
+			req: 39,
 			desc: `Unlock the Planetoid. (Soon!)`,
 		}
 	]

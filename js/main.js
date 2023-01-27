@@ -1,9 +1,11 @@
 function loop() {
-	diff = Date.now() - date
+	var date = Date.now()
+	diff = Date.now() - player.lastTick
 	updateTemp()
 	updateHTML()
 	calc(diff/1000);
-	date = Date.now();
+
+	player.lastTick = date
 }
 
 var player = {}, date = Date.now(), diff = 0;
@@ -13,7 +15,7 @@ const MAIN = {
 			return tmp.realm.gain[realm].xp
 		},
 		req(lvl, realm = player.decel) {
-			if (realm >= 1) lvl /= getChargeEff(3)
+			if (realm == 1) lvl /= getChargeEff(3)
 			let x = Decimal.pow(1.4, lvl).mul(20)
 
 			return x.ceil()
@@ -23,7 +25,7 @@ const MAIN = {
 			if (x.lt(1)) return 0
 
 			x = x.log(1.4).toNumber()
-			if (realm >= 1) x *= getChargeEff(3)
+			if (realm == 1) x *= getChargeEff(3)
 			return Math.floor(x)+1
 		},
 		cur(i) {
@@ -55,16 +57,13 @@ const MAIN = {
 			return i > 0 ? this.req(i-1) : E(0) 
 		},
 		base(realm = player.decel) {
-			let x = 2.25
-			if (realm == 0) x = upgEffect('crystal',3)
-			if (realm >= 1) x += getChargeEff(10, 0)
-
+			let x = realm ? 2.25 : upgEffect('crystal',3)
 			if (player.grasshop >= 5) x += 0.1
 			x += getChargeEff(4, 0)
 			return x
 		},
-		mult(i) {
-			return Decimal.pow(MAIN.tier.base(), i)
+		mult(i, realm = player.decel) {
+			return Decimal.pow(MAIN.tier.base(realm), i)
 		},
 	},
 	levelUp(realm) {
@@ -156,6 +155,7 @@ tmp_update.push(_=>{
 	tmp.platGain += chalEff(5,0)
 	if (player.grasshop >= 3) tmp.platGain += getGHEffect(2, 0)
 	tmp.platGain += upgEffect('moonstone', 0)
+	tmp.platGain *= upgEffect('moonstone', 8)
 	tmp.platGain *= upgEffect('dm', 2)
 })
 
