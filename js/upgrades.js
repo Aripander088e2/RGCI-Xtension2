@@ -23,7 +23,7 @@ const UPG_RES = {
     np: ["NP",_=>[player.unRes,"np"],'NormalityBase'],
 }
 
-const isResNumber = ['perk','plat','chrona','rf','momentum','moonstone']
+const isResNumber = ['perk','chrona']
 
 const UPGS = {
     grass: {
@@ -693,7 +693,7 @@ const UPGS = {
             },{
                 max: 100,
 
-                unl: _=>player.aRes.aTimes>0,
+                unl: _=>player.aRes?.aTimes,
 
                 costOnce: true,
 
@@ -715,7 +715,7 @@ const UPGS = {
             },{
                 max: 10,
 
-                unl: _=>player.aRes.lTimes>0,
+                unl: _=>player.aRes?.lTimes,
 
                 costOnce: true,
 
@@ -792,6 +792,7 @@ function buyUpgrade(id, x, type = "once", amt) {
 	//Spend Resource
 	if (!tu.noSpend) {
 		let res = upg.res
+		let num = isResNumber.includes(res)
 		let cost = upg.costOnce ? tu.cost[x] * (bulk - lvl) : upg.cost(bulk - 1)
 		let r = UPG_RES[res][1]()
 
@@ -800,7 +801,7 @@ function buyUpgrade(id, x, type = "once", amt) {
 			p[q] += cost
 		} else {
 			let [p,q] = r
-			p[q] = isResNumber.includes(res) ? Math.max(p[q]-cost, 0) : p[q].sub(cost).max(0)
+			p[q] = num ? Math.max(p[q]-cost, 0) : p[q].sub(cost).max(0)
 		}
 		updateUpgResource(res)
 	}

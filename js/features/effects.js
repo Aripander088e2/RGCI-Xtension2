@@ -36,6 +36,8 @@ function updateEffectHTML(x) {
 	let data_tmp = tmp.effs[x]
 	let res = data.res()
 
+	if (!data_tmp) return
+
 	let html = ''
 	for (const [id, eff] of Object.entries(data_tmp)) {
 		let data_eff = data_effs[id]

@@ -158,7 +158,7 @@ function grassHopped() {
 tmp_update.push(_=>{
 	tmp.gh.req = MAIN.gh.req()
 	tmp.gh.eff = player.grasshop
-	if (galUnlocked()) tmp.gh.eff += (player.gal.ghPotential - player.grasshop) * starTreeEff("progress", 12, 0)
+	if (galUnlocked()) tmp.gh.eff += (player.gal.ghPotential - player.grasshop) * starTreeEff("progress", 13, 0)
 })
 
 el.update.gh = _=>{

@@ -104,7 +104,7 @@ UPGS.dm = {
 			},
 			effDesc: x => format(x)+"x",
 		},{
-			max: 100,
+			max: 25,
 
 			title: "Dark Platinum",
 			tier: 2,
@@ -121,10 +121,10 @@ UPGS.dm = {
 			},
 			effDesc: x => format(x,0)+"x",
 		},{
-			max: 100,
+			max: 1e4,
 
 			title: "Dark Moonstone",
-			desc: `Increase Moonstone gain by <b class="green">+1</b> per level.`,
+			desc: `Increase Moonstone gain by <b class="green">+1</b> per level. This effect is increased by <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
 
 			res: "dm",
 			icon: ["Curr/Moonstone"],
@@ -133,7 +133,7 @@ UPGS.dm = {
 			bulk: i => i.div(5).log(9).floor().toNumber()+1,
 		
 			effect(i) {
-				return i
+				return 2 ** Math.floor(i/25) * i
 			},
 			effDesc: x => "+"+format(x,0),
 		},{
@@ -143,10 +143,10 @@ UPGS.dm = {
 			desc: `Increase Star gain by <b class="green">30%</b> compounding per level.`,
 		
 			res: "dm",
-			icon: ["Curr/Crystal"],
+			icon: ["Curr/Star"],
 
-			cost: i => Decimal.pow(2,i).mul(1e3),
-			bulk: i => i.div(1e3).log(2).floor().toNumber()+1,
+			cost: i => Decimal.pow(2,i).mul(50),
+			bulk: i => i.div(50).log(2).floor().toNumber()+1,
 		
 			effect(i) {
 				return E(1.3).pow(i)
@@ -166,7 +166,7 @@ UPGS.dm = {
 			bulk: i => i.div(1e5).log(4).root(1.25).floor().toNumber()+1,
 
 			effect(i) {
-				return 2**i
+				return E(2).pow(i)
 			},
 			effDesc: x => format(x)+"x",
 		}, {

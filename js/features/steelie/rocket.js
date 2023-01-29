@@ -6,16 +6,16 @@ const ROCKET = {
 	},
 	bulk(x,mul) {
 		let b = x.div(mul).div(tmp.rf_base_mult).root(RF_COST_POW).sub(1).mul(tmp.rf_gain_mult).floor()
-		if (b.lt(0)) return 0
-		return b.toNumber()+1
+		if (b.lt(0)) return E(0)
+		return b.add(1)
 	},
 	create() {
 		let rf = player.rocket.total_fp
 		let b = tmp.rf_bulk
 
-		if (b>rf) {
+		if (b.gte(rf)) {
 			player.rocket.total_fp = b
-			player.rocket.amount += b-rf
+			player.rocket.amount = E(player.rocket.amount).add(b.sub(rf))
 
 			player.chargeRate = player.chargeRate.sub(ROCKET.cost(b,1e20).sub(ROCKET.cost(rf,1e20))).max(0)
 			player.aRes.oil = player.aRes.oil.sub(ROCKET.cost(b,100).sub(ROCKET.cost(rf,100))).max(0)
@@ -476,7 +476,7 @@ UPGS.rocket = {
 let ROCKET_PART = {
 	can() {
 		let req = tmp.rp_req
-		return player.steel.gte(req.steel) && player.rocket.total_fp >= req.rf && (player.rocket.part < 10 || this.upgraded())
+		return player.steel.gte(req.steel) && player.rocket.total_fp.gte(req.rf) && (player.rocket.part < 10 || this.upgraded())
 	},
 	req(p = player.rocket.part) {
 		if (this.upgraded()) {
@@ -495,9 +495,9 @@ let ROCKET_PART = {
 
 	m_gain() {
 		if (!this.upgraded()) return 1
-		let r = 10 ** (player.rocket.part - 1)
-		r *= upgEffect('dm', 5)
-		r *= upgEffect('np', 3)
+		let r = E(10).pow(player.rocket.part - 1)
+		r = r.mul(upgEffect('dm', 5))
+		r = r.mul(upgEffect('np', 3))
 		return r
 	}
 }
@@ -525,7 +525,7 @@ RESET.rocket_part = {
 		if (ROCKET_PART.can() || force) {
 			if (!force) {
 				player.rocket.part++
-				player.rocket.momentum += ROCKET_PART.m_gain()
+				player.rocket.momentum = player.rocket.momentum.add(ROCKET_PART.m_gain())
 			}
 
 			updateTemp()
@@ -547,7 +547,7 @@ RESET.rocket_part = {
 			resetAntiRealm()
 		}
 
-		player.rocket.total_fp = 0
+		player.rocket.total_fp = E(0)
 	},
 }
 
@@ -558,21 +558,19 @@ UPGS.momentum = {
 	req: _=>player.rocket.part>0||hasStarTree("progress",10),
 	reqDesc: `Get a Rocket Part to unlock.`,
 
-	underDesc: _=>getUpgResTitle('momentum')+(tmp.m_prod > 0 ? " <span class='smallAmt'>"+formatGain(E(player.rocket.momentum),ROCKET_PART.m_gain()*tmp.m_prod)+"</span>" : ""),
+	underDesc: _=>getUpgResTitle('momentum')+(tmp.m_prod > 0 ? " <span class='smallAmt'>"+formatGain(player.rocket.momentum,ROCKET_PART.m_gain().mul(tmp.m_prod))+"</span>" : ""),
 
     autoUnl: _=>hasStarTree('auto',2),
 
 	ctn: [
 		{
-			costOnce: true,
-
 			title: "Grass is Life",
 			desc: `Multiply grass gain by 3x.`,
 
 			res: "momentum",
 			icon: ['Curr/Grass'],
 			
-			cost: i => 1,
+			cost: i => E(1),
 			bulk: i => 1,
 
 			effect(i) {
@@ -582,15 +580,13 @@ UPGS.momentum = {
 			},
 			effDesc: x => format(x)+"x",
 		},{
-			costOnce: true,
-
 			title: "Gotta Grow Fast",
 			desc: `Grass grows 3x faster.`,
 
 			res: "momentum",
 			icon: ['Icons/Speed'],
 			
-			cost: i => 1,
+			cost: i => E(1),
 			bulk: i => 1,
 
 			effect(i) {
@@ -600,15 +596,13 @@ UPGS.momentum = {
 			},
 			effDesc: x => format(x)+"x",
 		},{
-			costOnce: true,
-
 			title: "Gas Gas Gas",
 			desc: `Multiply XP gain by 3x.`,
 
 			res: "momentum",
 			icon: ['Icons/XP'],
 			
-			cost: i => 1,
+			cost: i => E(1),
 			bulk: i => 1,
 
 			effect(i) {
@@ -618,15 +612,13 @@ UPGS.momentum = {
 			},
 			effDesc: x => format(x)+"x",
 		},{
-			costOnce: true,
-
 			title: "In Tiers",
 			desc: `Multiply TP gain by 3x.`,
 
 			res: "momentum",
 			icon: ['Icons/TP'],
 			
-			cost: i => 1,
+			cost: i => E(1),
 			bulk: i => 1,
 
 			effect(i) {
@@ -636,15 +628,13 @@ UPGS.momentum = {
 			},
 			effDesc: x => format(x)+"x",
 		},{
-			costOnce: true,
-
 			title: "Popular",
 			desc: `Multiply PP gain by 3x.`,
 
 			res: "momentum",
 			icon: ['Curr/Prestige'],
 			
-			cost: i => 1,
+			cost: i => E(1),
 			bulk: i => 1,
 
 			effect(i) {
@@ -654,15 +644,13 @@ UPGS.momentum = {
 			},
 			effDesc: x => format(x)+"x",
 		},{
-			costOnce: true,
-
 			title: "Shine Bright",
 			desc: `Multiply Crystal gain by 3x.`,
 
 			res: "momentum",
 			icon: ['Curr/Crystal'],
 			
-			cost: i => 1,
+			cost: i => E(1),
 			bulk: i => 1,
 
 			effect(i) {
@@ -672,15 +660,13 @@ UPGS.momentum = {
 			},
 			effDesc: x => format(x)+"x",
 		},{
-			costOnce: true,
-
 			title: "Steel Going?",
 			desc: `Multiply steel gain by 3x.`,
 
 			res: "momentum",
 			icon: ['Curr/Steel'],
 			
-			cost: i => 1,
+			cost: i => E(1),
 			bulk: i => 1,
 
 			effect(i) {
@@ -690,15 +676,13 @@ UPGS.momentum = {
 			},
 			effDesc: x => format(x)+"x",
 		},{
-			costOnce: true,
-
 			title: "Powerful",
 			desc: `Multiply charge rate by 3x.`,
 
 			res: "momentum",
 			icon: ['Icons/Charge'],
 			
-			cost: i => 1,
+			cost: i => E(1),
 			bulk: i => 1,
 
 			effect(i) {
@@ -708,15 +692,13 @@ UPGS.momentum = {
 			},
 			effDesc: x => format(x)+"x",
 		},{
-			costOnce: true,
-
 			title: "Quickly Forgettable",
 			desc: `Multiply AP gain by 3x.`,
 
 			res: "momentum",
 			icon: ['Curr/Anonymity'],
 			
-			cost: i => 1,
+			cost: i => E(1),
 			bulk: i => 1,
 
 			effect(i) {
@@ -726,15 +708,13 @@ UPGS.momentum = {
 			},
 			effDesc: x => format(x)+"x",
 		},{
-			costOnce: true,
-
 			title: "Fracking",
 			desc: `Multiply oil gain by 3x.`,
 
 			res: "momentum",
 			icon: ['Curr/Oil'],
 			
-			cost: i => 1,
+			cost: i => E(1),
 			bulk: i => 1,
 
 			effect(i) {
@@ -751,8 +731,9 @@ UPGS.momentum = {
 			icon: ['Curr/UnnaturalGrass'],
 			
 			unl: _ => tmp.rocket_upgraded,
-			cost: i => E(4).pow(i).mul(20),
-			bulk: i => E(i).div(20).log(4).floor().toNumber()+1,
+			cost: i => E(4).pow(i).mul(1e3),
+			bulk: i => E(i).div(1e3).log(4).floor().toNumber()+1,
+			max: Infinity,
 
 			effect(i) {
 				return i+1
@@ -766,8 +747,9 @@ UPGS.momentum = {
 			icon: ['Curr/DarkMatter'],
 			
 			unl: _ => tmp.rocket_upgraded,
-			cost: i => E(5).pow(i).mul(30),
-			bulk: i => E(i).div(30).log(5).floor().toNumber()+1,
+			cost: i => E(5).pow(i).mul(1e4),
+			bulk: i => E(i).div(1e4).log(5).floor().toNumber()+1,
+			max: Infinity,
 
 			effect(i) {
 				return E(2).pow(i)
@@ -775,14 +757,31 @@ UPGS.momentum = {
 			effDesc: x => format(x)+"x",
 		},{
 			title: "A New Star",
-			desc: `<b class="green">Double</b> Space Power.`,
+			desc: `<b class="green">+1x</b> to Space Power.`,
 
 			res: "momentum",
 			icon: ['Icons/SP'],
 			
 			unl: _ => hasStarTree("progress", 11),
-			cost: i => E(10).pow(i).mul(1e4),
-			bulk: i => E(i).div(1e4).log(10).floor().toNumber()+1,
+			cost: i => E(6).pow(i).mul(1e4),
+			bulk: i => E(i).div(1e4).log(6).floor().toNumber()+1,
+			max: Infinity,
+
+			effect(i) {
+				return i+1
+			},
+			effDesc: x => format(x)+"x",
+		},{
+			title: "No Problem",
+			desc: `<b class="green">Double</b> Normality Points.`,
+
+			res: "momentum",
+			icon: ['Curr/Normality'],
+			
+			unl: _ => hasStarTree("progress", 11),
+			cost: i => E(15).pow(i ** 0.8).mul(1e4),
+			bulk: i => E(i).div(1e4).log(15).root(0.8).floor().toNumber()+1,
+			max: Infinity,
 
 			effect(i) {
 				return E(2).pow(i)
@@ -805,19 +804,18 @@ el.update.rocket = _=>{
 			rc.setClasses({[res.gte(cost)?"green":"red"]: true})
 		}
 
-		tmp.el.rf_craft_bulk.setTxt("(F) Craft to "+format(Math.max(tmp.rf_bulk-player.rocket.total_fp,0),0)+" Rocket Fuel")
-		tmp.el.rf_craft_bulk.setClasses({locked: tmp.rf_bulk<=player.rocket.total_fp })
+		tmp.el.rf_craft_bulk.setTxt("(F) Craft to "+format(tmp.rf_bulk.sub(player.rocket.total_fp).max(0),0)+" Rocket Fuel")
+		tmp.el.rf_craft_bulk.setClasses({locked: tmp.rf_bulk.lt(player.rocket.total_fp) })
 
 		tmp.el.reset_btn_rocket_part.setClasses({locked: !ROCKET_PART.can()})
 	}
 }
 
 function updateRocketTemp() {
-	//Rocket Fuel
-	let rp_scale = 0.5
-	rp_scale *= Math.max(1 - starTreeEff("progress", 12, 1), 0)
-	tmp.rf_base_mult = E(player.rocket.part).mul(rp_scale).add(1)
+	if (!player.aRes) return
 
+	//Rocket Fuel
+	tmp.rf_base_mult = E(player.rocket.part).mul(0.5).add(1)
 	tmp.rf_gain_mult = 1
 	tmp.rf_gain_mult += getGSEffect(3, 0)
 	tmp.rf_gain_mult += getAstralEff('rf', 0)
@@ -825,7 +823,7 @@ function updateRocketTemp() {
 
 	let rf = player.rocket.total_fp
 	tmp.rf_cost = [ROCKET.cost(rf, 1e20), ROCKET.cost(rf, 100)]
-	tmp.rf_bulk = Math.min(ROCKET.bulk(player.chargeRate, 1e20), ROCKET.bulk(player.aRes.oil, 100))
+	tmp.rf_bulk = ROCKET.bulk(player.chargeRate, 1e20).min(ROCKET.bulk(player.aRes.oil, 100))
 
 	//Rocket Part
 	if (tmp.rocket_upgraded !== undefined && ROCKET_PART.upgraded() && !tmp.rocket_upgraded) player.rocket.part = Math.min(player.rocket.part, 1)

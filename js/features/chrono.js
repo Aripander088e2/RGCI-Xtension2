@@ -58,7 +58,7 @@ MAIN.chrono = {
 			else return
 		}
 		player.ch.offline = 0
-		player.ch.amt -= x
+		player.ch.amt = Math.max(player.ch.amt - x, 0)
 	},
 
 	tick(dt) {
@@ -155,7 +155,7 @@ UPGS.chrono = {
 			bulk: i => Math.floor(i**0.5),
 
 			effect(i) {
-				return (i+2)**2
+				return i+2
 			},
 			effDesc: x => format(x)+"x",
 		},{
@@ -167,8 +167,8 @@ UPGS.chrono = {
 			res: "chrona",
 			icon: ["Curr/Chrona"],
 
-			cost: i => (i+1)**1.5,
-			bulk: i => Math.floor(i**(2/3)),
+			cost: i => (i+2)**2,
+			bulk: i => Math.floor(Math.sqrt(i)-1),
 
 			effect(i) {
 				return i/5+1
@@ -178,7 +178,7 @@ UPGS.chrono = {
 			max: Infinity,
 
 			title: "Chrono-Warp",
-			desc: `Increase time flux capacity by <b class="green">+100</b>.`,
+			desc: `Increase time flux capacity by <b class="green">+1,000</b>.`,
 
 			res: "chrona",
 			icon: ["Curr/Chrona"],
@@ -187,7 +187,7 @@ UPGS.chrono = {
 			bulk: i => Math.floor(i**(2/3)),
 		
 			effect(i) {
-				return i*100+1e3
+				return (i+1)*1e3
 			},
 			effDesc: x => format(x, 0) + " capacity",
 		}

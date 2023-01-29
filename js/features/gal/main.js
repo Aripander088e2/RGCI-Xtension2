@@ -59,9 +59,13 @@ RESET.gal = {
 		player.steel = E(0)
         player.sTime = 0
 		if (!hasGSMilestone(9)) player.bestCharge = E(0)
-		if (!inRecel()) player.decel = 0
-		player.rocket = { total_fp: 0, amount: hasStarTree("qol", 9) ? player.rocket.amount : 0, part: 0, momentum: ROCKET_PART.upgraded() ? player.rocket.momentum : 0 }
+		player.decel = 0
 		resetAntiRealm()
+
+		if (!hasStarTree("qol", 9)) player.rocket.amount = E(0)
+		if (!tmp.rocket_upgraded) player.rocket.momentum = E(0)
+		if (!tmp.rocket_upgraded) player.rocket.part = 0
+		player.rocket.total_fp = E(0)
 
 		if (!hasStarTree("qol", 0)) resetUpgrades("auto")
 		if (!hasStarTree("qol", 1)) resetUpgrades("aAuto")
@@ -84,16 +88,10 @@ tmp_update.push(_=>{
 	let data = tmp.gal || {}
 	if (!tmp.gal) tmp.gal = data
 
-	updateAGHTemp()
-
-	data.astral = {}
-	data.astral.gain = ASTRAL.spGain()
-	data.astral.prevReq = ASTRAL.req(player.gal.astral - 1)
-	data.astral.req = ASTRAL.req(player.gal.astral)
-	data.astral.curReq = E(data.astral.req).sub(data.astral.prevReq)
-	data.astral.progress = player.gal.sp.sub(tmp.gal.astral.prevReq).div(data.astral.curReq).max(0).min(1).toNumber()
-
 	data.star_gain = MAIN.gal.gain()
+
+	updateAstralTemp()
+	updateAGHTemp()
 
 	data.ms = {}
 	data.ms.chance = 1/200
@@ -115,7 +113,7 @@ function galTick(dt) {
 
 	player.gal.ghPotential = Math.max(player.gal.ghPotential, MAIN.gh.bulk())
 	player.gal.gsPotential = Math.max(player.gal.gsPotential, aMAIN.gs.bulk())
-	if (player.rocket.part == 10) player.gal.neg = Math.max(player.gal.neg, tmp.gal.agh.neg)
+	if (RESET.gal.req()) player.gal.neg = Math.max(player.gal.neg, tmp.gal.agh.neg)
 
 	if (player.ghAuto && player.grasshop < player.gal.ghPotential) player.grasshop = player.gal.ghPotential
 	if (player.gsAuto && player.aRes.grassskip < player.gal.gsPotential) player.aRes.grassskip = player.gal.gsPotential
@@ -132,7 +130,7 @@ function setupGal() {
 
 		astral: 0,
 		sp: E(0),
-		moonstone: 0,
+		moonstone: E(0),
 		msLuck: 1,
 
 		ghPotential: 0,
@@ -157,27 +155,6 @@ function setupGal() {
 }
 
 el.update.space = _=>{
-	//Astral
-	let astral_unl = galUnlocked()
-	tmp.el.astral.setDisplay(astral_unl && inSpace())
-	if (astral_unl) {
-		tmp.el.astral_top_bar.changeStyle("width",tmp.gal.astral.progress*100+"%")
-		tmp.el.astral_top_info.setHTML(`Astral <b class="magenta">${format(player.gal.astral,0)}</b>`)
-	}
-	if (mapID == 'g') {
-		tmp.el.astral_div.setDisplay(astral_unl)
-		if (astral_unl) {
-			tmp.el.astral_amt.setTxt(format(player.gal.astral,0))
-			tmp.el.astral_progress.setTxt(player.gal.sp.sub(tmp.gal.astral.prevReq).max(0).format(0)+" / "+tmp.gal.astral.curReq.format(0)+" SP")
-			tmp.el.astral_bar.changeStyle("width",tmp.gal.astral.progress*100+"%")
-			tmp.el.astral_cut.setTxt("+"+tmp.gal.astral.gain.format(1)+" SP/cut")
-		}
-	}
-	if (mapID == 'at') {
-		updateEffectHTML('astral')
-	}
-
-	//Others
 	if (mapID == 'sc') {
 		updateStarChart()
 	}
@@ -196,98 +173,7 @@ el.update.space = _=>{
 	}
 }
 
-//ASTRAL
 //MOONSTONE
-const ASTRAL = {
-	spGain() {
-		let r = E(1)
-
-		r = r.mul(getChargeEff(7))
-		r = r.mul(upgEffect('momentum', 12))
-		if (hasStarTree("progress", 8)) r = r.mul(starTreeEff("progress", 8))
-		if (hasStarTree("progress", 9)) r = r.mul(starTreeEff("progress", 9))
-		r = r.mul(upgEffect('moonstone', 2))
-        r = r.mul(getGSEffect(1))
-		r = r.mul(upgEffect('sfrgt', 2))
-		r = r.mul(upgEffect("unGrass", 3))
-
-		return r
-	},
-
-	req(lvl) {
-		if (!galUnlocked()) return EINF
-		if (lvl < 0) return 0
-		return E(2).pow(lvl ?? player.gal.astral).mul(1e3)
-	},
-	bulk() {
-		if (!galUnlocked()) return 0
-		if (player.gal.sp.lt(1e3)) return 0
-		return player.gal.sp.div(1e3).log(2).floor().toNumber() + 1
-	},
-}
-
-EFFECT.astral = {
-	unl: _ => galUnlocked(),
-	title: r => `Astral <b class="magenta">${format(r, 0)}</b>`,
-	res: _ => player.gal.astral,
-	effs: {
-		tp: {
-			unl: _ => true,
-			eff: a => a+1,
-			desc: x => `<b class="magenta">${format(x)}x</b> to TP`
-		},
-		fd: {
-			unl: _ => true,
-			eff: a => a/50+1,
-			desc: x => `<b class="magenta">^${format(x)}</b> to Foundry effect`
-		},
-		st: {
-			unl: _ => hasAGHMilestone(1),
-			eff: a => E(2).pow(a/4),
-			desc: x => `<b class="magenta">${format(x)}x</b> to Stars`
-		},
-		rf: {
-			unl: _ => hasAGHMilestone(2),
-			eff: a => a/20,
-			desc: x => `<b class="magenta">+${format(x)}x</b> to Rocket Fuel`
-		},
-		ch: {
-			unl: _ => hasAGHMilestone(3),
-			eff: a => E(2).pow(a/3-3).max(1),
-			desc: x => `<b class="magenta">${format(x)}x</b> to Charge`
-		},
-		xp: {
-			unl: _ => hasAGHMilestone(4),
-			eff: a => E(1.25).pow(a/2-5).max(1),
-			desc: x => `<b class="magenta">${format(x)}x</b> to XP`
-		},
-		fu: {
-			unl: _ => hasAGHMilestone(5),
-			eff: a => E(2).pow(a/2-10).max(1),
-			desc: x => `<b class="magenta">${format(x)}x</b> to Fun`
-		},
-		sf: {
-			unl: _ => hasAGHMilestone(6),
-			eff: a => E(2).pow(a/2-10).max(1),
-			desc: x => `<b class="magenta">${format(x)}x</b> to SFRGT`
-		},
-		uh: {
-			unl: _ => hasAGHMilestone(9),
-			eff: a => Math.floor(Math.max(a/5-5,0)),
-			desc: x => `<b class="magenta">+${format(x)}</b> to Unnatural Healing`
-		},
-		ap: {
-			unl: _ => hasAGHMilestone(10),
-			eff: a => 1+Math.min(Math.max(a-50,0)/200,.25),
-			desc: x => `<b class="magenta">+${format(x)}</b> to AP per-25 multipliers`
-		},
-	},
-}
-
-function getAstralEff(id, def) {
-	return getEffect("astral", id, def)
-}
-
 UPGS.moonstone = {
 	title: "Moonstone Upgrades",
 
@@ -367,7 +253,7 @@ UPGS.moonstone = {
 			},
 			effDesc: x => format(x,0)+"x",
 		}, {
-			unl: _ => player.aRes.fTimes,
+			unl: _ => player.aRes?.fTimes,
 			max: 15,
 
 			costOnce: true,
@@ -386,7 +272,7 @@ UPGS.moonstone = {
 			},
 			effDesc: x => format(x,0)+"x",
 		}, {
-			unl: _ => player.aRes.fTimes,
+			unl: _ => player.aRes?.fTimes,
 			max: 5,
 
 			costOnce: true,
@@ -444,7 +330,7 @@ UPGS.moonstone = {
 			effDesc: x => format(x,0)+"x",
 		}, {
 			unl: _ => hasAGHMilestone(7),
-			max: 10,
+			max: 500,
 
 			title: "Moon Platinum II",
 			tier: 3,
@@ -481,7 +367,7 @@ UPGS.star = {
 			res: "plat",
 			icon: ["Curr/Star"],
 
-			cost: i => 1.5**i*300,
+			cost: i => E(1.5).pow(i).mul(300),
 			bulk: i => E(i).div(300).log(1.5).floor().toNumber() + 1,
 
 			effect(i) {
@@ -529,7 +415,7 @@ UPGS.star = {
 			res: "moonstone",
 			icon: ["Curr/Star"],
 
-			cost: i => 1.5**i,
+			cost: i => E(1.5).pow(i),
 			bulk: i => E(i).log(1.5).floor().toNumber() + 1,
 
 			effect(i) {

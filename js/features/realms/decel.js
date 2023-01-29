@@ -10,6 +10,32 @@ function keepAccelOnDecel() {
 	return hasStarTree('qol', 12)
 }
 
+function setupDecel() {
+	return {
+		grass: E(0),
+
+		level: 0,
+		xp: E(0),
+
+		tier: 0,
+		tp: E(0),
+
+		ap: E(0),
+		aTimes: 0,
+		aTime: 0,
+
+		oil: E(0),
+		lTimes: 0,
+		lTime: 0,
+
+		grassskip: 0,
+		fun: E(0),
+		fTimes: 0,
+		fTime: 0,
+		sfrgt: E(0)
+	}
+}
+
 RESET.decel = {
 	unl: _=>hasUpgrade('factory',4),
 
@@ -188,7 +214,7 @@ UPGS.aGrass = {
 			},
 			effDesc: x => x.format()+"x",
 		},{
-			unl: _ => player.aRes.aTimes > 0,
+			unl: _ => player.aRes?.aTimes,
 
 			max: 400,
 
@@ -228,14 +254,13 @@ UPGS.aGrass = {
 
 UPGS.aAuto = {
 	title: "Anti-Anti-Automation Upgrades",
-	req: _=>player.aRes.aTimes>0,
+	req: _=>player.aRes?.aTimes,
 	reqDesc: `Anonymity once to unlock.`,
 
 	unl: _=> player.decel,
 
 	ctn: [
 		{
-			unl: _=>player.aRes.aTimes>0,
 			max: 4,
 
 			title: "Anti-Autocut",
@@ -252,7 +277,7 @@ UPGS.aAuto = {
 			},
 			effDesc: x => format(x)+"x",
 		},{
-			unl: _=>player.aRes.lTimes>0,
+			unl: _=>player.aRes?.lTimes,
 
 			title: "Anti-Grass Upgrades Autobuy",
 			desc: `You can now automatically buy Anti-Grass Upgrades.`,
@@ -329,6 +354,8 @@ UPGS.aAuto = {
 /* ANONYMITY */
 aMAIN.ap = {
 	gain() {
+		if (!player.aRes) return E(1)
+
 		let x = Decimal.pow(1.1,player.aRes.level).mul(3)
 
 		x = x.mul(upgEffect('aGrass',5))
@@ -390,7 +417,7 @@ UPGS.ap = {
 
 	title: "Anonymity Upgrades",
 
-	req: _=>player.aRes.aTimes > 0,
+	req: _=>player.aRes?.aTimes,
 	reqDesc: `Anonymity once to unlock.`,
 
 	underDesc: _=>getUpgResTitle('ap')+(tmp.aRes.apGainP > 0 ? " <span class='smallAmt'>"+formatGain(player.aRes.ap,tmp.aRes.apGain.mul(tmp.aRes.apGainP))+"</span>" : ""),
@@ -502,6 +529,8 @@ tmp_update.push(_=>{
 /* LIQUEFY */
 aMAIN.oil = {
 	gain() {
+		if (!player.aRes) return E(1)
+
 		let x = Decimal.pow(2, player.aRes.tier)
 		x = x.mul(upgEffect('plat',9))
 
@@ -517,7 +546,7 @@ aMAIN.oil = {
 }
 
 RESET.oil = {
-	unl: _=> player.decel == 1 && player.aRes.aTimes > 0,
+	unl: _=> player.decel == 1 && player.aRes?.aTimes,
 
 	req: _=>player.aRes.level>=100,
 	reqDesc: `Reach Level 100.`,
@@ -555,11 +584,11 @@ RESET.oil = {
 }
 
 UPGS.oil = {
-	unl: _=> player.decel == 1 && player.aRes.aTimes > 0,
+	unl: _=> player.decel == 1 && player.aRes?.aTimes,
 
 	title: "Oil Upgrades",
 
-	req: _=>player.aRes.lTimes > 0,
+	req: _=>player.aRes?.lTimes,
 	reqDesc: `Liquefy once to unlock.`,
 
 	underDesc: _=>getUpgResTitle('oil')+(tmp.aRes.oilGainP > 0 ? " <span class='smallAmt'>"+formatGain(player.aRes.oil,tmp.aRes.oilGain.mul(tmp.aRes.oilGainP))+"</span>" : ""),
@@ -699,8 +728,8 @@ function resetAntiRealm() {
 
 /* GRASS-SKIPS */
 aMAIN.gs = {
-	req: _ => 200+player.aRes.grassskip*10,
-	bulk: _ => Math.floor((player.aRes.level-200)/10) + 1,
+	req: _ => 200+player.aRes?.grassskip*10,
+	bulk: _ => Math.floor((player.aRes?.level-200)/10) + 1,
 }
 
 MILESTONE.gs = {
@@ -708,7 +737,7 @@ MILESTONE.gs = {
 	req: _ => grassSkipped(),
 	reqDesc: "Grass-skip to unlock.",
 
-	res: _ => player.aRes.grassskip,
+	res: _ => player.aRes?.grassskip,
 	title: x => `You have grass-skipped <b>${format(x, 0)}</b> times`,
 	title_ms: x => x + " Grass-skips",
 
@@ -790,7 +819,7 @@ MILESTONE.gs = {
 }
 
 function grassSkipped() {
-	return player.aRes.grassskip || player?.gal?.sacTimes
+	return player.aRes?.grassskip || player.gal?.sacTimes
 }
 function hasGSMilestone(x) { return hasMilestone("gs", x) }
 function getGSEffect(x,def=1) { return getMilestoneEff("gs", x, def) }
@@ -861,8 +890,8 @@ tmp_update.push(_=>{
 })
 
 el.update.gs = _=>{
-	if (mapID == 'gh') {
-		let unl = tmp.aRes.gs.shown
+	let unl = tmp.aRes.gs.shown
+	if (mapID == 'gh' && unl) {
 		tmp.el.reset_btn_gs.setClasses({locked: player.aRes.level < tmp.aRes.gs.req})
 
 		tmp.el.multGSBtn.setDisplay(hasStarTree("qol", 7))
@@ -870,9 +899,8 @@ el.update.gs = _=>{
 
 		tmp.el.autoGSBtn.setDisplay(hasStarTree("auto", 8))
 		tmp.el.autoGSOption.setTxt(player.gsAuto?"ON":"OFF")
-
-		updateMilestoneHTML("gs")
 	}
+	updateMilestoneHTML("gs")
 }
 
 function changeGSMult() { player.gsMult = !player.gsMult }

@@ -225,7 +225,7 @@ tmp_update.push(_=>{
 		tmp.chal.goal[i] = c.goal(comp)
 		tmp.chal.eff[i] = c.eff(compute(c.unl, true) && (!inChal(7) || c.id == "steel") ? comp : 0)
 
-		if (inChalCond(i)) {
+		if (compute(c.unl, true) && inChalCond(i)) {
 			let a = c.goalAmt()
 			tmp.chal.amt[i] = a
 			tmp.chal.bulk[i] = Math.max(Math.min(c.bulk(a), c.max), 0)

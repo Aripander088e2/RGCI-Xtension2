@@ -60,7 +60,7 @@ RESET.fun = {
 tmp_update.push(_=>{
 	let mf = aMAIN.fun
 	
-	tmp.aRes.funShown = player.decel == 1 && player.aRes.fTimes
+	tmp.aRes.funShown = player.decel == 1 && player.aRes?.fTimes
 	tmp.aRes.SFRGTgain = mf.SFRGTgain()
 	tmp.aRes.funGain = mf.gain()
 })

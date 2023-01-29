@@ -30,114 +30,7 @@ MAIN.steel = {
 		x = x.pow(getAstralEff('fd', 1))
 
 		return x
-	},
-	charger: {
-		unl: _ => hasUpgrade("factory", 2) || hasGSMilestone(9),
-		gain() {
-			let x = E(1)
-			if (!inRecel()) {
-				x = E(upgEffect('factory',2)).mul(upgEffect('factory',3)).mul(upgEffect('factory',4))
-				x = x.mul(upgEffect('gen',2)).mul(upgEffect('gen',3))
-				x = x.mul(upgEffect('plat',7))
-				x = x.mul(getGHEffect(9, 1))
-				x = x.mul(chalEff(7))
-
-				x = x.mul(aMAIN.chargeGain())
-			}
-
-			x = x.mul(upgEffect('rocket',6))
-			x = x.mul(upgEffect('rocket',13))
-			x = x.mul(upgEffect('rocket',19))
-			x = x.mul(upgEffect('momentum',7))
-
-			x = x.mul(getAstralEff('ch'))
-			x = x.mul(getGSEffect(9))
-
-			return x
-		}
-	},
-}
-
-EFFECT.charger = {
-	unl: _ => MAIN.steel.charger.unl(),
-
-	res: _ => player.chargeRate,
-	getEff(res, data) {
-		if (player.bestCharge.lt(data.req)) return E(0)
-
-		let penalty = E(10).pow(data.offsetOoM).mul(data.req).div(tmp.chargeOoMMul)
-		return res.div(penalty.max(1))
-	},
-	effDesc(desc, data) {
-		desc = format(data.req, 0) + " - " + desc
-		if (player.bestCharge.gte(data.req)) desc = `<span class='green'>` + desc + "</span>"
-		return desc
-	},
-	
-	effs: [
-		{
-			req: E(1),
-			eff: c => player.crystal.add(1).pow(c.add(1).log10().pow(.2).div(20)),
-			desc: x => "Crystals give "+format(x)+"x more Steel.",
-		},{
-			req: E(100),
-			eff: c => c.add(1).log10().div(40).add(1),
-			desc: x => "Each Tier gives "+format(x)+"x more PP.",
-		},{
-			req: E(1e6),
-			eff: c => E(1).sub(E(1).div(c.add(1).log10().div(20).add(1))).toNumber(),
-			desc: x => "Strengthen Grass Upgrade's 'PP' by +"+format(x)+"x.",
-		},{
-			unl: _ => hasUpgrade("factory", 4) || galUnlocked(),
-
-			req: E(1e9),
-			eff: c => E(2).sub(E(1).div(c.add(1).log10().div(15).add(1))).min(1.5).toNumber(),
-			desc: x => "Gain " + format(x) + "x Levels in Anti-Realm.",
-		},{
-			unl: _ => hasUpgrade("factory", 4) || galUnlocked(),
-
-			req: E(1e12),
-			eff: c => c.add(1).log10().div(40).toNumber(),
-			desc: x => "Increase Tier base by +"+format(x,3)+"x.",
-		},{
-			unl: _ => hasUpgrade("factory", 4) || galUnlocked(),
-
-			req: E(1e15),
-			eff: c => c.add(1).log10().root(1.25).div(10).pow10(),
-			desc: x => "Gain more "+format(x,3)+"x TP in Anti-Realm.",
-		},{
-			unl: _ => hasUpgrade("factory", 4) || galUnlocked(),
-
-			req: E(1e21),
-			eff: c => c.add(1).log10().root(1.25).div(10).pow10(),
-			desc: x => "Gain more "+format(x,3)+"x Oil.",
-		},{
-			unl: _ => hasStarTree("progress", 4),
-
-			req: E(1e27),
-			offsetOoM: 15,
-			eff: c => c.add(1).log10().div(15).pow10(),
-			desc: x => "Gain more "+format(x,3)+"x Space Power.",
-		},{
-			unl: _ => hasUpgrade("funMachine", 2),
-
-			req: E(1e42),
-			offsetOoM: 30,
-			eff: c => c.add(1).log10().div(15).pow10(),
-			desc: x => "Gain more "+format(x,3)+"x Fun.",
-		},{
-			unl: _ => hasUpgrade("funMachine", 2),
-
-			req: E(1e45),
-			offsetOoM: 35,
-			eff: c => c.add(1).log10().div(3).pow10(),
-			desc: x => "Gain more "+format(x,3)+"x Grass.",
-		}
-	],
-}
-
-function getChargeEff(x, def) {
-	return getEffect("charger", x, def)
+	}
 }
 
 RESET.steel = {
@@ -158,6 +51,8 @@ RESET.steel = {
 			if (!force) {
 				player.steel = player.steel.add(tmp.steelGain)
 				player.sTimes++
+
+				if (!player.aRes) player.aRes = setupDecel()
 			}
 
 			updateTemp()
@@ -671,22 +566,135 @@ tmp_update.push(_=>{
 	tmp.steelGain = ms.gain()
 	tmp.steelGainP = starTreeEff("qol",4,0)
 	tmp.foundryEff = ms.foundryEff()
-
-	tmp.chargeGain = ms.charger.gain()
-	tmp.chargeOoM = getGHEffect(11, 0) + upgEffect('sfrgt', 3, 0)
-	tmp.chargeOoMMul = Decimal.pow(10, tmp.chargeOoM)
 })
 
 el.update.factory = _=>{
 	if (mapID == "fd") {
-		let unl = MAIN.steel.charger.unl()
+		let unl = MAIN.charger.unl()
 
 		tmp.el.charger_div.setDisplay(unl)
 
 		if (unl) {
-			tmp.el.charge_upper.setHTML("<b class='yellow'>Temp. Charge:</b> "+player.chargeRate.format(0)+" <span class='smallAmt'>"+player.chargeRate.formatGain(tmp.chargeGain)+"</span>")
+			tmp.el.charge_upper.setHTML("<b class='yellow'>Temp. Charge:</b> "+player.chargeRate.format(0)+" <span class='smallAmt'>"+player.chargeRate.formatGain(tmp.charge.gain)+"</span>")
 			tmp.el.charge_under.setHTML("<b class='yellow'>Best Charge:</b> "+player.bestCharge.format(0))
 			updateEffectHTML("charger")
 		}
 	}
 }
+
+MAIN.charger = {
+	unl: _ => hasUpgrade("factory", 2) || hasGSMilestone(9),
+	gain() {
+		let x = E(1)
+		if (!inRecel()) {
+			x = E(upgEffect('factory',2)).mul(upgEffect('factory',3)).mul(upgEffect('factory',4))
+			x = x.mul(upgEffect('gen',2)).mul(upgEffect('gen',3))
+			x = x.mul(upgEffect('plat',7))
+			x = x.mul(getGHEffect(9, 1))
+			x = x.mul(chalEff(7))
+
+			x = x.mul(aMAIN.chargeGain())
+		}
+
+		x = x.mul(upgEffect('rocket',6))
+		x = x.mul(upgEffect('rocket',13))
+		x = x.mul(upgEffect('rocket',19))
+		x = x.mul(upgEffect('momentum',7))
+
+		x = x.mul(getAstralEff('ch'))
+		x = x.mul(getGSEffect(9))
+
+		return x
+	}
+}
+
+EFFECT.charger = {
+	unl: _ => MAIN.charger.unl(),
+
+	res: _ => player.chargeRate,
+	getEff(res, data) {
+		if (player.bestCharge.lt(data.req)) return E(0)
+
+		let penalty = E(10).pow(data.offsetOoM).mul(data.req).div(tmp.charge.OoMMul)
+		return res.div(penalty.max(1))
+	},
+	effDesc(desc, data) {
+		desc = format(data.req, 0) + " - " + desc
+		if (player.bestCharge.gte(data.req)) desc = `<span class='green'>` + desc + "</span>"
+		return desc
+	},
+	
+	effs: [
+		{
+			req: E(1),
+			eff: c => player.crystal.add(1).pow(c.add(1).log10().pow(.2).div(20)),
+			desc: x => "Crystals give "+format(x)+"x more Steel.",
+		},{
+			req: E(100),
+			eff: c => c.add(1).log10().div(40).add(1),
+			desc: x => "Each Tier gives "+format(x)+"x more PP.",
+		},{
+			req: E(1e6),
+			eff: c => E(1).sub(E(1).div(c.add(1).log10().div(20).add(1))).toNumber(),
+			desc: x => "Strengthen Grass Upgrade's 'PP' by +"+format(x)+"x.",
+		},{
+			unl: _ => hasUpgrade("factory", 4) || galUnlocked(),
+
+			req: E(1e9),
+			eff: c => E(2).sub(E(1).div(c.add(1).log10().div(15).add(1))).min(1.5).toNumber(),
+			desc: x => "Gain " + format(x) + "x Levels in Anti-Realm.",
+		},{
+			unl: _ => hasUpgrade("factory", 4) || galUnlocked(),
+
+			req: E(1e12),
+			eff: c => c.add(1).log10().div(40).toNumber(),
+			desc: x => "Increase Tier base by +"+format(x,3)+"x.",
+		},{
+			unl: _ => hasUpgrade("factory", 4) || galUnlocked(),
+
+			req: E(1e15),
+			eff: c => c.add(1).log10().root(1.25).div(10).pow10(),
+			desc: x => "Gain more "+format(x,3)+"x TP in Anti-Realm.",
+		},{
+			unl: _ => hasUpgrade("factory", 4) || galUnlocked(),
+
+			req: E(1e21),
+			eff: c => c.add(1).log10().root(1.25).div(10).pow10(),
+			desc: x => "Gain more "+format(x,3)+"x Oil.",
+		},{
+			unl: _ => hasStarTree("progress", 4),
+
+			req: E(1e27),
+			offsetOoM: 15,
+			eff: c => c.add(1).log10().div(15).pow10(),
+			desc: x => "Gain more "+format(x,3)+"x Space Power.",
+		},{
+			unl: _ => hasUpgrade("funMachine", 2),
+
+			req: E(1e42),
+			offsetOoM: 30,
+			eff: c => c.add(1).log10().div(15).pow10(),
+			desc: x => "Gain more "+format(x,3)+"x Fun.",
+		},{
+			unl: _ => hasUpgrade("funMachine", 2),
+
+			req: E(1e45),
+			offsetOoM: 35,
+			eff: c => c.add(1).log10().div(3).pow10(),
+			desc: x => "Gain more "+format(x,3)+"x Grass.",
+		}
+	],
+}
+
+function getChargeEff(x, def) {
+	return getEffect("charger", x, def)
+}
+
+tmp_update.push(_=>{
+	if (!MAIN.charger.unl()) return
+
+	tmp.charge = {}
+	tmp.charge.gain = MAIN.charger.gain()
+	tmp.charge.OoM = getGHEffect(11, 0) + upgEffect('sfrgt', 3, 0)
+	tmp.charge.OoMMul = Decimal.pow(10, tmp.charge.OoM)
+})

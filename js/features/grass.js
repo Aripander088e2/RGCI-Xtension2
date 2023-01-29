@@ -80,8 +80,8 @@ function removeGrass(i,auto=false) {
 	for (const i of tmp.realm.in) cutRealmGrass(i, v, tv)
 	if (galUnlocked()) player.gal.sp = player.gal.sp.add(tmp.gal.astral.gain.mul(v))
 
-	if (tg.pl) player.plat += tmp.platGain * (player.aRes.grassskip > 0 ? av : v)
-	if (tg.ms) player.gal.moonstone += tmp.gal.ms.gain * v
+	if (tg.pl) player.plat = E(tmp.platGain).mul(hasGSMilestone(0) ? av : v).add(player.plat)
+	if (tg.ms) player.gal.moonstone = E(tmp.gal.ms.gain).mul(v).add(player.gal.moonstone)
 	if (hasGSMilestone(4)) {
 		if (tg.ms) player.gal.msLuck = 1
 		else if (tg.pl) player.gal.msLuck += 0.05

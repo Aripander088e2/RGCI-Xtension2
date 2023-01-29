@@ -133,8 +133,8 @@ function cutRealmGrass(type, v, tv) {
 	let src = getRealmSrc(type)
 	let gain = tmp.realm.gain[type]
 
-	src.grass = src.grass.add(gain.grass.mul(v * tv))
-	src.xp = src.xp.add(gain.xp.mul(v * tv))
+	src.grass = src.grass.add(gain.grass.mul(tv))
+	src.xp = src.xp.add(gain.xp.mul(tv))
 	src.tp = src.tp.add(gain.tp.mul(v))
 }
 

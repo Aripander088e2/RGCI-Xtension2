@@ -56,11 +56,11 @@ MILESTONE.agh = {
 		}, {
 			unl: _ => hasUpgrade("funMachine", 3),
 
-			req: 36,
+			req: 39,
 			desc: `Astral multiplies effects for each 25 levels of AP upgrade.`,
 		}, {
 			unl: _ => hasUpgrade("funMachine", 3),
-			req: 39,
+			req: 45,
 			desc: `Unlock the Planetoid. (Soon!)`,
 		}
 	]
@@ -73,7 +73,7 @@ function updateAGHTemp() {
 	let data = tmp.gal.agh || {}
 	if (!tmp.gal.agh) tmp.gal.agh = data
 
-	data.neg = Math.floor(30 - player.grasshop * (tmp.gal.sc ? 1 - starTreeEff("progress", 13, 0) : 1) + player.gal.gsPotential)
+	data.neg = Math.floor(30 - player.grasshop * (tmp.gal.sc ? 1 - starTreeEff("progress", 12, 0) : 1) + player.gal.gsPotential)
 }
 
 el.update.agh = _=>{

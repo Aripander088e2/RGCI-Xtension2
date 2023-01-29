@@ -490,7 +490,7 @@ const STATS = {
         getDesc() {
             let x = E(1),h = ''
 
-            h += `Total charge rate: <b>+${format(tmp.chargeGain,1)}/s</b><br>`
+            h += `Total charge rate: <b>+${format(tmp.charge.gain,1)}/s</b><br>`
 
             // Muliplier
 

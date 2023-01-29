@@ -5,7 +5,6 @@ function inRecel() {
 function setupRecel() {
 	return {
 		grass: E(0),
-		bestGrass: E(0),
 
 		level: 0,
 		xp: E(0),
@@ -123,7 +122,7 @@ UPGS.unGrass = {
 			icon: ['Icons/SP', 'Icons/Plus'],
 			
 			cost: i => Decimal.pow(5,i).mul(1e3),
-			bulk: i => i.div(1e3).max(1).log(25).floor().toNumber()+1,
+			bulk: i => i.div(1e3).max(1).log(5).floor().toNumber()+1,
 
 			effect(i) {
 				return E(1.2).pow(i)
@@ -139,32 +138,13 @@ UPGS.unGrass = {
 			icon: ['Curr/Fun', 'Icons/Plus'],
 			
 			cost: i => Decimal.pow(5,i).mul(1e3),
-			bulk: i => i.div(1e3).max(1).log(25).floor().toNumber()+1,
+			bulk: i => i.div(1e3).max(1).log(5).floor().toNumber()+1,
 
 			effect(i) {
 				return E(1.3).pow(i)
 			},
 			effDesc: x => format(x)+"x",
-		},
-		/*{
-			max: 1000,
-
-			title: "Unnatural Grow Speed",
-			desc: `Increase grass grow speed by <b class="green">+40%</b> per level.`,
-
-			res: "unGrass",
-			icon: ['Icons/Speed'],
-			
-			cost: i => Decimal.pow(1.75,i).mul(1e3).ceil(),
-			bulk: i => i.div(1e3).max(1).log(1.75).floor().toNumber()+1,
-
-			effect(i) {
-				let x = i*.4+1
-
-				return x
-			},
-			effDesc: x => format(x,1)+"x",
-		}*/
+		}
 	],
 }
 
@@ -176,11 +156,11 @@ EFFECT.uh = {
 	res: _ => upgEffect('momentum', 10, 0) + getAstralEff("uh", 0) + getGSEffect(11, 0),
 	effs: {
 		sp: {
-			eff: x => x,
+			eff: x => Math.ceil(x / 3),
 			desc: x => `<b style="color: #bf7">${format(x, 0)}</b> max levels for "Gilded Power"`,
 		},
 		fun: {
-			eff: x => x,
+			eff: x => Math.ceil(x / 3),
 			desc: x => `<b style="color: #bf7">${format(x, 0)}</b> max levels for "Gilded Fun"`,
 		},
 		hb: {
@@ -261,7 +241,9 @@ unMAIN.np = {
 	gain() {
 		if (!player.unRes) return E(0)
 
-		let r = E(5).pow(player.unRes.level / 10 - 3).max(1)
+		let r = E(2).pow(player.unRes.level / 20 - 2).max(1)
+		r = r.mul(upgEffect('momentum', 13))
+		r = r.mul(E(1.08).pow(player.gal.astral - 30).max(1))
 		r = r.mul(getEffect("uh", "np"))
 		return r.floor()
 	},
@@ -270,8 +252,8 @@ unMAIN.np = {
 RESET.np = {
 	unl: _=>player.decel==2,
 
-	req: _=>player.unRes.level>=50,
-	reqDesc: `Reach Level 50.`,
+	req: _=>player.unRes.level>=30,
+	reqDesc: `Reach Level 30.`,
 
 	resetDesc: `Reset your unnatural grass, level, and astral for Normality Points.`,
 	resetGain: _=> `<b>+${tmp.unRes.npGain.format(0)}</b> Normality Points`,
@@ -331,8 +313,8 @@ UPGS.np = {
 			res: "np",
 			icon: ['Icons/Compaction', "Icons/Plus"],
 			
-			cost: i => Decimal.pow(1.75,i).mul(1e3).ceil(),
-			bulk: i => i.div(1e3).max(1).log(1.75).floor().toNumber()+1,
+			cost: i => Decimal.pow(3,i).mul(5).ceil(),
+			bulk: i => i.div(5).max(1).log(3).floor().toNumber()+1,
 
 			effect(i) {
 				return i+1
@@ -347,8 +329,8 @@ UPGS.np = {
 			res: "np",
 			icon: ['Icons/Compaction', "Icons/StarSpeed"],
 			
-			cost: i => Decimal.pow(1.75,i).mul(1e3).ceil(),
-			bulk: i => i.div(1e3).max(1).log(1.75).floor().toNumber()+1,
+			cost: i => Decimal.pow(2,i).mul(20).ceil(),
+			bulk: i => i.div(20).max(1).log(2).floor().toNumber()+1,
 
 			effect(i) {
 				return i+1
@@ -363,8 +345,8 @@ UPGS.np = {
 			res: "np",
 			icon: ['Curr/DarkMatter'],
 			
-			cost: i => Decimal.pow(1.75,i).mul(1e3).ceil(),
-			bulk: i => i.div(1e3).max(1).log(1.75).floor().toNumber()+1,
+			cost: i => Decimal.pow(4,i).mul(50).ceil(),
+			bulk: i => i.div(50).max(1).log(4).floor().toNumber()+1,
 
 			effect(i) {
 				return E(2).pow(i)
@@ -380,8 +362,8 @@ UPGS.np = {
 			res: "np",
 			icon: ["Curr/Momentum"],
 			
-			cost: i => Decimal.pow(1.75,i**1.25).mul(1e3).ceil(),
-			bulk: i => i.div(1e3).max(1).log(1.75).root(1.25).floor().toNumber()+1,
+			cost: i => Decimal.pow(1.75,i**1.25).mul(75).ceil(),
+			bulk: i => i.div(75).max(1).log(1.75).root(1.25).floor().toNumber()+1,
 
 			effect(i) {
 				return E(2).pow(i)

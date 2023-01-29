@@ -1,6 +1,6 @@
 const VER = 0.043
 const EX_COMMIT = 11.06
-const TB_VER = 1.05
+const TB_VER = 1.06
 const TB_SAVE = "rgci_tb_test"
 
 function getPlayerData() {
@@ -11,8 +11,8 @@ function getPlayerData() {
 		upgs: {},
 		autoUpg: {},
 
-		lastTick: Date.now(),
 		time: 0,
+		lastTick: Date.now(),
 		ch: MAIN.chrono.setup(),
 
 		map_notify: {},
@@ -35,7 +35,7 @@ function getPlayerData() {
 		tier: 0,
 		tp: E(0),
 
-		plat: 0,
+		plat: E(0),
 
 		//CRYSTALIZE
 		crystal: E(0),
@@ -60,42 +60,14 @@ function getPlayerData() {
 		bestCharge: E(0),
 
 		decel: 0,
-		aRes: {
-			grass: E(0),
-			bestGrass: E(0),
-
-			level: 0,
-			xp: E(0),
-
-			tier: 0,
-			tp: E(0),
-
-			ap: E(0),
-			aTimes: 0,
-			aTime: 0,
-
-			oil: E(0),
-			lTimes: 0,
-			lTime: 0,
-
-			grassskip: 0,
-			fun: E(0),
-			fTimes: 0,
-			fTime: 0,
-			sfrgt: E(0)
-		},
-
 		rocket: {
-			total_fp: 0,
-			amount: 0,
+			total_fp: E(0),
+			amount: E(0),
 			part: 0,
-			momentum: 0,
+			momentum: E(0),
 		},
 	}
-	for (let x in UPGS) {
-		s.upgs[x] = []
-		s.autoUpg[x] = false
-	}
+	for (let x in UPGS) s.upgs[x] = []
 	return s
 }
 
@@ -174,6 +146,15 @@ function loadPlayer(data) {
 		}
 	}
 	if (player.tb_ver < 1.05) player.decel = whatRealm()
+	if (player.tb_ver < 1.06) {
+		if (!player.sTimes) delete player.aRes
+		delete player.bestGrass
+		delete player.bestPP
+		delete player.bestCrystal
+		delete player.chalUnl
+		delete player.aRes?.bestGrass
+		delete player.unRes?.bestGrass
+	}
 	player.tb_ver = TB_VER
 }
 
@@ -205,10 +186,9 @@ function deepUndefinedAndDecimal(obj, data) {
 }
 
 function convertStringToDecimal() {
-	if (player.gal) {
-		player.gal = deepUndefinedAndDecimal(player.gal, setupGal())
-		if (MAIN.sac.did()) player.unRes = deepUndefinedAndDecimal(player.unRes, setupRecel())
-	}
+	if (player.aRes) player.aRes = deepUndefinedAndDecimal(player.aRes, setupDecel())
+	if (player.gal) player.gal = deepUndefinedAndDecimal(player.gal, setupGal())
+	if (player.unRes) player.unRes = deepUndefinedAndDecimal(player.unRes, setupRecel())
 }
 
 function cannotSave() { return false }
@@ -238,7 +218,9 @@ function load(str) {
 	resetTemp()
 	for (let x = 0; x < 50; x++) updateTemp()
 
-	if (MAIN.chrono.unl()) player.ch.offline += (Date.now() - player.lastTick) / 1e3
+	let now = Date.now()
+	if (MAIN.chrono.unl()) player.ch.offline += (now - player.lastTick) / 1e4
+	player.lastTick = now
 }
 
 function exporty() {

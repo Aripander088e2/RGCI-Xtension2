@@ -141,7 +141,7 @@ const STAR_CHART = {
 			max: 1,
 
 			title: "Tiered Space",
-			desc: `Every 3 tiers, gain more Space Power by <b class="green">same tier multiplier</b>. (starting at 50)`,
+			desc: `Every 5 tiers, gain more Space Power by <b class="green">same tier multiplier</b>. (starting at 50)`,
 
 			branch: 5,
 			icon: ['Icons/SP','Icons/StarSpeed'],
@@ -152,7 +152,7 @@ const STAR_CHART = {
 
 			effect(i) {
 				if (player.tier < 50) return E(1)
-				return E(MAIN.tier.base(0)).pow(Math.floor((player.tier - 50) / 3 + 1))
+				return E(MAIN.tier.base(0)).pow(Math.floor((player.tier - 50) / 5 + 1))
 			},
 			effDesc: x => format(x) + "x"
 		}, {
@@ -176,20 +176,19 @@ const STAR_CHART = {
 			branch: 10,
 			icon: ['Curr/Momentum','Icons/StarSpeed'],
 
-			cost: i => E(1e20),
+			cost: i => E(1e18),
 			bulk: i => 1
 		}, {
 			max: 10,
 
-			title: "Potential Grasshops",
-			desc: `Potential Grasshops (maximum grasshops you would get) are more efficient.`,
+			title: "Positive Attraction",
+			desc: `Grasshops lose less Negative Energy.`,
 
 			branch: 6,
 			icon: ['Icons/Grasshop','Icons/StarSpeed'],
 
-			unl: _ => true,
-			cost: i => E(1e4).pow((i+3)**1.25),
-			bulk: i => E(i).log(1e4).root(1.25).sub(3).floor().toNumber()+1,
+			cost: i => E(100).pow((i+4)**1.5),
+			bulk: i => E(i).log(100).root(1.5).sub(4).floor().toNumber()+1,
 
 			effect(i) {
 				return i/10
@@ -198,14 +197,15 @@ const STAR_CHART = {
 		}, {
 			max: 10,
 
-			title: "Positivity",
-			desc: `Grasshops lose less Negative Energy.`,
+			title: "Potential Grasshops",
+			desc: `Potential Grasshops (maximum grasshops you would get) are more efficient.`,
 
 			branch: 12,
 			icon: ['Icons/Grasshop','Icons/StarSpeed'],
 
-			cost: i => E(1e4).pow((i+3.5)**1.25),
-			bulk: i => E(i).log(1e4).root(1.25).sub(3.5).floor().toNumber()+1,
+			unl: _ => true,
+			cost: i => E(100).pow((i+4.5)**1.5),
+			bulk: i => E(i).log(100).root(1.5).sub(4.5).floor().toNumber()+1,
 
 			effect(i) {
 				return i/10
