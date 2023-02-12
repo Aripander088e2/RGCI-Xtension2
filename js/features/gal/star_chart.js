@@ -179,7 +179,7 @@ const STAR_CHART = {
 			cost: i => E(1e18),
 			bulk: i => 1
 		}, {
-			max: 10,
+			max: 20,
 
 			title: "Positive Attraction",
 			desc: `Grasshops lose less Negative Energy.`,
@@ -191,14 +191,14 @@ const STAR_CHART = {
 			bulk: i => E(i).log(100).root(1.5).sub(4).floor().toNumber()+1,
 
 			effect(i) {
-				return i/10
+				return i/20
 			},
 			effDesc: x => "-" + format(x * 100, 0) + "%"
 		}, {
-			max: 10,
+			max: 1/0,
 
 			title: "Potential Grasshops",
-			desc: `Potential Grasshops (maximum grasshops you would get) are more efficient.`,
+			desc: `Each Potential Grasshop gives +1 Grasshop as long you didn't do it.`,
 
 			branch: 12,
 			icon: ['Icons/Grasshop','Icons/StarSpeed'],
@@ -208,9 +208,9 @@ const STAR_CHART = {
 			bulk: i => E(i).log(100).root(1.5).sub(4.5).floor().toNumber()+1,
 
 			effect(i) {
-				return i/10
+				return i
 			},
-			effDesc: x => "-" + format(x * 100, 0) + "%"
+			effDesc: x => "+" + format(x, 0) + " Grasshop"
 		},
 	],
 	qol: [
