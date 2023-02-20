@@ -2,7 +2,7 @@ RESET.planetoid = {
 	unl: _=>hasAGHMilestone(8),
 
 	req: _=>hasAGHMilestone(11),
-	reqDesc: _=>"Get 45 Negative Energy.",
+	reqDesc: _=>"Get 48 Negative Energy.",
 
 	resetDesc: `<b class="red">Coming soon! Wait until Planetoid comes out in RGCI or I got Lethal's permission.</b>`,
 	resetGain: _=> ``,

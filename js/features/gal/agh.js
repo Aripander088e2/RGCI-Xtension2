@@ -60,7 +60,7 @@ MILESTONE.agh = {
 			desc: `Astral multiplies effects for each 25 levels of AP upgrade.`,
 		}, {
 			unl: _ => hasUpgrade("funMachine", 3),
-			req: 45,
+			req: 48,
 			desc: `Unlock the Planetoid. (Soon!)`,
 		}
 	]

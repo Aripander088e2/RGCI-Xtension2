@@ -792,8 +792,8 @@ MILESTONE.gs = {
 		{
 			unl: _ => player.aRes.fTimes,
 			req: 10,
-			desc: `Keep Charger on Galactic. <b class="green">5x</b> Charge per Grass-Skip. (starting at 10)`,
-			eff: x => E(5).pow(Math.max(x - 9, 0)),
+			desc: `Keep Charger on Galactic. <b class="green">4x</b> Charge per Grass-Skip. (starting at 10 and ending at 25)`,
+			eff: x => E(4).pow(Math.max(Math.min(x, 25) - 9, 0)),
 			effDesc: x => format(x, 0) + "x"
 		},
 		{

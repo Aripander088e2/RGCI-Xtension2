@@ -270,7 +270,7 @@ UPGS.sfrgt = {
 			},
 			effDesc: x => format(x,0)+"x",
 		}, {
-			max: Infinity,
+			max: 15,
 
 			title: "Funny Astral",
 			desc: `<b class="green">Double</b> Space Power gain.`,
@@ -278,8 +278,8 @@ UPGS.sfrgt = {
 			res: "sfrgt",
 			icon: ["Icons/SP"],
 
-			cost: i => Decimal.pow(10,i).mul(500).ceil(),
-			bulk: i => i.div(500).max(1).log(10).floor().toNumber()+1,
+			cost: i => Decimal.pow(15,i).mul(500).ceil(),
+			bulk: i => i.div(500).max(1).log(15).floor().toNumber()+1,
 		
 			effect(i) {
 				let x = Decimal.pow(2,i)

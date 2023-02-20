@@ -321,8 +321,8 @@ UPGS.moonstone = {
 			res: "moonstone",
 			icon: ["Curr/DarkMatter"],
 			
-			cost: i => 100,
-			bulk: i => Math.floor(i/100),
+			cost: i => 1e3,
+			bulk: i => Math.floor(i/1e3),
 
 			effect(i) {
 				return i+1
@@ -339,8 +339,8 @@ UPGS.moonstone = {
 			res: "moonstone",
 			icon: ["Curr/Platinum"],
 			
-			cost: i => E(2).pow(i).mul(1e3),
-			bulk: i => E(i).div(1e3).log(2).floor().toNumber()+1,
+			cost: i => E(2).pow(i).mul(1e4),
+			bulk: i => E(i).div(1e4).log(2).floor().toNumber()+1,
 
 			effect(i) {
 				return 2**i

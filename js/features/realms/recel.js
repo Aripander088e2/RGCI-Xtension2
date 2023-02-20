@@ -313,8 +313,8 @@ UPGS.np = {
 			res: "np",
 			icon: ['Icons/Compaction', "Icons/Plus"],
 			
-			cost: i => Decimal.pow(3,i).mul(5).ceil(),
-			bulk: i => i.div(5).max(1).log(3).floor().toNumber()+1,
+			cost: i => Decimal.pow(3,i).mul(10).ceil(),
+			bulk: i => i.div(10).max(1).log(3).floor().toNumber()+1,
 
 			effect(i) {
 				return i+1
@@ -329,8 +329,8 @@ UPGS.np = {
 			res: "np",
 			icon: ['Icons/Compaction', "Icons/StarSpeed"],
 			
-			cost: i => Decimal.pow(2,i).mul(20).ceil(),
-			bulk: i => i.div(20).max(1).log(2).floor().toNumber()+1,
+			cost: i => Decimal.pow(3,i).mul(20).ceil(),
+			bulk: i => i.div(20).max(1).log(3).floor().toNumber()+1,
 
 			effect(i) {
 				return i+1
@@ -362,8 +362,8 @@ UPGS.np = {
 			res: "np",
 			icon: ["Curr/Momentum"],
 			
-			cost: i => Decimal.pow(1.75,i**1.25).mul(75).ceil(),
-			bulk: i => i.div(75).max(1).log(1.75).root(1.25).floor().toNumber()+1,
+			cost: i => Decimal.pow(1.75,i**1.25).mul(150).ceil(),
+			bulk: i => i.div(150).max(1).log(1.75).root(1.25).floor().toNumber()+1,
 
 			effect(i) {
 				return E(2).pow(i)

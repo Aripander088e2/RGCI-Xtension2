@@ -113,8 +113,8 @@ const STAR_CHART = {
 			icon: ['Icons/Assembler','Icons/StarSpeed'],
 
 			unl: _ => player.gal.sacTimes,
-			cost: i => E(10).pow(i+6),
-			bulk: i => E(i).log10().sub(5).floor().toNumber(),
+			cost: i => E(10).pow(i**1.25+6),
+			bulk: i => E(i).log10().sub(6).root(1.25).floor().toNumber()+1,
 
 			effect(i) {
 				return i * 5
@@ -130,7 +130,7 @@ const STAR_CHART = {
 			icon: ['Icons/SP','Icons/StarSpeed'],
 
 			unl: _ => player.gal.sacTimes,
-			cost: i => E(1e15),
+			cost: i => E(1e18),
 			bulk: i => 1,
 
 			effect(i) {

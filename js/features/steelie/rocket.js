@@ -495,7 +495,7 @@ let ROCKET_PART = {
 
 	m_gain() {
 		if (!this.upgraded()) return 1
-		let r = E(10).pow(player.rocket.part - 1)
+		let r = E(5).pow(player.rocket.part - 1)
 		r = r.mul(upgEffect('dm', 5))
 		r = r.mul(upgEffect('np', 3))
 		return r
@@ -747,8 +747,8 @@ UPGS.momentum = {
 			icon: ['Curr/DarkMatter'],
 			
 			unl: _ => tmp.rocket_upgraded,
-			cost: i => E(5).pow(i).mul(1e4),
-			bulk: i => E(i).div(1e4).log(5).floor().toNumber()+1,
+			cost: i => E(5).pow(i).mul(1e5),
+			bulk: i => E(i).div(1e5).log(5).floor().toNumber()+1,
 			max: Infinity,
 
 			effect(i) {
@@ -763,8 +763,8 @@ UPGS.momentum = {
 			icon: ['Icons/SP'],
 			
 			unl: _ => hasStarTree("progress", 11),
-			cost: i => E(6).pow(i).mul(1e4),
-			bulk: i => E(i).div(1e4).log(6).floor().toNumber()+1,
+			cost: i => E(3).pow(i).mul(2e5),
+			bulk: i => E(i).div(2e5).log(3).floor().toNumber()+1,
 			max: Infinity,
 
 			effect(i) {
@@ -830,13 +830,9 @@ function updateRocketTemp() {
 	tmp.rocket_upgraded = ROCKET_PART.upgraded()
 
 	tmp.rp_req = ROCKET_PART.req()
-	tmp.m_prod = tmp.rocket_upgraded ? 0.01 : 0
-}
-
-function fixRocket() {
+	tmp.m_prod = tmp.rocket_upgraded ? 0.001 : 0
 }
 
 tmp_update.push(_=>{
 	updateRocketTemp()
-	fixRocket()
 })

@@ -385,7 +385,7 @@ UPGS.gen = {
 			},
 			effDesc: x => format(x)+"x",
 		},{
-			max: 1e3, //maybe cap this or leave it infinite?
+			max: 1e3,
 
 			unl: _=>hasUpgrade("factory", 2),
 

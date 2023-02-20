@@ -96,8 +96,8 @@ UPGS.dm = {
 			res: "dm",
 			icon: ["Curr/Oil"],
 
-			cost: i => Decimal.pow(2,i**1.25/1.5).ceil(),
-			bulk: i => i.log(2).mul(1.5).root(1.25).floor().toNumber()+1,
+			cost: i => Decimal.pow(1.7,i**1.25).ceil(),
+			bulk: i => i.log(1.7).root(1.25).floor().toNumber()+1,
 		
 			effect(i) {
 				return E(1.3).pow(i)
@@ -140,7 +140,7 @@ UPGS.dm = {
 			max: Infinity,
 
 			title: "Dark Star",
-			desc: `Increase Star gain by <b class="green">30%</b> compounding per level.`,
+			desc: `Increase Star gain by <b class="green">+1x</b> per level. This effect is increased by <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
 		
 			res: "dm",
 			icon: ["Curr/Star"],
@@ -149,7 +149,7 @@ UPGS.dm = {
 			bulk: i => i.div(50).log(2).floor().toNumber()+1,
 		
 			effect(i) {
-				return E(1.3).pow(i)
+				return 2 ** Math.floor(i/25) * (i + 1)
 			},
 			effDesc: x => format(x)+"x",
 		},{
@@ -162,8 +162,8 @@ UPGS.dm = {
 			icon: ["Curr/Momentum"],
 
 			unl: _ => ROCKET_PART.upgraded(),
-			cost: i => Decimal.pow(4,i**1.25).mul(1e5).ceil(),
-			bulk: i => i.div(1e5).log(4).root(1.25).floor().toNumber()+1,
+			cost: i => Decimal.pow(4,i**1.25).mul(4e4).ceil(),
+			bulk: i => i.div(4e4).log(4).root(1.25).floor().toNumber()+1,
 
 			effect(i) {
 				return E(2).pow(i)
