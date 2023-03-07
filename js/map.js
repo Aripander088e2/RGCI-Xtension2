@@ -4,10 +4,13 @@ var mapLoc = "Grass Field"
 var mapPos
 function resetMap() {
 	mapPos = {
-		dim: "earth",
 		earth: [1,2],
-		space: [1,2]
+		space: [1,2],
+		planetoid: [0,1]
 	}
+
+	onSwitchDim(inPlanetoid() ? "planetoid" : "earth")
+	if (player.planetoid?.started) mapPos.planetoid = [1,1]
 
 	let pos = getMapPos()
 	switchMapPos(pos[0], pos[1], mapPos.dim)
@@ -33,7 +36,11 @@ const MAP = {
 		['time','opt',null ,null ],
 		['gal', 'sc',  'at'  ,'sac'],
 		[null , null, 'chal',null ]
-	]
+	],
+	planetoid: [
+		['opt'],
+		['ring', 'g', 'astro']
+	],
 }
 
 const MAP_UNLS = {
@@ -58,6 +65,10 @@ const MAP_UNLS = {
 	sc: _ => true,
 	at: _ => true,
 	sac: _ => hasAGHMilestone(0),
+
+	//Planetoid
+	ring: _ => true,
+	astro: _ => true,
 }
 
 const MAP_IDS = (_=>{
@@ -66,7 +77,8 @@ const MAP_IDS = (_=>{
 	return x
 })()
 
-function unlockedMapId(i) {
+function unlockedMapId(i, dim) {
+	if (dim && !canAccessDim(dim)) return
 	return MAP_UNLS[i] && MAP_UNLS[i]()
 }
 
@@ -92,9 +104,9 @@ function moveMap(dx,dy) {
 function switchMapPos(mx,my,dim) {
 	let mapId = getMapPosId(mx,my,dim)
 	if (unlockedMapId(mapId)) {
-		mapPos.dim = dim
+		if (mapPos.dim != dim) onSwitchDim(dim)
 		mapPos[dim] = [mx, my]
-		if (mapPos.dim == dim) switchMapId(mapId)
+		switchMapId(mapId)
 	}
 }
 
@@ -119,6 +131,9 @@ el.update.map = _=>{
 		updateMapButton("rMap", mx+1, my, dim)
 		updateMapButton("uMap", mx, my-1, dim)
 		updateMapButton("dMap", mx, my+1, dim)
+
+		tmp.el.spaceMap.setDisplay(galUnlocked() && canAccessDim("space"))
+		tmp.el.spaceMap.setTxt("(Z) To " + (inSpace() ? "Ground" : "Space"))
 	}
 }
 
@@ -134,19 +149,17 @@ function updateMapButton(el, mx, my, dim) {
 }
 
 //Dimensions
-function inSpace() {
-	return mapPos.dim == "space"
-}
-
-function goToSpace() {
-	switchDim(mapPos.dim == "space" ? "earth" : "space")
-}
-
 function switchDim(id) {
-	mapPos.dim = id
+	switchMapPos(mapPos[id][0], mapPos[id][1], id)
+}
 
-	let pos = getMapPos()
-	switchMapId(MAP[mapPos.dim][pos[1]][pos[0]])
+function canAccessDim(id) {
+	return id == "planetoid" || !player.planetoid?.started
+}
+
+function onSwitchDim(dim) {
+	mapPos.dim = dim
+	if (dim != "space") onPlanetoidSwitch()
 }
 
 /* EXTENSION */
@@ -171,7 +184,11 @@ const MAP_COLORS = {
 	//SPACE
 	sc: "gal",
 	at: "gal",
-	sac: "gal"
+	sac: "sac",
+
+	//Planetoid
+	ring: "sac",
+	astro: "sac",
 }
 
 //Locations
@@ -197,6 +214,10 @@ const MAP_CATEGORIES = {
 	sc: "Space",
 	at: "Space",
 	sac: "Space",
+
+	//Planetoid
+	ring: "Planetoid",
+	astro: "Planetoid",
 }
 
 let locTimeout
@@ -234,6 +255,10 @@ const GO_TO_NAMES = {
 	sc: "Star Chart",
 	at: "Star Platform",
 	sac: "Dark Forest",
+
+	//Planetoid
+	ring: "Ring Chart",
+	astro: "Upgrades",
 }
 
 function openMap() {
@@ -282,7 +307,7 @@ el.update.go_to = _ => {
 			}
 		}
 
-		tmp.el.spaceButton.setDisplay(galUnlocked())
+		tmp.el.spaceButton.setDisplay(galUnlocked() && canAccessDim("space"))
 		tmp.el.spaceButton.setTxt("(Z) To " + (inSpace() ? "Ground" : "Space"))
 	}
 }
@@ -342,6 +367,7 @@ tmp_update.push(_=>{
 //Pins
 function goToWhere(id, dim) {
 	let [mx, my] = findPosition(id, dim)
+	if (!canAccessDim(dim)) return
 	switchMapPos(mx, my, dim)
 }
 
@@ -380,6 +406,19 @@ function pinMap(dim, loc) {
 	player.pins = newPins
 }
 
+function sortPins() {
+	let sort = {}
+	for (var pin of player.pins) {
+		let dim = pin[0]
+		if (!sort[dim]) sort[dim] = []
+		sort[dim].push(pin)
+	}
+
+	let newPins = []
+	for (let sorted of Object.values(sort)) newPins = newPins.concat(sorted)
+	player.pins = newPins
+}
+
 function goToPin(i) {
 	let pin = player.pins[i]
 	goToWhere(pin[1], pin[0])
@@ -405,14 +444,15 @@ el.update.pin = _ => {
 	let shown = go_to == "pin"
 	tmp.el.pin_div.setDisplay(shown)
 	if (shown) {
+		tmp.el.sort_pins.setDisplay(galUnlocked())
 		tmp.el.pin_bottom_opt.setTxt(player.options.pin_bottom ? "ON" : "OFF")
 		for (var i = 0; i < 8; i++) {
 			let added = player.pins[i]
 			tmp.el["pin_row_"+i].setDisplay(added)
 
 			if (!added) continue
-			let shown2 = unlockedMapId(added[1])
-			tmp.el["pin_go_"+i].setClasses({ locked: !shown2 })
+			let shown2 = unlockedMapId(added[1], added[0])
+			tmp.el["pin_go_"+i].setClasses({ locked: !shown2, [added[0]]: true })
 			tmp.el["pin_go_"+i].setHTML(GO_TO_NAMES[added[1]])
 		}
 	}
@@ -426,9 +466,10 @@ el.update.pin = _ => {
 			tmp.el["pin_bottom_"+i].setDisplay(added)
 
 			if (!added) continue
-			let shown2 = unlockedMapId(added[1])
+			let shown2 = unlockedMapId(added[1], added[0])
 			tmp.el["pin_bottom_"+i].setDisplay(shown2)
 			tmp.el["pin_bottom_"+i].setHTML(GO_TO_NAMES[added[1]])
+			tmp.el["pin_bottom_"+i].setClasses({ [added[0]]: true })
 		}
 	}
 }

@@ -55,6 +55,7 @@ el.update.reset = _=> {
         updateResetHTML('oil')
 
         updateResetHTML('np')
+        updateResetHTML('vapor')
     }
     if (mapID == 'gh') {
         updateResetHTML('gh')
@@ -65,7 +66,6 @@ el.update.reset = _=> {
     if (mapID == 'dc') {
         updateResetHTML('decel')
         updateResetHTML('recel')
-        updateResetHTML('planetoid_realm')
     }
     if (mapID == 'rf') {
         updateResetHTML('rocket_part')

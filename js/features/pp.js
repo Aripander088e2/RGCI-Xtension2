@@ -63,7 +63,7 @@ RESET.pp = {
 		}
 
         resetUpgrades('grass')
-        resetGlasses()
+        resetGrasses()
         updateTemp()
     },
 }
@@ -85,11 +85,11 @@ UPGS.pp = {
 
     ctn: [
         {
-            max: 2e3,
+            max: Infinity,
 
             title: "Grass Value II",
             tier: 2,
-            desc: `Increase grass gain by <b class="green">+25%</b> per level. This effect is increased by <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
+            desc: `Increase grass gain by <b class="green">+25%</b> per level.<br>This is <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
         
             res: "pp",
             icon: ["Curr/Grass"],
@@ -104,11 +104,11 @@ UPGS.pp = {
             },
             effDesc: x => format(x)+"x",
         },{
-            max: 2e3,
+            max: Infinity,
 
             title: "XP II",
             tier: 2,
-            desc: `Increase XP gain by <b class="green">+25%</b> per level. This effect is increased by <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
+            desc: `Increase XP gain by <b class="green">+25%</b> per level.<br>This is <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
         
             res: "pp",
             icon: ["Icons/XP"],
@@ -147,7 +147,7 @@ UPGS.pp = {
 
             title: "Crystal",
             tier: 2,
-            desc: `Increase Crystal gain by <b class="green">+50%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
+            desc: `Increase Crystal gain by <b class="green">+50%</b> per level.<br>This is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
 
             res: "pp",
             icon: ["Curr/Crystal"],

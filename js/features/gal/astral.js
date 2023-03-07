@@ -6,7 +6,7 @@ el.update.astral = _=>{
 		tmp.el.astral_top_bar.changeStyle("width",tmp.gal.astral.progress*100+"%")
 		tmp.el.astral_top_info.setHTML(`Astral <b class="magenta">${format(player.gal.astral,0)}</b>`)
 	}
-	if (mapID == 'g') {
+	if (mapID == 'g' && !inPlanetoid()) {
 		tmp.el.astral_div.setDisplay(astral_unl)
 		if (astral_unl) {
 			tmp.el.astral_amt.setTxt(format(player.gal.astral,0))
@@ -22,7 +22,7 @@ el.update.astral = _=>{
 
 const ASTRAL = {
 	spGain() {
-		let r = E(1)
+		let r = E(tmp.cutAmt)
 
 		r = r.mul(getChargeEff(7))
 		r = r.mul(upgEffect('momentum', 12))
@@ -55,12 +55,12 @@ EFFECT.astral = {
 	effs: {
 		tp: {
 			unl: _ => true,
-			eff: a => a+1,
+			eff: a => hasUpgrade('ring',6) ? E(1.3).pow((a+1)**0.8) : a+1,
 			desc: x => `<b class="magenta">${format(x)}x</b> to TP`
 		},
 		fd: {
 			unl: _ => true,
-			eff: a => a/50+1,
+			eff: a => (a/50+1)*upgEffect('ring',3),
 			desc: x => `<b class="magenta">^${format(x)}</b> to Foundry effect`
 		},
 		st: {
@@ -75,12 +75,12 @@ EFFECT.astral = {
 		},
 		ch: {
 			unl: _ => hasAGHMilestone(3),
-			eff: a => E(2).pow(a/3-3).max(1),
+			eff: a => E(2).pow((a/3-3)*upgEffect('ring',2)).max(1),
 			desc: x => `<b class="magenta">${format(x)}x</b> to Charge`
 		},
 		xp: {
 			unl: _ => hasAGHMilestone(4),
-			eff: a => E(1.25).pow(a/2-5).max(1),
+			eff: a => E(1.25).pow((a/2-5)*upgEffect('ring',1)).max(1),
 			desc: x => `<b class="magenta">${format(x)}x</b> to XP`
 		},
 		fu: {
@@ -102,6 +102,11 @@ EFFECT.astral = {
 			unl: _ => hasAGHMilestone(10),
 			eff: a => 1+Math.min(a/500,.25),
 			desc: x => `<b class="magenta">${format(x)}x</b> to AP per-25 multipliers`
+		},
+		rg: {
+			unl: _ => hasAGHMilestone(12),
+			eff: a => E(3).pow(a/10-5).max(1),
+			desc: x => `<b class="magenta">${format(x)}x</b> to Rings`
 		},
 	},
 }

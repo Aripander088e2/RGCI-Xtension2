@@ -151,7 +151,7 @@ UPGS.fundry = {
 			max: Infinity,
 
 			title: "Steel Fun",
-			desc: `Increase fun gain by <b class="green">+20%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
+			desc: `Increase fun gain by <b class="green">+20%</b> per level.<br>This is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
 		
 			res: "steel",
 			icon: ["Curr/Fun"],
@@ -169,7 +169,7 @@ UPGS.fundry = {
 			max: Infinity,
 
 			title: "Star Fun",
-			desc: `Increase fun gain by <b class="green">+20%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
+			desc: `Increase fun gain by <b class="green">+20%</b> per level.<br>This is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
 		
 			res: "star",
 			icon: ["Curr/Fun"],
@@ -189,7 +189,7 @@ UPGS.fundry = {
 			max: Infinity,
 
 			title: "SFRGT Fun",
-			desc: `Increase fun gain by <b class="green">+20%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
+			desc: `Increase fun gain by <b class="green">+20%</b> per level.<br>This is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
 		
 			res: "sfrgt",
 			icon: ["Curr/Fun"],
@@ -207,7 +207,7 @@ UPGS.fundry = {
 			max: Infinity,
 
 			title: "Fun Fun",
-			desc: `Increase fun gain by <b class="green">+20%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
+			desc: `Increase fun gain by <b class="green">+20%</b> per level.<br>This is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
 		
 			res: "fun",
 			icon: ["Curr/Fun"],
@@ -229,19 +229,19 @@ UPGS.sfrgt = {
 	title: "Super Fun Real Good Time Generator",
 
 	unl: _ => tmp.aRes.funShown && hasUpgrade('funMachine', 1),
+	autoUnl: _ => hasUpgrade("res", 2),
 
 	underDesc: _=>getUpgResTitle('sfrgt')+` <span class='smallAmt'>${player.aRes.sfrgt.formatGain(tmp.aRes.SFRGTgain)}</span>`,
 
 	ctn: [
 		{
-			max: Infinity,
-
 			title: "SFRGT Generation",
 			desc: `<b class="green">Double</b> SFRGT gain.`,
 		
 			res: "fun",
 			icon: ["Curr/SuperFun"],
 
+			max: Infinity,
 			cost: i => Decimal.pow(15,i).mul(1e3).ceil(),
 			bulk: i => i.div(1e3).max(1).log(15).floor().toNumber()+1,
 		
@@ -252,14 +252,13 @@ UPGS.sfrgt = {
 			},
 			effDesc: x => format(x,0)+"x",
 		}, {
-			max: Infinity,
-
 			title: "Funny Stars",
 			desc: `<b class="green">Double</b> Star gain.`,
 		
 			res: "sfrgt",
 			icon: ["Curr/Star"],
 
+			max: Infinity,
 			cost: i => Decimal.pow(15,i).mul(1e4).ceil(),
 			bulk: i => i.div(1e4).max(1).log(15).floor().toNumber()+1,
 		
@@ -270,14 +269,13 @@ UPGS.sfrgt = {
 			},
 			effDesc: x => format(x,0)+"x",
 		}, {
-			max: 15,
-
 			title: "Funny Astral",
 			desc: `<b class="green">Double</b> Space Power gain.`,
 		
 			res: "sfrgt",
 			icon: ["Icons/SP"],
 
+			max: Infinity,
 			cost: i => Decimal.pow(15,i).mul(500).ceil(),
 			bulk: i => i.div(500).max(1).log(15).floor().toNumber()+1,
 		
@@ -288,14 +286,13 @@ UPGS.sfrgt = {
 			},
 			effDesc: x => format(x,0)+"x",
 		}, {
-			max: 20,
-
 			title: "Funny Charge",
 			desc: `Charge bonuses start <b class="green">10x</b> earlier.`,
 		
 			res: "sfrgt",
 			icon: ["Icons/Charge", "Icons/StarSpeed"],
 
+			max: 20,
 			cost: i => Decimal.pow(4,i).mul(300).ceil(),
 			bulk: i => i.div(300).max(1).log(4).floor().toNumber()+1,
 

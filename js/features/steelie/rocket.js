@@ -513,7 +513,7 @@ RESET.rocket_part = {
 		<b class="lightgray">Steel</b><br>
 		<span class="${player.steel.gte(tmp.rp_req.steel)?"green":"red"}">${player.steel.format(0)} / ${tmp.rp_req.steel.format(0)}</span><br><br>
 		<b class="lightblue">Total Rocket Fuel</b><br>
-		<span class="${player.rocket.total_fp >= tmp.rp_req.rf?"green":"red"}">${format(player.rocket.total_fp,0)} / ${format(tmp.rp_req.rf,0)}</span><br><br>
+		<span class="${player.rocket.total_fp.gte(tmp.rp_req.rf)?"green":"red"}">${format(player.rocket.total_fp,0)} / ${format(tmp.rp_req.rf,0)}</span><br><br>
 		You have created ${format(player.rocket.part,0)} Rocket Parts
 	</span>`,
 	hotkey: `Shift+P`,
@@ -733,10 +733,10 @@ UPGS.momentum = {
 			unl: _ => tmp.rocket_upgraded,
 			cost: i => E(4).pow(i).mul(1e3),
 			bulk: i => E(i).div(1e3).log(4).floor().toNumber()+1,
-			max: Infinity,
+			max: 10,
 
 			effect(i) {
-				return i+1
+				return i
 			},
 			effDesc: x => "+"+format(x),
 		},{
@@ -749,7 +749,7 @@ UPGS.momentum = {
 			unl: _ => tmp.rocket_upgraded,
 			cost: i => E(5).pow(i).mul(1e5),
 			bulk: i => E(i).div(1e5).log(5).floor().toNumber()+1,
-			max: Infinity,
+			max: 2,
 
 			effect(i) {
 				return E(2).pow(i)
@@ -765,7 +765,7 @@ UPGS.momentum = {
 			unl: _ => hasStarTree("progress", 11),
 			cost: i => E(3).pow(i).mul(2e5),
 			bulk: i => E(i).div(2e5).log(3).floor().toNumber()+1,
-			max: Infinity,
+			max: 5,
 
 			effect(i) {
 				return i+1
@@ -779,15 +779,29 @@ UPGS.momentum = {
 			icon: ['Curr/Normality'],
 			
 			unl: _ => hasStarTree("progress", 11),
-			cost: i => E(15).pow(i ** 0.8).mul(1e4),
-			bulk: i => E(i).div(1e4).log(15).root(0.8).floor().toNumber()+1,
+			cost: i => E(15).pow(i).mul(1e4),
+			bulk: i => E(i).div(1e4).log(15).floor().toNumber()+1,
 			max: Infinity,
 
 			effect(i) {
 				return E(2).pow(i)
 			},
 			effDesc: x => format(x)+"x",
-		},
+		},{
+			title: "It Does Accelerate The Universe",
+			desc: `Raise Dark Matter by <b class='green'>^+0.1</b>.`,
+
+			res: "momentum",
+			icon: ['Curr/DarkMatter'],
+			
+			unl: _ => tmp.rocket_upgraded,
+			cost: i => E(10).pow(i).mul(2e5),
+			bulk: i => E(i).div(2e5).log(10).floor().toNumber()+1,
+			max: 10,
+
+			effect: i => i/10+1,
+			effDesc: x => "^"+format(x,1),
+		}
 	],
 }
 

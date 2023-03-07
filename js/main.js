@@ -63,13 +63,13 @@ const MAIN = {
 			return x
 		},
 		mult(i, realm = player.decel) {
-			return Decimal.pow(MAIN.tier.base(realm), i)
+			return realm == 3 ? E(1) : Decimal.pow(MAIN.tier.base(realm), i)
 		},
 	},
 	levelUp(realm) {
 		let src = getRealmSrc(realm)
 		src.level = Math.max(src.level, MAIN.level.bulk(src.xp, realm))
-		src.tier = Math.max(src.tier, MAIN.tier.bulk(src.tp, realm))
+		if (src.tier !== undefined) src.tier = Math.max(src.tier, MAIN.tier.bulk(src.tp, realm))
 	}, 
 }
 
@@ -86,31 +86,31 @@ el.update.main = _=>{
 		tmp.el.level_top_info.setHTML(`Level <b class="cyan">${format(tmp.realm.src.level,0)}</b>`)
 	}
 
-	let tier_unl = player.pTimes > 0
+	let tier_unl = player.pTimes > 0 && tmp.realm.src.tp
 	tmp.el.tier.setDisplay(tier_unl && !inSpace())
 	if (tier_unl) {
 		tmp.el.tier_top_bar.changeStyle("width",tmp.tier.percent*100+"%")
 		tmp.el.tier_top_info.setHTML(`Tier <b class="yellow">${format(tmp.realm.src.tier,0)}</b>`)
 	}
 
-	if (mapID == 'g') {
-		tmp.el.level_amt.setTxt(format(tmp.realm.src.level,0))
-		tmp.el.level_progress.setTxt(tmp.level.progress.format(0)+" / "+tmp.level.next.sub(tmp.level.cur).format(0)+" XP")
-		tmp.el.level_bar.changeStyle("width",tmp.level.percent*100+"%")
-		tmp.el.level_cut.setTxt("+"+tmp.level.gain.format(1)+" XP/cut")
+	if (mapID != 'g') return
 
-		tmp.el.tier_div.setDisplay(tier_unl)
-		if (tier_unl) {
-			tmp.el.tier_amt.setTxt(format(tmp.realm.src.tier,0))
-			tmp.el.tier_progress.setTxt(tmp.tier.progress.format(0)+" / "+tmp.tier.next.sub(tmp.tier.cur).format(0)+" TP")
-			tmp.el.tier_bar.changeStyle("width",tmp.tier.percent*100+"%")
-			tmp.el.tier_cut.setTxt("+"+tmp.tier.gain.format(1)+" TP/cut")
-			tmp.el.tier_mult.setTxt(formatMult(tmp.tier.mult,0)+" → "+formatMult(MAIN.tier.mult(tmp.realm.src.tier+1),0)+" multiplier")
-		}
+	tmp.el.levels_info.setDisplay(!inPlanetoid())
+	if (inPlanetoid()) return
+
+	tmp.el.level_amt.setTxt(format(tmp.realm.src.level,0))
+	tmp.el.level_progress.setTxt(tmp.level.progress.format(0)+" / "+tmp.level.next.sub(tmp.level.cur).format(0)+" XP")
+	tmp.el.level_bar.changeStyle("width",tmp.level.percent*100+"%")
+	tmp.el.level_cut.setTxt("+"+tmp.level.gain.format(1)+" XP/cut")
+
+	tmp.el.tier_div.setDisplay(tier_unl)
+	if (tier_unl) {
+		tmp.el.tier_amt.setTxt(format(tmp.realm.src.tier,0))
+		tmp.el.tier_progress.setTxt(tmp.tier.progress.format(0)+" / "+tmp.tier.next.sub(tmp.tier.cur).format(0)+" TP")
+		tmp.el.tier_bar.changeStyle("width",tmp.tier.percent*100+"%")
+		tmp.el.tier_cut.setTxt("+"+tmp.tier.gain.format(1)+" TP/cut")
+		tmp.el.tier_mult.setTxt(formatMult(tmp.tier.mult,0)+" → "+formatMult(MAIN.tier.mult(tmp.realm.src.tier+1),0)+" multiplier")
 	}
-
-	tmp.el.main_app.changeStyle('background-color',inSpace() ? "#fff1" : "#fff2")
-	document.body.style.backgroundColor = inSpace() ? "#0A001E" : "#0052af"
 }
 
 tmp_update.push(_=>{
@@ -138,13 +138,15 @@ tmp_update.push(_=>{
 	tmp.level.percent = tmp.level.progress.div(tmp.level.next.sub(tmp.level.cur)).max(0).min(1).toNumber()
 
 	let tier = tmp.realm.src.tier
-	tmp.tier.gain = MAIN.tier.gain()
-	tmp.tier.next = MAIN.tier.req(tier)
-	tmp.tier.bulk = MAIN.tier.bulk(tmp.realm.src.tp)
-	tmp.tier.cur = MAIN.tier.cur(tier)
-	tmp.tier.progress = tmp.realm.src.tp.sub(tmp.tier.cur).max(0).min(tmp.tier.next)
-	tmp.tier.percent = tmp.tier.progress.div(tmp.tier.next.sub(tmp.tier.cur)).max(0).min(1).toNumber()
-	tmp.tier.mult = MAIN.tier.mult(tier)
+	if (tier !== undefined) {
+		tmp.tier.gain = MAIN.tier.gain()
+		tmp.tier.next = MAIN.tier.req(tier)
+		tmp.tier.bulk = MAIN.tier.bulk(tmp.realm.src.tp)
+		tmp.tier.cur = MAIN.tier.cur(tier)
+		tmp.tier.progress = tmp.realm.src.tp.sub(tmp.tier.cur).max(0).min(tmp.tier.next)
+		tmp.tier.percent = tmp.tier.progress.div(tmp.tier.next.sub(tmp.tier.cur)).max(0).min(1).toNumber()
+		tmp.tier.mult = MAIN.tier.mult(tier)
+	} else tmp.tier = {}
 
 	tmp.platChance = 0.001
 	if (player.grasshop >= 6) tmp.platChance *= 2
@@ -157,6 +159,7 @@ tmp_update.push(_=>{
 	tmp.platGain += upgEffect('moonstone', 0)
 	tmp.platGain *= upgEffect('moonstone', 8)
 	tmp.platGain *= upgEffect('dm', 2)
+	tmp.platGain *= tmp.cutAmt
 })
 
 let shiftDown = false
@@ -188,6 +191,9 @@ window.addEventListener('keydown', function(event) {
 		case "t":
 			if (shiftDown) RESET.recel.reset()
 			else RESET.decel.reset()
+			break;
+		case "n":
+			RESET[inPlanetoid() ? "planetoid_exit" : "planetoid"].reset()
 			break;
 		case "z":
 			goToSpace()

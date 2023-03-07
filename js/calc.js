@@ -1,15 +1,14 @@
 function calc(dt, skip) {
-	let grass = tmp.grasses
-
 	//CHRONOLOGY
 	if (MAIN.chrono.unl() && !skip) {
 		MAIN.chrono.tick(dt)
 		dt *= player.ch.speed
 	}
+	player.time += dt
 
 	//GALACTIC
-	player.time += dt
 	if (galUnlocked()) galTick(dt)
+	if (player.planetoid?.started) planetoidTick(dt)
 
 	//UNNATURAL REALM
 	if (player.unRes) player.unRes.nTime += dt
@@ -61,14 +60,17 @@ function calc(dt, skip) {
 	}
 
 	//START
-	tmp.spawn_time += dt
-	tmp.autocutTime += dt
-	if (tmp.spawn_time >= tmp.grassSpawn) {
-		while (tmp.spawn_time >= tmp.grassSpawn) {
-			tmp.spawn_time -= tmp.grassSpawn
-			for (let i=0;i<tmp.spawnAmt;i++) createGrass()
+	let grass = tmp.grasses
+	if (tmp.grassSpawn < 1/0) {
+		tmp.spawn_time += dt
+		tmp.autocutTime += dt
+		if (tmp.spawn_time >= tmp.grassSpawn) {
+			while (tmp.spawn_time >= tmp.grassSpawn) {
+				tmp.spawn_time -= tmp.grassSpawn
+				for (let i=0;i<tmp.spawnAmt;i++) createGrass()
+			}
+			tmp.spawn_time = 0
 		}
-		tmp.spawn_time = 0
 	}
 
 	if (tmp.autocutTime >= tmp.autocut && tmp.grasses.length > 0 && hasUpgrade('auto',0)) {

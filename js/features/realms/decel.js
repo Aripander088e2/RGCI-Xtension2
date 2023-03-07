@@ -50,19 +50,21 @@ RESET.decel = {
 	hotkey: `T`,
 
 	reset(force=false) {
+		if (inPlanetoid()) return
+		if (!player.aRes) player.aRes = setupDecel()
 		if (hasUpgrade("factory", 4)) switchRealm(1)
 	},
 }
 
 el.update.decel = _=>{
-	tmp.el.grass_div.changeStyle("background-color", ["", "#242697", "#549e00"][player.decel])
-	tmp.el.grass.changeStyle("background-color", ["", "#002D9F", "#549e00"][player.decel])
-	tmp.el.fog.changeStyle("background-color", ["", "#001c3b", "#ff03"][player.decel])
+	tmp.el.grass_div.changeStyle("background-color", ["", "#242697", "#549e00", "#30f"][player.decel])
+	tmp.el.grass.changeStyle("background-color", ["", "#002D9F", "#549e00", "#30f"][player.decel])
+	tmp.el.fog.changeStyle("background-color", ["", "#001c3b", "#ff03", "#f0f7"][player.decel])
 	tmp.el.fog.setDisplay(player.decel && !inSpace())
 	if (mapID == "dc") tmp.el.reset_btn_decel.setTxt("(T) " + (player.decel == 1 ? "Accelerate" : "Decelerate"))
 }
 
-let aMAIN = {
+MAIN.decel = aMAIN = {
 	chargeGain() {
 		let x = E(1)
 		x = x.mul(upgEffect('aGrass', 0))
@@ -135,7 +137,7 @@ UPGS.aGrass = {
 			max: 500,
 
 			title: "Anti-Grass Charge",
-			desc: `Increase charge rate by <b class="green">+25%</b> per level.<br>This effect is increased by <b class="green">50%</b> every <b class="yellow">25</b> levels.`,
+			desc: `Increase charge rate by <b class="green">+25%</b> per level.<br>This is increased by <b class="green">50%</b> every <b class="yellow">25</b> levels.`,
 
 			res: "aGrass",
 			icon: ['Curr/Charge'],
@@ -171,7 +173,7 @@ UPGS.aGrass = {
 			max: Infinity,
 
 			title: "Anti-Grass Steel",
-			desc: `Increase steel gain by <b class="green">+10%</b> per level.<br>This effect is increased by <b class="green">25%</b> every <b class="yellow">25</b> levels.`,
+			desc: `Increase steel gain by <b class="green">+10%</b> per level.<br>This is increased by <b class="green">25%</b> every <b class="yellow">25</b> levels.`,
 
 			res: "aGrass",
 			icon: ['Curr/Steel'],
@@ -406,7 +408,7 @@ RESET.ap = {
 
 		if (!hasUpgrade('aAuto',8)) resetUpgrades('aGrass')
 
-		resetGlasses()
+		resetGrasses()
 
 		updateTemp()
 	},

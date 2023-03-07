@@ -21,6 +21,11 @@ const UPG_RES = {
     dm: ["Dark Matter",_=>[player.gal,"dm"],'DarkMatterBase'],
     unGrass: ["Unnatural Grass",_=>[player.unRes,"grass"],'UnnaturalBase'],
     np: ["NP",_=>[player.unRes,"np"],'NormalityBase'],
+    planetarium: ["Planetarium",_=>[player.planetoid,"grass"],'PlanetBase'],
+    obs: ["Observatorium",_=>[player.planetoid,"obs"],'RingBase'],
+    res: ["Reservatorium",_=>[player.planetoid,"res"],'ResBase'],
+    astro: ["Astrolabe",_=>[player.planetoid,"astro"],'AstroBase'],
+    ring: ["Ring",_=>[player.planetoid,"ring"],'ObsBase'],
 }
 
 const isResNumber = ['perk','chrona']
@@ -41,7 +46,7 @@ const UPGS = {
                 max: Infinity,
 
                 title: "Grass Value",
-                desc: `Increase Grass gain by <b class="green">+0.5</b> per level.<br>This effect is <b class="green">doubled</b> every <b class="yellow">25</b> levels.`,
+                desc: `Increase Grass gain by <b class="green">+0.5</b> per level.<br>This is <b class="green">doubled</b> every <b class="yellow">25</b> levels.`,
 
                 res: "grass",
                 icon: ['Curr/Grass'],
@@ -95,7 +100,7 @@ const UPGS = {
                 max: Infinity,
 
                 title: "XP",
-                desc: `Increase experience (XP) gain by <b class="green">+0.5</b> per level.<br>This effect is <b class="green">doubled</b> every <b class="yellow">25</b> levels.`,
+                desc: `Increase experience (XP) gain by <b class="green">+0.5</b> per level.<br>This is <b class="green">doubled</b> every <b class="yellow">25</b> levels.`,
 
                 res: "grass",
                 icon: ['Icons/XP'],
@@ -133,7 +138,7 @@ const UPGS = {
                 unl: _=>player.pTimes>0,
 
                 title: "PP",
-                desc: `Increase prestige points (PP) gained by <b class="green">+50%</b> per level.<br>This effect is <b class="green">doubled</b> every <b class="yellow">25</b> levels.`,
+                desc: `Increase prestige points (PP) gained by <b class="green">+50%</b> per level.<br>This is <b class="green">doubled</b> every <b class="yellow">25</b> levels.`,
 
                 res: "grass",
                 icon: ['Curr/Prestige'],

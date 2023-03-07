@@ -5,7 +5,8 @@ MAIN.sac = {
 		x = x.mul(upgEffect('momentum', 11))
 		x = x.mul(upgEffect('moonstone', 7))
 		x = x.mul(upgEffect('np', 2))
-
+		x = x.mul(upgEffect("ring", 5))
+		x = x.pow(upgEffect('momentum', 14))
 		return x
 	},
 	did() {
@@ -31,7 +32,6 @@ RESET.sac = {
 				player.gal.dm = player.gal.dm.add(tmp.gal.dmGain)
 				player.gal.sacTimes++
 
-				if (!player.unRes) player.unRes = setupRecel()
 				mapPos.earth = [1, 1]
 			}
 
@@ -124,7 +124,7 @@ UPGS.dm = {
 			max: 1e4,
 
 			title: "Dark Moonstone",
-			desc: `Increase Moonstone gain by <b class="green">+1</b> per level. This effect is increased by <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
+			desc: `Increase Moonstone gain by <b class="green">+1</b> per level.<br>This is <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
 
 			res: "dm",
 			icon: ["Curr/Moonstone"],
@@ -140,7 +140,7 @@ UPGS.dm = {
 			max: Infinity,
 
 			title: "Dark Star",
-			desc: `Increase Star gain by <b class="green">+1x</b> per level. This effect is increased by <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
+			desc: `Increase Star gain by <b class="green">+1x</b> per level.<br>This is <b class="green">doubled</b> for every <b class="yellow">25</b> levels.`,
 		
 			res: "dm",
 			icon: ["Curr/Star"],
@@ -162,8 +162,8 @@ UPGS.dm = {
 			icon: ["Curr/Momentum"],
 
 			unl: _ => ROCKET_PART.upgraded(),
-			cost: i => Decimal.pow(4,i**1.25).mul(4e4).ceil(),
-			bulk: i => i.div(4e4).log(4).root(1.25).floor().toNumber()+1,
+			cost: i => Decimal.pow(6,i**1.25).mul(2e4).ceil(),
+			bulk: i => i.div(2e4).log(6).root(1.25).floor().toNumber()+1,
 
 			effect(i) {
 				return E(2).pow(i)

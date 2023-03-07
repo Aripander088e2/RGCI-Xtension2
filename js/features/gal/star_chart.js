@@ -124,7 +124,7 @@ const STAR_CHART = {
 			max: 1,
 
 			title: "Hopped Space",
-			desc: `Each Grass-Hop increases Space Power by 10%, starting at 50.`,
+			desc: `Each Grass-Hop increases Space Power by 20%, starting at 50.`,
 
 			branch: 5,
 			icon: ['Icons/SP','Icons/StarSpeed'],
@@ -134,7 +134,7 @@ const STAR_CHART = {
 			bulk: i => 1,
 
 			effect(i) {
-				return E(1.1).pow(Math.max(player.grasshop - 49, 0))
+				return E(1.2).pow(Math.max(player.grasshop - 49, 0))
 			},
 			effDesc: x => format(x) + "x"
 		}, {

@@ -21,6 +21,14 @@ MAIN.grass = {
 		if (inRecel()) x = 1/10
 		x /= upgEffect('momentum',1)
 		if (hasUpgrade('rocket',16)) x = 1 / (1 / x + upgEffect('rocket', 16))
+		if (inPlanetoid()) {
+			x = (player.planetoid.started && !inFormation("fz") ? 3 : 1/0)
+
+			let div = 1
+			div += upgEffect("planetarium", 3)
+			div += upgEffect("obs", 3)
+			x /= div
+		}
 		return x
 	},
 	range() {
@@ -28,6 +36,8 @@ MAIN.grass = {
 		if (inAccel()) r += upgEffect('grass',4,0) + upgEffect('perk',4,0)
 		if (!inRecel()) r += upgEffect('aGrass',6,0)
 		r += upgEffect("unGrass",2,0)
+		if (inFormation("dr")) r /= 2
+		if (inFormation("sc")) r *= 2
 		return r
 	},
 	auto() {
@@ -35,6 +45,7 @@ MAIN.grass = {
 		interval /= starTreeEff("auto",7)
 		if (inDecel()) interval *= 10 / upgEffect('aAuto', 0)
 		if (inRecel()) interval = 0.5
+		if (inPlanetoid()) interval = 10
 		return interval
 	},
 }
@@ -51,8 +62,9 @@ function createGrass() {
 		let rng = Math.random()
 
 		let nt = hasGSMilestone(5) && rng < 0.1
-		let pl = (player.tier >= 2 || player.cTimes > 0) && Math.random() < tmp.platChance
+		let pl = !inPlanetoid() && (player.tier >= 2 || player.cTimes > 0) && Math.random() < tmp.platChance
 		let ms = pl && galUnlocked() && Math.random() < tmp.gal.ms.chance
+		let obs = inPlanetoid() && Math.random() < plMAIN.obs.chance()
 
 		tmp.grasses.push({
 			x: Math.random(),
@@ -60,7 +72,8 @@ function createGrass() {
 
 			nt: nt,
 			pl: pl,
-			ms: ms
+			ms: ms,
+			obs: obs
 		})
 	}
 }
@@ -82,11 +95,16 @@ function removeGrass(i,auto=false) {
 
 	if (tg.pl) player.plat = E(tmp.platGain).mul(hasGSMilestone(0) ? av : v).add(player.plat)
 	if (tg.ms) player.gal.moonstone = E(tmp.gal.ms.gain).mul(v).add(player.gal.moonstone)
+	if (tg.obs) {
+		player.planetoid.obs = plMAIN.obs.gain().mul(v).add(player.planetoid.obs)
+		if (plMAIN.obs.canGetRes()) player.planetoid.res = plMAIN.obs.gain().mul(v).add(player.planetoid.res)
+	}
 	if (hasGSMilestone(4)) {
 		if (tg.ms) player.gal.msLuck = 1
 		else if (tg.pl) player.gal.msLuck += 0.05
 		else player.gal.msLuck += 0.0001
 	}
+	if (inFormation("cm")) player.planetoid.combo++
 
 	tmp.grasses.splice(i, 1)
 }
@@ -100,7 +118,7 @@ el.update.grassCanvas = _=>{
 	}
 }
 
-function resetGlasses() {
+function resetGrasses() {
 	tmp.grasses = []
 	tmp.spawn_time = 0
 }
@@ -126,7 +144,7 @@ function drawGrass() {
 
 		if (g) {
 			let prog = 0
-			grass_ctx.fillStyle = g.habit?hueBright(90,1-unMAIN.habit.progress(g)):g.ms?'#008DFF':g.pl?"#DDD":grassColor(getRealmSrc().tier+(g.nt?1:0))
+			grass_ctx.fillStyle = g.habit?hueBright(90,1-unMAIN.habit.progress(g)):g.ob?'#77B':g.ms?'#008DFF':g.pl?"#DDD":inPlanetoid()?"#B3F":grassColor(getRealmSrc().tier+(g.nt?1:0))
 
 			let [x,y] = [Math.min(grass_canvas.width*g.x,grass_canvas.width-G_SIZE),Math.min(grass_canvas.height*g.y,grass_canvas.height-G_SIZE)]
 

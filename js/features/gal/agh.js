@@ -61,7 +61,31 @@ MILESTONE.agh = {
 		}, {
 			unl: _ => hasUpgrade("funMachine", 3),
 			req: 48,
-			desc: `Unlock the Planetoid. (Soon!)`,
+			desc: `Unlock the Planetoid. Astral multiplies Rings.`,
+		}, {
+			unl: _ => hasAGHMilestone(11),
+			req: 51,
+			desc: `Unlock a 'Deranged' formation.`,
+		}, {
+			unl: _ => hasAGHMilestone(11),
+			req: 54,
+			desc: `Unlock a 'Scoped' formation.`,
+		}, {
+			unl: _ => hasAGHMilestone(11),
+			req: 57,
+			desc: `Unlock a 'Greedy' formation.`,
+		}, {
+			unl: _ => hasAGHMilestone(11),
+			req: 60,
+			desc: `Unlock a 'Combo' formation.`,
+		}, {
+			unl: _ => hasAGHMilestone(11),
+			req: 63,
+			desc: `Unlock a 'XP+++' formation.`,
+		}, {
+			unl: _ => hasAGHMilestone(11),
+			req: 66,
+			desc: `Unlock a 'Headstart' formation.`,
 		}
 	]
 }

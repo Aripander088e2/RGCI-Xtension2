@@ -34,13 +34,13 @@ let REALMS = {
 		grass: _ => E(1),
 		xp() {
 			let r = E(1)
-			if (upgEffect("unGrass", 1) > 1) r = getAstralEff("xp").pow(upgEffect("unGrass", 1) - 1)
+			if (upgEffect("unGrass", 1) > 1) r = E(getAstralEff("xp")).pow(upgEffect("unGrass", 1) - 1)
 			return r
 		},
 		tp: _ => E(1),
 	},
-	total: {
-		on: r => true,
+	earth: {
+		on: r => r < 3,
 		grass() {
 			let x = E(1)
 			x = x.mul(chalEff(0))
@@ -72,6 +72,12 @@ let REALMS = {
 			x = x.mul(getAstralEff('tp'))
 			return x
 		}
+	},
+	global: {
+		on: _ => true,
+		grass: _ => tmp.cutAmt,
+		xp: _ => tmp.cutAmt,
+		tp: _ => tmp.cutAmt,
 	}
 }
 
@@ -107,15 +113,17 @@ function updateRealmTemp() {
 			realmData.tp = realmData.tp.mul(subData.tp)
 		}
 
-		const tv = MAIN.tier.mult(getRealmSrc(i).tier, i)
-		realmData.grass = realmData.grass.mul(tv)
-		realmData.xp = realmData.xp.mul(tv)
+		if (i != 3) {
+			const tv = MAIN.tier.mult(getRealmSrc(i).tier, i)
+			realmData.grass = realmData.grass.mul(tv)
+			realmData.xp = realmData.xp.mul(tv)
+		}
 	}
 }
 
 function getRealmSrc(type) {
 	if (type === undefined) return tmp.realm.src
-	return [player, player.aRes, player.unRes][type]
+	return [player, player.aRes, player.unRes, player.planetoid][type]
 }
 
 function getRealmGrasses() {
@@ -135,7 +143,7 @@ function cutRealmGrass(type, v, tv) {
 
 	src.grass = src.grass.add(gain.grass.mul(tv))
 	src.xp = src.xp.add(gain.xp.mul(tv))
-	src.tp = src.tp.add(gain.tp.mul(v))
+	if (src.tp) src.tp = src.tp.add(gain.tp.mul(v))
 }
 
 function switchRealm(x) {

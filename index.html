@@ -4,7 +4,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<title>RGCI: Thunderized Balance</title>
+	<title>RGCI:TB // Alpha</title>
 	<link rel="icon" href="images/icon.png">
 
 	<script src="js/utils/break_eternity.js"></script>
@@ -56,6 +56,7 @@
 	<div id="loading">
 		<span id="loading_text">Loading...</span>
 	</div>
+	<div id="planet_bg" style="display: none"></div>
 	<div id="fog" style="display: none"></div>
 	<div id="app">
 		<div class="table_space">
@@ -67,6 +68,7 @@
 					</div>
 				</div>
 			</div>
+			<div id="time_left" style="position: fixed; top: 15px; right: 15px"></div>
 		</div><div class="table_space">
 			<div id="level" style="margin: 10px;">
 				<div id="level_top_bar"></div>
@@ -89,7 +91,7 @@
 					</div>
 				</div>
 				<div style="width: 50%; height: 100%;">
-					<div style="height: 50%;">
+					<div id='levels_info' style="height: 50%;">
 						<div id="level_div">
 							<div id="level_bar"></div><div id="level_info">
 								Level <b id="level_amt" class="cyan"></b><br>
@@ -110,11 +112,14 @@
 								<span id="astral_cut" style="font-size: 18px;"></span>
 							</div>
 						</div>
-					</div><div style="height: 50%;">
+					</div>
+					<div style="height: 50%;">
 						<div class="upgs_div" id="upgs_div_grass"></div>
 						<div class="upgs_div" id="upgs_div_aGrass"></div>
 						<div class="upgs_div" id="upgs_div_unGrass"></div>
+						<div class="upgs_div" id="upgs_div_planetarium"></div>
 					</div>
+					<div id='formations' style="height: 50%"></div>
 				</div>
 			</div><div id="map_div_opt">
 				<button onclick="save()">Save</button>
@@ -129,7 +134,7 @@
 
 				<b style="color: #ffffbf">RGCI: Thunderized Balance</b> - <a href="http://aarextiaokhiao.github.io">By TehAarex</a><br>
 				<span style="font-size: 16px">
-					Version β4b
+					Version β4c α1
 				</span><br>
 				<span style="font-size: 12px">
 					Inspired by <a href="http://www.roblox.com/games/9292879820">Grass Cutting Incremental</a>,
@@ -207,6 +212,7 @@
 					<div style="width: 33%; height: 100%;">
 						<div id="reset_div_crystal"></div>
 						<div id="reset_div_oil"></div>
+						<div id="reset_div_vapor"></div>
 					</div><div style="width: 67%; height: 100%;">
 						<div id="upgs_div_crystal"></div>
 						<div id="upgs_div_oil"></div>
@@ -263,7 +269,7 @@
 					<div style="width: 50%; height: 100%;"><div id="reset_div_recel"></div></div>
 				</div>
 				<div style="width: 100%; height: 50%;" class="table_center">
-					<div style="width: 50%; height: 100%;"><div id="reset_div_planetoid_realm"></div></div>
+					<div style="width: 50%; height: 100%;"><div id="reset_div_planetoid_earth"></div></div>
 					<div style="width: 50%; height: 100%;"></div>
 				</div>
 			</div><div id="map_div_rf">
@@ -354,6 +360,23 @@
 					<div style="width: 50%; height: 100%;"><div id="reset_div_planetoid"></div></div>
 					<div style="width: 50%; height: 100%;"></div>
 				</div>
+            </div><div id="map_div_ring">
+                <div style="width: 100%; height: 50%;" class="table_center">
+                    <div style="width: 33%; height: 100%;"><div id="reset_div_planetoid_trial"></div></div>
+                    <div style="width: 67%; height: 100%;"><div id="upgs_div_ring" style="display: none;"></div></div>
+                </div><div style="width: 100%; height: 50%;" class="table_center">
+                    <div style="width: 33%; height: 100%;"><div id="reset_div_planetoid_exit"></div></div>
+                    <div style="width: 67%; height: 100%;"><div id="upgs_div_obs" style="display: none;"></div></div>
+                </div>
+            </div><div id="map_div_astro">
+                <div style="width: 100%; height: 50%;" class="table_center">
+                    <div style="width: 33%; height: 100%;"><div id="reset_div_astro"></div></div>
+                    <div style="width: 34%; height: 100%;"><div id="upgs_div_astro" style="display: none;"></div></div>
+                    <div style="width: 33%; height: 100%;"><div id="upgs_div_res" style="display: none;"></div></div>
+                </div><div style="width: 100%; height: 50%;" class="table_center">
+                    <div style="width: 33%; height: 100%;"><div id="reset_div_quadrant"></div></div>
+                    <div style="width: 67%; height: 100%;"></div>
+                </div>
             </div>
 		</div>
 
@@ -367,6 +390,7 @@
 				<button id="rMap" onclick="moveMap(1,0)" class="locked">▶</button>
 				<button id="uMap" onclick="moveMap(0,-1)" class="locked">▲</button>
 				<button id="dMap" onclick="moveMap(0,1)" class="locked">▼</button>
+				<button id="spaceMap" onclick="goToSpace()"></button>
 			</span>
 			<span id="pin_bottom"></span>
 			<div class="smallAmt" id="position"></div>
@@ -380,6 +404,7 @@
 			<button onclick="createPin()">Pin current location</button><br>
 			<table class="table_fix" id="pin_table"></table><br>
 			<button onclick="toggleOption('pin_bottom')">Pins on bottom: <span id='pin_bottom_opt'>OFF</span></button>
+			<button id="sort_pins" onclick="sortPins()">Sort</button>
 			<button onclick='go_to=""'>Close</button>
 		</div>
 	</div>

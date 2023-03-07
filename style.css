@@ -67,8 +67,17 @@ button.locked {
     background-color: #111;
 }
 
-button:not(.locked):hover {
+button.chosen {
+    cursor: default;
+    background-color: #7f7d;
+}
+
+button:not(.locked):not(.chosen):hover {
     background-color: #eee;
+}
+
+button * {
+	pointer-events: none;
 }
 
 .table_center {
@@ -451,7 +460,8 @@ button:not(.locked):hover {
 .reset_div.gal,
 .reset_req.gal,
 .chal_div.gal,
-.map_btn.gal {
+.map_btn.gal,
+.space {
     background-color: #bf00ff;
 }
 
@@ -462,6 +472,7 @@ button:not(.locked):hover {
 
 .reset_div.sac,
 .reset_req.sac,
+.map_btn.sac,
 .upg_desc.dm,
 .upgs_div.dm {
     border-color: #ffa4d9;
@@ -480,12 +491,6 @@ button:not(.locked):hover {
 .upg_desc.np,
 .upgs_div.np {
     background-color: #bf3;
-}
-
-.reset_div.planetoid,
-.reset_div.planetoid_realm {
-    background: linear-gradient(#b3f, #37f);
-    border-color: #bbbb
 }
 
 .upgs_ctn {
@@ -915,4 +920,68 @@ button:not(.locked):hover {
 
 #stats_desc {
     font-size: 16px;
+}
+
+/* PLANETOID */
+.reset_div.planetoid,
+.reset_div.planetoid_earth,
+.reset_div.planetoid_trial,
+.planetoid {
+    background: linear-gradient(#b3f, #37f);
+    border-color: #bbbb
+}
+
+.cosmic {
+    background-color: #307;
+}
+.cosmic #level_top_bar {
+    background-color: #70b;
+}
+
+.upg_desc.planetarium,
+.upgs_div.planetarium {
+    background-color: #b0f;
+}
+.reset_div.astro,
+.upg_desc.astro,
+.upgs_div.astro {
+    background-color: #ffb;
+}
+.upg_desc.ring,
+.upgs_div.ring {
+    background-color: #0bf;
+}
+.upg_desc.obs,
+.upgs_div.obs {
+    background-color: #77b;
+}
+.upg_desc.res,
+.upgs_div.res {
+    background-color: #7bb;
+}
+
+#planet_bg {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: linear-gradient(#b0b7, transparent);
+}
+
+#formations {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	align-content: center;
+	justify-content: center
+}
+.formation, .formation button {
+	width: 150px;
+	height: 150px;
+	font-size: 13px;
+}
+.formation u {
+	font-weight: bold;
+	font-size: 15px
 }

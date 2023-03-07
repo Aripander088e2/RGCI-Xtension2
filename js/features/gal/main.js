@@ -52,8 +52,10 @@ RESET.gal = {
 
 		player.plat = 0
 		if (!hasStarTree("qol", 11)) {
-			for (var i = 0; i < 8; i++) player.chal.comp[i] = 0
-			for (var i = 0; i < 8; i++) player.chal.max[i] = 0
+			for (var i = 0; i < 8; i++) {
+				player.chal.comp[i] = 0
+				player.chal.max[i] = 0
+			}
 		}
 		player.grasshop = 0
 		player.steel = E(0)
@@ -89,6 +91,7 @@ tmp_update.push(_=>{
 	if (!tmp.gal) tmp.gal = data
 
 	data.star_gain = MAIN.gal.gain()
+	data.star_gain_p = upgEffect("res", 0, 0)
 
 	updateAstralTemp()
 	updateAGHTemp()
@@ -101,6 +104,7 @@ tmp_update.push(_=>{
 	if (hasAGHMilestone(7)) data.ms.chance *= 2
 	data.ms.gain = 1
 	data.ms.gain += upgEffect('dm', 3)
+	data.ms.gain *= tmp.cutAmt
 
 	//updateChronoTemp()
 	updateSCTemp()
@@ -113,10 +117,14 @@ function galTick(dt) {
 
 	player.gal.ghPotential = Math.max(player.gal.ghPotential, MAIN.gh.bulk())
 	player.gal.gsPotential = Math.max(player.gal.gsPotential, aMAIN.gs.bulk())
-	if (RESET.gal.req()) player.gal.neg = Math.max(player.gal.neg, tmp.gal.agh.neg)
 
 	if (player.ghAuto && player.grasshop < player.gal.ghPotential) player.grasshop = player.gal.ghPotential
 	if (player.gsAuto && player.aRes.grassskip < player.gal.gsPotential) player.aRes.grassskip = player.gal.gsPotential
+
+	if (RESET.gal.req()) player.gal.stars = player.gal.stars.add(tmp.gal.star_gain.mul(tmp.gal.star_gain_p*dt))
+	if (RESET.gal.req()) player.gal.neg = Math.max(player.gal.neg, tmp.gal.agh.neg)
+
+	if (hasUpgrade("res", 1)) for (let i = 0; i <= 13; i++) buyMaxSCUpgrade("progress", i)
 }
 
 function galUnlocked() {
@@ -137,10 +145,6 @@ function setupGal() {
 		gsPotential: 0,
 		neg: 0,
 
-		/*chrona: 0,
-		ability: null,
-		abilityCooldown: 0,*/
-
 		stars: E(0),
 		star_chart: {
 			qol: [],
@@ -152,6 +156,15 @@ function setupGal() {
 		sacTime: 0,
 		sacTimes: 0,
 	}
+}
+
+//HTML
+function inSpace() {
+	return mapPos.dim == "space"
+}
+
+function goToSpace() {
+	if (galUnlocked() && !player.planetoid?.started) switchDim(mapPos.dim != "space" ? "space" : inPlanetoid() ? "planetoid" : "earth")
 }
 
 el.update.space = _=>{
@@ -167,10 +180,12 @@ el.update.space = _=>{
 		updateUpgradesHTML('moonstone')
 	}
 	if (mapID == 'sac') {
-        updateResetHTML('sac')
+		updateResetHTML('sac')
 		updateUpgradesHTML('dm')
-        updateResetHTML('planetoid')
 	}
+
+	tmp.el.main_app.changeStyle('background-color',inSpace() ? "#fff1" : "#fff2")
+	document.body.style.backgroundColor = inSpace() ? "#0A001E" : "#0052af"
 }
 
 //MOONSTONE
@@ -235,8 +250,6 @@ UPGS.moonstone = {
 			},
 			effDesc: x => format(x,0)+"x",
 		}, {
-			max: 4,
-
 			costOnce: true,
 
 			title: "Moon Stars",
@@ -245,6 +258,7 @@ UPGS.moonstone = {
 			res: "moonstone",
 			icon: ["Curr/Star"],
 			
+			max: 4,
 			cost: i => 7,
 			bulk: i => Math.floor(i/7),
 
@@ -254,8 +268,6 @@ UPGS.moonstone = {
 			effDesc: x => format(x,0)+"x",
 		}, {
 			unl: _ => player.aRes?.fTimes,
-			max: 15,
-
 			costOnce: true,
 
 			title: "Moon Fun",
@@ -264,6 +276,7 @@ UPGS.moonstone = {
 			res: "moonstone",
 			icon: ["Curr/Fun"],
 			
+			max: 15,
 			cost: i => 5,
 			bulk: i => Math.floor(i/5),
 
@@ -273,8 +286,6 @@ UPGS.moonstone = {
 			effDesc: x => format(x,0)+"x",
 		}, {
 			unl: _ => player.aRes?.fTimes,
-			max: 5,
-
 			costOnce: true,
 
 			title: "Moon SFRGT",
@@ -282,7 +293,8 @@ UPGS.moonstone = {
 
 			res: "moonstone",
 			icon: ["Curr/SuperFun"],
-			
+
+			max: 5,
 			cost: i => 10,
 			bulk: i => Math.floor(i/10),
 
@@ -292,8 +304,6 @@ UPGS.moonstone = {
 			effDesc: x => format(x,0)+"x",
 		}, {
 			unl: _ => hasAGHMilestone(7),
-			max: 5,
-
 			costOnce: true,
 
 			title: "Moon Foundry",
@@ -301,7 +311,8 @@ UPGS.moonstone = {
 
 			res: "moonstone",
 			icon: ["Icons/Foundry"],
-			
+
+			max: 5,
 			cost: i => 30,
 			bulk: i => Math.floor(i/30),
 
@@ -311,7 +322,6 @@ UPGS.moonstone = {
 			effDesc: x => format(x,0)+"x",
 		}, {
 			unl: _ => hasAGHMilestone(7),
-			max: 5,
 
 			costOnce: true,
 
@@ -320,7 +330,8 @@ UPGS.moonstone = {
 
 			res: "moonstone",
 			icon: ["Curr/DarkMatter"],
-			
+
+			max: 5,
 			cost: i => 1e3,
 			bulk: i => Math.floor(i/1e3),
 
@@ -330,8 +341,6 @@ UPGS.moonstone = {
 			effDesc: x => format(x,0)+"x",
 		}, {
 			unl: _ => hasAGHMilestone(7),
-			max: 500,
-
 			title: "Moon Platinum II",
 			tier: 3,
 			desc: `<b class="green">Double</b> Platinum per level.`,
@@ -339,6 +348,7 @@ UPGS.moonstone = {
 			res: "moonstone",
 			icon: ["Curr/Platinum"],
 			
+			max: 500,
 			cost: i => E(2).pow(i).mul(1e4),
 			bulk: i => E(i).div(1e4).log(2).floor().toNumber()+1,
 
@@ -375,7 +385,7 @@ UPGS.star = {
 			},
 			effDesc: x => format(x)+"x",
 		},{
-			max: Infinity,
+			max: 80,
 
 			title: "Industrial Stars",
 			desc: `Increase star gain by <b class="green">20%</b> compounding per level.`,

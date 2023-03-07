@@ -185,10 +185,15 @@ function deepUndefinedAndDecimal(obj, data) {
 	return obj
 }
 
+function retrieveData(obj, setup) {
+	if (player[obj]) player[obj] = deepUndefinedAndDecimal(player[obj], setup())
+}
+
 function convertStringToDecimal() {
-	if (player.aRes) player.aRes = deepUndefinedAndDecimal(player.aRes, setupDecel())
-	if (player.gal) player.gal = deepUndefinedAndDecimal(player.gal, setupGal())
-	if (player.unRes) player.unRes = deepUndefinedAndDecimal(player.unRes, setupRecel())
+	retrieveData("aRes", setupDecel)
+	retrieveData("gal", setupGal)
+	retrieveData("unRes", setupRecel)
+	retrieveData("planetoid", setupPlanetoid)
 }
 
 function cannotSave() { return false }
@@ -196,7 +201,7 @@ function cannotSave() { return false }
 let saveInterval
 function save() {
 	let str = btoa(JSON.stringify(player))
-	if (cannotSave() || findNaN(str, true)) return
+	if (cannotSave() || findNaN(player)) return
 	tmp.prevSave = localStorage.getItem(TB_SAVE)
 	localStorage.setItem(TB_SAVE, str)
 	console.log("Game Saved")

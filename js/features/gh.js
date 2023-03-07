@@ -48,7 +48,7 @@ MILESTONE.gh = {
 			desc: `Platinum is <b class="green">2x</b> more common.`,
 		},{
 			req: 8,
-			desc: `<b class="green">2x</b> more XP.`,
+			desc: `<b class="green">Double</b> XP.`,
 		},{
 			req: 10,
 			desc: `Unlock Steelie reset.`,

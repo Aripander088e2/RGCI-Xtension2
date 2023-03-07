@@ -51,8 +51,6 @@ RESET.steel = {
 			if (!force) {
 				player.steel = player.steel.add(tmp.steelGain)
 				player.sTimes++
-
-				if (!player.aRes) player.aRes = setupDecel()
 			}
 
 			updateTemp()
@@ -243,7 +241,7 @@ UPGS.foundry = {
 			max: Infinity,
 
 			title: "Grass Steel",
-			desc: `Increase steel gain by <b class="green">+20%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
+			desc: `Increase steel gain by <b class="green">+20%</b> per level.<br>This is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
 		
 			res: "grass",
 			icon: ["Curr/Steel"],
@@ -261,7 +259,7 @@ UPGS.foundry = {
 			max: Infinity,
 
 			title: "Prestige Steel",
-			desc: `Increase steel gain by <b class="green">+20%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
+			desc: `Increase steel gain by <b class="green">+20%</b> per level.<br>This is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
 		
 			res: "pp",
 			icon: ["Curr/Steel"],
@@ -279,7 +277,7 @@ UPGS.foundry = {
 			max: 1e3,
 
 			title: "Crystal Steel",
-			desc: `Increase steel gain by <b class="green">+20%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
+			desc: `Increase steel gain by <b class="green">+20%</b> per level.<br>This is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
 		
 			res: "crystal",
 			icon: ["Curr/Steel"],
@@ -297,7 +295,7 @@ UPGS.foundry = {
 			max: Infinity,
 
 			title: "Steel Steel",
-			desc: `Increase steel gain by <b class="green">+20%</b> per level. This effect is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
+			desc: `Increase steel gain by <b class="green">+20%</b> per level.<br>This is increased by <b class="green">25%</b> for every <b class="yellow">25</b> levels.`,
 		
 			res: "steel",
 			icon: ["Curr/Steel"],
@@ -370,7 +368,7 @@ UPGS.gen = {
 			unl: _=>hasUpgrade("factory", 2),
 
 			title: "Prestige Charge",
-			desc: `Increase charge rate by <b class="green">+10%</b> per level. This effect is increased by <b class="green">50%</b> for every <b class="yellow">25</b> levels.`,
+			desc: `Increase charge rate by <b class="green">+10%</b> per level.<br>This is increased by <b class="green">50%</b> for every <b class="yellow">25</b> levels.`,
 		
 			res: "pp",
 			icon: ["Curr/Charge"],
@@ -390,7 +388,7 @@ UPGS.gen = {
 			unl: _=>hasUpgrade("factory", 2),
 
 			title: "Crystal Charge",
-			desc: `Increase charge rate by <b class="green">+10%</b> per level. This effect is increased by <b class="green">50%</b> for every <b class="yellow">25</b> levels.`,
+			desc: `Increase charge rate by <b class="green">+10%</b> per level.<br>This is increased by <b class="green">50%</b> for every <b class="yellow">25</b> levels.`,
 		
 			res: "crystal",
 			icon: ["Curr/Charge"],
@@ -410,7 +408,7 @@ UPGS.gen = {
 			unl: _=>hasUpgrade("factory", 2) && hasStarTree("progress", 3),
 
 			title: "Steel Charge",
-			desc: `Increase charge rate by <b class="green">+10%</b> per level. This effect is increased by <b class="green">50%</b> for every <b class="yellow">25</b> levels.`,
+			desc: `Increase charge rate by <b class="green">+10%</b> per level.<br>This is increased by <b class="green">50%</b> for every <b class="yellow">25</b> levels.`,
 		
 			res: "steel",
 			icon: ["Curr/Charge"],
@@ -627,7 +625,7 @@ EFFECT.charger = {
 	effs: [
 		{
 			req: E(1),
-			eff: c => player.crystal.add(1).pow(c.add(1).log10().pow(.2).div(20)),
+			eff: c => player.crystal.add(1).pow(c.add(1).log10().pow(.25).div(20)).pow(upgEffect('ring', 7)),
 			desc: x => "Crystals give "+format(x)+"x more Steel.",
 		},{
 			req: E(100),

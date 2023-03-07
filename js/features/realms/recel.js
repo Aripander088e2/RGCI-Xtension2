@@ -18,14 +18,13 @@ function setupRecel() {
 	}
 }
 
-let unMAIN = {}
-
 REALMS.recelOnly = {
 	on: r => r == 2,
 	grass: _ => 1e-6,
 	xp: _ => 1e-7,
 	tp: _ => 1e-6 * getEffect("uh", "tp"),
 }
+MAIN.recel = unMAIN = {}
 
 RESET.recel = {
 	unl: _=>hasAGHMilestone(7),
@@ -41,6 +40,8 @@ RESET.recel = {
 	hotkey: `Shift+T`,
 
 	reset(force=false) {
+		if (inPlanetoid()) return
+		if (!player.unRes) player.unRes = setupRecel()
 		if (hasUpgrade("funMachine", 3)) switchRealm(2)
 	},
 }
@@ -195,9 +196,12 @@ unMAIN.habit = {
 		if (g.habit == tmp.unRes.habit.max) removeGrass(i)
 	},
 	speed() {
-		let r = 10
+		let r = 5
 		r *= getEffect("uh", "hb")
 		r *= upgEffect("np", 1)
+		r *= upgEffect("obs", 2)
+		if (inFormation("dr")) r *= 4
+		if (inFormation("sc")) r /= 4
 		return r
 	},
 	startingMult() {
@@ -242,13 +246,13 @@ unMAIN.np = {
 		if (!player.unRes) return E(0)
 
 		let r = E(2).pow(player.unRes.level / 20 - 2).max(1)
-		r = r.mul(upgEffect('momentum', 13))
 		r = r.mul(E(1.08).pow(player.gal.astral - 30).max(1))
 		r = r.mul(getEffect("uh", "np"))
+		r = r.mul(upgEffect('momentum', 13))
+		r = r.mul(upgEffect("ring", 4))
 		return r.floor()
 	},
 }
-
 RESET.np = {
 	unl: _=>player.decel==2,
 
@@ -288,7 +292,6 @@ RESET.np = {
 		updateTemp()
 	},
 }
-
 UPGS.np = {
 	unl: _=>player.decel==2,
 
@@ -337,7 +340,7 @@ UPGS.np = {
 			},
 			effDesc: x => format(x,1)+"x",
 		}, {
-			max: Infinity,
+			max: 5,
 
 			title: "NP Dark Matter",
 			desc: `<b class="green">Double</b> Dark Matter.`,
@@ -362,8 +365,8 @@ UPGS.np = {
 			res: "np",
 			icon: ["Curr/Momentum"],
 			
-			cost: i => Decimal.pow(1.75,i**1.25).mul(150).ceil(),
-			bulk: i => i.div(150).max(1).log(1.75).root(1.25).floor().toNumber()+1,
+			cost: i => Decimal.pow(3,i**1.25).mul(150).ceil(),
+			bulk: i => i.div(150).max(1).log(3).root(1.25).floor().toNumber()+1,
 
 			effect(i) {
 				return E(2).pow(i)
@@ -377,6 +380,25 @@ tmp_update.push(_=>{
 	tmp.unRes.npGain = unMAIN.np.gain()
 })
 
+//Vaporize
+RESET.vapor = {
+	unl: _=>player.decel==2,
+
+	req: _=>player.unRes.level>=100,
+	reqDesc: `Reach Level 100.`,
+
+	resetDesc: `<b class="red">Coming soon! Wait until this comes out in RGCI or I got Lethal's permission.</b>`,
+	resetGain: _=>``,
+
+	title: `Vaporize`,
+	resetBtn: `...`,
+
+	reset(force=false) {
+		return
+	},
+}
+
+//FULL RESET
 function resetUnnaturalRealm() {
 	player.unRes.grass = E(0)
 	resetUpgrades("unGrass")
