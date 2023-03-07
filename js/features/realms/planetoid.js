@@ -176,7 +176,7 @@ UPGS.planetarium = {
 		}, {
 			title: "Astrolabe",
 			desc: `Gain <b class="green">+1x</b> more Astrolabe.<br>This is <b class="green">doubled</b> every <b class="yellow">25</b> levels.`,
-			unl: _ => player.planetoid.aTimes,
+			unl: _ => player.planetoid?.aTimes,
 
 			res: "planetarium",
 			icon: ['Curr/Astrolabe'],
@@ -442,7 +442,7 @@ el.setup.formation = _=>{
 plMAIN.obs = {
 	gain: _ => 1,
 	chance: _ => 0.02+upgEffect("res",6,0),
-	canGetRes: _ => player.planetoid.aTimes > 0,
+	canGetRes: _ => player.planetoid?.aTimes > 0,
 }
 UPGS.obs = {
 	title: "Observatory",
@@ -525,7 +525,7 @@ UPGS.obs = {
 		}, {
 			title: "Observed Astro",
 			desc: `Increase Astrolabe gain by <b class="green">+1x</b>.`,
-			unl: _ => player.planetoid.aTimes,
+			unl: _ => player.planetoid?.aTimes,
 
 			res: "obs",
 			icon: ['Curr/Astrolabe'],
@@ -654,7 +654,7 @@ RESET.astro = {
     resetDesc: `Reset your Planetariums and Cosmic.`,
     resetGain: _=> `
         <b>+${tmp.plRes.aGain.format(0)}</b> Astrolabe
-        ${player.planetoid.aTimes ? '' : '<br><b class="cyan">Also unlock Reservatory!</b>'}
+        ${player.planetoid?.aTimes ? '' : '<br><b class="cyan">Also unlock Reservatory!</b>'}
     `,
 
     title: `Astrolabe`,
@@ -686,7 +686,7 @@ UPGS.astro = {
 	unl: _=>inPlanetoid(),
 	autoUnl: _=>hasUpgrade("res",5),
 
-    req: _=>player.planetoid.aTimes>0,
+    req: _=>player.planetoid?.aTimes>0,
     reqDesc: `Use the Astrolabe to unlock.`,
 
 	ctn: [
