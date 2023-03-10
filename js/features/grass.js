@@ -144,7 +144,7 @@ function drawGrass() {
 
 		if (g) {
 			let prog = 0
-			grass_ctx.fillStyle = g.habit?hueBright(90,1-unMAIN.habit.progress(g)):g.ob?'#77B':g.ms?'#008DFF':g.pl?"#DDD":inPlanetoid()?"#B3F":grassColor(getRealmSrc().tier+(g.nt?1:0))
+			grass_ctx.fillStyle = g.habit?hueBright(90,1-unMAIN.habit.progress(g)):g.obs?'#77B':g.ms?'#008DFF':g.pl?"#DDD":inPlanetoid()?"#B3F":grassColor(getRealmSrc().tier+(g.nt?1:0))
 
 			let [x,y] = [Math.min(grass_canvas.width*g.x,grass_canvas.width-G_SIZE),Math.min(grass_canvas.height*g.y,grass_canvas.height-G_SIZE)]
 

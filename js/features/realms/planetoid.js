@@ -440,7 +440,11 @@ el.setup.formation = _=>{
 
 //Observatory
 plMAIN.obs = {
-	gain: _ => 1,
+	gain() {
+		let r = E(1)
+		if (inFormation("sp")) r = r.mul(3)
+		return r
+	},
 	chance: _ => 0.02+upgEffect("res",6,0),
 	canGetRes: _ => player.planetoid?.aTimes > 0,
 }
