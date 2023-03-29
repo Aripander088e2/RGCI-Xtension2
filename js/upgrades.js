@@ -37,7 +37,7 @@ const UPGS = {
 
         ctn: [
             {
-                max: 1000,
+                max: Infinity,
 
                 title: "Grass Value",
                 desc: `Increase Grass gain by <b class="green">1</b> per level.<br>This effect is <b class="green">doubled</b> every <b class="yellow">25</b> levels.`,
@@ -55,7 +55,7 @@ const UPGS = {
                 },
                 effDesc: x => x.format()+"x",
             },{
-                max: 1000,
+                max: 2500,
 
                 title: "More Grass",
                 desc: `Increase grass cap by <b class="green">1</b> per level.`,
@@ -73,7 +73,7 @@ const UPGS = {
                 },
                 effDesc: x => "+"+format(x,0),
             },{
-                max: 250,
+                max: 2500,
 
                 title: "Grow Speed",
                 desc: `Increase grass grow speed by <b class="green">10%</b> per level.`,
@@ -91,7 +91,7 @@ const UPGS = {
                 },
                 effDesc: x => format(x)+"x",
             },{
-                max: 1000,
+                max: Infinity,
 
                 title: "XP",
                 desc: `Increase experience (XP) gained by <b class="green">1</b> per level.<br>This effect is <b class="green">doubled</b> every <b class="yellow">25</b> levels.`,
@@ -109,7 +109,7 @@ const UPGS = {
                 },
                 effDesc: x => x.format()+"x",
             },{
-                max: 5,
+                max: 15,
 
                 title: "Range",
                 desc: `Increase grass cut range by <b class="green">10</b> per level. Base is 50.`,
@@ -162,7 +162,7 @@ const UPGS = {
                 },
                 effDesc: x => x.format()+"x",
             },{
-                max: 10,
+                max: 400,
 
                 costOnce: true,
 
@@ -172,7 +172,7 @@ const UPGS = {
                 res: "perk",
                 icon: ['Icons/MoreGrass'],
                 
-                cost: i => 1,
+                cost: i => 0.25,
                 bulk: i => i,
 
                 effect(i) {
@@ -182,7 +182,7 @@ const UPGS = {
                 },
                 effDesc: x => "+"+format(x,0),
             },{
-                max: 10,
+                max: 400,
 
                 costOnce: true,
 
@@ -192,7 +192,7 @@ const UPGS = {
                 res: "perk",
                 icon: ['Icons/Speed'],
                 
-                cost: i => 1,
+                cost: i => 0.25,
                 bulk: i => i,
 
                 effect(i) {
@@ -244,7 +244,7 @@ const UPGS = {
                 },
                 effDesc: x => "+"+format(x,0),
             },{
-                max: 1,
+                max: 4,
 
                 costOnce: true,
 
@@ -254,7 +254,7 @@ const UPGS = {
                 res: "perk",
                 icon: ['Icons/MoreGrass'],
                 
-                cost: i => 10,
+                cost: i => 1,
                 bulk: i => Math.floor(i/10),
 
                 effect(i) {
@@ -264,7 +264,7 @@ const UPGS = {
                 },
                 effDesc: x => "+"+format(x,0),
             },{
-                max: 10,
+                max: 1000,
 
                 unl: _=>player.cTimes>0,
 
@@ -276,7 +276,7 @@ const UPGS = {
                 res: "perk",
                 icon: ['Icons/TP'],
                 
-                cost: i => 1,
+                cost: i => 0.25,
                 bulk: i => i,
 
                 effect(i) {
@@ -286,7 +286,7 @@ const UPGS = {
                 },
                 effDesc: x => x.format()+"x",
             },{
-                max: 25,
+                max: 250,
 
                 unl: _=>player.cTimes>0,
 
@@ -298,7 +298,7 @@ const UPGS = {
                 res: "perk",
                 icon: ['Curr/Prestige'],
                 
-                cost: i => 2,
+                cost: i => 1,
                 bulk: i => Math.floor(i/2),
 
                 effect(i) {
@@ -308,7 +308,7 @@ const UPGS = {
                 },
                 effDesc: x => x.format()+"x",
             },{
-                max: 25,
+                max: 205,
 
                 unl: _=>player.cTimes>0,
 
@@ -320,7 +320,7 @@ const UPGS = {
                 res: "perk",
                 icon: ['Curr/Crystal'],
                 
-                cost: i => 4,
+                cost: i => 1,
                 bulk: i => Math.floor(i/4),
 
                 effect(i) {
@@ -359,7 +359,7 @@ const UPGS = {
                 effDesc: x => format(tmp.autocut)+" seconds",
             },{
                 unl: _=>player.pTimes>0,
-                max: 5,
+                max: 45,
 
                 title: "Autocut Value",
                 desc: `Auto cuts grass is worth <b class="green">+100%</b> more grass, XP & TP.`,
@@ -367,8 +367,8 @@ const UPGS = {
                 res: "pp",
                 icon: ['Curr/Grass'],
                             
-                cost: i => Decimal.pow(3,i).mul(20).ceil(),
-                bulk: i => i.div(20).max(1).log(3).floor().toNumber()+1,
+                cost: i => Decimal.pow(2,i).mul(20).ceil(),
+                bulk: i => i.div(20).max(1).log(2).floor().toNumber()+1,
             
                 effect(i) {
                     let x = E(i+1)
@@ -378,7 +378,7 @@ const UPGS = {
                 effDesc: x => format(x)+"x",
             },{
                 unl: _=>player.pTimes>0,
-                max: 3,
+                max: 12,
 
                 title: "Autocut Amount",
                 desc: `Increases auto cut amount by <b class="green">1</b>.`,
@@ -486,7 +486,7 @@ const UPGS = {
             },{
                 unl: _=>player.grasshop>=4,
 
-                max: 10,
+                max: 100,
 
                 title: "PP Generation",
                 desc: `Passively generate <b class="green">1%</b> of PP you would earn on prestige per second.`,
@@ -505,7 +505,7 @@ const UPGS = {
             },{
                 unl: _=>player.grasshop>=4,
 
-                max: 10,
+                max: 100,
 
                 title: "Crystal Generation",
                 desc: `Passively generate <b class="green">1%</b> of crystal you would earn on crystallize per second.`,
@@ -646,7 +646,7 @@ const UPGS = {
                 },
                 effDesc: x => format(tmp.autocut)+" seconds",
             },{
-                max: 100,
+                max: 1000,
 
                 costOnce: true,
 
@@ -666,7 +666,7 @@ const UPGS = {
                 },
                 effDesc: x => format(x)+"x",
             },{
-                max: 100,
+                max: 1000,
 
                 costOnce: true,
 
@@ -686,7 +686,7 @@ const UPGS = {
                 },
                 effDesc: x => format(x)+"x",
             },{
-                max: 100,
+                max: 1000,
 
                 unl: _=>player.cTimes>0,
 
@@ -708,7 +708,7 @@ const UPGS = {
                 },
                 effDesc: x => format(x)+"x",
             },{
-                max: 100,
+                max: 1000,
 
                 unl: _=>player.cTimes>0,
 
@@ -730,7 +730,7 @@ const UPGS = {
                 },
                 effDesc: x => format(x)+"x",
             },{
-                max: 100000,
+                max: 10000000,
 
                 unl: _=>player.sTimes>0,
 
@@ -752,7 +752,7 @@ const UPGS = {
                 },
                 effDesc: x => format(x)+"x",
             },{
-                max: 250,
+                max: 950,
 
                 unl: _=>player.sTimes>0,
 
@@ -774,7 +774,7 @@ const UPGS = {
                 },
                 effDesc: x => "^"+format(x),
             },{
-                max: 250,
+                max: 950,
 
                 unl: _=>player.sTimes>0,
 
@@ -796,7 +796,7 @@ const UPGS = {
                 },
                 effDesc: x => "^"+format(x),
             },{
-                max: 100000000,
+                max: 1000000000000000,
 
                 unl: _=>player.aTimes>0,
 
@@ -818,7 +818,7 @@ const UPGS = {
                 },
                 effDesc: x => format(x)+"x",
             },{
-                max: 100000000000000,
+                max: 1000000000000000000,
 
                 unl: _=>player.lTimes>0,
 
@@ -840,7 +840,7 @@ const UPGS = {
                 },
                 effDesc: x => format(x)+"x",
             },{
-                max: 250,
+                max: 950,
 
                 unl: _=>player.rocket.part>0||player.gTimes>0,
 
