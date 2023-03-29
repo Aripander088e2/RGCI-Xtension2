@@ -24,7 +24,7 @@ const UPG_RES = {
 const isResNumber = ['perk','plat','rf','momentum','moonstone']
 
 const UPGS = {
-    grass: {
+      grass: {
         unl: _=> !tmp.outsideNormal,
 
         cannotBuy: _=>inChal(1) || inChal(7),
@@ -131,6 +131,7 @@ const UPGS = {
     },
     perk: {
         title: "Perk Upgrades",
+        btns: `<button id="losePerksBtn" class="buyAllUpg" onclick='toggleOption("losePerks")'>Keep on reset: <span id="losePerks"></span></button>`,
 
         req: _=>player.level >= 1 || player.pTimes > 0,
         reqDesc: _=>`Reach Level 1 to unlock.`,
@@ -729,7 +730,7 @@ const UPGS = {
                 },
                 effDesc: x => format(x)+"x",
             },{
-                max: 100,
+                max: 100000,
 
                 unl: _=>player.sTimes>0,
 
@@ -751,7 +752,7 @@ const UPGS = {
                 },
                 effDesc: x => format(x)+"x",
             },{
-                max: 25,
+                max: 250,
 
                 unl: _=>player.sTimes>0,
 
@@ -773,7 +774,7 @@ const UPGS = {
                 },
                 effDesc: x => "^"+format(x),
             },{
-                max: 25,
+                max: 250,
 
                 unl: _=>player.sTimes>0,
 
@@ -795,7 +796,7 @@ const UPGS = {
                 },
                 effDesc: x => "^"+format(x),
             },{
-                max: 100,
+                max: 100000000,
 
                 unl: _=>player.aTimes>0,
 
@@ -817,7 +818,7 @@ const UPGS = {
                 },
                 effDesc: x => format(x)+"x",
             },{
-                max: 100,
+                max: 100000000000000,
 
                 unl: _=>player.lTimes>0,
 
@@ -839,7 +840,7 @@ const UPGS = {
                 },
                 effDesc: x => format(x)+"x",
             },{
-                max: 25,
+                max: 250,
 
                 unl: _=>player.rocket.part>0||player.gTimes>0,
 
@@ -864,6 +865,7 @@ const UPGS = {
         ],
     },
 }
+
 
 // <b class="green"></b>
 // <b class="yellow"></b>
