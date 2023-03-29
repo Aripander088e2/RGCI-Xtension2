@@ -1,4 +1,32 @@
-grass: {
+const U_STEP = [1,25,1/0]
+
+///[Name, Player Data, Base, Spent]
+const UPG_RES = {
+    grass: ["Grass",_=>[player,"grass"],'GrassBase'],
+    perk: ["Perk",_=>[player,"maxPerk","spentPerk"],'PerkBase'],
+    pp: ["PP",_=>[player,"pp"],'PrestigeBase'],
+    plat: ["Platinum",_=>[player,"plat"],"PlatBase"],
+    crystal: ["Crystals",_=>[player,"crystal"],"CrystalBase"],
+    steel: ["Steel",_=>[player,"steel"],"GrasshopBase"],
+    chrona: ["Chrona",_=>[player.ch,"chrona","spent"],'ChronoBase'],
+    aGrass: ["Anti-Grass",_=>[player.aRes,"grass"],'AntiGrassBase'],
+    ap: ["AP",_=>[player.aRes,"ap"],'AnonymityBase'],
+    oil: ["Oil",_=>[player.aRes,"oil"],'LiquefyBase'],
+    rf: ["Rocket Fuel",_=>[player.rocket,"amount"],'RocketBase'],
+    momentum: ["Momentum",_=>[player.rocket,"momentum"],'RocketBase'],
+    star: ["Stars",_=>[player.gal,"stars"],'SpaceBase'],
+    moonstone: ["Moonstone",_=>[player.gal,"moonstone"],'MoonBase'],
+    fun: ["Fun",_=>[player.aRes,"fun"],'FunBase'],
+    sfrgt: ["SFRGT",_=>[player.aRes,"sfrgt"],'FunBase'],
+    dm: ["Dark Matter",_=>[player.gal,"dm"],'DarkMatterBase'],
+    unGrass: ["Unnatural Grass",_=>[player.unRes,"grass"],'UnnaturalBase'],
+    np: ["NP",_=>[player.unRes,"np"],'NormalityBase'],
+}
+
+const isResNumber = ['perk','chrona']
+
+const UPGS = {
+    grass: {
         unl: _=> player.decel == 0,
 
         cannotBuy: _=>inChal(0) || inChal(5),
@@ -709,4 +737,374 @@ grass: {
             }
         ],
     },
+}
+
+// <b class="green"></b>
+// <b class="yellow"></b>
+
+/*
+{
+    title: "Placeholder",
+    desc: `Placeholder.`,
+
+    res: "grass",
+                
+    cost: i => Decimal.pow(1.15,i).mul(10).ceil(),
+    bulk: i => i.div(10).max(1).log(1.15).floor().toNumber()+1,
+
+    effect(i) {
+        let x = E(1)
+
+        return x
+    },
+    effDesc: x => format(x)+"x",
+},
+*/
+
+const UPGS_SCOST = {}
+
+function chosenUpgrade(id, x) {
+	let ch = tmp.upg_ch
+	return ch[0] == id && ch[1] == x
+}
+
+function clickUpgrade(id, x) {
+	if (shiftDown) buyMaxUpgrade(id, x)
+	else tmp.upg_ch = [id, x]
+}
+
+function buyUpgrade(id, x, type = "once", amt) {
+	//Upgrade Data
+	let tu = tmp.upgs[id]
+	let upg = UPGS[id].ctn[x]
+	let upgData = player.upgs[id]
+
+	//Determine Levels
+	let lvl = upgData[x] || 0
+	let bulk = amt ? getUpgradeBulk(id, x, amt) : tu.bulk[x]
+	if (type == "next") bulk = Math.min(bulk, Math.ceil((lvl + 1) / 25) * 25)
+
+	bulk = Math.min(bulk, tu.max[x])
+	if (lvl >= bulk) return
+	if (type == "once") bulk = lvl + 1
+	if (tu.cannotBuy) return
+
+	//Spend Resource
+	if (!tu.noSpend) {
+		let res = upg.res
+		let num = isResNumber.includes(res)
+		let cost = upg.costOnce ? tu.cost[x] * (bulk - lvl) : upg.cost(bulk - 1)
+		let r = UPG_RES[res][1]()
+
+		if (r[2]) {
+			let [p,q] = [r[0], r[2]]
+			p[q] += cost
+		} else {
+			let [p,q] = r
+			p[q] = num ? Math.max(p[q]-cost, 0) : p[q].sub(cost).max(0)
+		}
+		updateUpgResource(res)
+	}
+
+	upgData[x] = bulk
+	updateUpgTemp(id)
+}
+
+function buyNextUpgrade(id, x) {
+	buyUpgrade(id, x, "next")
+}
+
+function buyMaxUpgrade(id, x) {
+	buyUpgrade(id, x, "max")
+}
+
+function buyAllUpgrades(id) {
+    let upgs = UPGS[id]
+    for (let [x, upg] of Object.entries(upgs.ctn)) {
+        if (upg.unl ? upg.unl() : true) buyUpgrade(id, x, "max")
+    }
+}
+
+function getUpgradeResource(id, x) {
+	return tmp.upg_res[UPGS[id].ctn[x].res]
+}
+
+function getUpgradeBulk(id, x, amt) {
+	let upg = UPGS[id].ctn[x]
+	let tu = tmp.upgs[id]
+	let res = amt || getUpgradeResource(id, x)
+
+	let lvl = 0
+	let min = player.upgs[id][x] || 0
+	if (upg.costOnce) lvl = Math.floor(res / tu.cost[x]) + min
+	else if (E(res).gte(tu.cost[x])) lvl = upg.bulk(E(res))
+	else lvl = min
+
+	return lvl
+}
+
+function updateUpgTemp(id) {
+    let upgs = UPGS[id]
+    let uc = upgs.ctn
+    let tu = tmp.upgs[id]
+    let ul = 0
+    for (let x = 0; x < uc.length; x++) {
+        let upg = uc[x]
+        let amt = player.upgs[id][x]||0
+        let res = tmp.upg_res[upg.res]
+        
+        tu.max[x] = compute(upg.max, 1)
+        if (compute(upg.unl, true)) if (amt < tu.max[x]) ul++
+
+        tu.cost[x] = upg.cost(amt)
+        tu.bulk[x] = getUpgradeBulk(id, x)
+
+        if (upg.effect) tu.eff[x] = upg.effect(amt)
+    }
+    if (upgs.cannotBuy) tu.cannotBuy = upgs.cannotBuy()
+    if (upgs.noSpend) tu.noSpend = upgs.noSpend()
+    if (upgs.autoUnl) tu.autoUnl = upgs.autoUnl()
+    tu.unlLength = ul
+}
+
+function switchAutoUpg(id) {
+    player.autoUpg[id] = !player.autoUpg[id]
+}
+
+function setupUpgradesHTML(id) {
+	let table = new Element("upgs_div_"+id)
+
+	if (table.el) {
+		let upgs = UPGS[id]
+		let html = ""
+
+		table.addClass("upgs_div")
+		table.addClass(id)
+
+		html += `
+			<div style="height: 40px;">
+				${upgs.title} <button class="buyAllUpg" onclick="buyAllUpgrades('${id}')">Buy All</button><button class="buyAllUpg" id="upg_auto_${id}" onclick="switchAutoUpg('${id}')">Auto: OFF</button> ${upgs.btns ?? ''}
+			</div><div id="upgs_ctn_${id}" class="upgs_ctn">
+			</div><div style="height: 40px;" id="upg_under_${id}">
+			</div>
+			<div id="upg_desc_div_${id}" class="upg_desc ${id}">
+				<div id="upg_desc_${id}"></div>
+				<div style="position: absolute; bottom: 0; width: 100%;">
+					<button onclick="tmp.upg_ch = []">Close</button>
+					<button id="upg_buy_${id}" onclick="buyUpgrade('${id}',tmp.upg_ch[1])">Buy 1</button>
+					<button id="upg_buy_next_${id}" onclick="buyNextUpgrade('${id}',tmp.upg_ch[1])">Buy Next</button>
+					<button id="upg_buy_max_${id}" onclick="buyMaxUpgrade('${id}',tmp.upg_ch[1])">Buy Max</button>
+				</div>
+			</div>
+			<div id="upg_req_div_${id}" class="upg_desc ${id}">
+				<div id="upg_req_desc_${id}" style="position:absolute;top:50%;width: 100%;transform:translateY(-50%);font-size:30px;"></div>
+			</div>
+		`
+
+		table.setHTML(html)
+
+		html = ""
+
+		for (let x in UPGS[id].ctn) {
+			let upg = UPGS[id].ctn[x]
+			let icon = [id=='auto'&&x==0?'Bases/AutoBase':'Bases/'+UPG_RES[upg.res][2]]
+			if (upg.icon) for (i in upg.icon) icon.push(upg.icon[i])
+			else icon.push('Icons/Placeholder')
+
+			html += `
+				<div class="upg_ctn" id="upg_ctn_${id}${x}" onclick="clickUpgrade('${id}', ${x})">`
+			for (i in icon) html +=
+				`<img draggable="false" src="${"images/"+icon[i]+".png"}">`
+			html += `
+				<img id="upg_ctn_${id}${x}_max_base"  draggable="false" src="${"images/max.png"}">
+				<div id="upg_ctn_${id}${x}_cost" class="upg_cost"></div>
+				<div class="upg_tier">${upg.tier ? ['', '', 'II', 'III', 'IV', 'V'][upg.tier] : ""}</div>
+				<div id="upg_ctn_${id}${x}_amt" class="upg_amt">argh</div>
+				<div class="upg_max" id="upg_ctn_${id}${x}_max" class="upg_max">Maxed!</div>
+			</div>
+			`
+		}
+
+		let el = new Element(`upgs_ctn_${id}`)
+		el.setHTML(html)
+	}
+}
+
+function updateUpgradesHTML(id) {
+    let upgs = UPGS[id]
+    let height = document.getElementById(`upgs_ctn_${id}`).offsetHeight-25
+    let tu = tmp.upgs[id]
+    let ch = tmp.upg_ch[0] == id ? tmp.upg_ch[1] : -1
+
+    let unl = compute(upgs.unl, true)
+    tmp.el["upgs_div_"+id].setDisplay(unl)
+
+    if (unl) {
+        let req = compute(upgs.req, true)
+        tmp.el["upg_req_div_"+id].setDisplay(!req)
+
+        if (req) {
+            if (upgs.underDesc) tmp.el["upg_under_"+id].setHTML(upgs.underDesc())
+            tmp.el["upg_desc_div_"+id].setDisplay(ch > -1)
+
+            if (ch > -1) {
+                let upg = UPGS[id].ctn[ch]
+                let max = tu.max[ch]
+                let amt = player.upgs[id][ch]||0
+                let res = tmp.upg_res[upg.res]
+                let dis = UPG_RES[upg.res][0]
+
+                let h = `<h2>${upg.title}</h2><br>`
+                if (max > 1 && max > amt) h += `Level <b class="yellow">${format(amt,0)} ${tu.max[ch] < Infinity ? " / " + format(max, 0) : ""}</b><br>`
+
+                h += upg.desc
+                if (upg.effDesc) h += '<br>Effect: <span class="cyan">'+upg.effDesc(tu.eff[ch])+"</span>"
+                h += '<br>'
+
+                let canBuy = Decimal.gte(tmp.upg_res[upg.res], tu.cost[ch])
+                let hasBuy25 = (Math.floor(amt / 25) + 1) * 25 < max
+                let hasMax = amt + 1 < max
+
+                if (amt < max) {
+                    h += `<br><span class="${canBuy?"green":"red"}">Cost: ${format(tu.cost[ch],0)} ${dis}</span>`
+
+                    let cost2 = upg.costOnce?Decimal.mul(tu.cost[ch],25-amt%25):upg.cost((Math.floor(amt/25)+1)*25-1)
+                    let cost3 = upg.costOnce?Decimal.mul(tu.cost[ch],max-amt):upg.cost(max-1)
+                    if (hasBuy25) h += `<br><span class="${Decimal.gte(tmp.upg_res[upg.res],cost2)?"green":"red"}">Next 25: ${format(cost2,0)} ${dis}</span>`
+                    else if (hasMax) h += `<br><span class="${Decimal.gte(tmp.upg_res[upg.res],cost3)?"green":"red"}">Max: ${format(cost3,0)} ${dis}</span>`
+
+                    h += `<br>You have ${format(res,0)} ${dis}`
+                } else h += "<br><b class='pink'>Maxed!</b>"
+
+                tmp.el["upg_desc_"+id].setHTML(h)
+                tmp.el["upg_buy_"+id].setClasses({ locked: !canBuy })
+                tmp.el["upg_buy_"+id].setDisplay(amt < max)
+                tmp.el["upg_buy_"+id].setTxt("Buy" + (hasMax ? " 1" : ""))
+                tmp.el["upg_buy_next_"+id].setClasses({ locked: !canBuy })
+                tmp.el["upg_buy_next_"+id].setDisplay(hasBuy25)
+                tmp.el["upg_buy_max_"+id].setClasses({ locked: !canBuy })
+                tmp.el["upg_buy_max_"+id].setDisplay(hasMax)
+            }
+
+            if (ch < 0) {
+                tmp.el["upg_auto_"+id].setDisplay(tu.autoUnl)
+                if (tu.autoUnl) tmp.el["upg_auto_"+id].setTxt("Auto: "+(player.autoUpg[id]?"ON":"OFF"))
+
+                for (let x = 0; x < upgs.ctn.length; x++) {
+                    let upg = upgs.ctn[x]
+                    let div_id = "upg_ctn_"+id+x
+                    let amt = player.upgs[id][x]||0
+
+                    let unlc = compute(upg.unl, true) && (player.options.hideUpgOption ? amt < tu.max[x] : true)
+                    tmp.el[div_id].setDisplay(unlc)
+
+                    if (!unlc) continue
+
+                    let res = tmp.upg_res[upg.res]
+
+                    tmp.el[div_id].changeStyle("width",height+"px")
+                    tmp.el[div_id].changeStyle("height",height+"px")
+
+                    tmp.el[div_id+"_cost"].setTxt(amt < tu.max[x] ? format(tu.cost[x],0)+" "+UPG_RES[upg.res][0] : "")
+                    tmp.el[div_id+"_cost"].setClasses({upg_cost: true, locked: Decimal.lt(res,tu.cost[x]) && amt < tu.max[x]})
+
+                    tmp.el[div_id+"_amt"].setTxt(amt < tu.max[x] ? format(amt,0) : "")
+                    tmp.el[div_id+"_max"].setDisplay(amt >= tu.max[x])
+                    tmp.el[div_id+"_max_base"].setDisplay(amt >= tu.max[x])
+                }
+            }
+        } else if (upgs.reqDesc) tmp.el["upg_req_desc_"+id].setHTML(compute(upgs.reqDesc))
+    }
+}
+
+function hasUpgrade(id,x) { return player.upgs[id][x] > 0 }
+function hasUpgrades(id) {
+	for (let i of player.upgs[id]) {
+		if (i > 0) return true 
+	}
+	return false
+}
+function upgEffect(id,x,def=1) { return tmp.upgs[id].eff[x] || def }
+
+function resetUpgrades(id) {
+    player.upgs[id] = []
+}
+
+function updateUpgResource(id) {
+    let [p,q,u] = UPG_RES[id][1]()
+    tmp.upg_res[id] = p?.[q] ?? 0
+	if (u) tmp.upg_res[id] -= p?.[u] ?? 0
+}
+
+function getUpgResTitle(res) {
+	let amt = tmp.upg_res[res]
+	return (E(amt).lt(1e33) ? "You have " : "") + "<b>" + format(amt, 0) + "</b> " + UPG_RES[res][0]
+}
+
+function toggleOption(x) { player.options[x] = !player.options[x] }
+
+tmp_update.push(_=>{
+    for (let x in UPG_RES) updateUpgResource(x)
+    for (let x in UPGS) updateUpgTemp(x)
+})
+
+el.setup.upgs = _=>{
+    for (let x in UPGS) setupUpgradesHTML(x)
+}
+
+el.update.upgs = _=>{
+    if (mapID == 'g') {
+        updateUpgradesHTML('grass')
+        updateUpgradesHTML('aGrass')
+		updateUpgradesHTML('unGrass')
+	}
+	if (mapID == 'upg') {
+		updateUpgradesHTML('perk')
+		updateUpgradesHTML('plat')
+		tmp.el.normal_upgs.setDisplay(!inRecel())
+		tmp.el.losePerksBtn.setDisplay(hasUpgrade('auto', 4))
+		tmp.el.losePerks.setTxt(player.options.losePerks ? "OFF" : "ON")
+	}
+	if (mapID == 'auto') {
+		updateUpgradesHTML('auto')
+		updateUpgradesHTML('aAuto')
+
+		updateUpgradesHTML('assembler')
+	}
+	if (mapID == 'pc') {
+		updateUpgradesHTML('pp')
+		updateUpgradesHTML('crystal')
+
+		updateUpgradesHTML('ap')
+		updateUpgradesHTML('oil')
+
+		updateUpgradesHTML('np')
+	}
+	if (mapID == 'gh') {
+        updateUpgradesHTML('factory')
+        updateUpgradesHTML('funMachine')
+    }
+    if (mapID == 'fd') {
+        updateUpgradesHTML('foundry')
+        updateUpgradesHTML('gen')
+
+        updateUpgradesHTML('fundry')
+        updateUpgradesHTML('sfrgt')
+    }
+    if (mapID == 'rf') {
+        updateUpgradesHTML('rocket')
+        updateUpgradesHTML('momentum')
+    }
+
+	if (mapID == 'opt') {
+		tmp.el.wipeBtn.setDisplay(player.pTimes)
+		tmp.el.sciBtn.setDisplay(player.pTimes)
+		tmp.el.scientific.setTxt(player.options.scientific?"ON":"OFF")
+		tmp.el.hideCapBtn.setDisplay(player.cTimes)
+		tmp.el.capOpt.setTxt(player.options.lowGrass?250:"∞")
+		tmp.el.hideMaxBtn.setDisplay(player.cTimes)
+		tmp.el.hideMax.setTxt(player.options.hideUpgOption?"ON":"OFF")
+		tmp.el.hideMilestoneBtn.setDisplay(grassHopped())
+		tmp.el.hideMilestone.setTxt(player.options.hideMilestone?"Unobtained":"All")
+	}
 }
